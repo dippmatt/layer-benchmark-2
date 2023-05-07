@@ -35,6 +35,11 @@ def get_uart(stm_cube_programmer):
     assert location is not None, "Did not find STM32 Nucleo Board connected to UART."
     speed = int(os.popen(f"stty -F {location} speed").read())
     
+    # Manually set speed to 115200, 
+    # because reading it only works when the project has already been flashed.
+    # ToDo: cleaner solution: extract uart baud rate from source files of Cube IDE template project
+    speed = 115200
+    
     return location, speed, port
 
 def readback(ser):

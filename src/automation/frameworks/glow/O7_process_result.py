@@ -1,36 +1,6 @@
 import os
 
 def get_layer_inference_time(workdir, uart_result):
-    ################## Example Response from UART Serial  ###################
-    # Profiling "MAIN loop timing" sequence: 
-    # --Event-----------------------|--timestamp--|----delta_t---
-    # BEGIN                         :        0 µs | +        0 µs
-    # START                         :        2 µs | +        2 µs
-    # STOP                          :    14570 µs | +    14568 µs
-    # START                         :    14571 µs | +        1 µs
-    # STOP                          :    23141 µs | +     8570 µs
-    # START                         :    23143 µs | +        2 µs
-    # STOP                          :    33860 µs | +    10717 µs
-    # START                         :    33861 µs | +        1 µs
-    # STOP                          :    42431 µs | +     8570 µs
-    # START                         :    42433 µs | +        2 µs
-    # STOP                          :    53150 µs | +    10717 µs
-    # START                         :    53151 µs | +        1 µs
-    # STOP                          :    61721 µs | +     8570 µs
-    # START                         :    61723 µs | +        2 µs
-    # STOP                          :    72440 µs | +    10717 µs
-    # START                         :    72441 µs | +        1 µs
-    # STOP                          :    81011 µs | +     8570 µs
-    # START                         :    81013 µs | +        2 µs
-    # STOP                          :    91730 µs | +    10717 µs
-    # START                         :    91731 µs | +        1 µs
-    # STOP                          :    92018 µs | +      287 µs
-    # START                         :    92019 µs | +        1 µs
-    # STOP                          :    92049 µs | +       30 µs
-    # START                         :    92049 µs | +        0 µs
-    # STOP                          :    92060 µs | +       11 µs
-    # END                           :    92060 µs | +        0 µs
-
     layer_info_file = os.path.abspath(os.path.join(workdir, "..", "instrument-ir.info"))
 
     with open(layer_info_file, 'r') as file:
@@ -47,14 +17,15 @@ def get_layer_inference_time(workdir, uart_result):
         i += 1 
         if i >= len(lines):
             break
-    
-    for info in layer_list:
-        print(info["id"], info["name"])
 
-    import sys
-    sys.exit()
+    timings = get_uart_timing_list(uart_result)
     
-
+    # combine layer metadata with timing benchmarks on HW
+    assert len(timings) == len(layer_list), "Length mismatch between measured layers and layer number found in metadata file."
+    for i, timing in enumerate(timings):
+        layer_list[i]['time'] = timing
+    
+    return layer_list
             
 
 def parse_layer(index_with_ID, lines):
@@ -86,7 +57,7 @@ def parse_layer(index_with_ID, lines):
         elif "Kind" in line:
             tokens = line.split(":", maxsplit=1)
             kind = tokens[1].replace(" ", "")
-            layer_info["kind"] = kind
+            layer_info["kind"] = kind.rstrip("\n")
         elif "Name" in line:
             tokens = line.split(":", maxsplit=1)
             name = tokens[1].replace(" ", "")
@@ -94,3 +65,42 @@ def parse_layer(index_with_ID, lines):
         else:
             io_info.append(line)
         i += 1
+
+def get_uart_timing_list(uart_result):
+################## Example Response from UART Serial  ###################
+# Profiling "MAIN loop timing" sequence: 
+# --Event-----------------------|--timestamp--|----delta_t---
+# BEGIN                         :        0 µs | +        0 µs
+# START                         :        2 µs | +        2 µs
+# STOP                          :    14570 µs | +    14568 µs
+# START                         :    14571 µs | +        1 µs
+# STOP                          :    23141 µs | +     8570 µs
+# START                         :    23143 µs | +        2 µs
+# STOP                          :    33860 µs | +    10717 µs
+# START                         :    33861 µs | +        1 µs
+# STOP                          :    42431 µs | +     8570 µs
+# START                         :    42433 µs | +        2 µs
+# STOP                          :    53150 µs | +    10717 µs
+# START                         :    53151 µs | +        1 µs
+# STOP                          :    61721 µs | +     8570 µs
+# START                         :    61723 µs | +        2 µs
+# STOP                          :    72440 µs | +    10717 µs
+# START                         :    72441 µs | +        1 µs
+# STOP                          :    81011 µs | +     8570 µs
+# START                         :    81013 µs | +        2 µs
+# STOP                          :    91730 µs | +    10717 µs
+# START                         :    91731 µs | +        1 µs
+# STOP                          :    92018 µs | +      287 µs
+# START                         :    92019 µs | +        1 µs
+# STOP                          :    92049 µs | +       30 µs
+# START                         :    92049 µs | +        0 µs
+# STOP                          :    92060 µs | +       11 µs
+# END                           :    92060 µs | +        0 µs
+
+    timings = []
+    for line in uart_result:
+        if "STOP" in line:
+            timing = line.split('+')[1]
+            timing = timing.strip(' ')
+            timings.append(int(timing.strip('µs')))
+    return timings

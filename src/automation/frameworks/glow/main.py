@@ -144,8 +144,13 @@ def _main():
     # extract layer names from log and associate runtimes
     layer_runtimes = get_layer_inference_time(args.workdir, lines)
     for layer in layer_runtimes:
-        print(layer["id"], layer["name"], layer["time"])
-    return
+        print(layer["id"])
+        print(layer["name"])
+        print(layer["kind"])
+        print(layer["time"], "µs")
+        print()
+
+    return 0
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)

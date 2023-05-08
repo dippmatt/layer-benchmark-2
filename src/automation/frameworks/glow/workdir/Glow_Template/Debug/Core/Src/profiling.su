@@ -1,4 +1,0 @@
-stdio.h:214:5:fputc	0	static
-profiling.c:64:6:PROFILING_START	8	static
-profiling.c:82:6:PROFILING_EVENT	8	static
-profiling.c:99:6:PROFILING_STOP	560	static

@@ -3,6 +3,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import serial
+import csv
 
 from O1_gen_bin_file_path_list import gen_tensor_list_file
 from O2_profile_model import profile
@@ -16,6 +17,9 @@ def _main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-quantize', dest='quantize', action='store_true',
                         help='Defines wether the model should be quantized.')
+    parser.add_argument('-nxp', dest='nxp', action='store_true',
+                        help='Defines wether the model compiler is from NXP or the open source one.\
+                            NXP\'s model compiler can use the CMSIS library from ARM, which results in improved performance.')
     parser.add_argument('-glow_compiler', dest='glow_compiler', type=str,
                         help='Path to glow compiler executable.', default=None)
     parser.add_argument('-glow_profiler', dest='glow_profiler', type=str,
@@ -37,8 +41,10 @@ def _main():
                         help='Path to a folder containing binary input tensors for inference. Only .bin files are read.', default=None)
     parser.add_argument('-cube_template', dest='cube_template', type=str,
                         help='Path to the STM Cube IDE template project, where the compiled model source files are copied to.', default=None)
+    parser.add_argument('-out_dir', dest='out_dir', type=str,
+                        help='Path to the results as csv.', default=None)
     args = parser.parse_args()
-
+    
     # Check file paths
     if not os.path.exists(args.workdir):
         eprint(f"Working directory path {args.workdir} does not exist!")
@@ -48,6 +54,8 @@ def _main():
         args.workdir = os.path.abspath(args.workdir)
         # clean workdir
         assert os.system(f"rm -rf {args.workdir}/*") == 0
+
+    assert os.path.isdir(args.out_dir), "Must specify valid directory to write results to."
 
     if not os.path.exists(args.cube_template):
         eprint(f"Did not find path to STM Cube IDE template project: {args.cube_template}")
@@ -83,10 +91,6 @@ def _main():
         output_dtype = output_details[0]['dtype']
         output_shape = output_details[0]['shape']
 
-    if not os.path.exists(args.glow_profiler):
-        eprint(f"Glow model profiler executable {args.glow_profiler} not found!")
-        return -1
-
     if not os.path.exists(args.glow_compiler):
         eprint(f"Glow compiler executable {args.glow_compiler} not found!")
         return -1
@@ -97,6 +101,9 @@ def _main():
 
     if input_dtype in [np.float16, np.float32, np.float64, np.float128] and args.quantize:
         create_profile = True
+        if not os.path.exists(args.glow_profiler):
+            eprint(f"Glow model profiler executable {args.glow_profiler} not found!")
+            return -1
     else:
         create_profile = False
 
@@ -113,9 +120,9 @@ def _main():
 
         # Profile model
         model_profile = profile(args.glow_profiler, input_tensors_list, copied_model, input_name, args.workdir)
-        bundle_dir = compile(args.glow_compiler, copied_model, create_profile, args.workdir, model_profile=model_profile)
+        bundle_dir = compile(args.glow_compiler, copied_model, create_profile, args.workdir, args.nxp, model_profile=model_profile)
     else:
-        bundle_dir = compile(args.glow_compiler, copied_model, create_profile, args.workdir, model_profile=None)
+        bundle_dir = compile(args.glow_compiler, copied_model, create_profile, args.workdir, args.nxp, model_profile=None)
 
     # Build & Compile C Project
     elf_file = build_cube_prj(args.cube_template, args.workdir, bundle_dir)
@@ -143,6 +150,20 @@ def _main():
 
     # extract layer names from log and associate runtimes
     layer_runtimes = get_layer_inference_time(args.workdir, lines)
+
+    model_name = os.path.basename(args.model).rstrip(".tflite")
+    keys = set().union(*(d.keys() for d in layer_runtimes))
+    csv_file = os.path.join(args.out_dir, f'layer_inference_timings_{model_name}.csv')
+    with open(csv_file, mode='w', newline='') as csv_file:
+        # Create a CSV writer object
+        writer = csv.DictWriter(csv_file, fieldnames=keys)
+        # Write the header row
+        writer.writeheader()
+        # Write the data rows
+        for row in layer_runtimes:
+            writer.writerow(row)
+    
+
     for layer in layer_runtimes:
         print(layer["id"])
         print(layer["name"])

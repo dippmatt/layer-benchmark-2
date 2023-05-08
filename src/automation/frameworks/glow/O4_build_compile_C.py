@@ -1,9 +1,14 @@
 import os
 
 def build_cube_prj(glow_cubeIDE_template, workdir, bundle_dir):
+    # copy STMCubeIDE project template to workdir    
+    if str(glow_cubeIDE_template).endswith("/"):
+        prj_name = os.path.basename(os.path.dirname(glow_cubeIDE_template))
+    else:
+        prj_name = os.path.basename(glow_cubeIDE_template)
 
-    # copy STMCubeIDE project template to workdir
-    cube_prj = os.path.join(workdir, os.path.basename(os.path.dirname(glow_cubeIDE_template)))
+    cube_prj = os.path.join(workdir, prj_name)
+
     os.system(f"cp -r {glow_cubeIDE_template} {cube_prj}")
 
     # copy model source files into project
@@ -31,7 +36,8 @@ def build_cube_prj(glow_cubeIDE_template, workdir, bundle_dir):
     os.chdir(build_dir)
     logfile = os.path.join(build_dir, "compile.log")
     assert os.system("make all > compile.log") == 0, f"Compiling model project encountered an error. See {logfile} for details."
-    elf_file = os.path.abspath(os.path.basename(os.path.dirname(glow_cubeIDE_template)) + ".elf")
+    #elf_file = os.path.abspath(os.path.basename(os.path.dirname(glow_cubeIDE_template)) + ".elf")
+    elf_file = os.path.join(cube_prj, "Debug", f"{prj_name}.elf")
     assert os.path.isfile(elf_file)
     
     os.chdir(cwd)

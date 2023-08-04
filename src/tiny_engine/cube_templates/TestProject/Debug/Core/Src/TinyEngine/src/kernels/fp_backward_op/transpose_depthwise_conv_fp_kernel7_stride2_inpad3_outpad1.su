@@ -1,0 +1,2 @@
+../Core/Src/TinyEngine/src/kernels/fp_backward_op/transpose_depthwise_conv_fp_kernel7_stride2_inpad3_outpad1.c:28:22:transpose_depthwise_conv_fp_kernel7_stride2_inpad3_outpad1_IOHW_int8weight_partialCH	536	static
+../Core/Src/TinyEngine/src/kernels/fp_backward_op/transpose_depthwise_conv_fp_kernel7_stride2_inpad3_outpad1.c:154:22:transpose_depthwise_conv_fp_kernel7_stride2_inpad3_outpad1_IOHW_int8weight	496	static

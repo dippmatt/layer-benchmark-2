@@ -1,0 +1,17 @@
+BTW: Um tflite native zu benchmarken, einfach in MXCube auf tflite runtime umstellen (bei software packs auf system performance gestellt) und am board laufen lassen, dann bekommt man auch die layer zeiten angezeigt.
+
+
+Installation:
+Anleitung für python des tutorials folgen: https://github.com/mit-han-lab/tinyengine/tree/main/tutorial/inference
+
+Ich habe in ./tinyengine/examples/custom_tflite.py ein custom file zur generierung der Modellfiles erstellt.
+Die generierten files sind dann in [pwd]/tinyengine/codegen/ zu finden.
+
+Danach alle Datein in ein neues cube project kopiert mithilfe des beiliegenden python Skript: copy_cmsis.py
+Command:
+
+python3 copy_cmsis.py  -cube_prj_path /home/matthias/Documents/BA/no_git_layer_benchmark/layer-benchmark-scripting/tinyengine/cubeproject/test/TestProject/ -tinyengine_path /home/matthias/Documents/BA/no_git_layer_benchmark/layer-benchmark-scripting/tinyengine/tinyengine 
+
+Achtung: weil tinyengine als default example Cortex M7 verwendet, müssen die libraries auf M4 geändert werden (zb. in profile.h)
+
+

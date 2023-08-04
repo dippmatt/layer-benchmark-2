@@ -5,55 +5,54 @@ import argparse
 # one after another and checks for successful execution
 from benchmark_pipeline import Pipeline
 
-# keep it simple here one return value: true or false. 
+# keep it simple here, one return value: true or false. 
 # Cecks if args are valid to use
 from validate_args import validate_args
 
 # now all methods to load data
 
-# get test tensors from npz file. extract data type and shape. 
-# Return info as dict.
-from load_test_tensors import load_test_tensors
-# make it agnostic to ML graph framework (tflite / onnx,..). 
-# Extract IO data of model and return dict with data
-from load_model import load_model
-# load templates for layer timings, 
-# reference timings and empty template for flash / ram estimation
-from load_cube_project import load_cube_project
-# get mcu info
-from get_mcu_dev import get_mcu_dev
+# copy tinyengine framework to workdir, copy custom_tflite.py to framework,
+# run custom_tflite.py to generate model source files
+from prep_tinyengine_framework import prep_tinyengine_framework
 
-# validate model IO data types, shapes,.. 
-# against test tensors, framework settings,...
-from validate_data import validate_data
+# # get test tensors from npz file. extract data type and shape. 
+# # Return info as dict.
+# from load_test_tensors import load_test_tensors
+# # make it agnostic to ML graph framework (tflite / onnx,..). 
+# # Extract IO data of model and return dict with data
+# from load_model import load_model
+# # load templates for layer timings, 
+# # reference timings and empty template for flash / ram estimation
+# from load_cube_project import load_cube_project
+# # get mcu info
+# from get_mcu_dev import get_mcu_dev
 
-# use framework with all parsed settings
-from use_framework import use_framework
+# # validate model IO data types, shapes,.. 
+# # against test tensors, framework settings,...
+# from validate_data import validate_data
 
-# assemble compilable cube project: 
-# copy input files, fill templates, build, compile...
-from copy_build_compile import copy_build_compile
+# # use framework with all parsed settings
+# from use_framework import use_framework
 
-# flash and UART readback methods
-from flash_and_readback import flash_and_readback
+# # assemble compilable cube project: 
+# # copy input files, fill templates, build, compile...
+# from copy_build_compile import copy_build_compile
 
-# process and store data
-from process_data import process_data
+# # flash and UART readback methods
+# from flash_and_readback import flash_and_readback
+
+# # process and store data
+# from process_data import process_data
 
 def _main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-quantize', dest='quantize', action='store_true',
-                        help='Defines wether the model should be quantized.')
-    parser.add_argument('-nxp', dest='nxp', action='store_true',
-                        help='Defines wether the model compiler is from NXP or the open source one.\
-                            NXP\'s model compiler can use the CMSIS library from ARM, which results in improved performance.')
-    parser.add_argument('-glow_compiler', dest='glow_compiler', type=str,
-                        help='Path to glow compiler executable.', default=None)
-    parser.add_argument('-glow_profiler', dest='glow_profiler', type=str,
-                        help='Path to glow profiler executable.', default=None)
+    parser.add_argument('-tiny_engine_submodule', dest='tiny_engine_submodule', type=str,
+                        help='Path to tiny engine repository.', default=None)
     parser.add_argument('-repetitions', dest='repetitions', type=int,
                         help='The number of repetitions each input tensor propagated through the model..', default=1)
+    parser.add_argument('-submodule_dir', dest='submodule_dir', type=str,
+                        help='Path to tiny engine repository.', default=None)
     parser.add_argument('-model', dest='model', type=str,
                         help='Path to tflite input model.', default=None)
     parser.add_argument('-cube_programmer', dest='cube_programmer', type=str,
@@ -71,8 +70,6 @@ def _main():
                         help='Path to one .npz file. \
                             Numpy binary array file represents list of input tensor examples, used to calibrate quantization if needed. \
                             Minimum of 10 tensors required.', default=None)
-    parser.add_argument('-dat_bin_folder', dest='dat_bin_folder', type=str,
-                        help='Path to a folder containing binary input tensors for inference. Only .bin files are read.', default=None)
     parser.add_argument('-cube_template', dest='cube_template', type=str,
                         help='Path to the STM Cube IDE template project, where the compiled model source files are copied to.', default=None)
     parser.add_argument('-cube_template_ref', dest='cube_template_ref', type=str,
@@ -87,6 +84,15 @@ def _main():
     
     pipeline = Pipeline(args, validate_args)
 
+
+    step_requirements = [{'main_arg': 'workdir'},
+                         {'main_arg': 'submodule_dir'},
+                         {'main_arg': 'model'}]
+    pipeline.add_step(prep_tinyengine_framework, step_requirements)
+    pipeline.run()
+    print()
+    print(pipeline.steps[-1].output)
+####################################################
     # 0. keys added in load_test_tensors step:
     # num_samples: int, number of samples in input_tensors
     # input_tensors, np.array, shape: (num_samples, *input_shape), dtype: input_dtype

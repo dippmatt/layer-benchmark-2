@@ -1,0 +1,20 @@
+Note:
+How to calculate RAM and Flash usage:
+https://electronics.stackexchange.com/questions/363931/how-do-i-find-out-at-compile-time-how-much-of-an-stm32s-flash-memory-and-dynami
+arm-none-eabi-size -A <.elf file>
+SRAM = data + bss
+FLASH = text + data
+
+################# validate tflite runtime
+python test.py /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite
+
+python test.py /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/float32.npz /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_fp32.tflite
+
+
+################# use MCU
+
+first activate python_scripting/venv/bin activate environment
+
+python3 main.py -nxp -model /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite -workdir ../workdir -glow_compiler /opt/nxp/Glow/bin/model-compiler -glow_profiler /opt/nxp/Glow/bin/model-profiler -input_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz -cube_template ../cube_templates/Glow_Template/ -cube_template_ref ../cube_templates/Glow_Template_ref/ -cube_template_empty ../cube_templates/Glow_Template_empty/ -out_dir /home/matthias/Documents/BA/results/glow/usecases/test -repetitions 5
+
+python3 main.py -nxp -quantize -model /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_fp32.tflite -workdir ../workdir -glow_compiler /opt/nxp/Glow/bin/model-compiler -glow_profiler /opt/nxp/Glow/bin/model-profiler -input_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/float32.npz -representative_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/representative_dataset_fp32.npz -cube_template ../cube_templates/Glow_Template/ -cube_template_ref ../cube_templates/Glow_Template_ref/ -cube_template_empty ../cube_templates/Glow_Template_empty/ -out_dir /home/matthias/Documents/BA/results/glow/usecases/test -repetitions 5

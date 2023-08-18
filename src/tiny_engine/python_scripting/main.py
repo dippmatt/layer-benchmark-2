@@ -36,12 +36,9 @@ from get_mcu_dev import get_mcu_dev
 # against test tensors, framework settings,...
 from validate_data import validate_data
 
-# # use framework with all parsed settings
-# from use_framework import use_framework
-
-# # assemble compilable cube project: 
-# # copy input files, fill templates, build, compile...
-# from copy_build_compile import copy_build_compile
+# assemble compilable cube project: 
+# copy input files, fill templates, build, compile...
+from copy_build_compile import copy_build_compile
 
 # # flash and UART readback methods
 # from flash_and_readback import flash_and_readback
@@ -138,10 +135,7 @@ def _main():
                          {'main_arg': 'tiny_engine_submodule'},
                          {'step': 1, 'name': 'model'}]
     pipeline.add_step(use_framework, step_requirements)
-    pipeline.run()
-    print()
-    print(pipeline.steps[-1].output)
-    import sys;sys.exit(0)
+    
 
     # 6. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template
@@ -152,13 +146,12 @@ def _main():
                          {'step': 0, 'name': 'input_tensors'},
                          {'step': 1, 'name': 'input_dtype'},
                          {'step': 2, 'name': 'cube_template'},
-                         {'step': 2, 'name': 'cube_template_no_ir'},
-                         {'step': 2, 'name': 'cube_template_ref'},
-                         {'step': 2, 'name': 'cube_template_empty'},
-                         {'step': 5, 'name': 'bundle_dir'},
-                         {'step': 5, 'name': 'bundle_dir_no_ir'}]
+                         {'step': 5, 'name': 'codegen'}]
     pipeline.add_step(copy_build_compile, step_requirements)
-
+    pipeline.run()
+    print()
+    print(pipeline.steps[-1].output)
+    import sys;sys.exit(0)
 
     # 7. keys added in flash_and_readback step:
     # tensor_values: list. Model output in either float or int8 format, depending on quantization

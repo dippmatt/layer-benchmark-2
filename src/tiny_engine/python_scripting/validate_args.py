@@ -22,4 +22,7 @@ def validate_args(args):
     args.cube_programmer = Path(args.cube_programmer).resolve()
     assert args.cube_programmer.is_file(), f"STM 32 Cube Cube Programmer executable {args.cube_programmer} not found!."
 
+    args.cube_template = Path(args.cube_template).resolve()
+    assert args.cube_template.is_dir(), f"STM Cube IDE template project {args.cube_template} not found!."
+
     return

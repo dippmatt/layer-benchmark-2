@@ -9,7 +9,7 @@ import re
 # and one with whole model measurements. Then, use the layer-by-layer measurements
 # to estimate the overhead of the measurement process.
 
-def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dtype, cube_template: Path, cube_template_no_ir: Path, cube_template_ref: Path, cube_template_empty: Path, bundle_dir: Path, bundle_dir_no_ir: Path):
+def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dtype, cube_template: Path, codegen: Path):
     """Copy all data into the cube project, build and compile it
     Repeat for the inference tempalate, the reference template and the empty template.
     Inference Template: The template to run measurements.
@@ -17,15 +17,11 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     Empty Template: The template to measure the RAM and FLASH usage of the model.
     Args:
         workdir: The working directory.
-        cube_template: The path to the STM Cube IDE Inference Template project.
-        cube_template_no_ir: The path to the STM Cube IDE Inference Template project, 
-            used without per layer measurements.
-        cube_template_ref: The path to the STM Cube IDE Reference Template project.
-        cube_template_empty: The path to the STM Cube IDE Empty Template project.
         repetitions: The number of repetitions to run the inference per input tensor.
         input_tensors: The input tensors.
         input_dtype: The data type of the input tensors.
-        bundle_dir: The path to the framework bundle.
+        cube_template: The path to the STM Cube IDE Inference Template project.
+        codegen: The path to the generated model C code.
     """
     step_output = dict()
     
@@ -40,12 +36,13 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     data_header = cube_template / Path("Core", "Inc", "ml_data.h")
     with open(data_header, 'w') as f:
         f.writelines(test_tensor_header)
-    data_header_no_ir = cube_template_no_ir / Path("Core", "Inc", "ml_data.h")
-    with open(data_header_no_ir, 'w') as f:
-        f.writelines(test_tensor_header)
 
     # copy framework bundle into project and reference project, 
     # not into empty project because we want to measure the RAM and FLASH usage of the model
+    print(cube_template)
+    import sys;sys.exit()
+    shutil.copytree(codegen, cube_template / Path("Core", "Src", "model"))
+
     src_files = ["model.o"]
     inc_files = ["model.h", "model.weights.txt"]
     

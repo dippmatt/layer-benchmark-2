@@ -10,11 +10,45 @@ Die generierten files sind dann in [pwd]/tinyengine/codegen/ zu finden.
 Danach alle Datein in ein neues cube project kopiert mithilfe des beiliegenden python Skript: copy_cmsis.py
 Command:
 
+Des weiteren müssen die Include Paths im Tinyengine Projekt angepasst werden:
+../Core/Src/TinyEngine/src/arm_cmsis/ActivationFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/BasicMathFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/ConcatenationFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/ConvolutionFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/FullyConnectedFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/NNSupportFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/PoolingFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/ReshapeFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/SoftmaxFunctions
+../Core/Src/TinyEngine/src/arm_cmsis/SVDFunctions
+../Core/Src/TinyEngine/include
+../Core/Src/TinyEngine/include/arm_cmsis
+../Core/Src/TinyEngine/codegen/Include
+
+../Core/Src
+../Core/Inc
+../Drivers/STM32L4xx_HAL_Driver/Inc
+../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy
+../Drivers/CMSIS/Device/ST/STM32L4xx/Include
+../Drivers/CMSIS/Include
+
+!Wichtig!: die CMSIS (nicht CMSIS-NN sondern stinknormale CMSIS) library sollte exakt die sein, die im Tinyengine repo vorhanden ist. 
+Fur Cortex M4 ersete man dafür den Ordner <cube projekt>/Drivers/CMSIS/Include mit  <tinyengine repo>/third_party/CMSIS/CMSIS/Core/Include
+
 python3 copy_cmsis.py  -cube_prj_path /home/matthias/Documents/BA/no_git_layer_benchmark/layer-benchmark-scripting/tinyengine/cubeproject/test/TestProject/ -tinyengine_path /home/matthias/Documents/BA/no_git_layer_benchmark/layer-benchmark-scripting/tinyengine/tinyengine 
 
 Achtung: weil tinyengine als default example Cortex M7 verwendet, müssen die libraries auf M4 geändert werden (zb. in profile.h)
 
 
 Scripting environment laufen lassen:
-python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz
+AD
+python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
 
+KWS
+python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/keyword_spotting/trained_models/kws_ref_model_no_softmax.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/keyword_spotting/bin_data/mfcc/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
+
+IC
+python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/image_classification/trained_models/pretrainedResnet_no_softmax_quant.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/image_classification/bin_data/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
+
+VWW
+python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/visual_wake_words/trained_models/vww_96_int8_no_softmax.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/visual_wake_words/bin_data/person/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi

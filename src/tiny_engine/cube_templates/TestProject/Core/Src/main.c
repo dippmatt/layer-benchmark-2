@@ -103,12 +103,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint32_t start, end;
-  uint8_t str[20];
+  char begin_message[22] = "###################\r\n";
+  int num_runs = 1;
+  int i = 0;
   while (1)
   {
-
 	  //HAL_GPIO_TogglePin(GPIOB, LD3_Pin|LD2_Pin);
+	  HAL_UART_Transmit (&hlpuart1, begin_message, sizeof (begin_message), 10);
 	  __disable_irq();
 	  PROFILING_START("MAIN loop timing");
 	  //invoke_inf();
@@ -116,10 +117,10 @@ int main(void)
 	  PROFILING_EVENT("Event END");
 	  __enable_irq();
 	  PROFILING_STOP(&hlpuart1);
-	  HAL_Delay(10000);
-	  //sprintf((char*)str, "%d \n", end - start);
-	  //char *str = "Hallo\n";
-	  //HAL_UART_Transmit(&hlpuart1, str, sizeof((char*)str) + 1, 10);
+	  if(i > num_runs){
+		  break;
+	  }
+	  i += 1;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

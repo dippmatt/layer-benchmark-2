@@ -10,10 +10,16 @@ def validate_args(args):
     shutil.rmtree(args.workdir)
     args.workdir.mkdir()
 
-    args.submodule_dir = Path(args.submodule_dir).resolve()
-    assert args.submodule_dir.is_dir(), f"Could not find submodule directory for tinyengine at path: {args.submodule_dir}"
+    args.tiny_engine_submodule = Path(args.tiny_engine_submodule).resolve()
+    assert args.tiny_engine_submodule.is_dir(), f"Could not find submodule directory for tinyengine at path: {args.tiny_engine_submodule}"
 
     args.model = Path(args.model).resolve()
     assert args.model.is_file(), f"Could not find model file at path: {args.model}"
+
+    args.input_tensors = Path(args.input_tensors).resolve()
+    assert args.input_tensors.is_file(), f"No .npz array at location {args.input_tensors} not found!"
+
+    args.cube_programmer = Path(args.cube_programmer).resolve()
+    assert args.cube_programmer.is_file(), f"STM 32 Cube Cube Programmer executable {args.cube_programmer} not found!."
 
     return

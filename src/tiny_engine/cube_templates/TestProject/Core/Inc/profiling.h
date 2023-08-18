@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define MAX_EVENT_COUNT 40
+#define MAX_EVENT_COUNT 500
 
 void PROFILING_START(const char *profile_name);
 void PROFILING_EVENT(const char *event);

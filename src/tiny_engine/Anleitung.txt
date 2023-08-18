@@ -15,3 +15,6 @@ python3 copy_cmsis.py  -cube_prj_path /home/matthias/Documents/BA/no_git_layer_b
 Achtung: weil tinyengine als default example Cortex M7 verwendet, müssen die libraries auf M4 geändert werden (zb. in profile.h)
 
 
+Scripting environment laufen lassen:
+python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz
+

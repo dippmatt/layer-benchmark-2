@@ -35,7 +35,6 @@ Core/Src/TinyEngine/src/arm_cmsis/SoftmaxFunctions \
 Core/Src/TinyEngine/src/kernels/fp_backward_op \
 Core/Src/TinyEngine/src/kernels/fp_requantize_op \
 Core/Src/TinyEngine/src/kernels/int_forward_op \
-Core/Src/TinyEngine/src \
 Core/Src \
 Core/Startup \
 Drivers/STM32L4xx_HAL_Driver/Src \

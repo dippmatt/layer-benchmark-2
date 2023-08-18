@@ -1,4 +1,9 @@
+import sys
 import argparse
+from pathlib import Path
+
+shared_scripts_path = Path.cwd() / Path('..', '..', 'shared_scripts').resolve()
+sys.path.append(str(shared_scripts_path))
 
 # class to manage pipelined benchmarking flow 
 # it executes each of the flollowing mehtods 
@@ -13,23 +18,23 @@ from validate_args import validate_args
 
 # copy tinyengine framework to workdir, copy custom_tflite.py to framework,
 # run custom_tflite.py to generate model source files
-from prep_tinyengine_framework import prep_tinyengine_framework
+from use_framework import use_framework
 
-# # get test tensors from npz file. extract data type and shape. 
-# # Return info as dict.
-# from load_test_tensors import load_test_tensors
-# # make it agnostic to ML graph framework (tflite / onnx,..). 
-# # Extract IO data of model and return dict with data
-# from load_model import load_model
+# get test tensors from npz file. extract data type and shape. 
+# Return info as dict.
+from load_test_tensors import load_test_tensors
+# make it agnostic to ML graph framework (tflite / onnx,..). 
+# Extract IO data of model and return dict with data
+from load_model import load_model
 # # load templates for layer timings, 
 # # reference timings and empty template for flash / ram estimation
 # from load_cube_project import load_cube_project
-# # get mcu info
-# from get_mcu_dev import get_mcu_dev
+# get mcu info
+from get_mcu_dev import get_mcu_dev
 
-# # validate model IO data types, shapes,.. 
-# # against test tensors, framework settings,...
-# from validate_data import validate_data
+# validate model IO data types, shapes,.. 
+# against test tensors, framework settings,...
+from validate_data import validate_data
 
 # # use framework with all parsed settings
 # from use_framework import use_framework
@@ -51,8 +56,6 @@ def _main():
                         help='Path to tiny engine repository.', default=None)
     parser.add_argument('-repetitions', dest='repetitions', type=int,
                         help='The number of repetitions each input tensor propagated through the model..', default=1)
-    parser.add_argument('-submodule_dir', dest='submodule_dir', type=str,
-                        help='Path to tiny engine repository.', default=None)
     parser.add_argument('-model', dest='model', type=str,
                         help='Path to tflite input model.', default=None)
     parser.add_argument('-cube_programmer', dest='cube_programmer', type=str,
@@ -84,26 +87,16 @@ def _main():
     
     pipeline = Pipeline(args, validate_args)
 
-
-    step_requirements = [{'main_arg': 'workdir'},
-                         {'main_arg': 'submodule_dir'},
-                         {'main_arg': 'model'}]
-    pipeline.add_step(prep_tinyengine_framework, step_requirements)
-    pipeline.run()
-    print()
-    print(pipeline.steps[-1].output)
 ####################################################
     # 0. keys added in load_test_tensors step:
     # num_samples: int, number of samples in input_tensors
     # input_tensors, np.array, shape: (num_samples, *input_shape), dtype: input_dtype
     # num_representative_samples: int, number of samples in representative_tensors, None if not quantized
     # representative_tensors, np.array, shape: (num_representative_samples, *input_shape), dtype: input_dtype, None if not quantized
-    step_requirements = [{'main_arg': 'input_tensors'},
-                         {'main_arg': 'representative_tensors'},
-                         {'main_arg': 'quantize'}]
+    step_requirements = [{'main_arg': 'input_tensors'}]
     pipeline.add_step(load_test_tensors, step_requirements)
     
-
+   
     # 1. keys added in load_model step:
     # model: str, path to model file in workdir
     # input_name: str, first layer name of model
@@ -115,18 +108,14 @@ def _main():
     step_requirements = [{'main_arg': 'model'},
                          {'main_arg': 'workdir'}]
     pipeline.add_step(load_model, step_requirements)
-
+    
 
     # 2. keys added in load_cube_project step:
     # cube_template: Path, path to cube template project used for per layer measurements
     # cube_template_no_ir: Path path to project used for error estimation (measures whole model)
     # cube_template_ref: Path, projet with inference framework, used for flash and ram estimation
     # cube_template_empty: Path, empty project, used for flash and ram estimation
-    step_requirements = [{'main_arg': 'workdir'},
-                         {'main_arg': 'cube_template'},
-                         {'main_arg': 'cube_template_ref'},
-                         {'main_arg': 'cube_template_empty'}]
-    pipeline.add_step(load_cube_project, step_requirements)
+    # Todo: add step
 
 
     # 3. keys added in get_mcu_dev step:
@@ -139,24 +128,20 @@ def _main():
     # verifies that input tensors are valid for model
     step_requirements = [{'step': 0, 'name': 'input_tensors'},
                          {'step': 1, 'name': 'input_dtype'},
-                         {'step': 1, 'name': 'input_shape'},
-                         {'main_arg': 'quantize'}]
+                         {'step': 1, 'name': 'input_shape'}]
     pipeline.add_step(validate_data, step_requirements)
 
 
     # 5. keys added in use_framework step:
-    # bundle_dir: Path, path to compiled model with IR
-    # bundle_dir_no_ir: Path, path to compiled model without IR
-    step_requirements = [{'main_arg': 'quantize'},
-                         {'main_arg': 'workdir'},
-                         {'main_arg': 'glow_compiler'},
-                         {'main_arg': 'glow_profiler'},
-                         {'main_arg': 'nxp'},
-                         {'step': 1, 'name': 'input_name'},
-                         {'step': 0, 'name': 'representative_tensors'},
+    # codegen: Path, path to generated code, including
+    step_requirements = [{'main_arg': 'workdir'},
+                         {'main_arg': 'tiny_engine_submodule'},
                          {'step': 1, 'name': 'model'}]
     pipeline.add_step(use_framework, step_requirements)
-
+    pipeline.run()
+    print()
+    print(pipeline.steps[-1].output)
+    import sys;sys.exit(0)
 
     # 6. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template

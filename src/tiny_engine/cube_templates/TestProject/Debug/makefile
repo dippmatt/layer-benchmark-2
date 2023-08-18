@@ -24,7 +24,6 @@ RM := rm -rf
 -include Core/Src/TinyEngine/src/arm_cmsis/ConcatenationFunctions/subdir.mk
 -include Core/Src/TinyEngine/src/arm_cmsis/BasicMathFunctions/subdir.mk
 -include Core/Src/TinyEngine/src/arm_cmsis/ActivationFunctions/subdir.mk
--include Core/Src/TinyEngine/src/subdir.mk
 -include Core/Src/TinyEngine/codegen/Source/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
@@ -75,8 +74,8 @@ all: main-build
 main-build: TestProject.elf secondary-outputs
 
 # Tool invocations
-TestProject.elf TestProject.map: $(OBJS) $(USER_OBJS) /home/matthias/Documents/BA/no_git_layer_benchmark/layer-benchmark-scripting/tinyengine/cubeproject/test/TestProject/STM32L4R5ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "TestProject.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/matthias/Documents/BA/no_git_layer_benchmark/layer-benchmark-scripting/tinyengine/cubeproject/test/TestProject/STM32L4R5ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TestProject.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+TestProject.elf TestProject.map: $(OBJS) $(USER_OBJS) /home/matthias/Documents/BA/results/tinyengine/project/cube_template/TestProject/STM32L4R5ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "TestProject.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/matthias/Documents/BA/results/tinyengine/project/cube_template/TestProject/STM32L4R5ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TestProject.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

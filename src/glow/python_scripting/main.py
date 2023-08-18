@@ -1,4 +1,9 @@
+import sys
 import argparse
+from pathlib import Path
+
+shared_scripts_path = Path.cwd() / Path('..', '..', 'shared_scripts').resolve()
+sys.path.append(str(shared_scripts_path))
 
 # class to manage pipelined benchmarking flow 
 # it executes each of the flollowing mehtods 

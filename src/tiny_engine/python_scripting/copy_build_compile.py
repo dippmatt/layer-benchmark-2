@@ -9,7 +9,7 @@ import re
 # and one with whole model measurements. Then, use the layer-by-layer measurements
 # to estimate the overhead of the measurement process.
 
-def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dtype, cube_template: Path, codegen: Path):
+def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dtype, cube_template: Path, codegen_src: Path):
     """Copy all data into the cube project, build and compile it
     Repeat for the inference tempalate, the reference template and the empty template.
     Inference Template: The template to run measurements.
@@ -21,7 +21,7 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
         input_tensors: The input tensors.
         input_dtype: The data type of the input tensors.
         cube_template: The path to the STM Cube IDE Inference Template project.
-        codegen: The path to the generated model C code.
+        codegen_src: The path to the generated model C code.
     """
     step_output = dict()
     
@@ -37,24 +37,36 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     with open(data_header, 'w') as f:
         f.writelines(test_tensor_header)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#######################################################
+    # Todo: insert layer measurements into genModel.c
+#######################################################
+
+
+
+
+
+
     # copy framework bundle into project and reference project, 
     # not into empty project because we want to measure the RAM and FLASH usage of the model
-    print(cube_template)
-    import sys;sys.exit()
-    shutil.copytree(codegen, cube_template / Path("Core", "Src", "model"))
+    codegen = cube_template / Path("Core", "Src", "TinyEngine", "codegen")
+    shutil.copytree(codegen_src, codegen)
+    genModel = codegen / Path("Source", "genModel.c")
+    assert genModel.exists(), f"{genModel} does not exist or is not a file"
 
-    src_files = ["model.o"]
-    inc_files = ["model.h", "model.weights.txt"]
-    
-    # copy files with layer by layer measurements into inference template
-    for inc_file in inc_files:
-        file = bundle_dir / Path(inc_file)
-        if inc_file == "model.h":
-            input_name, output_name = get_io_names(file)
-        shutil.copy(file, cube_template / Path("Core", "Inc"))
-    for src_file in src_files:
-        file = bundle_dir / Path(src_file)
-        shutil.copy(file, cube_template / Path("Core", "Src"))
+    new_insert_layer_measurements(genModel)
 
     # copy files without layer by layer measurements into empty template
     for inc_file in inc_files:
@@ -105,7 +117,34 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     return step_output
 
     
+def new_insert_layer_measurements(genModel: Path):
+    with open(genModel) as f:
+        input_lines = f.readlines()
 
+    invoke_trigger = False
+
+    layer_number = 0
+    for i, line in enumerate(input_lines):
+        # find out if we are in function that executes the model
+        if "void invoke" in line:
+            invoke_trigger = True
+            layer_number = 0
+            continue
+        # if the functoin ends, we want to know
+        if invoke_trigger == True:
+            if "}" in line:
+                invoke_trigger = False
+            # comment indicating a new layer
+            if "/*" in line and "*/" in line:
+                print("Replacing layer!!!")
+                layer_name = line.rstrip("\n")
+                layer_name = layer_name.replace("/* ", "")
+                layer_name = layer_name.replace(" */", "") 
+                input_lines[i] = f"PROFILING_EVENT(\"Timestamp before {layer_name} {layer_number}\");\n"
+                layer_number += 1
+                
+    with open(genModel, "w") as f:
+        f.writelines(input_lines)
 
 def gen_test_tensors(input_tensors, input_dtype):
     """Create test tensors as C arrays

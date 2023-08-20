@@ -1,5 +1,7 @@
 import numpy as np
 import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 import argparse
 
 def load_tflite_model(tflite_model_path):
@@ -8,6 +10,54 @@ def load_tflite_model(tflite_model_path):
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
     return interpreter, input_details, output_details
+
+def keras_model():
+    model = keras.Sequential(
+        [
+            layers.Dense(2, activation="relu", name="layer1"),
+            layers.Dense(3, activation="relu", name="layer2"),
+            layers.Dense(4, name="layer3"),
+        ]
+    )
+    # Call model on a test input
+    x = tf.ones((3, 3))
+    y = model(x)
+    return model
+    
+def quantize_model(input_model_path, output_model_path):
+    model = keras_model()
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    converter.experimental_new_converter = True
+    # Post training quantization
+    converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]
+
+    def representative_dataset_generator():
+        for _ in range(100):  # Generate 100 fake samples
+            fake_input_data = np.random.normal(size=(1,3)).astype(np.float32)
+            yield [fake_input_data]
+
+    # Prepare and save representative data
+    representative_data = np.array(list(representative_dataset_generator()))
+    quantized_data = np.round(0.02496907487511635 * (representative_data - 122)).astype(np.uint8)
+    quantized_data = np.reshape(quantized_data, (100, 1, 3))
+    quantized_data = quantized_data[9]
+    # print(quantized_data.shape)
+    # import sys; sys.exit(0)
+    np.savez("/home/matthias/Desktop/model_quant_test.npz", input_tensors=quantized_data)
+            
+    converter.representative_dataset = representative_dataset_generator
+    # Ensure that if any ops can't be quantized, the converter throws an error
+    converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
+    # Set the input and output tensors to uint8 (APIs added in r2.3)
+    converter.inference_input_type = tf.uint8
+    converter.inference_output_type = tf.uint8
+
+    tflite_quant_model = converter.convert()
+
+    # Save the quantized model to a file
+    with open(output_model_path, 'wb') as f:
+        f.write(tflite_quant_model)
+
 
 def run_inference(interpreter, input_details, output_details, input_tensor):
     interpreter.set_tensor(input_details[0]['index'], input_tensor)
@@ -40,6 +90,13 @@ def reshape_data(data_path, target_shape):
     return
 
 if __name__ == "__main__":
+
+    input_model_path = "/home/matthias/Documents/BA/no_git_layer_benchmark/glow/glow/tests/models/tfliteModels/relu.tflite"
+    output_model_path = "/home/matthias/Desktop/model_quant_test.tflite"
+
+    quantize_model(input_model_path, output_model_path)
+    print("Quantization complete. Quantized model saved at", output_model_path)
+    import sys;sys.exit()
 
     parser = argparse.ArgumentParser(description="Run inference on a TFLite model using a NumPy .npz array.")
     parser.add_argument("npz_path", type=str, help="Path to the NumPy .npz array file.")

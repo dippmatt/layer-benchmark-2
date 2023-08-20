@@ -26,9 +26,9 @@ from load_test_tensors import load_test_tensors
 # make it agnostic to ML graph framework (tflite / onnx,..). 
 # Extract IO data of model and return dict with data
 from load_model import load_model
-# # load templates for layer timings, 
-# # reference timings and empty template for flash / ram estimation
-# from load_cube_project import load_cube_project
+# load templates for layer timings, 
+# reference timings and empty template for flash / ram estimation
+from load_cube_project import load_cube_project
 # get mcu info
 from get_mcu_dev import get_mcu_dev
 
@@ -112,7 +112,11 @@ def _main():
     # cube_template_no_ir: Path path to project used for error estimation (measures whole model)
     # cube_template_ref: Path, projet with inference framework, used for flash and ram estimation
     # cube_template_empty: Path, empty project, used for flash and ram estimation
-    # Todo: add step
+    step_requirements = [{'main_arg': 'workdir'},
+                         {'main_arg': 'cube_template'}]#,
+                        #  {'main_arg': 'cube_template_ref'},
+                        #  {'main_arg': 'cube_template_empty'}]
+    pipeline.add_step(load_cube_project, step_requirements)
 
 
     # 3. keys added in get_mcu_dev step:

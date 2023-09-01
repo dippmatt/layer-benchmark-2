@@ -20,6 +20,7 @@
 #include "main.h"
 #include "genNN.h"
 #include "profiling.h"
+#include "ml_data.h"
 #include <stdio.h>
 #include <string.h>
 /* Private includes ----------------------------------------------------------*/
@@ -35,6 +36,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+//# define NUM_TEST_TENSORS <NUM_TEST_TENSORS>
+# define NUM_REPS 1
+# define OUT_COLS 10
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -64,7 +68,9 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int int8_tToString(int8_t value, char* buffer, int bufferSize) {
+    return snprintf(buffer, bufferSize, "%d ", value);
+}
 /* USER CODE END 0 */
 
 /**
@@ -106,21 +112,65 @@ int main(void)
   /* USER CODE BEGIN WHILE */
       char begin_message[22] = "###################\r\n";
       int num_runs = 1;
-      int i = 0;
+
+      signed char *input = getInput();
+      uint16_t *inputAddr = (uint16_t *)&input[32 * 32 * 3];
+      //uint8_t *inputAddr = (uint8_t *)&input;
+
+      signed char *output = getOutput();
+      uint16_t *outputAddr = (uint8_t *)&output;
+
+      int i;
+      int k;
+      size_t dataSizeInBytes = COLS * sizeof(array[0][0]);
+
+      // measure latency per layer NUM_REPS times for each input tensor
+      uint8_t start_message[] = "Start of benchmark.\r\n";
+      HAL_UART_Transmit (&hlpuart1, start_message, sizeof(start_message), HAL_MAX_DELAY);
+
       while (1)
       {
-    	  //HAL_GPIO_TogglePin(GPIOB, LD3_Pin|LD2_Pin);
-    	  HAL_UART_Transmit (&hlpuart1, begin_message, sizeof (begin_message), 10);
-    	  __disable_irq();
-    	  PROFILING_START("MAIN loop timing");
-    	  end2endinference();
-    	  PROFILING_EVENT("Event END");
-    	  __enable_irq();
-    	  PROFILING_STOP(&hlpuart1);
-    	  if(i > num_runs){
-    		  break;
-    	  }
-    	  i += 1;
+    	  for (i=0; i< ROWS; i++){
+		    memcpy(inputAddr, array[i], dataSizeInBytes);
+
+			for(k=0; k < NUM_REPS; k++){
+			  PROFILING_START("MAIN loop timing");
+			  __disable_irq();
+			  PROFILING_EVENT("BEGIN");
+			  invoke_inf();
+			  PROFILING_EVENT("END");
+			  __enable_irq();
+			  PROFILING_STOP(&hlpuart1);
+			}
+		  }
+		  uint8_t end_message[] = "Finished timing measurements!\r\n";
+		  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
+
+		  uint8_t out_array[ROWS][OUT_COLS];
+		  size_t out_dtype_size = sizeof(uint8_t);
+
+		  for (i=0; i< ROWS; i++){
+			// iterate over elements of one flattened input tensor
+			memcpy(inputAddr, array[i], dataSizeInBytes);
+			invoke_inf();
+			memcpy(out_array[i], outputAddr, OUT_COLS * out_dtype_size);
+		  }
+		for (i=0; i< ROWS; i++){
+				  uint8_t txbuf[64];
+				  //int length = sprintf((char*)txbuf, "Returned: %<o_format_specifier>\r\n", (<o_type>)out_array[i][0]);
+				  uint8_t new_tensor_message[] = "Tensor values:\r\n";
+				  HAL_UART_Transmit (&hlpuart1, new_tensor_message, strlen(new_tensor_message), HAL_MAX_DELAY);
+				  for (k=0; k<OUT_COLS; k++){
+					  // check if out_array is of type float
+					  int length = 0;
+					  length = int8_tToString(out_array[i][k], txbuf, sizeof(txbuf));
+					  HAL_UART_Transmit (&hlpuart1, txbuf, length, HAL_MAX_DELAY);
+				  }
+				  HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
+			  }
+			  uint8_t final_message[] = "End of benchmark.\r\n";
+			  HAL_UART_Transmit (&hlpuart1, final_message, strlen(final_message), HAL_MAX_DELAY);
+			  break;
         /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -59,6 +59,33 @@ def quantize_model(input_model_path, output_model_path):
         f.write(tflite_quant_model)
 
 
+def cut_model(original_model, model_save_path):
+    # Load the original TFLite model from memory
+    with open(original_model, 'rb') as f:
+        tflite_model_content = f.read()
+
+    # Load the TFLite model from the content
+    interpreter = tf.lite.Interpreter(model_content=tflite_model_content)
+    interpreter.allocate_tensors()
+
+    # Get input and output details
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
+    # Extract the first 2 layers of the model
+    new_model_content = bytearray()
+    for i, op in enumerate(interpreter._get_directly_invoked_ops()):
+        if i <= 1:  # Only keep the first 2 layers
+            new_model_content += op.node.name.encode('utf-8') + b'\x00'
+            new_model_content += op.custom_options_bytes()
+
+    # Save the new model content to a file
+    with open(model_save_path, 'wb') as f:
+        f.write(new_model_content)
+
+    print("New model saved.")
+
+
 def run_inference(interpreter, input_details, output_details, input_tensor):
     interpreter.set_tensor(input_details[0]['index'], input_tensor)
     interpreter.invoke()
@@ -92,10 +119,11 @@ def reshape_data(data_path, target_shape):
 if __name__ == "__main__":
 
     input_model_path = "/home/matthias/Documents/BA/no_git_layer_benchmark/glow/glow/tests/models/tfliteModels/relu.tflite"
-    output_model_path = "/home/matthias/Desktop/model_quant_test.tflite"
+    output_model_path = "/home/matthias/Desktop/model_quant_test_cut.tflite"
 
-    quantize_model(input_model_path, output_model_path)
-    print("Quantization complete. Quantized model saved at", output_model_path)
+    cut_model(input_model_path, output_model_path)
+    #quantize_model(input_model_path, output_model_path)
+    #print("Quantization complete. Quantized model saved at", output_model_path)
     import sys;sys.exit()
 
     parser = argparse.ArgumentParser(description="Run inference on a TFLite model using a NumPy .npz array.")

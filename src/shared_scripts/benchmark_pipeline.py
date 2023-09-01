@@ -1,5 +1,5 @@
 from typing import Dict, List
-from step import Step
+from shared_scripts.step import Step
 
 class Pipeline:
     def __init__(self, args, validate_args: callable):

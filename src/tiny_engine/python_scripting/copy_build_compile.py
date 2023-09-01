@@ -31,13 +31,15 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     else:
         io_dtype = 'int8_t'
     test_tensor_header = gen_test_tensors(input_tensors, io_dtype)
+    
     # copy test tensors into project only, not into reference project,
     # because the tensors are not part of the model
     data_header = cube_template / Path("Core", "Inc", "ml_data.h")
     with open(data_header, 'w') as f:
         f.writelines(test_tensor_header)
 
-
+    print(input_tensors.shape, input_dtype, io_dtype)
+    import sys;sys.exit()
 
 
 
@@ -136,7 +138,6 @@ def new_insert_layer_measurements(genModel: Path):
                 invoke_trigger = False
             # comment indicating a new layer
             if "/*" in line and "*/" in line:
-                print("Replacing layer!!!")
                 layer_name = line.rstrip("\n")
                 layer_name = layer_name.replace("/* ", "")
                 layer_name = layer_name.replace(" */", "") 
@@ -178,7 +179,10 @@ def gen_test_tensors(input_tensors, input_dtype):
         values = ""
         elem = tensor.flatten()
         for number in elem:
-            values += f'{number: .16e}, '
+            if input_dtype == 'int8_t':
+                values += f'{number}, '
+            else:
+                values += f'{number: .16e}, '
         values = values.rstrip(', ')
         lines_o.append(f"    {{ {values} }},\n")
     lines_o[-1] = lines_o[-1].rstrip(',\n') + '\n'

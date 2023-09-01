@@ -142,7 +142,10 @@ def gen_test_tensors(input_tensors, input_dtype):
         values = ""
         elem = tensor.flatten()
         for number in elem:
-            values += f'{number: .16e}, '
+            if input_dtype == 'int8_t':
+                values += f'{number}, '
+            else:
+                values += f'{number: .16e}, '
         values = values.rstrip(', ')
         lines_o.append(f"    {{ {values} }},\n")
     lines_o[-1] = lines_o[-1].rstrip(',\n') + '\n'
@@ -225,9 +228,12 @@ def set_io_byte_consts(main_c: Path, model_h: Path):
         if data_types[-1] == 'float':
             c_out_dtype = 'float'
             c_out_specifier = 'f'
-        else:
+        elif data_types[-1] == 'i8':
             c_out_dtype = 'int8_t'
             c_out_specifier = 'd'
+        else:
+            c_out_dtype = 'uint8_t'
+            c_out_specifier = 'u'
 
     with open(main_c, 'r') as file:
         lines = file.readlines()

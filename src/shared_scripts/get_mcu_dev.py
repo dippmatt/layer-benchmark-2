@@ -1,7 +1,7 @@
 import serial
 import subprocess
 from pathlib import Path
-from color_print import Color, print_in_color
+from shared_scripts.color_print import Color, print_in_color
 
 # dummy value to emulate conntected MCU
 EMULATE_MCU = False

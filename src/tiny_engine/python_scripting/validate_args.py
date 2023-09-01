@@ -5,6 +5,7 @@ def validate_args(args):
     # Check file paths
     
     args.workdir = Path(args.workdir).resolve()
+    args.workdir.mkdir(exist_ok=True)
     assert args.workdir.is_dir(), f"Working directory path {args.workdir} does not exist!"
     # clean workdir
     shutil.rmtree(args.workdir)

@@ -85,8 +85,8 @@ int floatToString(float value, char* buffer, int bufferSize, int decimalDigits) 
     int fractionalValue = round(fractionalPart * pow(10, decimalDigits));
     return snprintf(buffer, bufferSize, "%d.%0*d ", intValue, decimalDigits, fractionalValue);
 }
-int int8_tToString(int8_t value, char* buffer, int bufferSize) {
-    return snprintf(buffer, bufferSize, "%d ", value);
+int <o_type>ToString(<o_type> value, char* buffer, int bufferSize) {
+    return snprintf(buffer, bufferSize, "%<o_format_specifier> ", value);
 }
 
 /* USER CODE END 0 */
@@ -150,10 +150,11 @@ int main(void)
 	  uint8_t *inputAddr  = GLOW_GET_ADDR(mutableWeight, <input_name>);
 	  uint8_t *outputAddr = GLOW_GET_ADDR(mutableWeight, <output_name>);
 
-      //<i_type> *inputs = (<i_type> *)inputAddr;
-      <o_type> *outputs = (<o_type> *)outputAddr;
+	  <o_type> *inputs = (<o_type> *)inputAddr;
+	  <o_type> *outputs = (<o_type> *)outputAddr;
 
 	  int i;
+	  int j;
 	  int k;
 	  size_t dataSizeInBytes = COLS * sizeof(array[0][0]);
 
@@ -162,6 +163,7 @@ int main(void)
 	  HAL_UART_Transmit (&hlpuart1, start_message, sizeof(start_message), HAL_MAX_DELAY);
 	  for (i=0; i< ROWS; i++){
 		memcpy(inputAddr, array[i], dataSizeInBytes);
+
 
 	    for(k=0; k < NUM_REPS; k++){
 	      PROFILING_START("MAIN loop timing");
@@ -183,9 +185,34 @@ int main(void)
 
 	  for (i=0; i< ROWS; i++){
 		// iterate over elements of one flattened input tensor
-		memcpy(inputAddr, array[i], dataSizeInBytes);
+		//////////////////////////////////////////////////////////////////////////
+//	    	uint8_t message[2000];
+//		int new_length = <o_type>ToString(inputs[0], message, sizeof(message));
+//		HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
+//		new_length = <o_type>ToString(outputs[0], message, sizeof(message));
+//		HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
+//		HAL_UART_Transmit (&hlpuart1, "END BEFORE MEMCPY\r\n", sizeof ("END BEFORE MEMCPY\r\n"), HAL_MAX_DELAY);
+		//////////////////////////////////////////////////////////////////////////
+
+		//memcpy(inputAddr, array[i], dataSizeInBytes);
+		for (j=0; j<COLS; j++){
+			inputAddr[j] = array[i][j];
+		}
 		error_code = model(constantWeight, mutableWeight, activations);
 
+		//////////////////////////////////////////////////////////////////////////
+//		for (j=0; j< 10; j++){
+//			new_length = <o_type>ToString(inputs[j], message, sizeof(message));
+//			HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
+//		}
+//		HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
+//		for (j=0; j< 10; j++){
+//			new_length = <o_type>ToString(outputs[j], message, sizeof(message));
+//			HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
+//		}
+//		HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
+//		return 0;
+		//////////////////////////////////////////////////////////////////////////
 		/* Used to validate model output and compare against tflite runtime on x86
 		uint8_t txbuf[64];
 		int intValue = (int)outputs[639];
@@ -198,7 +225,10 @@ int main(void)
 		  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
 		  return -1;
 		}
-		memcpy(out_array[i], outputs, OUT_COLS * out_dtype_size);
+		//memcpy(out_array[i], outputs, OUT_COLS * out_dtype_size);
+		for (j=0; j<OUT_COLS; j++){
+			out_array[i][j] = outputs[j];
+		}
       }
       for (i=0; i< ROWS; i++){
           uint8_t txbuf[64];
@@ -212,7 +242,7 @@ int main(void)
         	  	  length = floatToString(out_array[i][k], txbuf, sizeof(txbuf), 6);
           	  }
         	  else{
-        	  	  length = int8_tToString(out_array[i][k], txbuf, sizeof(txbuf));
+        	  	  length = <o_type>ToString(out_array[i][k], txbuf, sizeof(txbuf));
         	  }
         	  //int intValue = (int)out_array[i][k];
         	  //int length = sprintf((char*)txbuf, "Returned: %d\r\n", intValue);

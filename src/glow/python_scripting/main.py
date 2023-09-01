@@ -2,13 +2,13 @@ import sys
 import argparse
 from pathlib import Path
 
-shared_scripts_path = Path.cwd() / Path('..', '..', 'shared_scripts').resolve()
-sys.path.append(str(shared_scripts_path))
+# shared_scripts_path = Path.cwd() / Path('..', '..', 'shared_scripts').resolve()
+# sys.path.append(str(shared_scripts_path))
 
 # class to manage pipelined benchmarking flow 
 # it executes each of the flollowing mehtods 
 # one after another and checks for successful execution
-from benchmark_pipeline import Pipeline
+from shared_scripts.benchmark_pipeline import Pipeline
 
 # keep it simple here one return value: true or false. 
 # Cecks if args are valid to use
@@ -16,17 +16,13 @@ from validate_args import validate_args
 
 # now all methods to load data
 
-# get test tensors from npz file. extract data type and shape. 
-# Return info as dict.
-from load_test_tensors import load_test_tensors
-# make it agnostic to ML graph framework (tflite / onnx,..). 
-# Extract IO data of model and return dict with data
-from load_model import load_model
+# load model and test tensors then test the model
+from shared_scripts.load_model_and_data import load_model_and_data
 # load templates for layer timings, 
 # reference timings and empty template for flash / ram estimation
 from load_cube_project import load_cube_project
 # get mcu info
-from get_mcu_dev import get_mcu_dev
+from shared_scripts.get_mcu_dev import get_mcu_dev
 
 # validate model IO data types, shapes,.. 
 # against test tensors, framework settings,...
@@ -92,18 +88,11 @@ def _main():
     
     pipeline = Pipeline(args, validate_args)
 
-    # 0. keys added in load_test_tensors step:
+    # 0. keys added in load_model_and_data step:
     # num_samples: int, number of samples in input_tensors
-    # input_tensors, np.array, shape: (num_samples, *input_shape), dtype: input_dtype
+    # input_tensors: np.array, shape: (num_samples, *input_shape), dtype: input_dtype
     # num_representative_samples: int, number of samples in representative_tensors, None if not quantized
-    # representative_tensors, np.array, shape: (num_representative_samples, *input_shape), dtype: input_dtype, None if not quantized
-    step_requirements = [{'main_arg': 'input_tensors'},
-                         {'main_arg': 'representative_tensors'},
-                         {'main_arg': 'quantize'}]
-    pipeline.add_step(load_test_tensors, step_requirements)
-    
-
-    # 1. keys added in load_model step:
+    # representative_tensors: np.array, shape: (num_representative_samples, *input_shape), dtype: input_dtype, None if not quantized
     # model: str, path to model file in workdir
     # input_name: str, first layer name of model
     # input_dtype: np.dtype, dtype of input tensor
@@ -111,12 +100,16 @@ def _main():
     # output_name: str, last layer name of model
     # output_dtype: np.dtype, dtype of output tensor
     # output_shape: tuple, shape of output tensor
-    step_requirements = [{'main_arg': 'model'},
-                         {'main_arg': 'workdir'}]
-    pipeline.add_step(load_model, step_requirements)
+    # reference_output: list, reference output of the tflite interpreter, shape: (num_samples, *output_shape), dtype: output_dtype
+    step_requirements = [{'main_arg': 'workdir'},
+                         {'main_arg': 'model'},
+                         {'main_arg': 'input_tensors'},
+                         {'main_arg': 'representative_tensors'},
+                         {'main_arg': 'quantize'}]
+    pipeline.add_step(load_model_and_data, step_requirements)
 
 
-    # 2. keys added in load_cube_project step:
+    # 1. keys added in load_cube_project step:
     # cube_template: Path, path to cube template project used for per layer measurements
     # cube_template_no_ir: Path path to project used for error estimation (measures whole model)
     # cube_template_ref: Path, projet with inference framework, used for flash and ram estimation
@@ -128,22 +121,22 @@ def _main():
     pipeline.add_step(load_cube_project, step_requirements)
 
 
-    # 3. keys added in get_mcu_dev step:
+    # 2. keys added in get_mcu_dev step:
     # serial: serial.Serial, serial connection to MCU
     step_requirements = [{'main_arg': 'cube_programmer'}]
     pipeline.add_step(get_mcu_dev, step_requirements)
 
 
-    # 4. no keys added in validate_data step.
+    # 3. no keys added in validate_data step.
     # verifies that input tensors are valid for model
     step_requirements = [{'step': 0, 'name': 'input_tensors'},
-                         {'step': 1, 'name': 'input_dtype'},
-                         {'step': 1, 'name': 'input_shape'},
+                         {'step': 0, 'name': 'input_dtype'},
+                         {'step': 0, 'name': 'input_shape'},
                          {'main_arg': 'quantize'}]
     pipeline.add_step(validate_data, step_requirements)
 
 
-    # 5. keys added in use_framework step:
+    # 4. keys added in use_framework step:
     # bundle_dir: Path, path to compiled model with IR
     # bundle_dir_no_ir: Path, path to compiled model without IR
     step_requirements = [{'main_arg': 'quantize'},
@@ -151,45 +144,49 @@ def _main():
                          {'main_arg': 'glow_compiler'},
                          {'main_arg': 'glow_profiler'},
                          {'main_arg': 'nxp'},
-                         {'step': 1, 'name': 'input_name'},
+                         {'step': 0, 'name': 'input_name'},
                          {'step': 0, 'name': 'representative_tensors'},
-                         {'step': 1, 'name': 'model'}]
+                         {'step': 0, 'name': 'model'}]
     pipeline.add_step(use_framework, step_requirements)
+    
 
-
-    # 6. keys added in copy_build_compile step:
+    # 5. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template
     # ram: int, estimated ram usage of model
     # flash: int, estimated flash usage of model
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'input_tensors'},
-                         {'step': 1, 'name': 'input_dtype'},
-                         {'step': 2, 'name': 'cube_template'},
-                         {'step': 2, 'name': 'cube_template_no_ir'},
-                         {'step': 2, 'name': 'cube_template_ref'},
-                         {'step': 2, 'name': 'cube_template_empty'},
-                         {'step': 5, 'name': 'bundle_dir'},
-                         {'step': 5, 'name': 'bundle_dir_no_ir'}]
+                         {'step': 0, 'name': 'input_dtype'},
+                         {'step': 1, 'name': 'cube_template'},
+                         {'step': 1, 'name': 'cube_template_no_ir'},
+                         {'step': 1, 'name': 'cube_template_ref'},
+                         {'step': 1, 'name': 'cube_template_empty'},
+                         {'step': 4, 'name': 'bundle_dir'},
+                         {'step': 4, 'name': 'bundle_dir_no_ir'}]
     pipeline.add_step(copy_build_compile, step_requirements)
 
 
-    # 7. keys added in flash_and_readback step:
+    # 6. keys added in flash_and_readback step:
     # tensor_values: list. Model output in either float or int8 format, depending on quantization
     # reps: list of list. first dimenion: repetitions, second dimension: layer measurements
     # reps_no_ir: list. Layer measurements of model without IR
     step_requirements = [{'main_arg': 'cube_programmer'},
-                         {'step': 3, 'name': 'serial'},
-                         {'step': 6, 'name': 'cube_template'},
-                         {'step': 6, 'name': 'cube_template_no_ir'}]
+                         {'main_arg': 'workdir'},
+                         {'step': 2, 'name': 'serial'},
+                         {'step': 5, 'name': 'cube_template'},
+                         {'step': 5, 'name': 'cube_template_no_ir'}]
     pipeline.add_step(flash_and_readback, step_requirements)
 
 
-    # 8. keys added in process_data step:
+    # 7. keys added in process_data step:
 
-    step_requirements = [{'step': 7, 'name': 'tensor_values'},
-                         {'step': 7, 'name': 'reps'},
-                         {'step': 7, 'name': 'reps_no_ir'}]
+    step_requirements = [{'step': 0, 'name': 'reference_output'},
+                         {'step': 0, 'name': 'output_shape'},
+                         {'step': 0, 'name': 'output_dtype'},
+                         {'step': 6, 'name': 'tensor_values'},
+                         {'step': 6, 'name': 'reps'},
+                         {'step': 6, 'name': 'reps_no_ir'}]
     pipeline.add_step(process_data, step_requirements)
 
     pipeline.run()

@@ -5,6 +5,7 @@ def validate_args(args):
     # Check file paths
     
     args.workdir = Path(args.workdir).resolve()
+    args.workdir.mkdir(exist_ok=True)
     assert args.workdir.is_dir(), f"Working directory path {args.workdir} does not exist!"
     # clean workdir
     shutil.rmtree(args.workdir)
@@ -36,7 +37,9 @@ def validate_args(args):
     assert args.cube_programmer.is_file(), f"STM 32 Cube Cube Programmer executable {args.cube_programmer} not found!."
 
     args.input_tensors = Path(args.input_tensors).resolve()
-    assert args.input_tensors.is_file(), f"No .npz array at location {args.input_tensors} not found!"
+    # find any .bin files in directory
+    tensor_files = list(args.input_tensors.glob(f"*{'.bin'}"))
+    assert args.input_tensors.suffix == ".npz" or len(tensor_files) > 0, f"No tensors found at location {args.input_tensors} not found!"
 
     assert args.repetitions >= 1, f"Must specify number of repetitions as integer >= 1."
 

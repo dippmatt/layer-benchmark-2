@@ -1,7 +1,7 @@
 {
     "arguments": {
-        "-model": "/home/matthias/Documents/BA/results/models_and_data/image_classification/trained_models/pretrainedResnet_quant.tflite",
-        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/image_classification/bin_data/all_classes_example_float",
+        "-model": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite",
+        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz",
         "-representative_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/representative_dataset_fp32.npz",
         "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir",
         "-glow_compiler": "/opt/nxp/Glow/bin/model-compiler",

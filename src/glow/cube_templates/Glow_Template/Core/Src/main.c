@@ -85,7 +85,7 @@ int floatToString(float value, char* buffer, int bufferSize, int decimalDigits) 
     int fractionalValue = round(fractionalPart * pow(10, decimalDigits));
     return snprintf(buffer, bufferSize, "%d.%0*d ", intValue, decimalDigits, fractionalValue);
 }
-int <o_type>ToString(<o_type> value, char* buffer, int bufferSize) {
+int <int_type>ToString(<o_type> value, char* buffer, int bufferSize) {
     return snprintf(buffer, bufferSize, "%<o_format_specifier> ", value);
 }
 
@@ -186,7 +186,8 @@ int main(void)
 	  for (i=0; i< ROWS; i++){
 		// iterate over elements of one flattened input tensor
 		//////////////////////////////////////////////////////////////////////////
-//	    	uint8_t message[2000];
+		// transmit first element of input buffer and first element of output buffer
+//	    uint8_t message[2000];
 //		int new_length = <o_type>ToString(inputs[0], message, sizeof(message));
 //		HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
 //		new_length = <o_type>ToString(outputs[0], message, sizeof(message));
@@ -194,18 +195,21 @@ int main(void)
 //		HAL_UART_Transmit (&hlpuart1, "END BEFORE MEMCPY\r\n", sizeof ("END BEFORE MEMCPY\r\n"), HAL_MAX_DELAY);
 		//////////////////////////////////////////////////////////////////////////
 
-		//memcpy(inputAddr, array[i], dataSizeInBytes);
-		for (j=0; j<COLS; j++){
-			inputAddr[j] = array[i][j];
-		}
+		// copy input tensor to model input buffer address
+		memcpy(inputAddr, array[i], dataSizeInBytes);
+//		for (j=0; j<COLS; j++){
+//			inputAddr[j] = array[i][j];
+//		}
 		error_code = model(constantWeight, mutableWeight, activations);
 
 		//////////////////////////////////////////////////////////////////////////
+		// Transmit first 10 elements of model input after before inference
 //		for (j=0; j< 10; j++){
 //			new_length = <o_type>ToString(inputs[j], message, sizeof(message));
 //			HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
 //		}
 //		HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
+//		// Transmit first 10 elements of model output buffer after inference
 //		for (j=0; j< 10; j++){
 //			new_length = <o_type>ToString(outputs[j], message, sizeof(message));
 //			HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
@@ -242,7 +246,7 @@ int main(void)
         	  	  length = floatToString(out_array[i][k], txbuf, sizeof(txbuf), 6);
           	  }
         	  else{
-        	  	  length = <o_type>ToString(out_array[i][k], txbuf, sizeof(txbuf));
+        	  	  length = <int_type>ToString(out_array[i][k], txbuf, sizeof(txbuf));
         	  }
         	  //int intValue = (int)out_array[i][k];
         	  //int length = sprintf((char*)txbuf, "Returned: %d\r\n", intValue);

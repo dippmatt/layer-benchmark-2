@@ -2,7 +2,7 @@
     "arguments": {
         "-model": "/home/matthias/Documents/BA/results/models_and_data/image_classification/trained_models/pretrainedResnet_no_softmax_quant.tflite",
         "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/image_classification/bin_data/all_10_classes_float32.npz",
-        "-representative_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/representative_dataset_fp32.npz",
+        "-representative_tensors": "/home/matthias/Documents/BA/results/models_and_data/image_classification/bin_data/representative_dataset_fp32.npz",
         "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir",
         "-glow_compiler": "/opt/nxp/Glow/bin/model-compiler",
         "-glow_profiler": "/opt/nxp/Glow/bin/model-profiler",

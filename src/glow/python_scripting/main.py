@@ -179,11 +179,15 @@ def _main():
     pipeline.add_step(flash_and_readback, step_requirements)
 
 
+
+    
     # 7. keys added in process_data step:
 
-    step_requirements = [{'step': 0, 'name': 'reference_output'},
+    step_requirements = [{'main_arg': 'repetitions'},
+                         {'step': 0, 'name': 'num_samples'},
                          {'step': 0, 'name': 'output_shape'},
                          {'step': 0, 'name': 'output_dtype'},
+                         {'step': 0, 'name': 'reference_output'},
                          {'step': 6, 'name': 'tensor_values'},
                          {'step': 6, 'name': 'reps'},
                          {'step': 6, 'name': 'reps_no_ir'}]

@@ -1,9 +1,7 @@
-import json
-
-config = {
+{
     "arguments": {
-        "-model": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite",
-        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz",
+        "-model": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_fp32.tflite",
+        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/float32.npz",
         "-representative_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/representative_dataset_fp32.npz",
         "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir",
         "-glow_compiler": "/opt/nxp/Glow/bin/model-compiler",
@@ -18,8 +16,3 @@ config = {
         "-nxp"
     ]
 }
-
-with open("glow_ad_quant.json", "w") as config_file:
-    json.dump(config, config_file, indent=4)
-
-print("Configuration file 'glow_config.json' generated.")

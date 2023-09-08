@@ -243,6 +243,14 @@ def set_io_byte_consts(main_c: Path, model_h: Path):
                 line = line.replace("<ELEMENTS>", str(output_elements))
             if "<o_type>" in line:
                 line = line.replace("<o_type>", c_out_dtype)
+            if "<int_type>" in line:
+                # special case when using float model:
+                # we don't need this funciton so just use uint8_t by default
+                # if we were to use float we would have a function redefinition error
+                if c_out_dtype == 'uint8_t':
+                    line = line.replace("<int_type>", c_out_dtype)
+                else:
+                    line = line.replace("<int_type>", 'int8_t')
             if "<o_format_specifier>" in line:
                 line = line.replace("<o_format_specifier>", c_out_specifier)
             if "<NUM_INPUT_BYTES>" in line:

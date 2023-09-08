@@ -8,7 +8,7 @@ sys.path.append(str(shared_scripts_path))
 # class to manage pipelined benchmarking flow 
 # it executes each of the flollowing mehtods 
 # one after another and checks for successful execution
-from benchmark_pipeline import Pipeline
+from shared_scripts.benchmark_pipeline import Pipeline
 
 # keep it simple here, one return value: true or false. 
 # Cecks if args are valid to use
@@ -20,17 +20,14 @@ from validate_args import validate_args
 # run custom_tflite.py to generate model source files
 from use_framework import use_framework
 
-# get test tensors from npz file. extract data type and shape. 
-# Return info as dict.
-from load_test_tensors import load_test_tensors
-# make it agnostic to ML graph framework (tflite / onnx,..). 
-# Extract IO data of model and return dict with data
-from load_model import load_model
+# TODO: make it agnostic to ML graph framework (tflite / onnx,..).
+# load model and test tensors then test the model
+from shared_scripts.load_model_and_data import load_model_and_data
 # load templates for layer timings, 
 # reference timings and empty template for flash / ram estimation
 from load_cube_project import load_cube_project
 # get mcu info
-from get_mcu_dev import get_mcu_dev
+from shared_scripts.get_mcu_dev import get_mcu_dev
 
 # validate model IO data types, shapes,.. 
 # against test tensors, framework settings,...
@@ -85,16 +82,11 @@ def _main():
     pipeline = Pipeline(args, validate_args)
 
 ####################################################
-    # 0. keys added in load_test_tensors step:
+    # 0. keys added in load_model_and_data step:
     # num_samples: int, number of samples in input_tensors
-    # input_tensors, np.array, shape: (num_samples, *input_shape), dtype: input_dtype
+    # input_tensors: np.array, shape: (num_samples, *input_shape), dtype: input_dtype
     # num_representative_samples: int, number of samples in representative_tensors, None if not quantized
-    # representative_tensors, np.array, shape: (num_representative_samples, *input_shape), dtype: input_dtype, None if not quantized
-    step_requirements = [{'main_arg': 'input_tensors'}]
-    pipeline.add_step(load_test_tensors, step_requirements)
-    
-   
-    # 1. keys added in load_model step:
+    # representative_tensors: np.array, shape: (num_representative_samples, *input_shape), dtype: input_dtype, None if not quantized
     # model: str, path to model file in workdir
     # input_name: str, first layer name of model
     # input_dtype: np.dtype, dtype of input tensor
@@ -102,9 +94,12 @@ def _main():
     # output_name: str, last layer name of model
     # output_dtype: np.dtype, dtype of output tensor
     # output_shape: tuple, shape of output tensor
-    step_requirements = [{'main_arg': 'model'},
-                         {'main_arg': 'workdir'}]
-    pipeline.add_step(load_model, step_requirements)
+    # reference_output: list, reference output of the tflite interpreter, shape: (num_samples, *output_shape), dtype: output_dtype
+    step_requirements = [{'main_arg': 'workdir'},
+                         {'main_arg': 'model'},
+                         {'main_arg': 'input_tensors'},
+                         {'main_arg': 'representative_tensors'}]
+    pipeline.add_step(load_model_and_data, step_requirements)
     
 
     # 2. keys added in load_cube_project step:
@@ -128,8 +123,8 @@ def _main():
     # 4. no keys added in validate_data step.
     # verifies that input tensors are valid for model
     step_requirements = [{'step': 0, 'name': 'input_tensors'},
-                         {'step': 1, 'name': 'input_dtype'},
-                         {'step': 1, 'name': 'input_shape'}]
+                         {'step': 0, 'name': 'input_dtype'},
+                         {'step': 0, 'name': 'input_shape'}]
     pipeline.add_step(validate_data, step_requirements)
 
 
@@ -137,9 +132,17 @@ def _main():
     # codegen: Path, path to generated code, including
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'tiny_engine_submodule'},
-                         {'step': 1, 'name': 'model'}]
+                         {'step': 0, 'name': 'model'}]
     pipeline.add_step(use_framework, step_requirements)
-    
+    pipeline.run()
+    print()
+    print(pipeline.steps[-1].output)
+    print()
+    refs = pipeline.steps[0].output['reference_output']
+
+    for ref in refs:
+        print(ref[0][:10])
+    import sys;sys.exit(0)
 
     # 6. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template
@@ -152,10 +155,7 @@ def _main():
                          {'step': 2, 'name': 'cube_template'},
                          {'step': 5, 'name': 'codegen'}]
     pipeline.add_step(copy_build_compile, step_requirements)
-    pipeline.run()
-    print()
-    print(pipeline.steps[-1].output)
-    import sys;sys.exit(0)
+    
 
     # 7. keys added in flash_and_readback step:
     # tensor_values: list. Model output in either float or int8 format, depending on quantization

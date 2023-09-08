@@ -13,9 +13,6 @@ C_SRCS += \
 ../Core/Src/sysmem.c \
 ../Core/Src/system_stm32l4xx.c 
 
-O_SRCS += \
-../Core/Src/model.o 
-
 OBJS += \
 ./Core/Src/main.o \
 ./Core/Src/profiling.o \

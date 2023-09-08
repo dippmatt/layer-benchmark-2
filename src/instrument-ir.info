@@ -1,140 +1,80 @@
 ID   : 0
-Kind : 136 (quantize)
-Name : functional_1_activation_Relu_functional_1_dense_BiasAdd_quantize
-Inp[0] Src:       float<1 x 640>
-Out[0] Dest:      i8[S:0.319913656 O:100][-72.940,8.638]<1 x 640>
+Kind : 157 (armcmfullyconnected)
+Name : functional_1_activation_Relu_functional_1_dense_BiasAdd__1
+Inp[0] Src:       i8[S:0.391015232 O:89][-84.850,14.859]<1 x 640>
+Inp[1] Weights:   i8[S:0.000376875 O:0][-0.048,0.048]<128 x 640>
+Inp[2] Bias:      i32[S:0.000147364 O:0][-316461.469,316461.469]<128>
+Out[0] Dest:      i8[S:0.049459130 O:-128][0.000,12.612]<1 x 128>
 
 ID   : 1
 Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_Relu_functional_1_dense_BiasAdd__1
-Inp[0] Src:       i8[S:0.319913656 O:100][-72.940,8.638]<1 x 640>
-Inp[1] Weights:   i8[S:0.000372643 O:-1][-0.047,0.048]<128 x 640>
-Inp[2] Bias:      i32[S:0.000119214 O:0][-256009.422,256009.422]<128>
-Out[0] Dest:      i8[S:0.099967375 O:18][-14.595,10.896]<1 x 128>
+Name : functional_1_activation_1_Relu_functional_1_dense_1_BiasAdd__1
+Inp[0] Src:       i8[S:0.049459130 O:-128][0.000,12.612]<1 x 128>
+Inp[1] Weights:   i8[S:0.015028327 O:0][-1.924,1.909]<128 x 128>
+Inp[2] Bias:      i32[S:0.000743288 O:0][-1596198.750,1596198.750]<128>
+Out[0] Dest:      i8[S:0.035405684 O:-128][0.000,9.028]<1 x 128>
 
 ID   : 2
-Kind : 106 (relu)
-Name : functional_1_activation_Relu_functional_1_dense_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.099967375 O:18][-14.595,10.896]<1 x 128>
-Out[0] Dest:      i8[S:0.099967375 O:18][-14.595,10.896]<1 x 128>
+Kind : 157 (armcmfullyconnected)
+Name : functional_1_activation_2_Relu_functional_1_dense_2_BiasAdd__1
+Inp[0] Src:       i8[S:0.035405684 O:-128][0.000,9.028]<1 x 128>
+Inp[1] Weights:   i8[S:0.053500395 O:0][-6.848,6.795]<128 x 128>
+Inp[2] Bias:      i32[S:0.001894218 O:0][-4067802.500,4067802.500]<128>
+Out[0] Dest:      i8[S:0.013730743 O:-128][0.000,3.501]<1 x 128>
 
 ID   : 3
 Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_1_Relu_functional_1_dense_1_BiasAdd__2
-Inp[0] Src:       i8[S:0.099967375 O:18][-14.595,10.896]<1 x 128>
-Inp[1] Weights:   i8[S:0.010287626 O:58][-1.913,0.710]<128 x 128>
-Inp[2] Bias:      i32[S:0.000437839 O:0][-940251.438,940251.438]<128>
-Out[0] Dest:      i8[S:0.069255307 O:46][-12.050,5.610]<1 x 128>
+Name : functional_1_activation_3_Relu_functional_1_dense_3_BiasAdd__1
+Inp[0] Src:       i8[S:0.013730743 O:-128][0.000,3.501]<1 x 128>
+Inp[1] Weights:   i8[S:0.072035417 O:0][-9.221,9.148]<128 x 128>
+Inp[2] Bias:      i32[S:0.000989100 O:0][-2124075.750,2124075.750]<128>
+Out[0] Dest:      i8[S:0.023603793 O:-128][0.000,6.019]<1 x 128>
 
 ID   : 4
-Kind : 106 (relu)
-Name : functional_1_activation_1_Relu_functional_1_dense_1_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.069255307 O:46][-12.050,5.610]<1 x 128>
-Out[0] Dest:      i8[S:0.069255307 O:46][-12.050,5.610]<1 x 128>
+Kind : 157 (armcmfullyconnected)
+Name : functional_1_activation_4_Relu_functional_1_dense_4_BiasAdd__1
+Inp[0] Src:       i8[S:0.023603793 O:-128][0.000,6.019]<1 x 128>
+Inp[1] Weights:   i8[S:0.008344634 O:0][-1.068,1.060]<8 x 128>
+Inp[2] Bias:      i32[S:0.000196965 O:0][-422979.188,422979.188]<8>
+Out[0] Dest:      i8[S:0.024929481 O:-128][0.000,6.357]<1 x 8>
 
 ID   : 5
 Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_2_Relu_functional_1_dense_2_BiasAdd__2
-Inp[0] Src:       i8[S:0.069255307 O:46][-12.050,5.610]<1 x 128>
-Inp[1] Weights:   i8[S:0.041827485 O:34][-6.776,3.890]<128 x 128>
-Inp[2] Bias:      i32[S:0.000920073 O:0][-1975842.375,1975842.375]<128>
-Out[0] Dest:      i8[S:0.100199595 O:99][-22.745,2.806]<1 x 128>
+Name : functional_1_activation_5_Relu_functional_1_dense_5_BiasAdd__1
+Inp[0] Src:       i8[S:0.024929481 O:-128][0.000,6.357]<1 x 8>
+Inp[1] Weights:   i8[S:0.026734488 O:0][-3.422,3.395]<128 x 8>
+Inp[2] Bias:      i32[S:0.000666477 O:0][-1431248.250,1431248.250]<128>
+Out[0] Dest:      i8[S:0.031756170 O:-128][0.000,8.098]<1 x 128>
 
 ID   : 6
-Kind : 106 (relu)
-Name : functional_1_activation_2_Relu_functional_1_dense_2_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.100199595 O:99][-22.745,2.806]<1 x 128>
-Out[0] Dest:      i8[S:0.100199595 O:99][-22.745,2.806]<1 x 128>
+Kind : 157 (armcmfullyconnected)
+Name : functional_1_activation_6_Relu_functional_1_dense_6_BiasAdd__1
+Inp[0] Src:       i8[S:0.031756170 O:-128][0.000,8.098]<1 x 128>
+Inp[1] Weights:   i8[S:0.019335434 O:0][-2.475,2.456]<128 x 128>
+Inp[2] Bias:      i32[S:0.000614019 O:0][-1318596.500,1318596.500]<128>
+Out[0] Dest:      i8[S:0.032071162 O:-128][0.000,8.178]<1 x 128>
 
 ID   : 7
 Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_3_Relu_functional_1_dense_3_BiasAdd__2
-Inp[0] Src:       i8[S:0.100199595 O:99][-22.745,2.806]<1 x 128>
-Inp[1] Weights:   i8[S:0.050577395 O:53][-9.155,3.743]<128 x 128>
-Inp[2] Bias:      i32[S:0.000551909 O:0][-1185214.750,1185214.750]<128>
-Out[0] Dest:      i8[S:0.048695907 O:41][-8.230,4.188]<1 x 128>
+Name : functional_1_activation_7_Relu_functional_1_dense_7_BiasAdd__1
+Inp[0] Src:       i8[S:0.032071162 O:-128][0.000,8.178]<1 x 128>
+Inp[1] Weights:   i8[S:0.012802741 O:0][-1.639,1.626]<128 x 128>
+Inp[2] Bias:      i32[S:0.000410599 O:0][-881754.188,881754.188]<128>
+Out[0] Dest:      i8[S:0.028295973 O:-128][0.000,7.215]<1 x 128>
 
 ID   : 8
-Kind : 106 (relu)
-Name : functional_1_activation_3_Relu_functional_1_dense_3_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.048695907 O:41][-8.230,4.188]<1 x 128>
-Out[0] Dest:      i8[S:0.048695907 O:41][-8.230,4.188]<1 x 128>
+Kind : 157 (armcmfullyconnected)
+Name : functional_1_activation_8_Relu_functional_1_dense_8_BiasAdd__1
+Inp[0] Src:       i8[S:0.028295973 O:-128][0.000,7.215]<1 x 128>
+Inp[1] Weights:   i8[S:0.007049884 O:0][-0.902,0.895]<128 x 128>
+Inp[2] Bias:      i32[S:0.000199483 O:0][-428387.188,428387.188]<128>
+Out[0] Dest:      i8[S:0.024790891 O:-128][0.000,6.322]<1 x 128>
 
 ID   : 9
 Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_4_Relu_functional_1_dense_4_BiasAdd__2
-Inp[0] Src:       i8[S:0.048695907 O:41][-8.230,4.188]<1 x 128>
-Inp[1] Weights:   i8[S:0.006674716 O:31][-1.061,0.641]<8 x 128>
-Inp[2] Bias:      i32[S:0.000109075 O:0][-234236.625,234236.625]<8>
-Out[0] Dest:      i8[S:0.021695215 O:-128][0.000,5.532]<1 x 8>
-
-ID   : 10
-Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_5_Relu_functional_1_dense_5_BiasAdd__1
-Inp[0] Src:       i8[S:0.021695215 O:-128][0.000,5.532]<1 x 8>
-Inp[1] Weights:   i8[S:0.025332175 O:-7][-3.065,3.395]<128 x 8>
-Inp[2] Bias:      i32[S:0.000549587 O:0][-1180229.125,1180229.125]<128>
-Out[0] Dest:      i8[S:0.043235585 O:1][-5.577,5.448]<1 x 128>
-
-ID   : 11
-Kind : 106 (relu)
-Name : functional_1_activation_5_Relu_functional_1_dense_5_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.043235585 O:1][-5.577,5.448]<1 x 128>
-Out[0] Dest:      i8[S:0.043235585 O:1][-5.577,5.448]<1 x 128>
-
-ID   : 12
-Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_6_Relu_functional_1_dense_6_BiasAdd__2
-Inp[0] Src:       i8[S:0.043235585 O:1][-5.577,5.448]<1 x 128>
-Inp[1] Weights:   i8[S:0.016554140 O:20][-2.450,1.771]<128 x 128>
-Inp[2] Bias:      i32[S:0.000354278 O:0][-760805.500,760805.500]<128>
-Out[0] Dest:      i8[S:0.045062214 O:-3][-5.633,5.858]<1 x 128>
-
-ID   : 13
-Kind : 106 (relu)
-Name : functional_1_activation_6_Relu_functional_1_dense_6_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.045062214 O:-3][-5.633,5.858]<1 x 128>
-Out[0] Dest:      i8[S:0.045062214 O:-3][-5.633,5.858]<1 x 128>
-
-ID   : 14
-Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_7_Relu_functional_1_dense_7_BiasAdd__2
-Inp[0] Src:       i8[S:0.045062214 O:-3][-5.633,5.858]<1 x 128>
-Inp[1] Weights:   i8[S:0.009964454 O:35][-1.624,0.917]<128 x 128>
-Inp[2] Bias:      i32[S:0.000229199 O:0][-492201.312,492201.312]<128>
-Out[0] Dest:      i8[S:0.039203614 O:11][-5.449,4.548]<1 x 128>
-
-ID   : 15
-Kind : 106 (relu)
-Name : functional_1_activation_7_Relu_functional_1_dense_7_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.039203614 O:11][-5.449,4.548]<1 x 128>
-Out[0] Dest:      i8[S:0.039203614 O:11][-5.449,4.548]<1 x 128>
-
-ID   : 16
-Kind : 157 (armcmfullyconnected)
-Name : functional_1_activation_8_Relu_functional_1_dense_8_BiasAdd__2
-Inp[0] Src:       i8[S:0.039203614 O:11][-5.449,4.548]<1 x 128>
-Inp[1] Weights:   i8[S:0.006336625 O:13][-0.893,0.722]<128 x 128>
-Inp[2] Bias:      i32[S:0.000112731 O:0][-242088.000,242088.000]<128>
-Out[0] Dest:      i8[S:0.038224027 O:-14][-4.358,5.390]<1 x 128>
-
-ID   : 17
-Kind : 106 (relu)
-Name : functional_1_activation_8_Relu_functional_1_dense_8_BiasAdd_RELU
-Inp[0] Src:       i8[S:0.038224027 O:-14][-4.358,5.390]<1 x 128>
-Out[0] Dest:      i8[S:0.038224027 O:-14][-4.358,5.390]<1 x 128>
-
-ID   : 18
-Kind : 157 (armcmfullyconnected)
-Name : FULLY_CONNECTED__2
-Inp[0] Src:       i8[S:0.038224027 O:-14][-4.358,5.390]<1 x 128>
-Inp[1] Weights:   i8[S:0.017242707 O:-17][-1.914,2.483]<640 x 128>
-Inp[2] Bias:      i32[S:0.000363747 O:0][-781139.938,781139.938]<640>
-Out[0] Dest:      i8[S:0.311746061 O:97][-70.143,9.352]<1 x 640>
-
-ID   : 19
-Kind : 137 (dequantize)
-Name : FULLY_CONNECTED_dequantize
-Inp[0] Src:       i8[S:0.311746061 O:97][-70.143,9.352]<1 x 640>
-Out[0] Dest:      float<1 x 640>
+Name : FULLY_CONNECTED__1
+Inp[0] Src:       i8[S:0.024790891 O:-128][0.000,6.322]<1 x 128>
+Inp[1] Weights:   i8[S:0.019556683 O:0][-2.503,2.484]<640 x 128>
+Inp[2] Bias:      i32[S:0.000484828 O:0][-1041159.312,1041159.312]<640>
+Out[0] Dest:      i8[S:0.364498466 O:96][-81.648,11.299]<1 x 640>
 

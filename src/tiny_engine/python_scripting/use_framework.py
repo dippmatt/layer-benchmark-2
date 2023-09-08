@@ -10,7 +10,7 @@ def use_framework(workdir: Path, submodule_dir: Path, model: Path):
     """
     step_output = dict()
 
-    custom_tflite_py = Path.cwd() / Path("custom_tflite.py")
+    custom_tflite_py = workdir / Path("..", "python_scripting", "custom_tflite.py")
     assert submodule_dir.exists(), "tinyengine submodule not found. Please run 'make init' before using tinyengine."
 
     # copy tinyengine framework to workdir, copy custom_tflite.py to framework,    
@@ -23,9 +23,7 @@ def use_framework(workdir: Path, submodule_dir: Path, model: Path):
 
     # run custom_tflite.py to generate model source files
     cwd = Path.cwd()
-    python_exec = cwd / Path("venv", "bin", "python3")
-    python_exec = python_exec
-    print(cwd)
+    python_exec = workdir / Path("..", "venv", "bin", "python3")
     chdir(tinyengine_dir)
     cmd = [python_exec, framework_script, model]
     subprocess.run(cmd)

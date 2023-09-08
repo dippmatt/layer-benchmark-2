@@ -191,7 +191,7 @@ def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, st
         output_tensor_index = output_details[0]['index']
         output_data = interpreter.get_tensor(output_tensor_index)
         if is_model_quantized(input_details[0]):
-            # ToDo: activate again
+            # TODO: activate again
             #dequantized_output = dequantize_output(output_data, output_scale, output_zero_point)
             dequantized_output = output_data
         else:

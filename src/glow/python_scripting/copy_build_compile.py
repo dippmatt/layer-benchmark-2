@@ -9,7 +9,7 @@ import re
 # and one with whole model measurements. Then, use the layer-by-layer measurements
 # to estimate the overhead of the measurement process.
 
-def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dtype, cube_template: Path, cube_template_no_ir: Path, cube_template_ref: Path, cube_template_empty: Path, bundle_dir: Path, bundle_dir_no_ir: Path):
+def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dtype, output_shape: tuple, cube_template: Path, cube_template_no_ir: Path, cube_template_ref: Path, cube_template_empty: Path, bundle_dir: Path, bundle_dir_no_ir: Path):
     """Copy all data into the cube project, build and compile it
     Repeat for the inference tempalate, the reference template and the empty template.
     Inference Template: The template to run measurements.
@@ -32,6 +32,8 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     # generate input test tensors as C header from npz data
     if input_dtype in [np.float16, np.float32, np.float64, np.float128]:
         io_dtype = 'float'
+    elif input_dtype in [np.uint8, np.uint16, np.uint32, np.uint64]:
+        io_dtype = 'uint8_t'
     else:
         io_dtype = 'int8_t'
     test_tensor_header = gen_test_tensors(input_tensors, io_dtype)
@@ -71,22 +73,26 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
         shutil.copy(file, cube_template_no_ir / Path("Core", "Src"))
         shutil.copy(file, cube_template_ref / Path("Core", "Src"))
 
+    main_c = cube_template / Path("Core", "Src", "main.c")
+    main_c_no_ir = cube_template_no_ir / Path("Core", "Src", "main.c")
+    main_c_ref = cube_template_ref / Path("Core", "Src", "main.c")
+
     # insert correct model input and output layer names into main.c template
-    set_io_names(cube_template / Path("Core", "Src", "main.c"), input_name, output_name)
-    set_io_names(cube_template_no_ir / Path("Core", "Src", "main.c"), input_name, output_name)
-    set_io_names(cube_template_ref / Path("Core", "Src", "main.c"), input_name, output_name)
+    set_io_names(main_c, input_name, output_name)
+    set_io_names(main_c_no_ir, input_name, output_name)
+    set_io_names(main_c_ref, input_name, output_name)
     
     # set the number of repetitions for each input tensor propagated through the model.
     # can be used for averaging the inference time over multiple runs.
-    set_reps(cube_template / Path("Core", "Src", "main.c"), repetitions)
-    set_reps(cube_template_no_ir / Path("Core", "Src", "main.c"), repetitions)
-    set_reps(cube_template_ref / Path("Core", "Src", "main.c"), repetitions)
+    set_reps(main_c, repetitions)
+    set_reps(main_c_no_ir, repetitions)
+    set_reps(main_c_ref, repetitions)
     # explicitly define memory buffer allocation input / output tensors
-    set_io_byte_consts(cube_template / Path("Core", "Src", "main.c"), cube_template / Path("Core", "Inc", "model.h"))
-    set_io_byte_consts(cube_template_no_ir / Path("Core", "Src", "main.c"), cube_template / Path("Core", "Inc", "model.h"))
-    set_io_byte_consts(cube_template_ref / Path("Core", "Src", "main.c"), cube_template_ref / Path("Core", "Inc", "model.h"))
+    set_io_byte_consts(main_c, io_dtype, output_shape)
+    set_io_byte_consts(main_c_no_ir, io_dtype, output_shape)
+    set_io_byte_consts(main_c_ref, io_dtype, output_shape)
     # delete callbacks from main.c for no_ir template
-    delete_callbacks(cube_template_no_ir / Path("Core", "Src", "main.c"))
+    delete_callbacks(main_c_no_ir)
 
     # compile projects
     templates = [cube_template, cube_template_no_ir, cube_template_ref, cube_template_empty]
@@ -202,38 +208,20 @@ def set_reps(main_c: Path, repetitions: int):
         file.writelines(lines)
     return
 
-def set_io_byte_consts(main_c: Path, model_h: Path):
+def set_io_byte_consts(main_c: Path, c_out_dtype: str, output_shape: tuple):
     assert main_c.exists(), f"{main_c} does not exist or is not a file"
-    assert model_h.exists(), f"{model_h} does not exist or is not a file"
+        
+    # multiply all dimensions to get the total number of elements in the output tensor
+    output_elements = 1
+    for dimension in output_shape:
+        output_elements *= dimension    
 
-    with open(model_h, 'r') as file:        
-        input_tensor_bytes = 0
-        output_tensor_bytes = 0
-
-        lines = file.read().strip('\n')
-
-        pattern_type = r'Type: (\w+)'
-        pattern_size_elements = r'Size: (\d+) \(elements\)'
-        pattern_size_bytes = r'Size: (\d+) \(bytes\)'
-
-        # Find all matches using regular expressions
-        data_types = re.findall(pattern_type, lines)
-        sizes_elements = re.findall(pattern_size_elements, lines)
-        sizes_bytes = re.findall(pattern_size_bytes, lines)
-
-        output_elements = int(sizes_elements[-1])
-        input_tensor_bytes = int(sizes_bytes[0])
-        output_tensor_bytes = int(sizes_bytes[1])
-
-        if data_types[-1] == 'float':
-            c_out_dtype = 'float'
-            c_out_specifier = 'f'
-        elif data_types[-1] == 'i8':
-            c_out_dtype = 'int8_t'
-            c_out_specifier = 'd'
-        else:
-            c_out_dtype = 'uint8_t'
-            c_out_specifier = 'u'
+    if c_out_dtype == 'float':
+        c_out_specifier = 'f'
+    elif c_out_dtype == 'int8_t':
+        c_out_specifier = 'd'
+    else:
+        c_out_specifier = 'u'
 
     with open(main_c, 'r') as file:
         lines = file.readlines()
@@ -253,10 +241,6 @@ def set_io_byte_consts(main_c: Path, model_h: Path):
                     line = line.replace("<int_type>", 'int8_t')
             if "<o_format_specifier>" in line:
                 line = line.replace("<o_format_specifier>", c_out_specifier)
-            if "<NUM_INPUT_BYTES>" in line:
-                line = line.replace("<NUM_INPUT_BYTES>", str(input_tensor_bytes))
-            if "<NUM_OUTPUT_BYTES>" in line:
-                line = line.replace("<NUM_OUTPUT_BYTES>", str(output_tensor_bytes))
             lines[i] = line
                 
     with open(main_c, 'w') as file:

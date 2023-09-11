@@ -35,9 +35,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-# define NUM_INPUT_BYTES <NUM_INPUT_BYTES>
-# define NUM_OUTPUT_BYTES <NUM_OUTPUT_BYTES>
-//# define NUM_TEST_TENSORS <NUM_TEST_TENSORS>
 # define NUM_REPS <REPETITIONS_PER_INPUT_TENSOR>
 # define OUT_COLS <ELEMENTS>
 /* USER CODE END PD */

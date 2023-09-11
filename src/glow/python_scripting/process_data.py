@@ -23,6 +23,7 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     print_in_color(Color.GREEN, "Testing data processing for reps")
     timing_array = process_layer_timings(reps, num_samples, num_reps=repetitions)
     
+    # TODO: add process_layer_timings funciton for reps_no_ir
     print()
     print("reps shape:")
     print(timing_array.shape)

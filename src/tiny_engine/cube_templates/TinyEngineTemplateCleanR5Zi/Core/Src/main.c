@@ -1,25 +1,26 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2023 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "genNN.h"
 #include "profiling.h"
+#include "ml_data.h"
 #include <stdio.h>
 #include <string.h>
 /* Private includes ----------------------------------------------------------*/
@@ -35,6 +36,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+// # define NUM_TEST_TENSORS <NUM_TEST_TENSORS>
+#define NUM_REPS <REPETITIONS_PER_INPUT_TENSOR>
+#define OUT_COLS <ELEMENTS>
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -64,13 +68,16 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int <int_type>ToString(<o_type> value, char* buffer, int bufferSize) {
+    return snprintf(buffer, bufferSize, "%<o_format_specifier> ", value);
+}
 
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -104,24 +111,78 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-      char begin_message[22] = "###################\r\n";
-      int num_runs = 1;
-      int i = 0;
-      while (1)
+
+  signed char *input = getInput();
+  // int16_t *inputAddr = (int16_t *)&input[32 * 32 * 3];
+  <o_type> *inputAddr = (<o_type> *)input;
+
+  signed char *output = getOutput();
+  // int16_t *outputAddr = (int16_t *)&output;
+  <o_type> *outputAddr = (<o_type> *)output;
+
+  int i;
+  int k;
+  size_t dataSizeInBytes = COLS * sizeof(array[0][0]);
+
+  // measure latency per layer NUM_REPS times for each input tensor
+  uint8_t start_message[] = "Start of benchmark.\r\n";
+  HAL_UART_Transmit(&hlpuart1, start_message, sizeof(start_message), HAL_MAX_DELAY);
+
+  while (1)
+  {
+    // RUN PER LAYER TIMING MEASUREMENTS
+	for (i = 0; i < ROWS; i++)
+	{
+	  memcpy(inputAddr, array[i], dataSizeInBytes);
+
+	  for (k = 0; k < NUM_REPS; k++)
+	  {
+		PROFILING_START("MAIN loop timing");
+		__disable_irq();
+		PROFILING_EVENT("BEGIN");
+		invoke_inf();
+		PROFILING_EVENT("END");
+		__enable_irq();
+		PROFILING_STOP(&hlpuart1);
+	  }
+	}
+    uint8_t end_message[] = "Finished timing measurements!\r\n";
+    HAL_UART_Transmit(&hlpuart1, end_message, sizeof(end_message), HAL_MAX_DELAY);
+
+
+    size_t out_dtype_size = sizeof(<o_type>);
+    uint8_t txbuf[64];
+
+
+    // RUN INFERENCE TO RETRIVE OUTPUT DATA
+    for (i = 0; i < ROWS; i++)
+    {
+      // iterate over elements of one flattened input tensor
+      // memcpy(inputAddr, array[i], dataSizeInBytes);
+      for (k = 0; k < COLS; k++)
       {
-    	  //HAL_GPIO_TogglePin(GPIOB, LD3_Pin|LD2_Pin);
-    	  HAL_UART_Transmit (&hlpuart1, begin_message, sizeof (begin_message), 10);
-    	  __disable_irq();
-    	  PROFILING_START("MAIN loop timing");
-    	  end2endinference();
-    	  PROFILING_EVENT("Event END");
-    	  __enable_irq();
-    	  PROFILING_STOP(&hlpuart1);
-    	  if(i > num_runs){
-    		  break;
-    	  }
-    	  i += 1;
-        /* USER CODE END WHILE */
+        inputAddr[k] = array[i][k];
+      }
+
+      invoke_inf();
+
+      uint8_t new_tensor_message2[] = "Tensor values:\r\n";
+      HAL_UART_Transmit(&hlpuart1, new_tensor_message2, strlen(new_tensor_message2), HAL_MAX_DELAY);
+      for (k = 0; k < OUT_COLS; k++)
+      {
+        // check if out_array is of type float
+        int length = 0;
+        // length = int8_tToString(outputAddr[k], txbuf, sizeof(txbuf));
+        length = <int_type>ToString((<int_type>)output[k], txbuf, sizeof(txbuf));
+        HAL_UART_Transmit(&hlpuart1, txbuf, length, HAL_MAX_DELAY);
+      }
+      HAL_UART_Transmit(&hlpuart1, "\r\n", sizeof("\r\n"), HAL_MAX_DELAY);
+    }
+
+    uint8_t final_message[] = "End of benchmark.\r\n";
+    HAL_UART_Transmit(&hlpuart1, final_message, strlen(final_message), HAL_MAX_DELAY);
+    break;
+    /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
@@ -129,25 +190,25 @@ int main(void)
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST) != HAL_OK)
   {
     Error_Handler();
   }
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSI;
+   * in the RCC_OscInitTypeDef structure.
+   */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48 | RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -164,9 +225,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -179,10 +239,10 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief LPUART1 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief LPUART1 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_LPUART1_UART_Init(void)
 {
 
@@ -223,14 +283,13 @@ static void MX_LPUART1_UART_Init(void)
   /* USER CODE BEGIN LPUART1_Init 2 */
 
   /* USER CODE END LPUART1_Init 2 */
-
 }
 
 /**
-  * @brief USART3 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief USART3 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_USART3_UART_Init(void)
 {
 
@@ -271,14 +330,13 @@ static void MX_USART3_UART_Init(void)
   /* USER CODE BEGIN USART3_Init 2 */
 
   /* USER CODE END USART3_Init 2 */
-
 }
 
 /**
-  * @brief USB_OTG_FS Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief USB_OTG_FS Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_USB_OTG_FS_PCD_Init(void)
 {
 
@@ -305,19 +363,18 @@ static void MX_USB_OTG_FS_PCD_Init(void)
   /* USER CODE BEGIN USB_OTG_FS_Init 2 */
 
   /* USER CODE END USB_OTG_FS_Init 2 */
-
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -329,7 +386,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LD3_Pin | LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
@@ -341,7 +398,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD3_Pin LD2_Pin */
-  GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
+  GPIO_InitStruct.Pin = LD3_Pin | LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -360,8 +417,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(USB_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -369,9 +426,9 @@ static void MX_GPIO_Init(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -383,14 +440,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

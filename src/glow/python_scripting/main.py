@@ -158,6 +158,7 @@ def _main():
                          {'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'input_tensors'},
                          {'step': 0, 'name': 'input_dtype'},
+                         {'step': 0, 'name': 'output_shape'},
                          {'step': 1, 'name': 'cube_template'},
                          {'step': 1, 'name': 'cube_template_no_ir'},
                          {'step': 1, 'name': 'cube_template_ref'},

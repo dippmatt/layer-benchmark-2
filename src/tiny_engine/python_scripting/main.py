@@ -37,11 +37,11 @@ from validate_data import validate_data
 # copy input files, fill templates, build, compile...
 from copy_build_compile import copy_build_compile
 
-# # flash and UART readback methods
-# from flash_and_readback import flash_and_readback
+# flash and UART readback methods
+from flash_and_readback import flash_and_readback
 
-# # process and store data
-# from process_data import process_data
+# process and store data
+from process_data import process_data
 
 def _main():
 
@@ -102,25 +102,25 @@ def _main():
     pipeline.add_step(load_model_and_data, step_requirements)
     
 
-    # 2. keys added in load_cube_project step:
+    # 1. keys added in load_cube_project step:
     # cube_template: Path, path to cube template project used for per layer measurements
-    # cube_template_no_ir: Path path to project used for error estimation (measures whole model)
+    # cube_template_all_layers: Path path to project used for error estimation (measures whole model)
     # cube_template_ref: Path, projet with inference framework, used for flash and ram estimation
     # cube_template_empty: Path, empty project, used for flash and ram estimation
     step_requirements = [{'main_arg': 'workdir'},
-                         {'main_arg': 'cube_template'}]#,
-                        #  {'main_arg': 'cube_template_ref'},
-                        #  {'main_arg': 'cube_template_empty'}]
+                         {'main_arg': 'cube_template'},
+                         {'main_arg': 'cube_template_ref'},
+                         {'main_arg': 'cube_template_empty'}]
     pipeline.add_step(load_cube_project, step_requirements)
 
 
-    # 3. keys added in get_mcu_dev step:
+    # 2. keys added in get_mcu_dev step:
     # serial: serial.Serial, serial connection to MCU
     step_requirements = [{'main_arg': 'cube_programmer'}]
     pipeline.add_step(get_mcu_dev, step_requirements)
 
 
-    # 4. no keys added in validate_data step.
+    # 3. no keys added in validate_data step.
     # verifies that input tensors are valid for model
     step_requirements = [{'step': 0, 'name': 'input_tensors'},
                          {'step': 0, 'name': 'input_dtype'},
@@ -128,51 +128,53 @@ def _main():
     pipeline.add_step(validate_data, step_requirements)
 
 
-    # 5. keys added in use_framework step:
+    # 4. keys added in use_framework step:
     # codegen: Path, path to generated code, including
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'tiny_engine_submodule'},
                          {'step': 0, 'name': 'model'}]
     pipeline.add_step(use_framework, step_requirements)
-    pipeline.run()
-    print()
-    print(pipeline.steps[-1].output)
-    print()
-    refs = pipeline.steps[0].output['reference_output']
+    
 
-    for ref in refs:
-        print(ref[0][:10])
-    import sys;sys.exit(0)
-
-    # 6. keys added in copy_build_compile step:
+    # 5. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template
     # ram: int, estimated ram usage of model
     # flash: int, estimated flash usage of model
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'input_tensors'},
-                         {'step': 1, 'name': 'input_dtype'},
-                         {'step': 2, 'name': 'cube_template'},
-                         {'step': 5, 'name': 'codegen'}]
+                         {'step': 0, 'name': 'input_dtype'},
+                         {'step': 0, 'name': 'output_shape'},
+                         {'step': 1, 'name': 'cube_template'},
+                         {'step': 1, 'name': 'cube_template_all_layers'},
+                         {'step': 1, 'name': 'cube_template_ref'},
+                         {'step': 1, 'name': 'cube_template_empty'},
+                         {'step': 4, 'name': 'codegen'}]
     pipeline.add_step(copy_build_compile, step_requirements)
     
 
-    # 7. keys added in flash_and_readback step:
+    # 6. keys added in flash_and_readback step:
     # tensor_values: list. Model output in either float or int8 format, depending on quantization
     # reps: list of list. first dimenion: repetitions, second dimension: layer measurements
-    # reps_no_ir: list. Layer measurements of model without IR
+    # reps_all_layers: list. Layer measurements of the whole model
     step_requirements = [{'main_arg': 'cube_programmer'},
-                         {'step': 3, 'name': 'serial'},
-                         {'step': 6, 'name': 'cube_template'},
-                         {'step': 6, 'name': 'cube_template_no_ir'}]
+                         {'main_arg': 'workdir'},
+                         {'step': 2, 'name': 'serial'},
+                         {'step': 5, 'name': 'cube_template'},
+                         {'step': 5, 'name': 'cube_template_all_layers'}]
     pipeline.add_step(flash_and_readback, step_requirements)
 
 
-    # 8. keys added in process_data step:
+    # 7. keys added in process_data step:
 
-    step_requirements = [{'step': 7, 'name': 'tensor_values'},
-                         {'step': 7, 'name': 'reps'},
-                         {'step': 7, 'name': 'reps_no_ir'}]
+    step_requirements = [{'main_arg': 'repetitions'},
+                         {'step': 0, 'name': 'num_samples'},
+                         {'step': 0, 'name': 'output_shape'},
+                         {'step': 0, 'name': 'output_dtype'},
+                         {'step': 0, 'name': 'reference_output'},
+                         {'step': 6, 'name': 'tensor_values'},
+                         {'step': 6, 'name': 'reps'},
+                         {'step': 6, 'name': 'reps_all_layers'}]
     pipeline.add_step(process_data, step_requirements)
 
     pipeline.run()

@@ -42,16 +42,11 @@ Achtung: weil tinyengine als default example Cortex M7 verwendet, müssen die li
 
 Scripting environment laufen lassen:
 AD
-python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
 
 KWS
-python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/keyword_spotting/trained_models/kws_ref_model_no_softmax.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/keyword_spotting/bin_data/mfcc/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
 
 IC
-python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/image_classification/trained_models/pretrainedResnet_no_softmax_quant.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/image_classification/bin_data/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
 
 VWW
-python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Documents/BA/results/models_and_data/visual_wake_words/trained_models/vww_96_int8_no_softmax.tflite -input_tensors /home/matthias/Documents/BA/results/models_and_data/visual_wake_words/bin_data/person/int8.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
 
-TEst
-python3 main.py -workdir ../workdir/ -tiny_engine_submodule ../../../third_party/tinyengine/ -model /home/matthias/Desktop/model_quant_test.tflite -input_tensors /home/matthias/Desktop/model_quant_test.npz -cube_template /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi
+

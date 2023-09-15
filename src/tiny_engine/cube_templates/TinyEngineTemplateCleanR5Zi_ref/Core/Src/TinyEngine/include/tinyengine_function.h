@@ -16,7 +16,8 @@
  *
  * Target ISA:  ARMv7E-M
  * -------------------------------------------------------------------- */
-
+#include "arm_nnfunctions.h"
+#include "arm_nnsupportfunctions.h"
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>

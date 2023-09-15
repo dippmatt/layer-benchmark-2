@@ -21,7 +21,6 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/Src/TinyEngine/codegen/Source \
 Core/Src/TinyEngine/src/arm_cmsis/ActivationFunctions \
 Core/Src/TinyEngine/src/arm_cmsis/BasicMathFunctions \
 Core/Src/TinyEngine/src/arm_cmsis/ConcatenationFunctions \

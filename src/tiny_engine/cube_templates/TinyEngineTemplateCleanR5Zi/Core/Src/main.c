@@ -17,15 +17,15 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
 #include "main.h"
 #include "genNN.h"
 #include "profiling.h"
 #include "ml_data.h"
 #include <stdio.h>
 #include <string.h>
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -190,6 +190,7 @@ int main(void)
 }
 
 /**
+
  * @brief System Clock Configuration
  * @retval None
  */
@@ -239,6 +240,7 @@ void SystemClock_Config(void)
 }
 
 /**
+
  * @brief LPUART1 Initialization Function
  * @param None
  * @retval None
@@ -288,6 +290,7 @@ static void MX_LPUART1_UART_Init(void)
 /**
  * @brief USART3 Initialization Function
  * @param None
+
  * @retval None
  */
 static void MX_USART3_UART_Init(void)

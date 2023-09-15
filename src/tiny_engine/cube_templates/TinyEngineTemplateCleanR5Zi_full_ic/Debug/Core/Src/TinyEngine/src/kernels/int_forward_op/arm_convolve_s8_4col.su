@@ -1,1 +1,0 @@
-../Core/Src/TinyEngine/src/kernels/int_forward_op/arm_convolve_s8_4col.c:64:12:arm_convolve_s8_4col	216	static,ignoring_inline_asm

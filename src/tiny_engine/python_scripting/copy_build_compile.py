@@ -45,22 +45,43 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
 
     # copy framework bundle into project and reference project, 
     # not into empty project because we want to measure the RAM and FLASH usage of the model
-    codegen = cube_template / Path("Core", "Src", "TinyEngine", "codegen")
-    codegen_all_layers = cube_template_all_layers / Path("Core", "Src", "TinyEngine", "codegen")
-    codegen_ref = cube_template_ref / Path("Core", "Src", "TinyEngine", "codegen")
-    shutil.copytree(codegen_src, codegen)
-    shutil.copytree(codegen_src, codegen_all_layers)
-    shutil.copytree(codegen_src, codegen_ref)
+    shutil.copytree(codegen_src / Path("Source"), cube_template / Path("Core", "Src"), dirs_exist_ok=True)
+    shutil.copytree(codegen_src / Path("Include"), cube_template / Path("Core", "Inc"), dirs_exist_ok=True)
 
-    genModel_profiled = codegen / Path("Source", "genModel.c")
+    shutil.copytree(codegen_src / Path("Source"), cube_template_all_layers / Path("Core", "Src"), dirs_exist_ok=True)
+    shutil.copytree(codegen_src / Path("Include"), cube_template_all_layers / Path("Core", "Inc"), dirs_exist_ok=True)
+
+    shutil.copytree(codegen_src / Path("Source"), cube_template_ref / Path("Core", "Src"), dirs_exist_ok=True)
+    shutil.copytree(codegen_src / Path("Include"), cube_template_ref / Path("Core", "Inc"), dirs_exist_ok=True)
+    
+    genModel_profiled = cube_template / Path("Core", "Src", "genModel.c")
     assert genModel_profiled.exists(), f"{genModel_profiled} does not exist or is not a file"
     # insert profiling events into genModel.c
     insert_layer_measurements(genModel_profiled)
 
+    # add additional source files from tiny-engine to makefiles of template projects
+    # first get the list of generated source files we need to link in the project
+    linked_sources = get_codegen_sources(codegen_src / Path("Source"))
+
+    object_lists = [
+        cube_template / Path("Debug", "objects.list"),
+        cube_template_all_layers / Path("Debug", "objects.list"),
+        cube_template_ref / Path("Debug", "objects.list")
+    ]
+    for object_list in object_lists:
+        insert_objects(object_list, linked_sources)
+
+    subdir_mk_list = [
+        cube_template / Path("Debug", "Core", "Src", "subdir.mk"),
+        cube_template_all_layers / Path("Debug", "Core", "Src", "subdir.mk"),
+        cube_template_ref / Path("Debug", "Core", "Src", "subdir.mk")
+    ]
+    for subdir_mk in subdir_mk_list:
+        insert_subdir_mk(subdir_mk, linked_sources)
+
     main_c = cube_template / Path("Core", "Src", "main.c")
     main_c_all_layers = cube_template_all_layers / Path("Core", "Src", "main.c")
     main_c_ref = cube_template_ref / Path("Core", "Src", "main.c")
-
     # set the number of repetitions for each input tensor propagated through the model.
     # can be used for averaging the inference time over multiple runs.
     set_reps(main_c, repetitions)
@@ -176,6 +197,66 @@ def gen_test_tensors(input_tensors, input_dtype):
     lines_o[-1] = lines_o[-1].rstrip(',\n') + '\n'
     lines_o.append('};\n')
     return lines_o
+
+def get_codegen_sources(codegen_source: Path):
+    """Extracts all tinyengine-generated source files (custom layer code)
+    """
+    file_paths = [f for f in codegen_source.iterdir() if f.is_file()]
+    file_names = [file_path.stem for file_path in file_paths]
+    file_names.remove("genModel")
+    return file_names
+
+def insert_objects(object_list: Path, objects_to_insert):
+    with open(object_list) as f:
+        input_lines = f.readlines()
+
+    # substitute <INSERT_O> placeholder with actual list of source files
+    for i, line in enumerate(input_lines):
+        if "<INSERT_O>" in line:
+            new_line = ""
+            if len(objects_to_insert) > 0:
+                for object in objects_to_insert:
+                    new_line += f'"./Core/Src/{object}.o"\n'
+                    input_lines[i] = new_line
+            input_lines[i] = new_line
+    
+    with open(object_list, 'w') as file:
+        file.writelines(input_lines)
+    return
+
+def insert_subdir_mk(subdir_mk: Path, objects_to_insert):
+    with open(subdir_mk) as f:
+        input_lines = f.readlines()
+
+    # substitute <INSERT_<>> placeholders with actual list of source files
+    for i, line in enumerate(input_lines):
+        # Notice that the path for .c files is different from the path for .o or .d files:
+        # .c files are in the parent directory, .o and .d files are in the current directory
+        if "<INSERT_C>" in line:
+            new_line = ""
+            if len(objects_to_insert) > 0:
+                for object in objects_to_insert:
+                    new_line += f'../Core/Src/{object}.c \\\n'
+                    input_lines[i] = new_line
+            input_lines[i] = new_line
+        elif "<INSERT_O>" in line:
+            new_line = ""
+            if len(objects_to_insert) > 0:
+                for object in objects_to_insert:
+                    new_line += f'./Core/Src/{object}.o \\\n'
+                    input_lines[i] = new_line
+            input_lines[i] = new_line
+        elif "<INSERT_D>" in line:
+            new_line = ""
+            if len(objects_to_insert) > 0:
+                for object in objects_to_insert:
+                    new_line += f'./Core/Src/{object}.d \\\n'
+                    input_lines[i] = new_line
+            input_lines[i] = new_line
+    
+    with open(subdir_mk, 'w') as file:
+        file.writelines(input_lines)
+    return
 
 def get_io_names(model_h: str):
     assert model_h.exists(), f"{model_h} does not exist or is not a file"

@@ -1,2 +1,0 @@
-../Core/Src/TinyEngine/src/arm_cmsis/ConvolutionFunctions/arm_convolve_wrapper_s8.c:50:12:arm_convolve_wrapper_s8	48	static
-../Core/Src/TinyEngine/src/arm_cmsis/ConvolutionFunctions/arm_convolve_wrapper_s8.c:109:9:arm_convolve_wrapper_s8_get_buffer_size	0	static

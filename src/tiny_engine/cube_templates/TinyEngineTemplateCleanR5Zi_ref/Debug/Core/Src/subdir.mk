@@ -5,8 +5,9 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+<INSERT_C>
+../Core/Src/genModel.c \
 ../Core/Src/main.c \
-../Core/Src/profiling.c \
 ../Core/Src/stm32l4xx_hal_msp.c \
 ../Core/Src/stm32l4xx_it.c \
 ../Core/Src/syscalls.c \
@@ -14,8 +15,9 @@ C_SRCS += \
 ../Core/Src/system_stm32l4xx.c 
 
 OBJS += \
+<INSERT_O>
+./Core/Src/genModel.o \
 ./Core/Src/main.o \
-./Core/Src/profiling.o \
 ./Core/Src/stm32l4xx_hal_msp.o \
 ./Core/Src/stm32l4xx_it.o \
 ./Core/Src/syscalls.o \
@@ -23,8 +25,9 @@ OBJS += \
 ./Core/Src/system_stm32l4xx.o 
 
 C_DEPS += \
+<INSERT_D>
+./Core/Src/genModel.d \
 ./Core/Src/main.d \
-./Core/Src/profiling.d \
 ./Core/Src/stm32l4xx_hal_msp.d \
 ./Core/Src/stm32l4xx_it.d \
 ./Core/Src/syscalls.d \
@@ -34,12 +37,12 @@ C_DEPS += \
 
 # Each subdirectory must supply rules for building sources it contributes
 Core/Src/%.o Core/Src/%.su: ../Core/Src/%.c Core/Src/subdir.mk
-	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L4R5xx -c -I../Core/Src/TinyEngine/src/arm_cmsis/ActivationFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/BasicMathFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/ConcatenationFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/ConvolutionFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/FullyConnectedFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/NNSupportFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/PoolingFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/ReshapeFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/SoftmaxFunctions -I../Core/Src/TinyEngine/src/arm_cmsis/SVDFunctions -I../Core/Src/TinyEngine/include -I../Core/Src/TinyEngine/include/arm_cmsis -I../Core/Src/TinyEngine/codegen/Include -I../Core/Inc -I../Core/Src -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O3 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32L4R5xx -c -I../Core/Inc -I../Core/Src/TinyEngine/include/arm_cmsis -I../Core/Src/TinyEngine/include -I../Drivers/STM32L4xx_HAL_Driver/Inc -I../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
 
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/profiling.d ./Core/Src/profiling.o ./Core/Src/profiling.su ./Core/Src/stm32l4xx_hal_msp.d ./Core/Src/stm32l4xx_hal_msp.o ./Core/Src/stm32l4xx_hal_msp.su ./Core/Src/stm32l4xx_it.d ./Core/Src/stm32l4xx_it.o ./Core/Src/stm32l4xx_it.su ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32l4xx.d ./Core/Src/system_stm32l4xx.o ./Core/Src/system_stm32l4xx.su
+	-$(RM) ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW.d ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW.o ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW.su ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW_fpreq_bitmask.d ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW_fpreq_bitmask.o ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW_fpreq_bitmask.su ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW_fpreq_mask.d ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW_fpreq_mask.o ./Core/Src/depthwise_kernel3x3_stride1_inplace_CHW_fpreq_mask.su ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW.d ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW.o ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW.su ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW_fpreq_bitmask.d ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW_fpreq_bitmask.o ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW_fpreq_bitmask.su ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW_fpreq_mask.d ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW_fpreq_mask.o ./Core/Src/depthwise_kernel3x3_stride2_inplace_CHW_fpreq_mask.su ./Core/Src/genModel.d ./Core/Src/genModel.o ./Core/Src/genModel.su ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/profiling.d ./Core/Src/profiling.o ./Core/Src/profiling.su ./Core/Src/stm32l4xx_hal_msp.d ./Core/Src/stm32l4xx_hal_msp.o ./Core/Src/stm32l4xx_hal_msp.su ./Core/Src/stm32l4xx_it.d ./Core/Src/stm32l4xx_it.o ./Core/Src/stm32l4xx_it.su ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32l4xx.d ./Core/Src/system_stm32l4xx.o ./Core/Src/system_stm32l4xx.su
 
 .PHONY: clean-Core-2f-Src
 

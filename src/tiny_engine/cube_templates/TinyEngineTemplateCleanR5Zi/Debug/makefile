@@ -24,7 +24,6 @@ RM := rm -rf
 -include Core/Src/TinyEngine/src/arm_cmsis/ConcatenationFunctions/subdir.mk
 -include Core/Src/TinyEngine/src/arm_cmsis/BasicMathFunctions/subdir.mk
 -include Core/Src/TinyEngine/src/arm_cmsis/ActivationFunctions/subdir.mk
--include Core/Src/TinyEngine/codegen/Source/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 

@@ -24,7 +24,6 @@ RM := rm -rf
 -include Core/Src/TinyEngine/src/arm_cmsis/ConcatenationFunctions/subdir.mk
 -include Core/Src/TinyEngine/src/arm_cmsis/BasicMathFunctions/subdir.mk
 -include Core/Src/TinyEngine/src/arm_cmsis/ActivationFunctions/subdir.mk
--include Core/Src/TinyEngine/codegen/Source/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 
@@ -74,8 +73,8 @@ all: main-build
 main-build: TinyEngineTemplateCleanR5Zi.elf secondary-outputs
 
 # Tool invocations
-TinyEngineTemplateCleanR5Zi.elf TinyEngineTemplateCleanR5Zi.map: $(OBJS) $(USER_OBJS) /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi/STM32L4R5ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "TinyEngineTemplateCleanR5Zi.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi/STM32L4R5ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TinyEngineTemplateCleanR5Zi.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+TinyEngineTemplateCleanR5Zi.elf TinyEngineTemplateCleanR5Zi.map: $(OBJS) $(USER_OBJS) /home/matthias/Desktop/new_tiny_engine_template/TinyEngineTemplateCleanR5Zi_ref/STM32L4R5ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "TinyEngineTemplateCleanR5Zi.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/matthias/Desktop/new_tiny_engine_template/TinyEngineTemplateCleanR5Zi_ref/STM32L4R5ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="TinyEngineTemplateCleanR5Zi.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -179,8 +179,6 @@ def _main():
                          {'step': 5, 'name': 'cube_template_no_ir'}]
     pipeline.add_step(flash_and_readback, step_requirements)
 
-
-
     
     # 7. keys added in process_data step:
 

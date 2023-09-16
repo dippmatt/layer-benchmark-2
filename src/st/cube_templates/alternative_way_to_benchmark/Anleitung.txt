@@ -1,0 +1,5 @@
+Um die nötigen modell files zu generieren kann man das command line tool von ST verwenden und direkt in ein beliebiges C projekt einginden:
+Ich vermute, dass dabei keine layer by layer benchmark messungen stattfinden und die generierten C datein für den Produkteinsatz gedacht sind.
+
+
+generate --name network -m /home/matthias/Documents/BA/layer-benchmark-2/src/st/workdir/model.tflite --type tflite --compression none --verbosity 1 --workspace . --output ./out --allocate-inputs --series stm32l4 --allocate-outputs

@@ -23,13 +23,16 @@ def validate_args(args):
     args.cube_mx = Path(args.cube_mx).resolve()
     assert args.cube_mx.is_file(), f"STM 32 Cube Cube Programmer executable {args.cube_mx} not found!."
 
+    args.stm32ai = Path(args.stm32ai).resolve()
+    assert args.stm32ai.is_file(), f"STM 32 Cube Cube Programmer executable {args.stm32ai} not found!."
+
     args.cube_template = Path(args.cube_template).resolve()
     assert args.cube_template.is_dir(), f"STM Cube IDE template project {args.cube_template} not found!."
 
-    args.cube_template_ref = Path(args.cube_template_ref).resolve()
-    assert args.cube_template_ref.is_dir(), f"STM Cube IDE template project {args.cube_template_ref} not found!."
+    # args.cube_template_ref = Path(args.cube_template_ref).resolve()
+    # assert args.cube_template_ref.is_dir(), f"STM Cube IDE template project {args.cube_template_ref} not found!."
 
-    args.cube_template_empty = Path(args.cube_template_empty).resolve()
-    assert args.cube_template_empty.is_dir(), f"STM Cube IDE template project {args.cube_template_empty} not found!."
+    # args.cube_template_empty = Path(args.cube_template_empty).resolve()
+    # assert args.cube_template_empty.is_dir(), f"STM Cube IDE template project {args.cube_template_empty} not found!."
 
     return

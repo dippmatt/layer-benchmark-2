@@ -58,16 +58,16 @@ def _main():
                         help='Path STM 32 Cube Cube MX executable. \
                             Usually found at /usr/local/STMicroelectronics/STM32Cube/STM32CubeMX/STM32CubeMX', 
                             default="/usr/local/STMicroelectronics/STM32Cube/STM32CubeMX/STM32CubeMX")
+    parser.add_argument('-stm32ai', dest='stm32ai', type=str,
+                        help='Path STM 32 stm32ai executable. \
+                            Usually found at /home/<user>/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/<cube ai version>/Utilities/linux/stm32ai', 
+                            default="~/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai")
     parser.add_argument('-workdir', dest='workdir', type=str,
                         help='Path where generated temporary files can be stored. \
                             After model generation is done, model C files are stored at <workdir>/build.', default=None)
     parser.add_argument('-input_tensors', dest='input_tensors', type=str,
                         help='Path to one .npz file. \
                             Numpy binary array file represents list of input tensor examples, used for quantising the model. \
-                            Minimum of 10 tensors required.', default=None)
-    parser.add_argument('-representative_tensors', dest='representative_tensors', type=str,
-                        help='Path to one .npz file. \
-                            Numpy binary array file represents list of input tensor examples, used to calibrate quantization if needed. \
                             Minimum of 10 tensors required.', default=None)
     parser.add_argument('-cube_template', dest='cube_template', type=str,
                         help='Path to the STM Cube IDE template project, where the compiled model source files are copied to.', default=None)
@@ -99,8 +99,7 @@ def _main():
     # reference_output: list, reference output of the tflite interpreter, shape: (num_samples, *output_shape), dtype: output_dtype
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'model'},
-                         {'main_arg': 'input_tensors'},
-                         {'main_arg': 'representative_tensors'}]
+                         {'main_arg': 'input_tensors'}]
     pipeline.add_step(load_model_and_data, step_requirements)
     
 
@@ -135,6 +134,7 @@ def _main():
     # codegen: Path, path to generated code, including
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'cube_mx'},
+                         {'main_arg': 'stm32ai'},
                          {'main_arg': 'cube_template'},
                          {'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'model'}]
@@ -170,6 +170,9 @@ def _main():
                          #{'step': 5, 'name': 'cube_template_all_layers'}]
     pipeline.add_step(flash_and_readback, step_requirements)
 
+    # TODO
+    TODO: read ouput values from network_output/network_val_io.npz to retrive C model output process_data
+    Also implement total runtime by disabling the observer
 
     pipeline.run()
     print()

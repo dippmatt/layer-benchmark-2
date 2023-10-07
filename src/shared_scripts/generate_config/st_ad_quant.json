@@ -1,7 +1,7 @@
 {
     "arguments": {
-        "-model": "/home/matthias/Documents/BA/results/models_and_data/visual_wake_words/trained_models/vww_96_int8_no_softmax.tflite",
-        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/visual_wake_words/bin_data/person/float32.npz",
+        "-model": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite",
+        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz",
         "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/workdir",
         "-stm32ai": "/home/matthias/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai",
         "-cube_template": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/cube_templates/template_cube_ai_8_1_balanced",

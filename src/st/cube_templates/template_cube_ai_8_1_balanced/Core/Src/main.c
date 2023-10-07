@@ -110,6 +110,9 @@ int main(void)
     /* USER CODE END WHILE */
 
   MX_X_CUBE_AI_Process();
+  uint8_t end_message[] = "Finished timing measurements!\r\n";
+  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
+  return 0;
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

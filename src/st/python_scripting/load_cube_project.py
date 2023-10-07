@@ -56,11 +56,15 @@ def set_model_and_workdir_path_bad(workdir, model, cube_template):
 def set_model_and_workdir_path(workdir, model, cube_template):
     ###################################################
     # TODO: remove this test
-    model = Path(model).parent / Path("..", "model.tfllite")
-    model = model.resolve()
-    print("model", model)
-    # right now it the fake model in st/mdodel.tflite does get replaced 
-    # by the workdir version by cube mx for whatever reason?!!
+    # model = Path(model).parent / Path("..", "model.tfllite")
+    # model = model.resolve()
+    # print("model", model)
+
+    # Right now, the alterning the model path in the .ioc does not get applied
+    # the change gets overwritten immediatly when launching cube mx in the automation script
+    # I could not find a way to find the cached model path  or change this behaviour
+    # Workaround to change the model path: open the cube template in cube mx and change the path manually,
+    # then save the project and close cube mx.
     ###################################################
 
     # get the .ioc file by matching the .ioc file type

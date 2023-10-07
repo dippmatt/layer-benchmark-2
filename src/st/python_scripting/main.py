@@ -18,7 +18,7 @@ from validate_args import validate_args
 
 # copy tinyengine framework to workdir, copy custom_tflite.py to framework,
 # run custom_tflite.py to generate model source files
-from use_framework import use_framework
+from use_framework import use_framework_compile
 
 # TODO: make it agnostic to ML graph framework (tflite / onnx,..).
 # load model and test tensors then test the model
@@ -38,10 +38,10 @@ from validate_data import validate_data
 # from copy_build_compile import copy_build_compile
 
 # flash and UART readback methods
-# from flash_and_readback import flash_and_readback
+from flash_and_readback import flash_and_readback
 
 # process and store data
-# from process_data import process_data
+from process_data import process_data
 
 def _main():
 
@@ -136,30 +136,28 @@ def _main():
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'cube_mx'},
                          {'main_arg': 'cube_template'},
-                         {'step': 0, 'name': 'model'}]
-    pipeline.add_step(use_framework, step_requirements)
-    
-    pipeline.run()
-    print()
-    print(pipeline.steps[-1].output)
-    import sys;sys.exit(0)
-
-    # 5. keys added in copy_build_compile step:
-    # cube_templates (all): Path, path to elf file for respective template
-    # ram: int, estimated ram usage of model
-    # flash: int, estimated flash usage of model
-    step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'repetitions'},
-                         {'step': 0, 'name': 'input_tensors'},
-                         {'step': 0, 'name': 'input_dtype'},
-                         {'step': 0, 'name': 'output_shape'},
-                         {'step': 1, 'name': 'cube_template'},
-                         {'step': 1, 'name': 'cube_template_all_layers'},
-                         {'step': 1, 'name': 'cube_template_ref'},
-                         {'step': 1, 'name': 'cube_template_empty'},
-                         {'step': 4, 'name': 'codegen'}]
-    pipeline.add_step(copy_build_compile, step_requirements)
+                         {'step': 0, 'name': 'model'}]
+    pipeline.add_step(use_framework_compile, step_requirements)
+ 
+
+    # # 5. keys added in copy_build_compile step:
+    # # cube_templates (all): Path, path to elf file for respective template
+    # # ram: int, estimated ram usage of model
+    # # flash: int, estimated flash usage of model
+    # step_requirements = [{'main_arg': 'workdir'},
+    #                      {'main_arg': 'repetitions'},
+    #                      {'step': 0, 'name': 'input_tensors'},
+    #                      {'step': 0, 'name': 'input_dtype'},
+    #                      {'step': 0, 'name': 'output_shape'},
+    #                      {'step': 1, 'name': 'cube_template'},
+    #                      {'step': 1, 'name': 'cube_template_all_layers'}]
+    #                     #  {'step': 1, 'name': 'cube_template_ref'},
+    #                     #  {'step': 1, 'name': 'cube_template_empty'}]
+
+    # pipeline.add_step(copy_build_compile, step_requirements)
     
+   
 
     # 6. keys added in flash_and_readback step:
     # tensor_values: list. Model output in either float or int8 format, depending on quantization
@@ -168,9 +166,17 @@ def _main():
     step_requirements = [{'main_arg': 'cube_programmer'},
                          {'main_arg': 'workdir'},
                          {'step': 2, 'name': 'serial'},
-                         {'step': 5, 'name': 'cube_template'},
-                         {'step': 5, 'name': 'cube_template_all_layers'}]
+                         {'step': 4, 'name': 'cube_template'}]
+                         #{'step': 5, 'name': 'cube_template_all_layers'}]
     pipeline.add_step(flash_and_readback, step_requirements)
+
+
+    pipeline.run()
+    print()
+    print(pipeline.steps[-1].output)
+    for rep in pipeline.steps[-1].output["reps"]:
+        print(rep)
+    import sys;sys.exit(0)
 
 
     # 7. keys added in process_data step:

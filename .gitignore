@@ -2,3 +2,4 @@ third_party/
 __pycache__/
 venv/
 workdir/
+.vscode/

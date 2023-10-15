@@ -165,7 +165,7 @@ def _main():
                          {'step': 0, 'name': 'reference_output'},
                          {'step': 4, 'name': 'tensor_values'},
                          {'step': 5, 'name': 'reps'},
-                         {'step': 6, 'name': 'reps_all_layers'}]
+                         {'step': 5, 'name': 'reps_all_layers'}]
     pipeline.add_step(process_data, step_requirements)
 
     pipeline.run()

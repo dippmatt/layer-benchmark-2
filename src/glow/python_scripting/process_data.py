@@ -9,7 +9,7 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     step_output = dict()
 
     mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values)
-    step_output["mcu_tensor_values_df"] = mcu_tensor_values
+    step_output["mcu_tensor_values"] = mcu_tensor_values
     print_in_color(Color.GREEN, "Testing MCU data processing for tensor values")
     print(mcu_tensor_values)
     
@@ -21,15 +21,24 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
 
 
     print_in_color(Color.GREEN, "Testing data processing for reps")
+    # process per layer timings
     timing_array = process_layer_timings(reps, num_samples, num_reps=repetitions)
-    
-    # TODO: add process_layer_timings funciton for reps_no_ir
+
+    # process reference total inference time
+    timing_array_all_layers = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)
+
     print()
     print("reps shape:")
     print(timing_array.shape)
-    print()
     print(timing_array)
-    import sys; sys.exit()
+    print()
+    print("reps_all_layers shape:")
+    print(timing_array_all_layers.shape)
+    print(timing_array_all_layers)
+
+    step_output["timing_array"] = timing_array
+    step_output["timing_array_all_layers"] = timing_array_all_layers
+    return step_output
 
     # reps shape should be (num_reps, num_outputs)
     print(reps.shape)
@@ -52,7 +61,20 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     step_output["return_code"] = 0
     return step_output
 
+def process_layer_timings_ref(reps, num_samples, num_reps):
+
+    timings_reps = []
+    for line in reps:
+        timing = line.split('+')[1]
+        timing = timing.strip(' ')
+        # convert to int and then to ms from µs
+        timings_reps.append(int(timing.strip('µs')) / 1000)
+
+    timings_reps = np.array(timings_reps)
+    return timings_reps
+
 def process_layer_timings(reps, num_samples, num_reps):
+    # TODO: calc mean over reps and num_samples
     timings_reps = get_uart_timing_list_in_ms(reps)
 
     # convert measurements into array of shape:
@@ -123,7 +145,7 @@ def get_uart_timing_list_in_ms(uart_result_reps):
     return timings_reps
 
 def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: list):
-    """Converts a list of output tensors (raw UART string data) to a pandas DataFrame.
+    """Converts a list of output tensors (raw UART string data) to a np array.
     """
     for i, tensor_value in enumerate(tensor_values):
         # remove trailing whitespace
@@ -139,8 +161,7 @@ def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values:
         tensor_values[i] = tensor_value
 
     tensor_values = np.array(tensor_values)
-    # mcu_tensor_values_df = out_tensors_to_df(tensor_values)
-    return tensor_values #mcu_tensor_values_df
+    return tensor_values
 
 
 

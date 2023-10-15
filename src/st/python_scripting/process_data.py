@@ -4,13 +4,13 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output_dtype, reference_output: list, tensor_values: list, reps: list):#, reps_no_ir: list):
+def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output_dtype, reference_output: list, tensor_values: list, reps: list, reps_all_layers: list):#, reps_no_ir: list):
     """Processes benchmark data from the STM32 MCU and saves it to a file.
     """
     step_output = dict()
 
-    mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values)
-    step_output["mcu_tensor_values_df"] = mcu_tensor_values
+    mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values, num_samples)
+    step_output["mcu_tensor_values"] = mcu_tensor_values
     print_in_color(Color.GREEN, "Testing MCU data processing for tensor values")
     print(mcu_tensor_values)
     
@@ -22,9 +22,24 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
 
 
     print_in_color(Color.GREEN, "Testing data processing for reps")
-    timing_array = process_layer_timings(reps, num_samples, num_reps=repetitions)
+
+    for rep in reps:
+        print(rep)
+    print()
+    print()
     
+    print(reps_all_layers)
+    
+    timing_array = process_layer_timings(reps)
+    
+    print()
+    for timing in timing_array:
+        print(timing)
+    
+    import sys;sys.exit()
     # TODO: add process_layer_timings funciton for reps_no_ir
+    
+
     print()
     print("reps shape:")
     print(timing_array.shape)
@@ -53,32 +68,24 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     step_output["return_code"] = 0
     return step_output
 
-def process_layer_timings(reps, num_samples, num_reps):
-    timings_reps = get_uart_timing_list_in_ms(reps)
-
-    # convert measurements into array of shape:
-    # (num_samples, num_reps, num_layers)
-    # num_samples: number of unique input tensors, used for inference
-    # num_reps: number of inferences (repetitions) for each input tensor
-    # num_layers: number of layers in the model, each layer has it's inference time measurement
-    
+def process_layer_timings(reps):
+    """Converts a list of layer timings to a numpy array with one timing in ms per layer.
+    """
     # create array-like list of lists for all measurements
     timing_array = []
-    for i in range(num_samples):
-        sample_array = []
-        for j in range(num_reps):
-            # append dummy value
-            sample_array.append(0)
-        timing_array.append(sample_array)
-
-    # fill array
-    for i, timings in enumerate(timings_reps):
-        sample_index = i // num_reps
-        rep_index = i % num_reps
-        timing_array[sample_index][rep_index] = timings
+    
+    for layer in reps:
+        # Example for one layer:
+        # 0     DENSE               0          2.174  28.60 %
+        timing = layer.split(' ')
+        timing = list(filter(None, timing))
+        timing = timing[-3]
+        timing = float(timing)
+        timing_array.append(timing)
     timing_array = np.array(timing_array)
     return timing_array
 
+    
 def get_uart_timing_list_in_ms(uart_result_reps):
     ################## Example Response from UART Serial  ###################
 
@@ -123,27 +130,21 @@ def get_uart_timing_list_in_ms(uart_result_reps):
         timings_reps.append(timings)
     return timings_reps
 
-def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path):
+def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path, num_samples: int):
     """Converts a list of output tensors (raw UART string data) to a pandas DataFrame.
     """
     assert tensor_values.exists(), f"Path to tensor_values file does not exist: {tensor_values}"
-    input_data = np.load(input_data)
-    print("Keys: ", input_data.keys())
-    print("Shape: ", input_data.keys()[0].shape)
-    print()
-    print(input_data)
+    input_data = np.load(tensor_values)
 
-    tensor_values = input_data.keys()[0].reshape(output_shape)
+    # set first dimension of output shape to number of samples
+    final_output_shape = (num_samples, *output_shape[1:])
+    tensor_values = input_data["c_outputs_1"].reshape(final_output_shape)
+    # convert to the finaly data type
+    tensor_values = tensor_values.astype(output_dtype)
+    print("Final shape: ", tensor_values.shape)
+    print("Final dtype: ", tensor_values.dtype)
 
-
-    import sys;sys.exit()
-    input_tensors = input_data['input_tensors']
-
-    tensor_values = np.array(tensor_values)
-    # mcu_tensor_values_df = out_tensors_to_df(tensor_values)
-    return tensor_values #mcu_tensor_values_df
-
-
+    return tensor_values
 
 
 def out_tensors_to_df(tensor_values):

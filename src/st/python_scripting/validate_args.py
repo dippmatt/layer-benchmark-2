@@ -32,6 +32,10 @@ def validate_args(args):
     args.cube_template_validate = Path(args.cube_template_validate).resolve()
     assert args.cube_template_validate.is_dir(), f"STM Cube IDE template project {args.cube_template_validate} not found!."
 
+    # Cube AI does not perform quantization, so we don't hardcode the following options
+    args.quantize = False
+    args.representative_tensors = None
+
     # args.cube_template_empty = Path(args.cube_template_empty).resolve()
     # assert args.cube_template_empty.is_dir(), f"STM Cube IDE template project {args.cube_template_empty} not found!."
 

@@ -7,7 +7,7 @@ from shared_scripts.color_print import print_in_color, Color
 INPUT_SAMPLES = 5
 PROFILE_SAMPLES = 1000
 
-def load_model_and_data(workdir: Path, model_path: Path, input_data: Path):
+def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, representative_data: Path = None, quantize: bool = False):
     """Loads the tflite model and the input data.
     
     Also checks if the input data is quantized and quantizes it if necessary.
@@ -43,6 +43,21 @@ def load_model_and_data(workdir: Path, model_path: Path, input_data: Path):
     data_save_path = workdir / Path("data.npz")
     np.savez(data_save_path, input_tensors=input_tensors)
 
+    if quantize:
+        representative_tensors = load_data(representative_data, step_output['input_shape'])
+        num_representative_samples = representative_tensors.shape[0]
+        if num_representative_samples > PROFILE_SAMPLES:
+            print_in_color(Color.YELLOW, f"Note: Found {num_representative_samples} samples in representative_tensors, but limiting sample size to {PROFILE_SAMPLES} for simplicity!")
+            representative_tensors = representative_tensors[:PROFILE_SAMPLES,...]
+            num_representative_samples = PROFILE_SAMPLES
+        assert input_tensors.shape[1:] == representative_tensors.shape[1:], f"Input tensors and representative tensors must have the same shape! \
+            (except for dimention 0, the sample size) Input tensors: {input_tensors.shape}, representative tensors: {representative_tensors.shape}"
+        step_output['num_representative_samples'] = num_representative_samples
+        step_output['representative_tensors'] = representative_tensors
+    else:
+        step_output['num_representative_samples'] = None
+        step_output['representative_tensors'] = None
+    
     # next load the model again and test it on the input data
     if model_path.suffix == '.tflite':
         quant_data_and_test_tflite(model_path, input_tensors, step_output)
@@ -91,8 +106,6 @@ def load_tflite(step_output: Dict, model: Path):
     step_output['output_name'] = output_details[0]['name']
     step_output['output_dtype'] = output_details[0]['dtype']
     step_output['output_shape'] = output_details[0]['shape']
-    print_in_color(Color.GREEN, step_output['output_shape'])
-    import sys;sys.exit()
 
 def load_onnx(step_output: Dict, model: Path):
     raise NotImplementedError("load_onnx functionality is not implemented yet")
@@ -109,14 +122,13 @@ def load_data(input_data: Path, data_shape: tuple):
     """
     if input_data.suffix == ".npz":
         input_data = np.load(input_data)
-        input_tensors = input_data['input_tensors']        
+        input_tensors = input_data['input_tensors']
+        return input_tensors
     elif input_data.is_dir():
         input_tensors = floatBin2np(input_data, data_shape)
-
+        return input_tensors
     else:
         raise ValueError(f"Invalid data type for input data {input_data}: .npz array or directory of binary files required!")
-
-    return input_tensors
 
 def floatBin2np(bin_files: Path, tensor_shape: tuple):
     """Converts a flaot type binary files in a directory to a numpy array
@@ -235,4 +247,3 @@ def quantize_input_data(input_tensor, scale, zero_point, dtype):
 
 def dequantize_output(output_tensor, scale, zero_point):
     return (output_tensor.astype(np.float32) - zero_point) * scale
-

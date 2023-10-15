@@ -5,6 +5,7 @@
         "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/workdir",
         "-stm32ai": "/home/matthias/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai",
         "-cube_template": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/cube_templates/template_cube_ai_8_1_balanced",
+        "-cube_template_validate": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/cube_templates/template_cube_ai_8_1_balanced_validate",
         "-out_dir": "/home/matthias/Documents/BA/results/glow/usecases/test",
         "-repetitions": "1"
     },

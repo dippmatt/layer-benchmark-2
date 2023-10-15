@@ -29,8 +29,8 @@ def validate_args(args):
     args.cube_template = Path(args.cube_template).resolve()
     assert args.cube_template.is_dir(), f"STM Cube IDE template project {args.cube_template} not found!."
 
-    # args.cube_template_ref = Path(args.cube_template_ref).resolve()
-    # assert args.cube_template_ref.is_dir(), f"STM Cube IDE template project {args.cube_template_ref} not found!."
+    args.cube_template_validate = Path(args.cube_template_validate).resolve()
+    assert args.cube_template_validate.is_dir(), f"STM Cube IDE template project {args.cube_template_validate} not found!."
 
     # args.cube_template_empty = Path(args.cube_template_empty).resolve()
     # assert args.cube_template_empty.is_dir(), f"STM Cube IDE template project {args.cube_template_empty} not found!."

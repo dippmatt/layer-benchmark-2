@@ -4,19 +4,22 @@ import subprocess
 import shutil
 import os
 
-def load_cube_project(workdir: Path, cube_template: Path, cube_template_ref: Path, cube_template_empty: Path, model: Path,):#, cube_template_ref: Path, cube_template_empty: Path):
+def load_cube_project(workdir: Path, cube_template: Path, cube_template_validate: Path, model: Path,):
     step_output = dict()
 
     dst_cube_template = workdir / cube_template.name
-    # dst_cube_template_all_layers = workdir / Path(cube_template.name + '_all_layers')
-    # dst_cube_template_ref = workdir / cube_template_ref.name
-    # dst_cube_template_empty = workdir / cube_template_empty.name
+    dst_cube_template_all_layers = workdir / Path(cube_template.name + '_all_layers')
+    dst_cube_template_validate = workdir / cube_template_validate.name
 
     step_output['cube_template'] = shutil.copytree(cube_template, dst_cube_template)
+    step_output['cube_template_all_layers'] = shutil.copytree(cube_template, dst_cube_template_all_layers)
+    step_output['cube_template_validate'] = shutil.copytree(cube_template_validate, dst_cube_template_validate)
+
+    # insert model specific information into the .ioc file
     set_model_and_workdir_path(workdir, model, step_output['cube_template'])
-    # step_output['cube_template_all_layers'] = shutil.copytree(cube_template, dst_cube_template_all_layers)
-    # step_output['cube_template_ref'] = shutil.copytree(cube_template_ref, dst_cube_template_ref)
-    # step_output['cube_template_empty'] = shutil.copytree(cube_template_empty, dst_cube_template_empty)
+    set_model_and_workdir_path(workdir, model, step_output['cube_template_all_layers'])
+    set_model_and_workdir_path(workdir, model, step_output['cube_template_validate'])
+
     return step_output
     
 def set_model_and_workdir_path_bad(workdir, model, cube_template):

@@ -91,6 +91,8 @@ def load_tflite(step_output: Dict, model: Path):
     step_output['output_name'] = output_details[0]['name']
     step_output['output_dtype'] = output_details[0]['dtype']
     step_output['output_shape'] = output_details[0]['shape']
+    print_in_color(Color.GREEN, step_output['output_shape'])
+    import sys;sys.exit()
 
 def load_onnx(step_output: Dict, model: Path):
     raise NotImplementedError("load_onnx functionality is not implemented yet")

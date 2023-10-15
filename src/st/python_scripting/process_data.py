@@ -2,8 +2,9 @@ from shared_scripts.color_print import print_in_color, Color
 from typing import Tuple
 import numpy as np
 import pandas as pd
+from pathlib import Path
 
-def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output_dtype, reference_output: list, tensor_values: list, reps: list, reps_no_ir: list):
+def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output_dtype, reference_output: list, tensor_values: list, reps: list):#, reps_no_ir: list):
     """Processes benchmark data from the STM32 MCU and saves it to a file.
     """
     step_output = dict()
@@ -122,21 +123,21 @@ def get_uart_timing_list_in_ms(uart_result_reps):
         timings_reps.append(timings)
     return timings_reps
 
-def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: list):
+def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path):
     """Converts a list of output tensors (raw UART string data) to a pandas DataFrame.
     """
-    for i, tensor_value in enumerate(tensor_values):
-        # remove trailing whitespace
-        tensor_value = tensor_value.rstrip(' ')
-        tensor_value = tensor_value.split(' ')
-        if "int" in str(output_dtype):
-            tensor_value = [int(x) for x in tensor_value]
-        elif "float" in str(output_dtype):
-            tensor_value = [float(x) for x in tensor_value]
-        else:
-            print("Tensor value has wrong data type. Can only convert to int or float.")
-        tensor_value = np.array(tensor_value).reshape(output_shape)
-        tensor_values[i] = tensor_value
+    assert tensor_values.exists(), f"Path to tensor_values file does not exist: {tensor_values}"
+    input_data = np.load(input_data)
+    print("Keys: ", input_data.keys())
+    print("Shape: ", input_data.keys()[0].shape)
+    print()
+    print(input_data)
+
+    tensor_values = input_data.keys()[0].reshape(output_shape)
+
+
+    import sys;sys.exit()
+    input_tensors = input_data['input_tensors']
 
     tensor_values = np.array(tensor_values)
     # mcu_tensor_values_df = out_tensors_to_df(tensor_values)

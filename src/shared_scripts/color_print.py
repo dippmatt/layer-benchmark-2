@@ -9,6 +9,12 @@ class Color(Enum):
     RESET = '\033[0m'
 
 def print_in_color(color, text):
+    """Prints text in color to the terminal.
+
+    Args:
+        color (Color): Color enum
+        text (str): Text to print
+    """
     color_code = color.value
     reset_code = Color.RESET.value
     print(f"{color_code}{text}{reset_code}")

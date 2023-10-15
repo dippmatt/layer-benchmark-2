@@ -71,10 +71,8 @@ def _main():
                             Minimum of 10 tensors required.', default=None)
     parser.add_argument('-cube_template', dest='cube_template', type=str,
                         help='Path to the STM Cube IDE template project, where the compiled model source files are copied to.', default=None)
-    parser.add_argument('-cube_template_ref', dest='cube_template_ref', type=str,
-                        help='Path to the STM Cube IDE reference template project, used as error estimation of layer measurements.', default=None)
-    parser.add_argument('-cube_template_empty', dest='cube_template_empty', type=str,
-                        help='Path to the empty STM Cube IDE template project, used to extract RAM & FLASH usage.', default=None)
+    parser.add_argument('-cube_template_validate', dest='cube_template_validate', type=str,
+                        help='Path to the STM Cube IDE reference template project, used validate the project and retirieve C model output tensors.', default=None)
     parser.add_argument('-out_dir', dest='out_dir', type=str,
                         help='Path to the results as csv.', default=None)
     args = parser.parse_args()
@@ -106,12 +104,10 @@ def _main():
     # 1. keys added in load_cube_project step:
     # cube_template: Path, path to cube template project used for per layer measurements
     # cube_template_all_layers: Path path to project used for error estimation (measures whole model)
-    # cube_template_ref: Path, projet with inference framework, used for flash and ram estimation
-    # cube_template_empty: Path, empty project, used for flash and ram estimation
+    # cube_template_validate: Path, projet with inference framework, used for output tensor validation
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'cube_template'},
-                         {'main_arg': 'cube_template_ref'},
-                         {'main_arg': 'cube_template_empty'},
+                         {'main_arg': 'cube_template_validate'},
                          {'step': 0, 'name': 'model'}]
     pipeline.add_step(load_cube_project, step_requirements)
 
@@ -131,48 +127,58 @@ def _main():
 
 
     # 4. keys added in use_framework step:
-    # codegen: Path, path to generated code, including
+    # tensor_values: list. Model output in either float or int8 format, depending on quantization
+    # cube_template: Path to the elf file of the compiled model
+    # cube_template_all_layers: Path to the elf file of the compiled model without per-layer timings 
+    # flash: int, total flash size in KB of the model + framework runtime
+    # flash_rt: int, flash size framework runtime only in KB
+    # ram: int, total ram size in KB of the model + framework runtime
+    # ram_rt: int, ram size framework runtime only in KB
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'cube_mx'},
                          {'main_arg': 'stm32ai'},
-                         {'main_arg': 'cube_template'},
                          {'main_arg': 'repetitions'},
-                         {'step': 0, 'name': 'model'}]
-    pipeline.add_step(use_framework_compile, step_requirements)
- 
-
-    # # 5. keys added in copy_build_compile step:
-    # # cube_templates (all): Path, path to elf file for respective template
-    # # ram: int, estimated ram usage of model
-    # # flash: int, estimated flash usage of model
-    # step_requirements = [{'main_arg': 'workdir'},
-    #                      {'main_arg': 'repetitions'},
-    #                      {'step': 0, 'name': 'input_tensors'},
-    #                      {'step': 0, 'name': 'input_dtype'},
-    #                      {'step': 0, 'name': 'output_shape'},
-    #                      {'step': 1, 'name': 'cube_template'},
-    #                      {'step': 1, 'name': 'cube_template_all_layers'}]
-    #                     #  {'step': 1, 'name': 'cube_template_ref'},
-    #                     #  {'step': 1, 'name': 'cube_template_empty'}]
-
-    # pipeline.add_step(copy_build_compile, step_requirements)
-    
+                         {'main_arg': 'cube_programmer'},
+                         {'step': 0, 'name': 'model'},
+                         {'step': 1, 'name': 'cube_template'},
+                         {'step': 1, 'name': 'cube_template_validate'}]
+    pipeline.add_step(use_framework_compile, step_requirements)    
    
 
-    # 6. keys added in flash_and_readback step:
-    # tensor_values: list. Model output in either float or int8 format, depending on quantization
+    # 5. keys added in flash_and_readback step:
     # reps: list of list. first dimenion: repetitions, second dimension: layer measurements
     # reps_all_layers: list. Layer measurements of the whole model
     step_requirements = [{'main_arg': 'cube_programmer'},
                          {'main_arg': 'workdir'},
                          {'step': 2, 'name': 'serial'},
-                         {'step': 4, 'name': 'cube_template'}]
-                         #{'step': 5, 'name': 'cube_template_all_layers'}]
+                         {'step': 4, 'name': 'cube_template'},
+                         {'step': 4, 'name': 'cube_template_all_layers'}]
     pipeline.add_step(flash_and_readback, step_requirements)
 
+
+    # 6. keys added in process_data step:
+
+    step_requirements = [{'main_arg': 'repetitions'},
+                         {'step': 0, 'name': 'num_samples'},
+                         {'step': 0, 'name': 'output_shape'},
+                         {'step': 0, 'name': 'output_dtype'},
+                         {'step': 0, 'name': 'reference_output'},
+                         {'step': 4, 'name': 'tensor_values'},
+                         {'step': 5, 'name': 'reps'},
+                         {'step': 6, 'name': 'reps_all_layers'}]
+    pipeline.add_step(process_data, step_requirements)
+
+    pipeline.run()
+    print()
+    for key, value in pipeline.steps[-1].output.items():
+        print(key)
+        print(value)
+    
+    import sys; sys.exit(0)
+
     # TODO
-    TODO: read ouput values from network_output/network_val_io.npz to retrive C model output process_data
-    Also implement total runtime by disabling the observer
+    #TODO: read ouput values from network_output/network_val_io.npz to retrive C model output process_data
+    #Also implement total runtime by disabling the observer
 
     pipeline.run()
     print()
@@ -180,23 +186,6 @@ def _main():
     for rep in pipeline.steps[-1].output["reps"]:
         print(rep)
     import sys;sys.exit(0)
-
-
-    # 7. keys added in process_data step:
-
-    step_requirements = [{'main_arg': 'repetitions'},
-                         {'step': 0, 'name': 'num_samples'},
-                         {'step': 0, 'name': 'output_shape'},
-                         {'step': 0, 'name': 'output_dtype'},
-                         {'step': 0, 'name': 'reference_output'},
-                         {'step': 6, 'name': 'tensor_values'},
-                         {'step': 6, 'name': 'reps'},
-                         {'step': 6, 'name': 'reps_all_layers'}]
-    pipeline.add_step(process_data, step_requirements)
-
-    pipeline.run()
-    print()
-    print(pipeline.steps[-1].output)
 
     # from assemble_project import assemble_project
     # from flash_mcu import flash_mcu

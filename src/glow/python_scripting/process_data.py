@@ -22,22 +22,34 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
 
     print_in_color(Color.GREEN, "Testing data processing for reps")
     # process per layer timings
-    timing_array = process_layer_timings(reps, num_samples, num_reps=repetitions)
+    per_layer_timings_mean , per_layer_timings_std_dev = process_layer_timings(reps, num_samples, num_reps=repetitions)
 
     # process reference total inference time
-    timing_array_all_layers = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)
+    all_layers_timings_mean, all_layers_timings_std_dev = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)
 
     print()
-    print("reps shape:")
-    print(timing_array.shape)
-    print(timing_array)
+    print("layer_timings:")
+    print(per_layer_timings_mean.shape)
+    print(per_layer_timings_mean)
+    print("sum of layer timings:")
+    print(np.sum(per_layer_timings_mean))
+    print("standard deviation:")
+    print(per_layer_timings_std_dev.shape)
+    print(per_layer_timings_std_dev)
     print()
-    print("reps_all_layers shape:")
-    print(timing_array_all_layers.shape)
-    print(timing_array_all_layers)
+    print("all_layers_timings shape:")
+    print(all_layers_timings_mean.shape)
+    print(all_layers_timings_mean)
+    print("standard deviation:")
+    print(all_layers_timings_std_dev.shape)
+    print(all_layers_timings_std_dev)
+    print()
 
-    step_output["timing_array"] = timing_array
-    step_output["timing_array_all_layers"] = timing_array_all_layers
+    step_output["per_layer_timings_mean"] = per_layer_timings_mean
+    step_output["per_layer_timings_std_dev"] = per_layer_timings_std_dev
+    step_output["all_layers_timings_mean"] = all_layers_timings_mean
+    step_output["all_layers_timings_std_dev"] = all_layers_timings_std_dev
+    
     return step_output
 
     # reps shape should be (num_reps, num_outputs)
@@ -71,7 +83,9 @@ def process_layer_timings_ref(reps, num_samples, num_reps):
         timings_reps.append(int(timing.strip('µs')) / 1000)
 
     timings_reps = np.array(timings_reps)
-    return timings_reps
+    mean = np.mean(timings_reps, axis=(0))
+    std_dev = np.std(timings_reps, axis=(0))
+    return mean, std_dev
 
 def process_layer_timings(reps, num_samples, num_reps):
     # TODO: calc mean over reps and num_samples
@@ -98,7 +112,12 @@ def process_layer_timings(reps, num_samples, num_reps):
         rep_index = i % num_reps
         timing_array[sample_index][rep_index] = timings
     timing_array = np.array(timing_array)
-    return timing_array
+
+    # now that we have an np array with shape (num_samples, num_reps, num_layers),
+    # we want to average over all samples and repetitions, to generate an array of shape (num_layers)
+    mean = np.mean(timing_array, axis=(0, 1))
+    std_dev = np.std(timing_array, axis=(0, 1))
+    return mean, std_dev
 
 def get_uart_timing_list_in_ms(uart_result_reps):
     ################## Example Response from UART Serial  ###################

@@ -1,3 +1,4 @@
+from shared_scripts.flash_ram_from_elf import calc_flash_ram
 from pathlib import Path
 import numpy as np
 import shutil
@@ -107,7 +108,7 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
         assert elf_file.exists(), f"Compiling model project encountered an error. See {logfile} for details."
         step_output[template_names[i]] = elf_file
 
-    ram, flash = calc_flash_ram(step_output["cube_template_ref"], step_output["cube_template_empty"])
+    ram, flash = calc_flash_ram_diff(step_output["cube_template_ref"], step_output["cube_template_empty"])
     step_output["flash"] = flash
     step_output["ram"] = ram
 
@@ -265,41 +266,18 @@ def delete_callbacks(main_c: Path):
         file.writelines(new_lines)
     return
 
-def calc_flash_ram(elf_file_ref: Path, elf_file_empty: Path):
+def calc_flash_ram_diff(elf_file_ref: Path, elf_file_empty: Path):
     """Calculate the flash and RAM usage of the project.
 
     Returns: A tuple with the flash and RAM usage.
     """
-    # Define the regular expression patterns for the sections and sizes
-    pattern_text = r"\.text\s+(\d+)"
-    pattern_data = r"\.data\s+(\d+)"
-    pattern_bss = r"\.bss\s+(\d+)"
+    # extract ram and flash usage from elf files
+    ram_usage_ref, flash_usage_ref = calc_flash_ram(elf_file_ref)
+    ram_usage_empty, flash_usage_empty = calc_flash_ram(elf_file_empty)
 
-    ref_size = subprocess.check_output(f'arm-none-eabi-size -A {elf_file_ref}', shell=True, text=True)
-    empty_size = subprocess.check_output(f'arm-none-eabi-size -A {elf_file_empty}', shell=True, text=True)
-    
-    text_sizes_ref = re.findall(pattern_text, ref_size)
-    data_sizes_ref = re.findall(pattern_data, ref_size)
-    bss_sizes_ref = re.findall(pattern_bss, ref_size)
-
-    text_sizes_empty = re.findall(pattern_text, empty_size)
-    data_sizes_empty = re.findall(pattern_data, empty_size)
-    bss_sizes_empty = re.findall(pattern_bss, empty_size)
-
-    flash_usage_ref = int(data_sizes_ref[0]) + int(text_sizes_ref[0])
-    ram_usage_ref = int(bss_sizes_ref[0]) + int(data_sizes_ref[0])
-
-    flash_usage_empty = int(data_sizes_empty[0]) + int(text_sizes_empty[0])
-    ram_usage_empty = int(bss_sizes_empty[0]) + int(data_sizes_empty[0])
-
+    # calculate the difference between the two
+    # to get the RAM and FLASH usage of the model + inference framework runtime
     ram_diff = ram_usage_ref - ram_usage_empty
     flash_diff = flash_usage_ref - flash_usage_empty
 
-    print(f"Flash usage reference: {flash_usage_ref} bytes")
-    print(f"RAM usage reference: {ram_usage_ref} bytes")
-    print(f"Flash usage empty: {flash_usage_empty} bytes")
-    print(f"RAM usage empty: {ram_usage_empty} bytes")
-    print(f"Flash usage: {flash_diff} bytes")
-    print(f"RAM usage: {ram_diff} bytes")
-    print()
     return (ram_diff, flash_diff)

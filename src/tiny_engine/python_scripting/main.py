@@ -138,6 +138,7 @@ def _main():
 
     # 5. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template
+    # layer_list: list of all layer names, for postprocessing the results
     # ram: int, estimated ram usage of model
     # flash: int, estimated flash usage of model
     step_requirements = [{'main_arg': 'workdir'},

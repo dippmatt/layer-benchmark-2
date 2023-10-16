@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+import shutil
 
 def use_framework(quantize: bool, workdir: Path, glow_compiler: Path, glow_profiler: Path, nxp: bool, input_name: str, input_tensors, model):
     step_output = dict()
@@ -10,8 +11,29 @@ def use_framework(quantize: bool, workdir: Path, glow_compiler: Path, glow_profi
         step_output['bundle_dir'], step_output['bundle_dir_no_ir'] = compile(glow_compiler, model, quantize, workdir, nxp, model_profile=model_profile)
     else:
         step_output['bundle_dir'], step_output['bundle_dir_no_ir'] = compile(glow_compiler, model, quantize, workdir, nxp, model_profile=None)
+    
+    # The compile function generates a log text file depending on the cwd.
+    # So copy that log file, that contains the layer names, into workdir.
+    instrument_ir_info_src = workdir / Path("..", "..", "instrument-ir.info")
+    instrument_ir_info_dst = workdir / "instrument-ir.info"
+    shutil.copy(instrument_ir_info_src, instrument_ir_info_dst)
+    step_output["layer_list"] = extract_layer_names(instrument_ir_info_dst)
     return step_output
 
+
+def extract_layer_names(instrument_ir_info: Path):
+    """Extracts layer names from the instrument-ir.info file.
+    """
+    layer_names = []
+    with open(instrument_ir_info, 'r') as file:
+        lines = file.readlines()
+        for i, line in enumerate(lines):
+            if "Name :" in line:
+                layer_name = line.split('Name :')[1].strip('\n')
+                layer_name = layer_name.strip(' ')
+                layer_names.append(layer_name)
+    return layer_names
+            
 
 
 def gen_tensor_list_file(np_array, workdir):

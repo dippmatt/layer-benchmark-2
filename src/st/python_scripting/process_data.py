@@ -85,51 +85,6 @@ def process_layer_timings(reps):
     timing_array = np.array(timing_array)
     return timing_array
 
-    
-def get_uart_timing_list_in_ms(uart_result_reps):
-    ################## Example Response from UART Serial  ###################
-
-    # Profiling "MAIN loop timing" sequence: 
-    # --Event-----------------------|--timestamp--|----delta_t---
-    # BEGIN                         :        0 µs | +        0 µs
-    # START                         :        2 µs | +        2 µs
-    # STOP                          :    14570 µs | +    14568 µs
-    # START                         :    14571 µs | +        1 µs
-    # STOP                          :    23141 µs | +     8570 µs
-    # START                         :    23143 µs | +        2 µs
-    # STOP                          :    33860 µs | +    10717 µs
-    # START                         :    33861 µs | +        1 µs
-    # STOP                          :    42431 µs | +     8570 µs
-    # START                         :    42433 µs | +        2 µs
-    # STOP                          :    53150 µs | +    10717 µs
-    # START                         :    53151 µs | +        1 µs
-    # STOP                          :    61721 µs | +     8570 µs
-    # START                         :    61723 µs | +        2 µs
-    # STOP                          :    72440 µs | +    10717 µs
-    # START                         :    72441 µs | +        1 µs
-    # STOP                          :    81011 µs | +     8570 µs
-    # START                         :    81013 µs | +        2 µs
-    # STOP                          :    91730 µs | +    10717 µs
-    # START                         :    91731 µs | +        1 µs
-    # STOP                          :    92018 µs | +      287 µs
-    # START                         :    92019 µs | +        1 µs
-    # STOP                          :    92049 µs | +       30 µs
-    # START                         :    92049 µs | +        0 µs
-    # STOP                          :    92060 µs | +       11 µs
-    # END                           :    92060 µs | +        0 µs
-    
-    timings_reps = []
-    for uart_result in uart_result_reps:
-        timings = []
-        for line in uart_result:
-            if "STOP" in line:
-                timing = line.split('+')[1]
-                timing = timing.strip(' ')
-                # convert to int and then to ms from µs
-                timings.append(int(timing.strip('µs')) / 1000)
-        timings_reps.append(timings)
-    return timings_reps
-
 def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path, num_samples: int):
     """Converts a list of output tensors (raw UART string data) to a pandas DataFrame.
     """

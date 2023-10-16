@@ -139,6 +139,7 @@ def _main():
     # 4. keys added in use_framework step:
     # bundle_dir: Path, path to compiled model with IR
     # bundle_dir_no_ir: Path, path to compiled model without IR
+    # layer_list: list of all layer names, for postprocessing the results
     step_requirements = [{'main_arg': 'quantize'},
                          {'main_arg': 'workdir'},
                          {'main_arg': 'glow_compiler'},

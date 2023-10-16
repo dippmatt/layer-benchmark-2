@@ -70,7 +70,9 @@ def process_layer_timings_ref(reps, num_samples, num_reps):
         timings_reps.append(int(timing.strip('µs')) / 1000)
 
     timings_reps = np.array(timings_reps)
-    return timings_reps
+    mean = np.mean(timings_reps, axis=(0))
+    std_dev = np.std(timings_reps, axis=(0))
+    return mean, std_dev
 
 def process_layer_timings(reps, num_samples, num_reps):
     # TODO: calc mean over reps and num_samples
@@ -81,6 +83,9 @@ def process_layer_timings(reps, num_samples, num_reps):
     # num_samples: number of unique input tensors, used for inference
     # num_reps: number of inferences (repetitions) for each input tensor
     # num_layers: number of layers in the model, each layer has it's inference time measurement
+    # 
+    # Then calculates the average over all repetitions and all samples, 
+    # so that only a vector of length num_layers is left.
     
     # create array-like list of lists for all measurements
     timing_array = []
@@ -97,7 +102,12 @@ def process_layer_timings(reps, num_samples, num_reps):
         rep_index = i % num_reps
         timing_array[sample_index][rep_index] = timings
     timing_array = np.array(timing_array)
-    return timing_array
+
+    # now that we have an np array with shape (num_samples, num_reps, num_layers),
+    # we want to average over all samples and repetitions, to generate an array of shape (num_layers)
+    mean = np.mean(timing_array, axis=(0, 1))
+    std_dev = np.std(timing_array, axis=(0, 1))
+    return mean, std_dev
 
 def get_uart_timing_list_in_ms(uart_result_reps):
     ################## Example Response from UART Serial  ###################

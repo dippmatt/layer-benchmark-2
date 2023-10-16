@@ -1,3 +1,4 @@
+from shared_scripts.flash_ram_from_elf import calc_flash_ram
 from pathlib import Path
 import numpy as np
 import shutil
@@ -57,7 +58,7 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     genModel_profiled = cube_template / Path("Core", "Src", "genModel.c")
     assert genModel_profiled.exists(), f"{genModel_profiled} does not exist or is not a file"
     # insert profiling events into genModel.c
-    insert_layer_measurements(genModel_profiled)
+    insert_layer_measurements(step_output, genModel_profiled)
 
     # add additional source files from tiny-engine to makefiles of template projects
     # first get the list of generated source files we need to link in the project
@@ -107,38 +108,52 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
         assert elf_file.exists(), f"Compiling model project encountered an error. See {logfile} for details."
         step_output[template_names[i]] = elf_file
 
-    ram, flash = calc_flash_ram(step_output["cube_template_ref"], step_output["cube_template_empty"])
+    ram, flash = calc_flash_ram_diff(step_output["cube_template_ref"], step_output["cube_template_empty"])
     step_output["flash"] = flash
     step_output["ram"] = ram
 
     return step_output
 
     
-def insert_layer_measurements(genModel: Path):
+def insert_layer_measurements(step_output: dict, genModel: Path):
     with open(genModel) as f:
         input_lines = f.readlines()
 
-    invoke_trigger = False
+    # Flag to indicate that we are in a function that executes the model
+    in_function_flag = False
+    # flag to indicate that we are saving layer names for postprocessing
+    save_layer_names = False
 
     layer_number = 0
     # insert START events for each layer
+    layer_names = []
     for i, line in enumerate(input_lines):
         # find out if we are in function that executes the model
         if "void invoke" in line:
-            invoke_trigger = True
+            if "invoke_inf" in line:
+                save_layer_names = True
+            in_function_flag = True
             layer_number = 0
             continue
-        # if the functoin ends, we want to know
-        if invoke_trigger == True:
+        # if the function ends, we want to know
+        if in_function_flag == True:
             if "}" in line:
-                invoke_trigger = False
+                in_function_flag = False
+                save_layer_names = False
             # comment indicating a new layer
             if "/*" in line and "*/" in line:
                 layer_name = line.rstrip("\n")
                 layer_name = layer_name.replace("/* ", "")
-                layer_name = layer_name.replace(" */", "") 
+                layer_name = layer_name.replace(" */", "")
                 input_lines[i] = f"PROFILING_EVENT(\"START Timestamp before {layer_name} {layer_number}\");\n"
                 layer_number += 1
+                if save_layer_names:
+                    layer_names.append(layer_name)
+    for layer_name in layer_names:
+        print(layer_name)
+    import sys; sys.exit(0)
+    step_output["layer_list"] = layer_names
+
     
     # insert STOP events for each layer
     new_line = 'PROFILING_EVENT("STOP");\n'
@@ -331,41 +346,18 @@ def set_io_byte_consts(main_c: Path, c_out_dtype: str, output_shape: tuple):
         file.writelines(lines)
     return
 
-def calc_flash_ram(elf_file_ref: Path, elf_file_empty: Path):
+def calc_flash_ram_diff(elf_file_ref: Path, elf_file_empty: Path):
     """Calculate the flash and RAM usage of the project.
 
     Returns: A tuple with the flash and RAM usage.
     """
-    # Define the regular expression patterns for the sections and sizes
-    pattern_text = r"\.text\s+(\d+)"
-    pattern_data = r"\.data\s+(\d+)"
-    pattern_bss = r"\.bss\s+(\d+)"
+    # extract ram and flash usage from elf files
+    ram_usage_ref, flash_usage_ref = calc_flash_ram(elf_file_ref)
+    ram_usage_empty, flash_usage_empty = calc_flash_ram(elf_file_empty)
 
-    ref_size = subprocess.check_output(f'arm-none-eabi-size -A {elf_file_ref}', shell=True, text=True)
-    empty_size = subprocess.check_output(f'arm-none-eabi-size -A {elf_file_empty}', shell=True, text=True)
-    
-    text_sizes_ref = re.findall(pattern_text, ref_size)
-    data_sizes_ref = re.findall(pattern_data, ref_size)
-    bss_sizes_ref = re.findall(pattern_bss, ref_size)
-
-    text_sizes_empty = re.findall(pattern_text, empty_size)
-    data_sizes_empty = re.findall(pattern_data, empty_size)
-    bss_sizes_empty = re.findall(pattern_bss, empty_size)
-
-    flash_usage_ref = int(data_sizes_ref[0]) + int(text_sizes_ref[0])
-    ram_usage_ref = int(bss_sizes_ref[0]) + int(data_sizes_ref[0])
-
-    flash_usage_empty = int(data_sizes_empty[0]) + int(text_sizes_empty[0])
-    ram_usage_empty = int(bss_sizes_empty[0]) + int(data_sizes_empty[0])
-
+    # calculate the difference between the two
+    # to get the RAM and FLASH usage of the model + inference framework runtime
     ram_diff = ram_usage_ref - ram_usage_empty
     flash_diff = flash_usage_ref - flash_usage_empty
 
-    print(f"Flash usage reference: {flash_usage_ref} bytes")
-    print(f"RAM usage reference: {ram_usage_ref} bytes")
-    print(f"Flash usage empty: {flash_usage_empty} bytes")
-    print(f"RAM usage empty: {ram_usage_empty} bytes")
-    print(f"Flash usage: {flash_diff} bytes")
-    print(f"RAM usage: {ram_diff} bytes")
-    print()
     return (ram_diff, flash_diff)

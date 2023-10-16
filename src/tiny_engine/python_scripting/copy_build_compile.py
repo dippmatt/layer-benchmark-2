@@ -149,11 +149,8 @@ def insert_layer_measurements(step_output: dict, genModel: Path):
                 layer_number += 1
                 if save_layer_names:
                     layer_names.append(layer_name)
-    for layer_name in layer_names:
-        print(layer_name)
-    import sys; sys.exit(0)
-    step_output["layer_list"] = layer_names
 
+    step_output["layer_list"] = layer_names
     
     # insert STOP events for each layer
     new_line = 'PROFILING_EVENT("STOP");\n'

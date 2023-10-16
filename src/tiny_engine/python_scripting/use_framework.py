@@ -31,16 +31,3 @@ def use_framework(workdir: Path, submodule_dir: Path, model: Path):
     chdir(cwd)
     step_output["codegen"] = tinyengine_dir / Path("codegen")
     return step_output
-    
-    
-    
-
-if __name__ == "__main__":
-    from pathlib import Path
-    
-    # Prepare directory structure
-    workdir = Path.cwd() / Path("..", "workdir")
-    submodule_dir = Path.cwd() / Path("..", "..", "..", "third_party", "tinyengine")
-    
-    model = Path("/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite")
-    prep_tinyengine_framework(workdir, submodule_dir, model)

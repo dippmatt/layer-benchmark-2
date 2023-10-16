@@ -13,7 +13,7 @@ def calc_flash_ram(elf_file: Path):
     
     Flash = text + rodata + data
     Ram = data + bss
-    Returns: A tuple with the flash and RAM usage.
+    Returns: A tuple with the flash and RAM usage in bytes.
     """
     # Define the regular expression patterns for the sections and sizes
     pattern_text = r"\.text\s+(\d+)"

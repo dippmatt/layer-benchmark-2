@@ -10,33 +10,23 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
 
     mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values)
     step_output["mcu_tensor_values"] = mcu_tensor_values
-    print_in_color(Color.GREEN, "Testing MCU data processing for tensor values")
-    print(mcu_tensor_values)
     
     # ref_tensor_values_df = out_tensors_to_df(reference_output)
     #step_output["ref_tensor_values_df"] = ref_tensor_values_df
     ref_tensor_values = np.array(reference_output)
-    print_in_color(Color.GREEN, "Testing reference data processing for tensor values")
-    print(ref_tensor_values)
+    step_output["ref_tensor_values"] = ref_tensor_values
 
-
-    print_in_color(Color.GREEN, "Testing data processing for reps")
-    timing_array = process_layer_timings(reps, num_samples, num_reps=repetitions)
+    # process per layer timings
+    per_layer_timings_mean , per_layer_timings_std_dev = process_layer_timings(reps, num_samples, num_reps=repetitions)
     
     # process reference total inference time
-    timing_array_all_layers = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)
+    all_layers_timings_mean, all_layers_timings_std_dev = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)
 
-    print()
-    print("reps shape:")
-    print(timing_array.shape)
-    print(timing_array)
-    print()
-    print("reps_all_layers shape:")
-    print(timing_array_all_layers.shape)
-    print(timing_array_all_layers)
+    step_output["per_layer_timings_mean"] = per_layer_timings_mean
+    step_output["per_layer_timings_std_dev"] = per_layer_timings_std_dev
+    step_output["all_layers_timings_mean"] = all_layers_timings_mean
+    step_output["all_layers_timings_std_dev"] = all_layers_timings_std_dev
 
-    step_output["timing_array"] = timing_array
-    step_output["timing_array_all_layers"] = timing_array_all_layers
     return step_output
 
     # reps shape should be (num_reps, num_outputs)
@@ -75,7 +65,6 @@ def process_layer_timings_ref(reps, num_samples, num_reps):
     return mean, std_dev
 
 def process_layer_timings(reps, num_samples, num_reps):
-    # TODO: calc mean over reps and num_samples
     timings_reps = get_uart_timing_list_in_ms(reps)
 
     # convert measurements into array of shape:

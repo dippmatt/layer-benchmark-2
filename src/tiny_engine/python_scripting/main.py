@@ -139,8 +139,8 @@ def _main():
     # 5. keys added in copy_build_compile step:
     # cube_templates (all): Path, path to elf file for respective template
     # layer_list: list of all layer names, for postprocessing the results
-    # ram: int, estimated ram usage of model
-    # flash: int, estimated flash usage of model
+    # ram: int, estimated ram usage of model + model runtime in bytes
+    # flash: int, estimated flash usage of model + model runtime in bytes
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'input_tensors'},
@@ -167,7 +167,14 @@ def _main():
 
 
     # 7. keys added in process_data step:
-
+    # per_layer_timings_mean: np.array, shape: (num_layers), dtype: float,
+    #   mean of per layer timings over all repetitions and samples
+    # per_layer_timings_std_dev: np.array, shape: (num_layers), dtype: float,
+    #   standard deviation of per layer timings over all repetitions and samples
+    # all_layers_timings_mean: np.array, shape: (num_samples), dtype: float,
+    #   mean of total inference time over all repetitions and samples for all layers
+    # all_layers_timings_std_dev: np.array, shape: (num_samples), dtype: float,
+    #   standard deviation of total inference time over all repetitions and samples for all layers
     step_requirements = [{'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'num_samples'},
                          {'step': 0, 'name': 'output_shape'},
@@ -179,14 +186,53 @@ def _main():
     pipeline.add_step(process_data, step_requirements)
 
     pipeline.run()
+    
+    # Test output
+    layer_list = pipeline.steps[5].output["layer_list"]
+    ram = pipeline.steps[5].output["ram"]
+    flash = pipeline.steps[5].output["flash"]
+    per_layer_timings_mean = pipeline.steps[7].output["per_layer_timings_mean"]
+    per_layer_timings_std_dev = pipeline.steps[7].output["per_layer_timings_std_dev"]
+    all_layers_timings_mean = pipeline.steps[7].output["all_layers_timings_mean"]
+    all_layers_timings_std_dev = pipeline.steps[7].output["all_layers_timings_std_dev"]
+    mcu_tensor_values = pipeline.steps[7].output["mcu_tensor_values"]
+    ref_tensor_values = pipeline.steps[7].output["ref_tensor_values"]
+    
+    print("RUN SUMMARY:")
+    print("Used RAM (bytes): ", ram)
+    print("Used FLASH (bytes): ", flash)
     print()
-    print(pipeline.steps[-1].output)
-
-    # from assemble_project import assemble_project
-    # from flash_mcu import flash_mcu
-    # from uart_readback import uart_readback
-    # from store_data import store_data
-
+    print("layer names:")
+    print(layer_list)
+    print()
+    print("layer_timings:")
+    print(per_layer_timings_mean.shape)
+    print(per_layer_timings_mean)
+    print("sum of layer timings:")
+    import numpy as np
+    print(np.sum(per_layer_timings_mean))
+    print("standard deviation:")
+    print(per_layer_timings_std_dev.shape)
+    print(per_layer_timings_std_dev)
+    print()
+    print("all_layers_timings shape:")
+    print(all_layers_timings_mean.shape)
+    print(all_layers_timings_mean)
+    print("standard deviation:")
+    print(all_layers_timings_std_dev.shape)
+    print(all_layers_timings_std_dev)
+    print()
+    print("tensor_values shape:")
+    print(mcu_tensor_values.shape)
+    print()
+    print("tensor_values:")
+    print(mcu_tensor_values)
+    print()
+    print("ref_tensor_values shape:")
+    print(ref_tensor_values.shape)
+    print()
+    print("ref_tensor_values:")
+    print(ref_tensor_values)
 
 if __name__ == '__main__':
     import sys

@@ -10,40 +10,17 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
 
     mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values)
     step_output["mcu_tensor_values"] = mcu_tensor_values
-    print_in_color(Color.GREEN, "Testing MCU data processing for tensor values")
-    print(mcu_tensor_values)
     
     # ref_tensor_values_df = out_tensors_to_df(reference_output)
     #step_output["ref_tensor_values_df"] = ref_tensor_values_df
     ref_tensor_values = np.array(reference_output)
-    print_in_color(Color.GREEN, "Testing reference data processing for tensor values")
-    print(ref_tensor_values)
-
-
-    print_in_color(Color.GREEN, "Testing data processing for reps")
+    step_output["ref_tensor_values"] = ref_tensor_values
+    
     # process per layer timings
     per_layer_timings_mean , per_layer_timings_std_dev = process_layer_timings(reps, num_samples, num_reps=repetitions)
 
     # process reference total inference time
-    all_layers_timings_mean, all_layers_timings_std_dev = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)
-
-    print()
-    print("layer_timings:")
-    print(per_layer_timings_mean.shape)
-    print(per_layer_timings_mean)
-    print("sum of layer timings:")
-    print(np.sum(per_layer_timings_mean))
-    print("standard deviation:")
-    print(per_layer_timings_std_dev.shape)
-    print(per_layer_timings_std_dev)
-    print()
-    print("all_layers_timings shape:")
-    print(all_layers_timings_mean.shape)
-    print(all_layers_timings_mean)
-    print("standard deviation:")
-    print(all_layers_timings_std_dev.shape)
-    print(all_layers_timings_std_dev)
-    print()
+    all_layers_timings_mean, all_layers_timings_std_dev = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)    
 
     step_output["per_layer_timings_mean"] = per_layer_timings_mean
     step_output["per_layer_timings_std_dev"] = per_layer_timings_std_dev

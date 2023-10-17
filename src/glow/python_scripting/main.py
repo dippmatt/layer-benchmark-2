@@ -182,6 +182,8 @@ def _main():
 
     
     # 7. keys added in process_data step:
+    # mcu_tensor_values: np.array, shape: (num_samples, *output_shape), dtype: depends on quantization
+    # ref_tensor_values: np.array, shape: (num_samples, *output_shape), dtype: depends on quantization
     # per_layer_timings_mean: np.array, shape: (num_layers), dtype: float,
     #   mean of per layer timings over all repetitions and samples
     # per_layer_timings_std_dev: np.array, shape: (num_layers), dtype: float,

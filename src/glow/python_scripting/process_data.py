@@ -20,7 +20,7 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     per_layer_timings_mean , per_layer_timings_std_dev = process_layer_timings(reps, num_samples, num_reps=repetitions)
 
     # process reference total inference time
-    all_layers_timings_mean, all_layers_timings_std_dev = process_layer_timings_ref(reps_no_ir, num_samples, num_reps=repetitions)    
+    all_layers_timings_mean, all_layers_timings_std_dev = process_layer_timings_ref(reps_no_ir)    
 
     step_output["per_layer_timings_mean"] = per_layer_timings_mean
     step_output["per_layer_timings_std_dev"] = per_layer_timings_std_dev
@@ -50,7 +50,7 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     step_output["return_code"] = 0
     return step_output
 
-def process_layer_timings_ref(reps, num_samples, num_reps):
+def process_layer_timings_ref(reps):
 
     timings_reps = []
     for line in reps:

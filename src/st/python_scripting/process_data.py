@@ -4,69 +4,49 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output_dtype, reference_output: list, tensor_values: list, reps: list, reps_all_layers: list):#, reps_no_ir: list):
+def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output_dtype, reference_output: list, tensor_values: list, reps: list, reps_all_layers: list):
     """Processes benchmark data from the STM32 MCU and saves it to a file.
     """
     step_output = dict()
 
     mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values, num_samples)
     step_output["mcu_tensor_values"] = mcu_tensor_values
-    print_in_color(Color.GREEN, "Testing MCU data processing for tensor values")
-    print(mcu_tensor_values)
     
     # ref_tensor_values_df = out_tensors_to_df(reference_output)
     #step_output["ref_tensor_values_df"] = ref_tensor_values_df
     ref_tensor_values = np.array(reference_output)
-    print_in_color(Color.GREEN, "Testing reference data processing for tensor values")
-    print(ref_tensor_values)
-
-
-    print_in_color(Color.GREEN, "Testing data processing for reps")
-
-    for rep in reps:
-        print(rep)
-    print()
-    print()
+    step_output["ref_tensor_values"] = ref_tensor_values
     
-    print(reps_all_layers)
-    
-    timing_array = process_layer_timings(reps)
-    
-    print()
-    for timing in timing_array:
-        print(timing)
-    
-    import sys;sys.exit()
-    # TODO: add process_layer_timings funciton for reps_no_ir
-    
+    # process per layer timings
+    per_layer_timings_mean = process_layer_timings(reps)
 
-    print()
-    print("reps shape:")
-    print(timing_array.shape)
-    print()
-    print(timing_array)
-    import sys; sys.exit()
-
-    # reps shape should be (num_reps, num_outputs)
-    print(reps.shape)
-    for rep in reps:
-        print(len(rep))
-    ref_tensor_values_df = out_tensors_to_df(reference_output)
-    step_output["ref_tensor_values_df"] = ref_tensor_values_df
-    print_in_color(Color.GREEN, "Testing reference data processing for tensor values")
-    print(ref_tensor_values_df)
-
-    ################################    
+    # process reference total inference time
+    all_layers_timings_mean = process_layer_timings_ref(reps_all_layers)  
+    
+    step_output["per_layer_timings_mean"] = per_layer_timings_mean
+    step_output["all_layers_timings_mean"] = all_layers_timings_mean
     
     return step_output
-    ################################
 
-    print_in_color(Color.GREEN, "Testing data processing for reps_no_ir")
-    for rep in reps_no_ir:
-        print(rep)
+
+def process_layer_timings_ref(reps_all_layers):
+    """Converts the string of averaged timings into a float in ms.
+    """
+    # Example string to process:
+    # duration     : 7.597 ms (average)
     
-    step_output["return_code"] = 0
-    return step_output
+    assert len(reps_all_layers) == 1, "Found more than one line in reps_all_layers"
+    timing = reps_all_layers[0].split(':')[1]
+    timing = timing.split('ms')[0]
+    
+    timing = timing.split(' ')
+    # remove empty strings
+    timing = list(filter(None, timing))
+    
+    timing[0] = float(timing[0])
+    
+    return np.array(timing)
+
 
 def process_layer_timings(reps):
     """Converts a list of layer timings to a numpy array with one timing in ms per layer.
@@ -78,6 +58,7 @@ def process_layer_timings(reps):
         # Example for one layer:
         # 0     DENSE               0          2.174  28.60 %
         timing = layer.split(' ')
+        # remove empty strings
         timing = list(filter(None, timing))
         timing = timing[-3]
         timing = float(timing)
@@ -92,12 +73,10 @@ def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values:
     input_data = np.load(tensor_values)
 
     # set first dimension of output shape to number of samples
-    final_output_shape = (num_samples, *output_shape[1:])
+    final_output_shape = (num_samples, *output_shape)
     tensor_values = input_data["c_outputs_1"].reshape(final_output_shape)
     # convert to the finaly data type
     tensor_values = tensor_values.astype(output_dtype)
-    print("Final shape: ", tensor_values.shape)
-    print("Final dtype: ", tensor_values.dtype)
 
     return tensor_values
 

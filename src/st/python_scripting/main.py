@@ -157,7 +157,12 @@ def _main():
 
 
     # 6. keys added in process_data step:
-
+    # mcu_tensor_values: np.array, shape: (num_samples, *output_shape), dtype: depends on quantization
+    # ref_tensor_values: np.array, shape: (num_samples, *output_shape), dtype: depends on quantization
+    # per_layer_timings_mean: np.array, shape: (num_layers), dtype: float,
+    #   mean of per layer timings over all repetitions and samples
+    # all_layers_timings_mean: np.array, shape: (num_samples), dtype: float,
+    #   mean of total inference time over all repetitions and samples for all layers
     step_requirements = [{'main_arg': 'repetitions'},
                          {'step': 0, 'name': 'num_samples'},
                          {'step': 0, 'name': 'output_shape'},
@@ -169,11 +174,46 @@ def _main():
     pipeline.add_step(process_data, step_requirements)
 
     pipeline.run()
-    print()
-    for key, value in pipeline.steps[-1].output.items():
-        print(key)
-        print(value)
     
+    # Test output
+    layer_list = pipeline.steps[4].output["layer_list"]
+    ram = pipeline.steps[4].output["ram"]
+    flash = pipeline.steps[4].output["flash"]
+    per_layer_timings_mean = pipeline.steps[6].output["per_layer_timings_mean"]
+    all_layers_timings_mean = pipeline.steps[6].output["all_layers_timings_mean"]
+    mcu_tensor_values = pipeline.steps[6].output["mcu_tensor_values"]
+    ref_tensor_values = pipeline.steps[6].output["ref_tensor_values"]
+    
+    print("RUN SUMMARY:")
+    print("Used RAM (bytes): ", ram)
+    print("Used FLASH (bytes): ", flash)
+    print()
+    print("layer names:")
+    print(layer_list)
+    print()
+    print("layer_timings:")
+    print(per_layer_timings_mean.shape)
+    print(per_layer_timings_mean)
+    print("sum of layer timings:")
+    import numpy as np
+    print(np.sum(per_layer_timings_mean))
+    print()
+    print("all_layers_timings shape:")
+    print(all_layers_timings_mean.shape)
+    print(all_layers_timings_mean)
+    print()
+    print("tensor_values shape:")
+    print(mcu_tensor_values.shape)
+    print()
+    print("tensor_values:")
+    print(mcu_tensor_values)
+    print()
+    print("ref_tensor_values shape:")
+    print(ref_tensor_values.shape)
+    print()
+    print("ref_tensor_values:")
+    print(ref_tensor_values)
+
     import sys; sys.exit(0)
 
     # TODO

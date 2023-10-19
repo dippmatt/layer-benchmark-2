@@ -16,7 +16,7 @@ def validate_args(args):
     #     assert value is not None, f"Required argument {arg} is not set!"
 
     args.out_dir = Path(args.out_dir).resolve()
-    assert args.out_dir.is_dir(), "Must specify valid directory to write results to."
+    assert args.out_dir.is_dir(), f"Output directory {args.out_dir} not found!."
 
     args.cube_template = Path(args.cube_template).resolve()
     assert args.cube_template.is_dir(), f"Did not find path to STM Cube IDE template project: {args.cube_template}"

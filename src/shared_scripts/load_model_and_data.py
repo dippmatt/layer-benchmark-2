@@ -4,7 +4,7 @@ import numpy as np
 import shutil
 from shared_scripts.color_print import print_in_color, Color
 
-INPUT_SAMPLES = 5
+INPUT_SAMPLES = 196
 PROFILE_SAMPLES = 1000
 
 def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, representative_data: Path = None, quantize: bool = False):

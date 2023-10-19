@@ -3,3 +3,4 @@ __pycache__/
 venv/
 workdir/
 .vscode/
+.test_data/

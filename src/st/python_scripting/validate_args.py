@@ -11,6 +11,9 @@ def validate_args(args):
     shutil.rmtree(args.workdir)
     args.workdir.mkdir()
 
+    args.out_dir = Path(args.out_dir).resolve()
+    assert args.out_dir.is_dir(), f"Output directory {args.out_dir} not found!."
+
     args.model = Path(args.model).resolve()
     assert args.model.is_file(), f"Could not find model file at path: {args.model}"
 

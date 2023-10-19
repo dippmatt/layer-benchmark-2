@@ -11,6 +11,9 @@ def validate_args(args):
     shutil.rmtree(args.workdir)
     args.workdir.mkdir()
 
+    args.out_dir = Path(args.out_dir).resolve()
+    assert args.out_dir.is_dir(), f"Output directory {args.out_dir} not found!."
+
     args.tiny_engine_submodule = Path(args.tiny_engine_submodule).resolve()
     assert args.tiny_engine_submodule.is_dir(), f"Could not find submodule directory for tinyengine at path: {args.tiny_engine_submodule}"
 

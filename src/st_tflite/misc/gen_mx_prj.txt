@@ -1,0 +1,4 @@
+config load <CUBE_PRJ_IOC>
+project path <CUBE_PRJ_GEN>
+project generate
+exit

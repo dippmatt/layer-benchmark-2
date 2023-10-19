@@ -1,0 +1,288 @@
+ARM GAS  /tmp/ccMt5WDg.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_convolve_1x1_s8_fast.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_convolve_1x1_s8_fast,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_convolve_1x1_s8_fast
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_convolve_1x1_s8_fast:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * SPDX-FileCopyrightText: Copyright 2010-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Title:        arm_convolve_1x1_s8_fast.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Description:  Fast s8 version of 1x1 convolution (non-square shape)
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * $Date:        30 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * $Revision:    V.3.1.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccMt5WDg.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** /**
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *  @ingroup Public
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  */
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** /**
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * @addtogroup NNConv
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * @{
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  */
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** /*
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Fast s8 version for 1x1 convolution (non-square shape)
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  * Refer header file for details.
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  *
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****  */
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** arm_cmsis_nn_status arm_convolve_1x1_s8_fast(const cmsis_nn_context *ctx,
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const cmsis_nn_conv_params *conv_params,
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const cmsis_nn_per_channel_quant_params *quant_params,
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const cmsis_nn_dims *input_dims,
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const int8_t *input_data,
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const cmsis_nn_dims *filter_dims,
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const int8_t *filter_data,
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const cmsis_nn_dims *bias_dims,
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const int32_t *bias_data,
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              const cmsis_nn_dims *output_dims,
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                                              int8_t *output_data)
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** {
+  30              		.loc 1 61 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 28, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     if (conv_params->padding.w != 0 || conv_params->padding.h != 0 || conv_params->stride.w != 1 ||
+  34              		.loc 1 62 5 view .LVU1
+  35              		.loc 1 62 29 is_stmt 0 view .LVU2
+  36 0000 0869     		ldr	r0, [r1, #16]
+  37              	.LVL1:
+  38              		.loc 1 62 8 view .LVU3
+  39 0002 0028     		cmp	r0, #0
+  40 0004 2DD1     		bne	.L3
+  41              		.loc 1 62 60 discriminator 1 view .LVU4
+  42 0006 4869     		ldr	r0, [r1, #20]
+  43              		.loc 1 62 37 discriminator 1 view .LVU5
+  44 0008 0028     		cmp	r0, #0
+  45 000a 2DD1     		bne	.L4
+  46              		.loc 1 62 90 discriminator 2 view .LVU6
+  47 000c 8868     		ldr	r0, [r1, #8]
+  48              		.loc 1 62 68 discriminator 2 view .LVU7
+  49 000e 0128     		cmp	r0, #1
+  50 0010 2DD1     		bne	.L5
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****         conv_params->stride.h != 1)
+  51              		.loc 1 63 28 discriminator 3 view .LVU8
+  52 0012 C868     		ldr	r0, [r1, #12]
+ARM GAS  /tmp/ccMt5WDg.s 			page 3
+
+
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     if (conv_params->padding.w != 0 || conv_params->padding.h != 0 || conv_params->stride.w != 1 ||
+  53              		.loc 1 62 98 discriminator 3 view .LVU9
+  54 0014 0128     		cmp	r0, #1
+  55 0016 2DD1     		bne	.L6
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     if (conv_params->padding.w != 0 || conv_params->padding.h != 0 || conv_params->stride.w != 1 ||
+  56              		.loc 1 61 1 view .LVU10
+  57 0018 70B5     		push	{r4, r5, r6, lr}
+  58              	.LCFI0:
+  59              		.cfi_def_cfa_offset 16
+  60              		.cfi_offset 4, -16
+  61              		.cfi_offset 5, -12
+  62              		.cfi_offset 6, -8
+  63              		.cfi_offset 14, -4
+  64 001a 8AB0     		sub	sp, sp, #40
+  65              	.LCFI1:
+  66              		.cfi_def_cfa_offset 56
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     {
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****         return ARM_CMSIS_NN_ARG_ERROR;
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     }
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     (void)ctx;
+  67              		.loc 1 68 5 is_stmt 1 view .LVU11
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     (void)filter_dims;
+  68              		.loc 1 69 5 view .LVU12
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     (void)bias_dims;
+  69              		.loc 1 70 5 view .LVU13
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     const int32_t lhs_rows = input_dims->w * input_dims->h * input_dims->n;
+  70              		.loc 1 72 5 view .LVU14
+  71              		.loc 1 72 40 is_stmt 0 view .LVU15
+  72 001c 9C68     		ldr	r4, [r3, #8]
+  73              		.loc 1 72 56 view .LVU16
+  74 001e 5868     		ldr	r0, [r3, #4]
+  75              		.loc 1 72 44 view .LVU17
+  76 0020 00FB04F4 		mul	r4, r0, r4
+  77              		.loc 1 72 72 view .LVU18
+  78 0024 1868     		ldr	r0, [r3]
+  79              		.loc 1 72 19 view .LVU19
+  80 0026 00FB04F0 		mul	r0, r0, r4
+  81              	.LVL2:
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     const int32_t rhs_rows = output_dims->c;
+  82              		.loc 1 73 5 is_stmt 1 view .LVU20
+  83              		.loc 1 73 19 is_stmt 0 view .LVU21
+  84 002a 139C     		ldr	r4, [sp, #76]
+  85 002c E568     		ldr	r5, [r4, #12]
+  86              	.LVL3:
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     const int32_t rhs_cols = input_dims->c;
+  87              		.loc 1 74 5 is_stmt 1 view .LVU22
+  88              		.loc 1 74 19 is_stmt 0 view .LVU23
+  89 002e DB68     		ldr	r3, [r3, #12]
+  90              	.LVL4:
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     arm_nn_mat_mult_nt_t_s8(input_data,
+  91              		.loc 1 76 5 is_stmt 1 view .LVU24
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             filter_data,
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             bias_data,
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             output_data,
+ARM GAS  /tmp/ccMt5WDg.s 			page 4
+
+
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             quant_params->multiplier,
+  92              		.loc 1 80 41 is_stmt 0 view .LVU25
+  93 0030 1468     		ldr	r4, [r2]
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             quant_params->shift,
+  94              		.loc 1 81 41 view .LVU26
+  95 0032 5268     		ldr	r2, [r2, #4]
+  96              	.LVL5:
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             filter_data,
+  97              		.loc 1 76 5 view .LVU27
+  98 0034 0993     		str	r3, [sp, #36]
+  99 0036 4E6A     		ldr	r6, [r1, #36]
+ 100 0038 0896     		str	r6, [sp, #32]
+ 101 003a 0E6A     		ldr	r6, [r1, #32]
+ 102 003c 0796     		str	r6, [sp, #28]
+ 103 003e 4E68     		ldr	r6, [r1, #4]
+ 104 0040 0696     		str	r6, [sp, #24]
+ 105 0042 0968     		ldr	r1, [r1]
+ 106              	.LVL6:
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             filter_data,
+ 107              		.loc 1 76 5 view .LVU28
+ 108 0044 0591     		str	r1, [sp, #20]
+ 109 0046 0493     		str	r3, [sp, #16]
+ 110 0048 0395     		str	r5, [sp, #12]
+ 111 004a 0290     		str	r0, [sp, #8]
+ 112 004c 0192     		str	r2, [sp, #4]
+ 113 004e 0094     		str	r4, [sp]
+ 114 0050 149B     		ldr	r3, [sp, #80]
+ 115              	.LVL7:
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             filter_data,
+ 116              		.loc 1 76 5 view .LVU29
+ 117 0052 129A     		ldr	r2, [sp, #72]
+ 118 0054 1099     		ldr	r1, [sp, #64]
+ 119 0056 0E98     		ldr	r0, [sp, #56]
+ 120              	.LVL8:
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             filter_data,
+ 121              		.loc 1 76 5 view .LVU30
+ 122 0058 FFF7FEFF 		bl	arm_nn_mat_mult_nt_t_s8
+ 123              	.LVL9:
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             lhs_rows,
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             rhs_rows,
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             rhs_cols,
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             conv_params->input_offset,
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             conv_params->output_offset,
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             conv_params->activation.min,
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             conv_params->activation.max,
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****                             rhs_cols);
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** 
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     /* Return to application */
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     return ARM_CMSIS_NN_SUCCESS;
+ 124              		.loc 1 92 5 is_stmt 1 view .LVU31
+ 125              		.loc 1 92 12 is_stmt 0 view .LVU32
+ 126 005c 0020     		movs	r0, #0
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c **** }
+ 127              		.loc 1 93 1 view .LVU33
+ 128 005e 0AB0     		add	sp, sp, #40
+ 129              	.LCFI2:
+ 130              		.cfi_def_cfa_offset 16
+ARM GAS  /tmp/ccMt5WDg.s 			page 5
+
+
+ 131              		@ sp needed
+ 132 0060 70BD     		pop	{r4, r5, r6, pc}
+ 133              	.LVL10:
+ 134              	.L3:
+ 135              	.LCFI3:
+ 136              		.cfi_def_cfa_offset 0
+ 137              		.cfi_restore 4
+ 138              		.cfi_restore 5
+ 139              		.cfi_restore 6
+ 140              		.cfi_restore 14
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_1x1_s8_fast.c ****     }
+ 141              		.loc 1 65 16 view .LVU34
+ 142 0062 4FF0FF30 		mov	r0, #-1
+ 143 0066 7047     		bx	lr
+ 144              	.L4:
+ 145 0068 4FF0FF30 		mov	r0, #-1
+ 146 006c 7047     		bx	lr
+ 147              	.L5:
+ 148 006e 4FF0FF30 		mov	r0, #-1
+ 149 0072 7047     		bx	lr
+ 150              	.L6:
+ 151 0074 4FF0FF30 		mov	r0, #-1
+ 152              		.loc 1 93 1 view .LVU35
+ 153 0078 7047     		bx	lr
+ 154              		.cfi_endproc
+ 155              	.LFE47:
+ 157              		.text
+ 158              	.Letext0:
+ 159              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 160              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 161              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 162              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 163              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 164              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ 165              		.file 8 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h"
+ARM GAS  /tmp/ccMt5WDg.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_convolve_1x1_s8_fast.c
+     /tmp/ccMt5WDg.s:18     .text.arm_convolve_1x1_s8_fast:0000000000000000 $t
+     /tmp/ccMt5WDg.s:26     .text.arm_convolve_1x1_s8_fast:0000000000000000 arm_convolve_1x1_s8_fast
+
+UNDEFINED SYMBOLS
+arm_nn_mat_mult_nt_t_s8

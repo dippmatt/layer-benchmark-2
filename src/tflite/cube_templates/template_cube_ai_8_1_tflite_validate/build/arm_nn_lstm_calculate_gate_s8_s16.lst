@@ -1,0 +1,276 @@
+ARM GAS  /tmp/ccfzHrQq.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_nn_lstm_calculate_gate_s8_s16.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_nn_lstm_calculate_gate_s8_s16,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_nn_lstm_calculate_gate_s8_s16
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_nn_lstm_calculate_gate_s8_s16:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calcula
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * SPDX-FileCopyrightText: Copyright 2022 Arm Limited and/or its affiliates <open-source-office.com
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Title:        arm_nn_lstm_calculate_gate_s8_s16.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Description:  Update single gate for an incremental step of LSTM function.
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * $Date:        8 September 2022
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * $Revision:    V.1.0.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Target Processor:  Cortex-M cores
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccfzHrQq.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** #include "arm_nn_tables.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** #include "arm_nnfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** #include "arm_nnsupportfunctions.h"
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** /**
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * @ingroup groupSupport
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  */
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** /**
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * @defgroup supportLSTM LSTM
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Support functions for LSTM
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  *
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  */
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** /**
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * @addtogroup supportLSTM
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * @{
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  */
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** /*
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Calculates a single LSTM gate, int8x8_16 version.
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  * Refer to header file for details
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****  */
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** void arm_nn_lstm_calculate_gate_s8_s16(const int8_t *input,
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int8_t *input_to_gate_weights,
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int32_t *input_to_gate_bias,
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const cmsis_nn_scaling input_to_gate_scaling,
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int8_t *output_state,
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int8_t *recurrent_to_gate_weights,
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int32_t *recurrent_to_gate_bias,
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const cmsis_nn_scaling recurrent_to_gate,
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int32_t n_batch,
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int32_t n_input,
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int32_t n_output,
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const int32_t n_cell,
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        const arm_nn_activation_type activation_type,
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                        int16_t *gate)
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** {
+  30              		.loc 1 69 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 56, pretend = 8, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 69 1 is_stmt 0 view .LVU1
+  35 0000 82B0     		sub	sp, sp, #8
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38 0002 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 44
+  41              		.cfi_offset 4, -44
+  42              		.cfi_offset 5, -40
+  43              		.cfi_offset 6, -36
+  44              		.cfi_offset 7, -32
+  45              		.cfi_offset 8, -28
+  46              		.cfi_offset 9, -24
+ARM GAS  /tmp/ccfzHrQq.s 			page 3
+
+
+  47              		.cfi_offset 10, -20
+  48              		.cfi_offset 11, -16
+  49              		.cfi_offset 14, -12
+  50 0006 87B0     		sub	sp, sp, #28
+  51              	.LCFI2:
+  52              		.cfi_def_cfa_offset 72
+  53 0008 8046     		mov	r8, r0
+  54 000a 8946     		mov	r9, r1
+  55 000c 9246     		mov	r10, r2
+  56 000e 1193     		str	r3, [sp, #68]
+  57 0010 189F     		ldr	r7, [sp, #96]
+  58 0012 1B9E     		ldr	r6, [sp, #108]
+  59 0014 1D9C     		ldr	r4, [sp, #116]
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****     const int32_t n_block = n_batch * n_cell;
+  60              		.loc 1 70 5 is_stmt 1 view .LVU2
+  61              		.loc 1 70 19 is_stmt 0 view .LVU3
+  62 0016 06FB07FB 		mul	fp, r6, r7
+  63              	.LVL1:
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****     memset(gate, 0, n_block * sizeof(int16_t));
+  64              		.loc 1 72 5 is_stmt 1 view .LVU4
+  65 001a 4FEA4B02 		lsl	r2, fp, #1
+  66              	.LVL2:
+  67              		.loc 1 72 5 is_stmt 0 view .LVU5
+  68 001e 0021     		movs	r1, #0
+  69              	.LVL3:
+  70              		.loc 1 72 5 view .LVU6
+  71 0020 2046     		mov	r0, r4
+  72              	.LVL4:
+  73              		.loc 1 72 5 view .LVU7
+  74 0022 FFF7FEFF 		bl	memset
+  75              	.LVL5:
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****     arm_nn_vec_mat_mul_result_acc_s8(input,
+  76              		.loc 1 73 5 is_stmt 1 view .LVU8
+  77 0026 0597     		str	r7, [sp, #20]
+  78 0028 0496     		str	r6, [sp, #16]
+  79 002a 199B     		ldr	r3, [sp, #100]
+  80 002c 0393     		str	r3, [sp, #12]
+  81 002e 129B     		ldr	r3, [sp, #72]
+  82 0030 0293     		str	r3, [sp, #8]
+  83 0032 119B     		ldr	r3, [sp, #68]
+  84 0034 0193     		str	r3, [sp, #4]
+  85 0036 0025     		movs	r5, #0
+  86 0038 0095     		str	r5, [sp]
+  87 003a 2346     		mov	r3, r4
+  88 003c 5246     		mov	r2, r10
+  89 003e 4946     		mov	r1, r9
+  90 0040 4046     		mov	r0, r8
+  91 0042 FFF7FEFF 		bl	arm_nn_vec_mat_mul_result_acc_s8
+  92              	.LVL6:
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      input_to_gate_weights,
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      input_to_gate_bias,
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      gate,
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      0,
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      input_to_gate_scaling.multiplier,
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      input_to_gate_scaling.shift,
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      n_input,
+ARM GAS  /tmp/ccfzHrQq.s 			page 4
+
+
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      n_cell,
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      n_batch);
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****     arm_nn_vec_mat_mul_result_acc_s8(output_state,
+  93              		.loc 1 84 5 view .LVU9
+  94 0046 0597     		str	r7, [sp, #20]
+  95 0048 0496     		str	r6, [sp, #16]
+  96 004a 1A9B     		ldr	r3, [sp, #104]
+  97 004c 0393     		str	r3, [sp, #12]
+  98 004e 179B     		ldr	r3, [sp, #92]
+  99 0050 0293     		str	r3, [sp, #8]
+ 100 0052 169B     		ldr	r3, [sp, #88]
+ 101 0054 0193     		str	r3, [sp, #4]
+ 102 0056 0095     		str	r5, [sp]
+ 103 0058 2346     		mov	r3, r4
+ 104 005a 159A     		ldr	r2, [sp, #84]
+ 105 005c 1499     		ldr	r1, [sp, #80]
+ 106 005e 1398     		ldr	r0, [sp, #76]
+ 107 0060 FFF7FEFF 		bl	arm_nn_vec_mat_mul_result_acc_s8
+ 108              	.LVL7:
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      recurrent_to_gate_weights,
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      recurrent_to_gate_bias,
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      gate,
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      0,
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      recurrent_to_gate.multiplier,
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      recurrent_to_gate.shift,
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      n_output,
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      n_cell,
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****                                      n_batch);
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** 
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c ****     arm_nn_activation_s16(gate, gate, n_block, 0, activation_type);
+ 109              		.loc 1 95 5 view .LVU10
+ 110 0064 9DF87030 		ldrb	r3, [sp, #112]	@ zero_extendqisi2
+ 111 0068 0093     		str	r3, [sp]
+ 112 006a 2B46     		mov	r3, r5
+ 113 006c 1FFA8BF2 		uxth	r2, fp
+ 114 0070 2146     		mov	r1, r4
+ 115 0072 2046     		mov	r0, r4
+ 116 0074 FFF7FEFF 		bl	arm_nn_activation_s16
+ 117              	.LVL8:
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_lstm_calculate_gate_s8_s16.c **** }
+ 118              		.loc 1 96 1 is_stmt 0 view .LVU11
+ 119 0078 07B0     		add	sp, sp, #28
+ 120              	.LCFI3:
+ 121              		.cfi_def_cfa_offset 44
+ 122              		@ sp needed
+ 123 007a BDE8F04F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 124              	.LCFI4:
+ 125              		.cfi_restore 14
+ 126              		.cfi_restore 11
+ 127              		.cfi_restore 10
+ 128              		.cfi_restore 9
+ 129              		.cfi_restore 8
+ 130              		.cfi_restore 7
+ 131              		.cfi_restore 6
+ 132              		.cfi_restore 5
+ 133              		.cfi_restore 4
+ARM GAS  /tmp/ccfzHrQq.s 			page 5
+
+
+ 134              		.cfi_def_cfa_offset 8
+ 135              	.LVL9:
+ 136              		.loc 1 96 1 view .LVU12
+ 137 007e 02B0     		add	sp, sp, #8
+ 138              	.LCFI5:
+ 139              		.cfi_def_cfa_offset 0
+ 140 0080 7047     		bx	lr
+ 141              		.cfi_endproc
+ 142              	.LFE47:
+ 144              		.text
+ 145              	.Letext0:
+ 146              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 147              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 148              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 149              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 150              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 151              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_tables.h"
+ 152              		.file 8 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ 153              		.file 9 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h"
+ 154              		.file 10 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnfunctions.h"
+ 155              		.file 11 "<built-in>"
+ARM GAS  /tmp/ccfzHrQq.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_nn_lstm_calculate_gate_s8_s16.c
+     /tmp/ccfzHrQq.s:18     .text.arm_nn_lstm_calculate_gate_s8_s16:0000000000000000 $t
+     /tmp/ccfzHrQq.s:26     .text.arm_nn_lstm_calculate_gate_s8_s16:0000000000000000 arm_nn_lstm_calculate_gate_s8_s16
+
+UNDEFINED SYMBOLS
+memset
+arm_nn_vec_mat_mul_result_acc_s8
+arm_nn_activation_s16

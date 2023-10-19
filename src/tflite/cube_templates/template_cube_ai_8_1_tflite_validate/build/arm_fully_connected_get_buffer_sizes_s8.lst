@@ -1,0 +1,184 @@
+ARM GAS  /tmp/ccvpMZIt.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_fully_connected_get_buffer_sizes_s8.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_fully_connected_s8_get_buffer_size,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_fully_connected_s8_get_buffer_size
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_fully_connected_s8_get_buffer_size:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_conn
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * SPDX-FileCopyrightText: Copyright 2023 Arm Limited and/or its affiliates <open-source-office@arm
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * Title:        arm_fully_connected_get_buffer_sizes_s8.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * Description:  Collection of get buffer size functions for fully connected s8 layer function.
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * $Date:        31 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * $Revision:    V.1.0.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccvpMZIt.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** /**
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  *  @ingroup FC
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  */
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** /**
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * @addtogroup GetBufferSizeFC
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  * @{
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****  */
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** int32_t arm_fully_connected_s8_get_buffer_size(const cmsis_nn_dims *filter_dims)
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** {
+  30              		.loc 1 43 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****     (void)filter_dims;
+  35              		.loc 1 44 5 view .LVU1
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****     return 0;
+  36              		.loc 1 45 5 view .LVU2
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** }
+  37              		.loc 1 46 1 is_stmt 0 view .LVU3
+  38 0000 0020     		movs	r0, #0
+  39              	.LVL1:
+  40              		.loc 1 46 1 view .LVU4
+  41 0002 7047     		bx	lr
+  42              		.cfi_endproc
+  43              	.LFE0:
+  45              		.section	.text.arm_fully_connected_s8_get_buffer_size_dsp,"ax",%progbits
+  46              		.align	1
+  47              		.global	arm_fully_connected_s8_get_buffer_size_dsp
+  48              		.syntax unified
+  49              		.thumb
+  50              		.thumb_func
+  51              		.fpu fpv4-sp-d16
+  53              	arm_fully_connected_s8_get_buffer_size_dsp:
+  54              	.LVL2:
+  55              	.LFB1:
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** int32_t arm_fully_connected_s8_get_buffer_size_dsp(const cmsis_nn_dims *filter_dims)
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** {
+  56              		.loc 1 49 1 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              		.loc 1 49 1 is_stmt 0 view .LVU6
+  61 0000 08B5     		push	{r3, lr}
+  62              	.LCFI0:
+  63              		.cfi_def_cfa_offset 8
+  64              		.cfi_offset 3, -8
+  65              		.cfi_offset 14, -4
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****     return arm_fully_connected_s8_get_buffer_size(filter_dims);
+  66              		.loc 1 50 5 is_stmt 1 view .LVU7
+  67              		.loc 1 50 12 is_stmt 0 view .LVU8
+ARM GAS  /tmp/ccvpMZIt.s 			page 3
+
+
+  68 0002 FFF7FEFF 		bl	arm_fully_connected_s8_get_buffer_size
+  69              	.LVL3:
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** }
+  70              		.loc 1 51 1 view .LVU9
+  71 0006 08BD     		pop	{r3, pc}
+  72              		.cfi_endproc
+  73              	.LFE1:
+  75              		.section	.text.arm_fully_connected_s8_get_buffer_size_mve,"ax",%progbits
+  76              		.align	1
+  77              		.global	arm_fully_connected_s8_get_buffer_size_mve
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  81              		.fpu fpv4-sp-d16
+  83              	arm_fully_connected_s8_get_buffer_size_mve:
+  84              	.LVL4:
+  85              	.LFB2:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** 
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** int32_t arm_fully_connected_s8_get_buffer_size_mve(const cmsis_nn_dims *filter_dims)
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** {
+  86              		.loc 1 54 1 is_stmt 1 view -0
+  87              		.cfi_startproc
+  88              		@ args = 0, pretend = 0, frame = 0
+  89              		@ frame_needed = 0, uses_anonymous_args = 0
+  90              		.loc 1 54 1 is_stmt 0 view .LVU11
+  91 0000 08B5     		push	{r3, lr}
+  92              	.LCFI1:
+  93              		.cfi_def_cfa_offset 8
+  94              		.cfi_offset 3, -8
+  95              		.cfi_offset 14, -4
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c ****     return arm_fully_connected_s8_get_buffer_size(filter_dims);
+  96              		.loc 1 55 5 is_stmt 1 view .LVU12
+  97              		.loc 1 55 12 is_stmt 0 view .LVU13
+  98 0002 FFF7FEFF 		bl	arm_fully_connected_s8_get_buffer_size
+  99              	.LVL5:
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/FullyConnectedFunctions/arm_fully_connected_get_buffer_sizes_s8.c **** }
+ 100              		.loc 1 56 1 view .LVU14
+ 101 0006 08BD     		pop	{r3, pc}
+ 102              		.cfi_endproc
+ 103              	.LFE2:
+ 105              		.text
+ 106              	.Letext0:
+ 107              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 108              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 109              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 110              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 111              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 112              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ARM GAS  /tmp/ccvpMZIt.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_fully_connected_get_buffer_sizes_s8.c
+     /tmp/ccvpMZIt.s:18     .text.arm_fully_connected_s8_get_buffer_size:0000000000000000 $t
+     /tmp/ccvpMZIt.s:26     .text.arm_fully_connected_s8_get_buffer_size:0000000000000000 arm_fully_connected_s8_get_buffer_size
+     /tmp/ccvpMZIt.s:46     .text.arm_fully_connected_s8_get_buffer_size_dsp:0000000000000000 $t
+     /tmp/ccvpMZIt.s:53     .text.arm_fully_connected_s8_get_buffer_size_dsp:0000000000000000 arm_fully_connected_s8_get_buffer_size_dsp
+     /tmp/ccvpMZIt.s:76     .text.arm_fully_connected_s8_get_buffer_size_mve:0000000000000000 $t
+     /tmp/ccvpMZIt.s:83     .text.arm_fully_connected_s8_get_buffer_size_mve:0000000000000000 arm_fully_connected_s8_get_buffer_size_mve
+
+NO UNDEFINED SYMBOLS

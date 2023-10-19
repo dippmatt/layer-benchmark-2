@@ -1,0 +1,140 @@
+ARM GAS  /tmp/cc54wwRR.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_softmax_s8_s16.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_softmax_s8_s16,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_softmax_s8_s16
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_softmax_s8_s16:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c"
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Copyright (C) 2022 Arm Limited or its affiliates.
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Title:        arm_softmax_s8_s16.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Description:  S8 to s16 softmax function
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * $Date:        7 January 2022
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * $Revision:    V.1.0.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * Target Processor:  Cortex-M cores
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/cc54wwRR.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** /**
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  *  @ingroup Public
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  */
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** 
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** /**
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * @addtogroup Softmax
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  * @{
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****  */
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** void arm_softmax_s8_s16(const int8_t *input,
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****                         const int32_t num_rows,
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****                         const int32_t row_size,
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****                         const int32_t mult,
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****                         const int32_t shift,
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****                         const int32_t diff_min,
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****                         int16_t *output)
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** {
+  30              		.loc 1 50 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 12, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 50 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 84B0     		sub	sp, sp, #16
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 24
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c ****     arm_nn_softmax_common_s8(input, num_rows, row_size, mult, shift, diff_min, true, (void *)output
+  43              		.loc 1 51 5 is_stmt 1 view .LVU2
+  44 0004 089C     		ldr	r4, [sp, #32]
+  45 0006 0394     		str	r4, [sp, #12]
+  46 0008 0124     		movs	r4, #1
+  47 000a 0294     		str	r4, [sp, #8]
+  48 000c 079C     		ldr	r4, [sp, #28]
+  49 000e 0194     		str	r4, [sp, #4]
+  50 0010 069C     		ldr	r4, [sp, #24]
+  51 0012 0094     		str	r4, [sp]
+  52 0014 FFF7FEFF 		bl	arm_nn_softmax_common_s8
+  53              	.LVL1:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8_s16.c **** }
+  54              		.loc 1 52 1 is_stmt 0 view .LVU3
+  55 0018 04B0     		add	sp, sp, #16
+  56              	.LCFI2:
+  57              		.cfi_def_cfa_offset 8
+  58              		@ sp needed
+  59 001a 10BD     		pop	{r4, pc}
+  60              		.loc 1 52 1 view .LVU4
+  61              		.cfi_endproc
+  62              	.LFE47:
+  64              		.text
+ARM GAS  /tmp/cc54wwRR.s 			page 3
+
+
+  65              	.Letext0:
+  66              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+  67              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+  68              		.file 4 "/usr/include/newlib/sys/_types.h"
+  69              		.file 5 "/usr/include/newlib/sys/reent.h"
+  70              		.file 6 "/usr/include/newlib/sys/lock.h"
+  71              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h"
+ARM GAS  /tmp/cc54wwRR.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_softmax_s8_s16.c
+     /tmp/cc54wwRR.s:18     .text.arm_softmax_s8_s16:0000000000000000 $t
+     /tmp/cc54wwRR.s:26     .text.arm_softmax_s8_s16:0000000000000000 arm_softmax_s8_s16
+
+UNDEFINED SYMBOLS
+arm_nn_softmax_common_s8

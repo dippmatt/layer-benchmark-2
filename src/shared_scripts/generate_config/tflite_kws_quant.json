@@ -1,0 +1,13 @@
+{
+    "arguments": {
+        "-model": "/home/matthias/Documents/BA/results/models_and_data/keyword_spotting/trained_models/kws_ref_model.tflite",
+        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/keyword_spotting/bin_data/mfcc/float32.npz",
+        "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/tflite/workdir",
+        "-stm32ai": "/home/matthias/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai",
+        "-cube_template": "/home/matthias/Documents/BA/layer-benchmark-2/src/tflite/cube_templates/template_cube_ai_8_1_tflite",
+        "-cube_template_validate": "/home/matthias/Documents/BA/layer-benchmark-2/src/tflite/cube_templates/template_cube_ai_8_1_tflite_validate",
+        "-out_dir": "/home/matthias/Documents/BA/results/glow/usecases/test",
+        "-repetitions": "1"
+    },
+    "parameters": []
+}

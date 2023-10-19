@@ -1,0 +1,721 @@
+ARM GAS  /tmp/cczpWua7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32msg.pb.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	respMsg_fields
+  18              		.global	logMsg_fields
+  19              		.global	ackMsg_fields
+  20              		.global	sysinfoMsg_fields
+  21              		.global	syncMsg_fields
+  22              		.global	aiModelInfoMsg_fields
+  23              		.global	aiTensorMsg_fields
+  24              		.global	aiOperatorMsg_fields
+  25              		.global	aiDataMsg_fields
+  26              		.global	aiTensorDescMsg_fields
+  27              		.global	reqMsg_fields
+  28              		.global	aiDataMsg_addr_default
+  29              		.global	aiDataMsg_type_default
+  30              		.global	aiTensorDescMsg_flags_default
+  31              		.global	aiTensorDescMsg_addr_default
+  32              		.global	aiTensorDescMsg_zeropoint_default
+  33              		.global	aiTensorDescMsg_scale_default
+  34              		.global	aiTensorDescMsg_n_dims_default
+  35              		.global	aiTensorDescMsg_size_default
+  36              		.global	aiTensorDescMsg_format_default
+  37              		.global	reqMsg_cmd_default
+  38              		.section	.rodata.ackMsg_fields,"a"
+  39              		.align	2
+  42              	ackMsg_fields:
+  43 0000 0100     		.short	1
+  44 0002 01       		.byte	1
+  45 0003 0000     		.2byte	0
+  46 0005 0000     		.2byte	0
+  47 0007 0400     		.2byte	4
+  48 0009 0000     		.2byte	0
+  49 000b 00000000 		.4byte	0
+  50 000f 0200     		.2byte	2
+  51 0011 01       		.byte	1
+  52 0012 0000     		.2byte	0
+  53 0014 0000     		.2byte	0
+  54 0016 0100     		.2byte	1
+  55 0018 0000     		.2byte	0
+  56 001a 00000000 		.4byte	0
+  57 001e 0000     		.short	0
+  58 0020 00       		.byte	0
+  59 0021 0000     		.2byte	0
+ARM GAS  /tmp/cczpWua7.s 			page 2
+
+
+  60 0023 0000     		.2byte	0
+  61 0025 0000     		.2byte	0
+  62 0027 0000     		.2byte	0
+  63 0029 00000000 		.4byte	0
+  64              		.section	.rodata.aiDataMsg_addr_default,"a"
+  65              		.align	2
+  68              	aiDataMsg_addr_default:
+  69 0000 00000000 		.space	4
+  70              		.section	.rodata.aiDataMsg_fields,"a"
+  71              		.align	2
+  74              	aiDataMsg_fields:
+  75 0000 0100     		.short	1
+  76 0002 01       		.byte	1
+  77 0003 0000     		.2byte	0
+  78 0005 0000     		.2byte	0
+  79 0007 0400     		.2byte	4
+  80 0009 0000     		.2byte	0
+  81 000b 00000000 		.4byte	aiDataMsg_type_default
+  82 000f 0200     		.2byte	2
+  83 0011 01       		.byte	1
+  84 0012 0000     		.2byte	0
+  85 0014 0000     		.2byte	0
+  86 0016 0400     		.2byte	4
+  87 0018 0000     		.2byte	0
+  88 001a 00000000 		.4byte	0
+  89 001e 0300     		.short	3
+  90 0020 01       		.byte	1
+  91 0021 0000     		.2byte	0
+  92 0023 0000     		.2byte	0
+  93 0025 0400     		.2byte	4
+  94 0027 0000     		.2byte	0
+  95 0029 00000000 		.4byte	aiDataMsg_addr_default
+  96 002d 0400     		.2byte	4
+  97 002f 45       		.byte	69
+  98 0030 0000     		.2byte	0
+  99 0032 0000     		.2byte	0
+ 100 0034 0800     		.2byte	8
+ 101 0036 0000     		.2byte	0
+ 102 0038 00000000 		.4byte	0
+ 103 003c 0000     		.short	0
+ 104 003e 00       		.byte	0
+ 105 003f 0000     		.2byte	0
+ 106 0041 0000     		.2byte	0
+ 107 0043 0000     		.2byte	0
+ 108 0045 0000     		.2byte	0
+ 109 0047 00000000 		.4byte	0
+ 110              		.section	.rodata.aiDataMsg_type_default,"a"
+ 111              		.align	2
+ 114              	aiDataMsg_type_default:
+ 115 0000 00000000 		.space	4
+ 116              		.section	.rodata.aiModelInfoMsg_fields,"a"
+ 117              		.align	2
+ 120              	aiModelInfoMsg_fields:
+ 121 0000 0100     		.short	1
+ 122 0002 06       		.byte	6
+ 123 0003 0000     		.2byte	0
+ 124 0005 0000     		.2byte	0
+ARM GAS  /tmp/cczpWua7.s 			page 3
+
+
+ 125 0007 4000     		.2byte	64
+ 126 0009 0000     		.2byte	0
+ 127 000b 00000000 		.4byte	0
+ 128 000f 0200     		.2byte	2
+ 129 0011 01       		.byte	1
+ 130 0012 0000     		.2byte	0
+ 131 0014 0000     		.2byte	0
+ 132 0016 0400     		.2byte	4
+ 133 0018 0000     		.2byte	0
+ 134 001a 00000000 		.4byte	0
+ 135 001e 0300     		.short	3
+ 136 0020 06       		.byte	6
+ 137 0021 0000     		.2byte	0
+ 138 0023 0000     		.2byte	0
+ 139 0025 4000     		.2byte	64
+ 140 0027 0000     		.2byte	0
+ 141 0029 00000000 		.4byte	0
+ 142 002d 0400     		.2byte	4
+ 143 002f 06       		.byte	6
+ 144 0030 0000     		.2byte	0
+ 145 0032 0000     		.2byte	0
+ 146 0034 4000     		.2byte	64
+ 147 0036 0000     		.2byte	0
+ 148 0038 00000000 		.4byte	0
+ 149 003c 0500     		.short	5
+ 150 003e 01       		.byte	1
+ 151 003f 0000     		.2byte	0
+ 152 0041 0000     		.2byte	0
+ 153 0043 0400     		.2byte	4
+ 154 0045 0000     		.2byte	0
+ 155 0047 00000000 		.4byte	0
+ 156 004b 0600     		.2byte	6
+ 157 004d 01       		.byte	1
+ 158 004e 0000     		.2byte	0
+ 159 0050 0000     		.2byte	0
+ 160 0052 0400     		.2byte	4
+ 161 0054 0000     		.2byte	0
+ 162 0056 00000000 		.4byte	0
+ 163 005a 0700     		.short	7
+ 164 005c 01       		.byte	1
+ 165 005d 0400     		.2byte	4
+ 166 005f 0000     		.2byte	0
+ 167 0061 0800     		.2byte	8
+ 168 0063 0000     		.2byte	0
+ 169 0065 00000000 		.4byte	0
+ 170 0069 0800     		.2byte	8
+ 171 006b 01       		.byte	1
+ 172 006c 0000     		.2byte	0
+ 173 006e 0000     		.2byte	0
+ 174 0070 0400     		.2byte	4
+ 175 0072 0000     		.2byte	0
+ 176 0074 00000000 		.4byte	0
+ 177 0078 0A00     		.short	10
+ 178 007a 01       		.byte	1
+ 179 007b 0000     		.2byte	0
+ 180 007d 0000     		.2byte	0
+ 181 007f 0400     		.2byte	4
+ARM GAS  /tmp/cczpWua7.s 			page 4
+
+
+ 182 0081 0000     		.2byte	0
+ 183 0083 00000000 		.4byte	0
+ 184 0087 0B00     		.2byte	11
+ 185 0089 67       		.byte	103
+ 186 008a 0000     		.2byte	0
+ 187 008c 0000     		.2byte	0
+ 188 008e 0800     		.2byte	8
+ 189 0090 0000     		.2byte	0
+ 190 0092 00000000 		.4byte	aiTensorDescMsg_fields
+ 191 0096 0C00     		.short	12
+ 192 0098 01       		.byte	1
+ 193 0099 0000     		.2byte	0
+ 194 009b 0000     		.2byte	0
+ 195 009d 0400     		.2byte	4
+ 196 009f 0000     		.2byte	0
+ 197 00a1 00000000 		.4byte	0
+ 198 00a5 0D00     		.2byte	13
+ 199 00a7 67       		.byte	103
+ 200 00a8 0000     		.2byte	0
+ 201 00aa 0000     		.2byte	0
+ 202 00ac 0800     		.2byte	8
+ 203 00ae 0000     		.2byte	0
+ 204 00b0 00000000 		.4byte	aiTensorDescMsg_fields
+ 205 00b4 0E00     		.short	14
+ 206 00b6 01       		.byte	1
+ 207 00b7 0000     		.2byte	0
+ 208 00b9 0000     		.2byte	0
+ 209 00bb 0400     		.2byte	4
+ 210 00bd 0000     		.2byte	0
+ 211 00bf 00000000 		.4byte	0
+ 212 00c3 0F00     		.2byte	15
+ 213 00c5 67       		.byte	103
+ 214 00c6 0000     		.2byte	0
+ 215 00c8 0000     		.2byte	0
+ 216 00ca 0800     		.2byte	8
+ 217 00cc 0000     		.2byte	0
+ 218 00ce 00000000 		.4byte	aiTensorDescMsg_fields
+ 219 00d2 1000     		.short	16
+ 220 00d4 01       		.byte	1
+ 221 00d5 0000     		.2byte	0
+ 222 00d7 0000     		.2byte	0
+ 223 00d9 0400     		.2byte	4
+ 224 00db 0000     		.2byte	0
+ 225 00dd 00000000 		.4byte	0
+ 226 00e1 1100     		.2byte	17
+ 227 00e3 67       		.byte	103
+ 228 00e4 0000     		.2byte	0
+ 229 00e6 0000     		.2byte	0
+ 230 00e8 0800     		.2byte	8
+ 231 00ea 0000     		.2byte	0
+ 232 00ec 00000000 		.4byte	aiTensorDescMsg_fields
+ 233 00f0 0000     		.short	0
+ 234 00f2 00       		.byte	0
+ 235 00f3 0000     		.2byte	0
+ 236 00f5 0000     		.2byte	0
+ 237 00f7 0000     		.2byte	0
+ 238 00f9 0000     		.2byte	0
+ARM GAS  /tmp/cczpWua7.s 			page 5
+
+
+ 239 00fb 00000000 		.4byte	0
+ 240              		.section	.rodata.aiOperatorMsg_fields,"a"
+ 241              		.align	2
+ 244              	aiOperatorMsg_fields:
+ 245 0000 0100     		.short	1
+ 246 0002 06       		.byte	6
+ 247 0003 0000     		.2byte	0
+ 248 0005 0000     		.2byte	0
+ 249 0007 4000     		.2byte	64
+ 250 0009 0000     		.2byte	0
+ 251 000b 00000000 		.4byte	0
+ 252 000f 0200     		.2byte	2
+ 253 0011 01       		.byte	1
+ 254 0012 0000     		.2byte	0
+ 255 0014 0000     		.2byte	0
+ 256 0016 0400     		.2byte	4
+ 257 0018 0000     		.2byte	0
+ 258 001a 00000000 		.4byte	0
+ 259 001e 0300     		.short	3
+ 260 0020 01       		.byte	1
+ 261 0021 0000     		.2byte	0
+ 262 0023 0000     		.2byte	0
+ 263 0025 0400     		.2byte	4
+ 264 0027 0000     		.2byte	0
+ 265 0029 00000000 		.4byte	0
+ 266 002d 0400     		.2byte	4
+ 267 002f 03       		.byte	3
+ 268 0030 0000     		.2byte	0
+ 269 0032 0000     		.2byte	0
+ 270 0034 0400     		.2byte	4
+ 271 0036 0000     		.2byte	0
+ 272 0038 00000000 		.4byte	0
+ 273 003c 0500     		.short	5
+ 274 003e 01       		.byte	1
+ 275 003f 0000     		.2byte	0
+ 276 0041 0000     		.2byte	0
+ 277 0043 0400     		.2byte	4
+ 278 0045 0000     		.2byte	0
+ 279 0047 00000000 		.4byte	0
+ 280 004b 0600     		.2byte	6
+ 281 004d 61       		.byte	97
+ 282 004e 0000     		.2byte	0
+ 283 0050 0000     		.2byte	0
+ 284 0052 0800     		.2byte	8
+ 285 0054 0000     		.2byte	0
+ 286 0056 00000000 		.4byte	0
+ 287 005a 0000     		.short	0
+ 288 005c 00       		.byte	0
+ 289 005d 0000     		.2byte	0
+ 290 005f 0000     		.2byte	0
+ 291 0061 0000     		.2byte	0
+ 292 0063 0000     		.2byte	0
+ 293 0065 00000000 		.4byte	0
+ 294              		.section	.rodata.aiTensorDescMsg_addr_default,"a"
+ 295              		.align	2
+ 298              	aiTensorDescMsg_addr_default:
+ 299 0000 00000000 		.space	4
+ARM GAS  /tmp/cczpWua7.s 			page 6
+
+
+ 300              		.section	.rodata.aiTensorDescMsg_fields,"a"
+ 301              		.align	2
+ 304              	aiTensorDescMsg_fields:
+ 305 0000 0100     		.short	1
+ 306 0002 06       		.byte	6
+ 307 0003 0000     		.2byte	0
+ 308 0005 0000     		.2byte	0
+ 309 0007 4000     		.2byte	64
+ 310 0009 0000     		.2byte	0
+ 311 000b 00000000 		.4byte	0
+ 312 000f 0200     		.2byte	2
+ 313 0011 01       		.byte	1
+ 314 0012 0000     		.2byte	0
+ 315 0014 0000     		.2byte	0
+ 316 0016 0400     		.2byte	4
+ 317 0018 0000     		.2byte	0
+ 318 001a 00000000 		.4byte	aiTensorDescMsg_format_default
+ 319 001e 0300     		.short	3
+ 320 0020 01       		.byte	1
+ 321 0021 0000     		.2byte	0
+ 322 0023 0000     		.2byte	0
+ 323 0025 0400     		.2byte	4
+ 324 0027 0000     		.2byte	0
+ 325 0029 00000000 		.4byte	aiTensorDescMsg_size_default
+ 326 002d 0400     		.2byte	4
+ 327 002f 01       		.byte	1
+ 328 0030 0000     		.2byte	0
+ 329 0032 0000     		.2byte	0
+ 330 0034 0400     		.2byte	4
+ 331 0036 0000     		.2byte	0
+ 332 0038 00000000 		.4byte	aiTensorDescMsg_n_dims_default
+ 333 003c 0500     		.short	5
+ 334 003e 61       		.byte	97
+ 335 003f 0000     		.2byte	0
+ 336 0041 0000     		.2byte	0
+ 337 0043 0800     		.2byte	8
+ 338 0045 0000     		.2byte	0
+ 339 0047 00000000 		.4byte	0
+ 340 004b 0600     		.2byte	6
+ 341 004d 03       		.byte	3
+ 342 004e 0000     		.2byte	0
+ 343 0050 0000     		.2byte	0
+ 344 0052 0400     		.2byte	4
+ 345 0054 0000     		.2byte	0
+ 346 0056 00000000 		.4byte	aiTensorDescMsg_scale_default
+ 347 005a 0700     		.short	7
+ 348 005c 00       		.byte	0
+ 349 005d 0000     		.2byte	0
+ 350 005f 0000     		.2byte	0
+ 351 0061 0400     		.2byte	4
+ 352 0063 0000     		.2byte	0
+ 353 0065 00000000 		.4byte	aiTensorDescMsg_zeropoint_default
+ 354 0069 0800     		.2byte	8
+ 355 006b 01       		.byte	1
+ 356 006c 0000     		.2byte	0
+ 357 006e 0000     		.2byte	0
+ 358 0070 0400     		.2byte	4
+ARM GAS  /tmp/cczpWua7.s 			page 7
+
+
+ 359 0072 0000     		.2byte	0
+ 360 0074 00000000 		.4byte	aiTensorDescMsg_addr_default
+ 361 0078 0900     		.short	9
+ 362 007a 01       		.byte	1
+ 363 007b 0000     		.2byte	0
+ 364 007d 0000     		.2byte	0
+ 365 007f 0400     		.2byte	4
+ 366 0081 0000     		.2byte	0
+ 367 0083 00000000 		.4byte	aiTensorDescMsg_flags_default
+ 368 0087 0000     		.2byte	0
+ 369 0089 00       		.byte	0
+ 370 008a 0000     		.2byte	0
+ 371 008c 0000     		.2byte	0
+ 372 008e 0000     		.2byte	0
+ 373 0090 0000     		.2byte	0
+ 374 0092 00000000 		.4byte	0
+ 375              		.section	.rodata.aiTensorDescMsg_flags_default,"a"
+ 376              		.align	2
+ 379              	aiTensorDescMsg_flags_default:
+ 380 0000 00000000 		.space	4
+ 381              		.section	.rodata.aiTensorDescMsg_format_default,"a"
+ 382              		.align	2
+ 385              	aiTensorDescMsg_format_default:
+ 386 0000 00000000 		.space	4
+ 387              		.section	.rodata.aiTensorDescMsg_n_dims_default,"a"
+ 388              		.align	2
+ 391              	aiTensorDescMsg_n_dims_default:
+ 392 0000 01000000 		.word	1
+ 393              		.section	.rodata.aiTensorDescMsg_scale_default,"a"
+ 394              		.align	2
+ 397              	aiTensorDescMsg_scale_default:
+ 398 0000 00000000 		.space	4
+ 399              		.section	.rodata.aiTensorDescMsg_size_default,"a"
+ 400              		.align	2
+ 403              	aiTensorDescMsg_size_default:
+ 404 0000 00000000 		.space	4
+ 405              		.section	.rodata.aiTensorDescMsg_zeropoint_default,"a"
+ 406              		.align	2
+ 409              	aiTensorDescMsg_zeropoint_default:
+ 410 0000 00000000 		.space	4
+ 411              		.section	.rodata.aiTensorMsg_fields,"a"
+ 412              		.align	2
+ 415              	aiTensorMsg_fields:
+ 416 0000 0100     		.short	1
+ 417 0002 07       		.byte	7
+ 418 0003 0000     		.2byte	0
+ 419 0005 0000     		.2byte	0
+ 420 0007 6400     		.2byte	100
+ 421 0009 0000     		.2byte	0
+ 422 000b 00000000 		.4byte	aiTensorDescMsg_fields
+ 423 000f 0200     		.2byte	2
+ 424 0011 07       		.byte	7
+ 425 0012 0000     		.2byte	0
+ 426 0014 0000     		.2byte	0
+ 427 0016 1400     		.2byte	20
+ 428 0018 0000     		.2byte	0
+ 429 001a 00000000 		.4byte	aiDataMsg_fields
+ARM GAS  /tmp/cczpWua7.s 			page 8
+
+
+ 430 001e 0000     		.short	0
+ 431 0020 00       		.byte	0
+ 432 0021 0000     		.2byte	0
+ 433 0023 0000     		.2byte	0
+ 434 0025 0000     		.2byte	0
+ 435 0027 0000     		.2byte	0
+ 436 0029 00000000 		.4byte	0
+ 437              		.section	.rodata.logMsg_fields,"a"
+ 438              		.align	2
+ 441              	logMsg_fields:
+ 442 0000 0100     		.short	1
+ 443 0002 01       		.byte	1
+ 444 0003 0000     		.2byte	0
+ 445 0005 0000     		.2byte	0
+ 446 0007 0400     		.2byte	4
+ 447 0009 0000     		.2byte	0
+ 448 000b 00000000 		.4byte	0
+ 449 000f 0200     		.2byte	2
+ 450 0011 06       		.byte	6
+ 451 0012 0000     		.2byte	0
+ 452 0014 0000     		.2byte	0
+ 453 0016 8000     		.2byte	128
+ 454 0018 0000     		.2byte	0
+ 455 001a 00000000 		.4byte	0
+ 456 001e 0000     		.short	0
+ 457 0020 00       		.byte	0
+ 458 0021 0000     		.2byte	0
+ 459 0023 0000     		.2byte	0
+ 460 0025 0000     		.2byte	0
+ 461 0027 0000     		.2byte	0
+ 462 0029 00000000 		.4byte	0
+ 463              		.section	.rodata.reqMsg_cmd_default,"a"
+ 466              	reqMsg_cmd_default:
+ 467 0000 01       		.byte	1
+ 468              		.section	.rodata.reqMsg_fields,"a"
+ 469              		.align	2
+ 472              	reqMsg_fields:
+ 473 0000 0100     		.short	1
+ 474 0002 01       		.byte	1
+ 475 0003 0000     		.2byte	0
+ 476 0005 0000     		.2byte	0
+ 477 0007 0400     		.2byte	4
+ 478 0009 0000     		.2byte	0
+ 479 000b 00000000 		.4byte	0
+ 480 000f 0200     		.2byte	2
+ 481 0011 01       		.byte	1
+ 482 0012 0000     		.2byte	0
+ 483 0014 0000     		.2byte	0
+ 484 0016 0100     		.2byte	1
+ 485 0018 0000     		.2byte	0
+ 486 001a 00000000 		.4byte	reqMsg_cmd_default
+ 487 001e 0300     		.short	3
+ 488 0020 01       		.byte	1
+ 489 0021 0300     		.2byte	3
+ 490 0023 0000     		.2byte	0
+ 491 0025 0400     		.2byte	4
+ 492 0027 0000     		.2byte	0
+ARM GAS  /tmp/cczpWua7.s 			page 9
+
+
+ 493 0029 00000000 		.4byte	0
+ 494 002d 0400     		.2byte	4
+ 495 002f 06       		.byte	6
+ 496 0030 0000     		.2byte	0
+ 497 0032 0000     		.2byte	0
+ 498 0034 4000     		.2byte	64
+ 499 0036 0000     		.2byte	0
+ 500 0038 00000000 		.4byte	0
+ 501 003c 0500     		.short	5
+ 502 003e 01       		.byte	1
+ 503 003f 0000     		.2byte	0
+ 504 0041 0000     		.2byte	0
+ 505 0043 0400     		.2byte	4
+ 506 0045 0000     		.2byte	0
+ 507 0047 00000000 		.4byte	0
+ 508 004b 0000     		.2byte	0
+ 509 004d 00       		.byte	0
+ 510 004e 0000     		.2byte	0
+ 511 0050 0000     		.2byte	0
+ 512 0052 0000     		.2byte	0
+ 513 0054 0000     		.2byte	0
+ 514 0056 00000000 		.4byte	0
+ 515              		.section	.rodata.respMsg_fields,"a"
+ 516              		.align	2
+ 519              	respMsg_fields:
+ 520 0000 0100     		.short	1
+ 521 0002 01       		.byte	1
+ 522 0003 0000     		.2byte	0
+ 523 0005 0000     		.2byte	0
+ 524 0007 0400     		.2byte	4
+ 525 0009 0000     		.2byte	0
+ 526 000b 00000000 		.4byte	0
+ 527 000f 0200     		.2byte	2
+ 528 0011 01       		.byte	1
+ 529 0012 0000     		.2byte	0
+ 530 0014 0000     		.2byte	0
+ 531 0016 0100     		.2byte	1
+ 532 0018 0000     		.2byte	0
+ 533 001a 00000000 		.4byte	0
+ 534 001e 0A00     		.short	10
+ 535 0020 37       		.byte	55
+ 536 0021 0300     		.2byte	3
+ 537 0023 FEFF     		.2byte	-2
+ 538 0025 0C00     		.2byte	12
+ 539 0027 0000     		.2byte	0
+ 540 0029 00000000 		.4byte	syncMsg_fields
+ 541 002d 0B00     		.2byte	11
+ 542 002f 37       		.byte	55
+ 543 0030 FFFF     		.2byte	-1
+ 544 0032 FEFF     		.2byte	-2
+ 545 0034 1000     		.2byte	16
+ 546 0036 0000     		.2byte	0
+ 547 0038 00000000 		.4byte	sysinfoMsg_fields
+ 548 003c 0C00     		.short	12
+ 549 003e 37       		.byte	55
+ 550 003f FFFF     		.2byte	-1
+ 551 0041 FEFF     		.2byte	-2
+ARM GAS  /tmp/cczpWua7.s 			page 10
+
+
+ 552 0043 0800     		.2byte	8
+ 553 0045 0000     		.2byte	0
+ 554 0047 00000000 		.4byte	ackMsg_fields
+ 555 004b 0D00     		.2byte	13
+ 556 004d 37       		.byte	55
+ 557 004e FFFF     		.2byte	-1
+ 558 0050 FEFF     		.2byte	-2
+ 559 0052 8400     		.2byte	132
+ 560 0054 0000     		.2byte	0
+ 561 0056 00000000 		.4byte	logMsg_fields
+ 562 005a 0F00     		.short	15
+ 563 005c 37       		.byte	55
+ 564 005d FFFF     		.2byte	-1
+ 565 005f FEFF     		.2byte	-2
+ 566 0061 1400     		.2byte	20
+ 567 0063 0000     		.2byte	0
+ 568 0065 00000000 		.4byte	aiDataMsg_fields
+ 569 0069 1000     		.2byte	16
+ 570 006b 37       		.byte	55
+ 571 006c FFFF     		.2byte	-1
+ 572 006e FEFF     		.2byte	-2
+ 573 0070 5800     		.2byte	88
+ 574 0072 0000     		.2byte	0
+ 575 0074 00000000 		.4byte	aiOperatorMsg_fields
+ 576 0078 1100     		.short	17
+ 577 007a 37       		.byte	55
+ 578 007b FFFF     		.2byte	-1
+ 579 007d FEFF     		.2byte	-2
+ 580 007f 7800     		.2byte	120
+ 581 0081 0000     		.2byte	0
+ 582 0083 00000000 		.4byte	aiTensorMsg_fields
+ 583 0087 1600     		.2byte	22
+ 584 0089 37       		.byte	55
+ 585 008a FFFF     		.2byte	-1
+ 586 008c FEFF     		.2byte	-2
+ 587 008e 1001     		.2byte	272
+ 588 0090 0000     		.2byte	0
+ 589 0092 00000000 		.4byte	aiModelInfoMsg_fields
+ 590 0096 0000     		.short	0
+ 591 0098 00       		.byte	0
+ 592 0099 0000     		.2byte	0
+ 593 009b 0000     		.2byte	0
+ 594 009d 0000     		.2byte	0
+ 595 009f 0000     		.2byte	0
+ 596 00a1 00000000 		.4byte	0
+ 597              		.section	.rodata.syncMsg_fields,"a"
+ 598              		.align	2
+ 601              	syncMsg_fields:
+ 602 0000 0100     		.short	1
+ 603 0002 01       		.byte	1
+ 604 0003 0000     		.2byte	0
+ 605 0005 0000     		.2byte	0
+ 606 0007 0400     		.2byte	4
+ 607 0009 0000     		.2byte	0
+ 608 000b 00000000 		.4byte	0
+ 609 000f 0400     		.2byte	4
+ 610 0011 01       		.byte	1
+ARM GAS  /tmp/cczpWua7.s 			page 11
+
+
+ 611 0012 0000     		.2byte	0
+ 612 0014 0000     		.2byte	0
+ 613 0016 0400     		.2byte	4
+ 614 0018 0000     		.2byte	0
+ 615 001a 00000000 		.4byte	0
+ 616 001e 0500     		.short	5
+ 617 0020 01       		.byte	1
+ 618 0021 0000     		.2byte	0
+ 619 0023 0000     		.2byte	0
+ 620 0025 0400     		.2byte	4
+ 621 0027 0000     		.2byte	0
+ 622 0029 00000000 		.4byte	0
+ 623 002d 0000     		.2byte	0
+ 624 002f 00       		.byte	0
+ 625 0030 0000     		.2byte	0
+ 626 0032 0000     		.2byte	0
+ 627 0034 0000     		.2byte	0
+ 628 0036 0000     		.2byte	0
+ 629 0038 00000000 		.4byte	0
+ 630              		.section	.rodata.sysinfoMsg_fields,"a"
+ 631              		.align	2
+ 634              	sysinfoMsg_fields:
+ 635 0000 0100     		.short	1
+ 636 0002 01       		.byte	1
+ 637 0003 0000     		.2byte	0
+ 638 0005 0000     		.2byte	0
+ 639 0007 0400     		.2byte	4
+ 640 0009 0000     		.2byte	0
+ 641 000b 00000000 		.4byte	0
+ 642 000f 0200     		.2byte	2
+ 643 0011 01       		.byte	1
+ 644 0012 0000     		.2byte	0
+ 645 0014 0000     		.2byte	0
+ 646 0016 0400     		.2byte	4
+ 647 0018 0000     		.2byte	0
+ 648 001a 00000000 		.4byte	0
+ 649 001e 0300     		.short	3
+ 650 0020 01       		.byte	1
+ 651 0021 0000     		.2byte	0
+ 652 0023 0000     		.2byte	0
+ 653 0025 0400     		.2byte	4
+ 654 0027 0000     		.2byte	0
+ 655 0029 00000000 		.4byte	0
+ 656 002d 0400     		.2byte	4
+ 657 002f 01       		.byte	1
+ 658 0030 0000     		.2byte	0
+ 659 0032 0000     		.2byte	0
+ 660 0034 0400     		.2byte	4
+ 661 0036 0000     		.2byte	0
+ 662 0038 00000000 		.4byte	0
+ 663 003c 0000     		.short	0
+ 664 003e 00       		.byte	0
+ 665 003f 0000     		.2byte	0
+ 666 0041 0000     		.2byte	0
+ 667 0043 0000     		.2byte	0
+ 668 0045 0000     		.2byte	0
+ 669 0047 00000000 		.4byte	0
+ARM GAS  /tmp/cczpWua7.s 			page 12
+
+
+ 670              		.text
+ 671              	.Letext0:
+ 672              		.file 1 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 673              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 674              		.file 3 "/usr/include/newlib/sys/_types.h"
+ 675              		.file 4 "/usr/include/newlib/sys/reent.h"
+ 676              		.file 5 "/usr/include/newlib/sys/lock.h"
+ 677              		.file 6 "X-CUBE-AI/App/pb.h"
+ 678              		.file 7 "X-CUBE-AI/App/stm32msg.pb.h"
+ 679              		.file 8 "X-CUBE-AI/App/stm32msg.pb.c"
+ARM GAS  /tmp/cczpWua7.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32msg.pb.c
+     /tmp/cczpWua7.s:519    .rodata.respMsg_fields:0000000000000000 respMsg_fields
+     /tmp/cczpWua7.s:441    .rodata.logMsg_fields:0000000000000000 logMsg_fields
+     /tmp/cczpWua7.s:42     .rodata.ackMsg_fields:0000000000000000 ackMsg_fields
+     /tmp/cczpWua7.s:634    .rodata.sysinfoMsg_fields:0000000000000000 sysinfoMsg_fields
+     /tmp/cczpWua7.s:601    .rodata.syncMsg_fields:0000000000000000 syncMsg_fields
+     /tmp/cczpWua7.s:120    .rodata.aiModelInfoMsg_fields:0000000000000000 aiModelInfoMsg_fields
+     /tmp/cczpWua7.s:415    .rodata.aiTensorMsg_fields:0000000000000000 aiTensorMsg_fields
+     /tmp/cczpWua7.s:244    .rodata.aiOperatorMsg_fields:0000000000000000 aiOperatorMsg_fields
+     /tmp/cczpWua7.s:74     .rodata.aiDataMsg_fields:0000000000000000 aiDataMsg_fields
+     /tmp/cczpWua7.s:304    .rodata.aiTensorDescMsg_fields:0000000000000000 aiTensorDescMsg_fields
+     /tmp/cczpWua7.s:472    .rodata.reqMsg_fields:0000000000000000 reqMsg_fields
+     /tmp/cczpWua7.s:68     .rodata.aiDataMsg_addr_default:0000000000000000 aiDataMsg_addr_default
+     /tmp/cczpWua7.s:114    .rodata.aiDataMsg_type_default:0000000000000000 aiDataMsg_type_default
+     /tmp/cczpWua7.s:379    .rodata.aiTensorDescMsg_flags_default:0000000000000000 aiTensorDescMsg_flags_default
+     /tmp/cczpWua7.s:298    .rodata.aiTensorDescMsg_addr_default:0000000000000000 aiTensorDescMsg_addr_default
+     /tmp/cczpWua7.s:409    .rodata.aiTensorDescMsg_zeropoint_default:0000000000000000 aiTensorDescMsg_zeropoint_default
+     /tmp/cczpWua7.s:397    .rodata.aiTensorDescMsg_scale_default:0000000000000000 aiTensorDescMsg_scale_default
+     /tmp/cczpWua7.s:391    .rodata.aiTensorDescMsg_n_dims_default:0000000000000000 aiTensorDescMsg_n_dims_default
+     /tmp/cczpWua7.s:403    .rodata.aiTensorDescMsg_size_default:0000000000000000 aiTensorDescMsg_size_default
+     /tmp/cczpWua7.s:385    .rodata.aiTensorDescMsg_format_default:0000000000000000 aiTensorDescMsg_format_default
+     /tmp/cczpWua7.s:466    .rodata.reqMsg_cmd_default:0000000000000000 reqMsg_cmd_default
+     /tmp/cczpWua7.s:39     .rodata.ackMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:65     .rodata.aiDataMsg_addr_default:0000000000000000 $d
+     /tmp/cczpWua7.s:71     .rodata.aiDataMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:111    .rodata.aiDataMsg_type_default:0000000000000000 $d
+     /tmp/cczpWua7.s:117    .rodata.aiModelInfoMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:241    .rodata.aiOperatorMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:295    .rodata.aiTensorDescMsg_addr_default:0000000000000000 $d
+     /tmp/cczpWua7.s:301    .rodata.aiTensorDescMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:376    .rodata.aiTensorDescMsg_flags_default:0000000000000000 $d
+     /tmp/cczpWua7.s:382    .rodata.aiTensorDescMsg_format_default:0000000000000000 $d
+     /tmp/cczpWua7.s:388    .rodata.aiTensorDescMsg_n_dims_default:0000000000000000 $d
+     /tmp/cczpWua7.s:394    .rodata.aiTensorDescMsg_scale_default:0000000000000000 $d
+     /tmp/cczpWua7.s:400    .rodata.aiTensorDescMsg_size_default:0000000000000000 $d
+     /tmp/cczpWua7.s:406    .rodata.aiTensorDescMsg_zeropoint_default:0000000000000000 $d
+     /tmp/cczpWua7.s:412    .rodata.aiTensorMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:438    .rodata.logMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:469    .rodata.reqMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:516    .rodata.respMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:598    .rodata.syncMsg_fields:0000000000000000 $d
+     /tmp/cczpWua7.s:631    .rodata.sysinfoMsg_fields:0000000000000000 $d
+
+NO UNDEFINED SYMBOLS

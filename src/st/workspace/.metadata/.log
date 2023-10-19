@@ -1,0 +1,10 @@
+!SESSION 2023-10-17 13:57:19.850 -----------------------------------------------
+eclipse.buildId=Version 1.11.2
+java.version=11.0.16
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Framework arguments:  -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import /home/matthias/Documents/BA/layer-benchmark-2/src/st/mxAI6731814465141 -cleanBuild mxAI6731814465141/Debug
+Command-line arguments:  -os linux -ws gtk -arch x86_64 -application org.eclipse.cdt.managedbuilder.core.headlessbuild -data /home/matthias/Documents/BA/layer-benchmark-2/src/st/workspace -import /home/matthias/Documents/BA/layer-benchmark-2/src/st/mxAI6731814465141 -cleanBuild mxAI6731814465141/Debug
+
+!ENTRY org.eclipse.cdt.core 1 0 2023-10-17 13:58:49.504
+!MESSAGE Indexed 'mxAI6731814465141' (255 sources, 721 headers) in 85.7 sec: 105,598 declarations; 300,692 references; 8 unresolved inclusions; 132 syntax errors; 2,448 unresolved names (0.6%)

@@ -1,0 +1,585 @@
+ARM GAS  /tmp/ccay6N26.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_depthwise_conv_get_buffer_sizes_s16.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_depthwise_conv_fast_s16_get_buffer_size,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_depthwise_conv_fast_s16_get_buffer_size
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_depthwise_conv_fast_s16_get_buffer_size:
+  27              	.LVL0:
+  28              	.LFB49:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_con
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * SPDX-FileCopyrightText: Copyright 2023 Arm Limited and/or its affiliates <open-source-office@arm
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * Title:        arm_depthwise_conv_get_buffer_sizes_s16.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * Description:  Collection of get buffer size functions for the various s16 convolution layer func
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * $Date:        13 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * $Revision:    V.1.0.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccay6N26.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** /**
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  *  @ingroup NNconv
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  */
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** /**
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * @addtogroup GetBufferSizeNNConv
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  * @{
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****  */
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** __STATIC_INLINE int32_t arm_depthwise_conv_fast_s16_get_buffer_size_mve(const cmsis_nn_dims *input_
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                                         const cmsis_nn_dims *filter
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** {
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     /* The + 8 accounts for a worst case out of bounds read of the lhs buffers in the *_nt_t_* func
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return 4 * input_dims->c * filter_dims->w * filter_dims->h * sizeof(int16_t) + 8;
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** __STATIC_INLINE int32_t arm_depthwise_conv_fast_s16_get_buffer_size_dsp(const cmsis_nn_dims *input_
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                                         const cmsis_nn_dims *filter
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** {
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return input_dims->c * filter_dims->w * filter_dims->h * sizeof(int16_t);
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** int32_t arm_depthwise_conv_fast_s16_get_buffer_size(const cmsis_nn_dims *input_dims, const cmsis_nn
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** {
+  30              		.loc 1 56 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** #if defined(ARM_MATH_DSP)
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     #if defined(ARM_MATH_MVEI)
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return arm_depthwise_conv_fast_s16_get_buffer_size_mve(input_dims, filter_dims);
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     #else // ARM_MATH_DSP
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return arm_depthwise_conv_fast_s16_get_buffer_size_dsp(input_dims, filter_dims);
+  35              		.loc 1 61 5 view .LVU1
+  36              	.LBB8:
+  37              	.LBI8:
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                                         const cmsis_nn_dims *filter
+  38              		.loc 1 49 25 view .LVU2
+  39              	.LBB9:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  40              		.loc 1 52 5 view .LVU3
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  41              		.loc 1 52 22 is_stmt 0 view .LVU4
+  42 0000 C368     		ldr	r3, [r0, #12]
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  43              		.loc 1 52 39 view .LVU5
+  44 0002 8868     		ldr	r0, [r1, #8]
+  45              	.LVL1:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  46              		.loc 1 52 26 view .LVU6
+  47 0004 00FB03F3 		mul	r3, r0, r3
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  48              		.loc 1 52 56 view .LVU7
+ARM GAS  /tmp/ccay6N26.s 			page 3
+
+
+  49 0008 4868     		ldr	r0, [r1, #4]
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  50              		.loc 1 52 43 view .LVU8
+  51 000a 00FB03F0 		mul	r0, r0, r3
+  52              	.LVL2:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  53              		.loc 1 52 43 view .LVU9
+  54              	.LBE9:
+  55              	.LBE8:
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     #endif
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** #else
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)input_dims;
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)filter_dims;
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return 0;
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** #endif
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  56              		.loc 1 68 1 view .LVU10
+  57 000e 4000     		lsls	r0, r0, #1
+  58 0010 7047     		bx	lr
+  59              		.cfi_endproc
+  60              	.LFE49:
+  62              		.section	.text.arm_depthwise_conv_wrapper_s16_get_buffer_size,"ax",%progbits
+  63              		.align	1
+  64              		.global	arm_depthwise_conv_wrapper_s16_get_buffer_size
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  68              		.fpu fpv4-sp-d16
+  70              	arm_depthwise_conv_wrapper_s16_get_buffer_size:
+  71              	.LVL3:
+  72              	.LFB50:
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** int32_t arm_depthwise_conv_wrapper_s16_get_buffer_size(const cmsis_nn_dw_conv_params *dw_conv_param
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                        const cmsis_nn_dims *input_dims,
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                        const cmsis_nn_dims *filter_dims,
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                        const cmsis_nn_dims *output_dims)
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** {
+  73              		.loc 1 74 1 is_stmt 1 view -0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 0, uses_anonymous_args = 0
+  77              		.loc 1 74 1 is_stmt 0 view .LVU12
+  78 0000 08B5     		push	{r3, lr}
+  79              	.LCFI0:
+  80              		.cfi_def_cfa_offset 8
+  81              		.cfi_offset 3, -8
+  82              		.cfi_offset 14, -4
+  83 0002 0B46     		mov	r3, r1
+  84              	.LVL4:
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)output_dims;
+  85              		.loc 1 75 5 is_stmt 1 view .LVU13
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     int32_t size = 0;
+  86              		.loc 1 77 5 view .LVU14
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     if (USE_FAST_DW_CONV_S16_FUNCTION(dw_conv_params, filter_dims, input_dims))
+  87              		.loc 1 79 5 view .LVU15
+ARM GAS  /tmp/ccay6N26.s 			page 4
+
+
+  88              		.loc 1 79 9 is_stmt 0 view .LVU16
+  89 0004 8168     		ldr	r1, [r0, #8]
+  90              	.LVL5:
+  91              		.loc 1 79 8 view .LVU17
+  92 0006 0129     		cmp	r1, #1
+  93 0008 01D0     		beq	.L9
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  94              		.loc 1 77 13 view .LVU18
+  95 000a 0020     		movs	r0, #0
+  96              	.LVL6:
+  97              	.L2:
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****         size = arm_depthwise_conv_fast_s16_get_buffer_size(input_dims, filter_dims);
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return size;
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+  98              		.loc 1 85 1 view .LVU19
+  99 000c 08BD     		pop	{r3, pc}
+ 100              	.LVL7:
+ 101              	.L9:
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 102              		.loc 1 79 9 discriminator 1 view .LVU20
+ 103 000e C169     		ldr	r1, [r0, #28]
+ 104 0010 0129     		cmp	r1, #1
+ 105 0012 01D0     		beq	.L10
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 106              		.loc 1 77 13 view .LVU21
+ 107 0014 0020     		movs	r0, #0
+ 108              	.LVL8:
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 109              		.loc 1 77 13 view .LVU22
+ 110 0016 F9E7     		b	.L2
+ 111              	.LVL9:
+ 112              	.L10:
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 113              		.loc 1 79 9 discriminator 2 view .LVU23
+ 114 0018 016A     		ldr	r1, [r0, #32]
+ 115 001a 0129     		cmp	r1, #1
+ 116 001c 01D0     		beq	.L11
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 117              		.loc 1 77 13 view .LVU24
+ 118 001e 0020     		movs	r0, #0
+ 119              	.LVL10:
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 120              		.loc 1 77 13 view .LVU25
+ 121 0020 F4E7     		b	.L2
+ 122              	.LVL11:
+ 123              	.L11:
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 124              		.loc 1 79 9 discriminator 3 view .LVU26
+ 125 0022 9068     		ldr	r0, [r2, #8]
+ 126              	.LVL12:
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 127              		.loc 1 79 9 discriminator 3 view .LVU27
+ 128 0024 5168     		ldr	r1, [r2, #4]
+ 129 0026 01FB00F1 		mul	r1, r1, r0
+ARM GAS  /tmp/ccay6N26.s 			page 5
+
+
+ 130 002a B1F5007F 		cmp	r1, #512
+ 131 002e 04DA     		bge	.L7
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 132              		.loc 1 81 9 is_stmt 1 view .LVU28
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 133              		.loc 1 81 16 is_stmt 0 view .LVU29
+ 134 0030 1146     		mov	r1, r2
+ 135 0032 1846     		mov	r0, r3
+ 136 0034 FFF7FEFF 		bl	arm_depthwise_conv_fast_s16_get_buffer_size
+ 137              	.LVL13:
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 138              		.loc 1 81 16 view .LVU30
+ 139 0038 E8E7     		b	.L2
+ 140              	.LVL14:
+ 141              	.L7:
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 142              		.loc 1 77 13 view .LVU31
+ 143 003a 0020     		movs	r0, #0
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 144              		.loc 1 84 5 is_stmt 1 view .LVU32
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 145              		.loc 1 84 12 is_stmt 0 view .LVU33
+ 146 003c E6E7     		b	.L2
+ 147              		.cfi_endproc
+ 148              	.LFE50:
+ 150              		.section	.text.arm_depthwise_conv_wrapper_s16_get_buffer_size_mve,"ax",%progbits
+ 151              		.align	1
+ 152              		.global	arm_depthwise_conv_wrapper_s16_get_buffer_size_mve
+ 153              		.syntax unified
+ 154              		.thumb
+ 155              		.thumb_func
+ 156              		.fpu fpv4-sp-d16
+ 158              	arm_depthwise_conv_wrapper_s16_get_buffer_size_mve:
+ 159              	.LVL15:
+ 160              	.LFB51:
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** int32_t arm_depthwise_conv_wrapper_s16_get_buffer_size_mve(const cmsis_nn_dw_conv_params *dw_conv_p
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                            const cmsis_nn_dims *input_dims,
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                            const cmsis_nn_dims *filter_dims,
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                            const cmsis_nn_dims *output_dims)
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** {
+ 161              		.loc 1 91 1 is_stmt 1 view -0
+ 162              		.cfi_startproc
+ 163              		@ args = 0, pretend = 0, frame = 0
+ 164              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165              		@ link register save eliminated.
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)output_dims;
+ 166              		.loc 1 92 5 view .LVU35
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     int32_t size = 0;
+ 167              		.loc 1 94 5 view .LVU36
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     if (USE_FAST_DW_CONV_S16_FUNCTION(dw_conv_params, filter_dims, input_dims))
+ 168              		.loc 1 96 5 view .LVU37
+ 169              		.loc 1 96 9 is_stmt 0 view .LVU38
+ 170 0000 8368     		ldr	r3, [r0, #8]
+ 171              	.LVL16:
+ARM GAS  /tmp/ccay6N26.s 			page 6
+
+
+ 172              		.loc 1 96 8 view .LVU39
+ 173 0002 012B     		cmp	r3, #1
+ 174 0004 01D0     		beq	.L22
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 175              		.loc 1 94 13 view .LVU40
+ 176 0006 0020     		movs	r0, #0
+ 177              	.LVL17:
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 178              		.loc 1 94 13 view .LVU41
+ 179 0008 7047     		bx	lr
+ 180              	.LVL18:
+ 181              	.L22:
+ 182              		.loc 1 96 9 discriminator 1 view .LVU42
+ 183 000a C369     		ldr	r3, [r0, #28]
+ 184 000c 012B     		cmp	r3, #1
+ 185 000e 01D0     		beq	.L23
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 186              		.loc 1 94 13 view .LVU43
+ 187 0010 0020     		movs	r0, #0
+ 188              	.LVL19:
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 189              		.loc 1 94 13 view .LVU44
+ 190 0012 7047     		bx	lr
+ 191              	.LVL20:
+ 192              	.L23:
+ 193              		.loc 1 96 9 discriminator 2 view .LVU45
+ 194 0014 036A     		ldr	r3, [r0, #32]
+ 195 0016 012B     		cmp	r3, #1
+ 196 0018 01D0     		beq	.L24
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 197              		.loc 1 94 13 view .LVU46
+ 198 001a 0020     		movs	r0, #0
+ 199              	.LVL21:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****         size = arm_depthwise_conv_fast_s16_get_buffer_size_mve(input_dims, filter_dims);
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return size;
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 200              		.loc 1 102 1 view .LVU47
+ 201 001c 7047     		bx	lr
+ 202              	.LVL22:
+ 203              	.L24:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)output_dims;
+ 204              		.loc 1 91 1 discriminator 3 view .LVU48
+ 205 001e 10B4     		push	{r4}
+ 206              	.LCFI1:
+ 207              		.cfi_def_cfa_offset 4
+ 208              		.cfi_offset 4, -4
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 209              		.loc 1 96 9 discriminator 3 view .LVU49
+ 210 0020 9468     		ldr	r4, [r2, #8]
+ 211 0022 5368     		ldr	r3, [r2, #4]
+ 212 0024 03FB04F2 		mul	r2, r3, r4
+ 213              	.LVL23:
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 214              		.loc 1 96 9 discriminator 3 view .LVU50
+ARM GAS  /tmp/ccay6N26.s 			page 7
+
+
+ 215 0028 B2F5007F 		cmp	r2, #512
+ 216 002c 07DA     		bge	.L17
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 217              		.loc 1 98 9 is_stmt 1 view .LVU51
+ 218              	.LVL24:
+ 219              	.LBB10:
+ 220              	.LBI10:
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                                         const cmsis_nn_dims *filter
+ 221              		.loc 1 42 25 view .LVU52
+ 222              	.LBB11:
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 223              		.loc 1 46 5 view .LVU53
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 224              		.loc 1 46 26 is_stmt 0 view .LVU54
+ 225 002e C868     		ldr	r0, [r1, #12]
+ 226              	.LVL25:
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 227              		.loc 1 46 30 view .LVU55
+ 228 0030 00FB04F0 		mul	r0, r0, r4
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 229              		.loc 1 46 47 view .LVU56
+ 230 0034 00FB03F0 		mul	r0, r0, r3
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 231              		.loc 1 46 82 view .LVU57
+ 232 0038 0130     		adds	r0, r0, #1
+ 233 003a C000     		lsls	r0, r0, #3
+ 234              	.LVL26:
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 235              		.loc 1 46 82 view .LVU58
+ 236 003c 00E0     		b	.L12
+ 237              	.LVL27:
+ 238              	.L17:
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 239              		.loc 1 46 82 view .LVU59
+ 240              	.LBE11:
+ 241              	.LBE10:
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 242              		.loc 1 94 13 view .LVU60
+ 243 003e 0020     		movs	r0, #0
+ 244              	.LVL28:
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 245              		.loc 1 101 5 is_stmt 1 view .LVU61
+ 246              	.L12:
+ 247              		.loc 1 102 1 is_stmt 0 view .LVU62
+ 248 0040 5DF8044B 		ldr	r4, [sp], #4
+ 249              	.LCFI2:
+ 250              		.cfi_restore 4
+ 251              		.cfi_def_cfa_offset 0
+ 252 0044 7047     		bx	lr
+ 253              		.cfi_endproc
+ 254              	.LFE51:
+ 256              		.section	.text.arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp,"ax",%progbits
+ 257              		.align	1
+ 258              		.global	arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp
+ 259              		.syntax unified
+ 260              		.thumb
+ 261              		.thumb_func
+ARM GAS  /tmp/ccay6N26.s 			page 8
+
+
+ 262              		.fpu fpv4-sp-d16
+ 264              	arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp:
+ 265              	.LVL29:
+ 266              	.LFB52:
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** int32_t arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp(const cmsis_nn_dw_conv_params *dw_conv_p
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                            const cmsis_nn_dims *input_dims,
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                            const cmsis_nn_dims *filter_dims,
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                            const cmsis_nn_dims *output_dims)
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** {
+ 267              		.loc 1 108 1 is_stmt 1 view -0
+ 268              		.cfi_startproc
+ 269              		@ args = 0, pretend = 0, frame = 0
+ 270              		@ frame_needed = 0, uses_anonymous_args = 0
+ 271              		@ link register save eliminated.
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)output_dims;
+ 272              		.loc 1 109 5 view .LVU64
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     int32_t size = 0;
+ 273              		.loc 1 111 5 view .LVU65
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     if (USE_FAST_DW_CONV_S16_FUNCTION(dw_conv_params, filter_dims, input_dims))
+ 274              		.loc 1 113 5 view .LVU66
+ 275              		.loc 1 113 9 is_stmt 0 view .LVU67
+ 276 0000 8368     		ldr	r3, [r0, #8]
+ 277              	.LVL30:
+ 278              		.loc 1 113 8 view .LVU68
+ 279 0002 012B     		cmp	r3, #1
+ 280 0004 01D0     		beq	.L35
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 281              		.loc 1 111 13 view .LVU69
+ 282 0006 0020     		movs	r0, #0
+ 283              	.LVL31:
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 284              		.loc 1 111 13 view .LVU70
+ 285 0008 7047     		bx	lr
+ 286              	.LVL32:
+ 287              	.L35:
+ 288              		.loc 1 113 9 discriminator 1 view .LVU71
+ 289 000a C369     		ldr	r3, [r0, #28]
+ 290 000c 012B     		cmp	r3, #1
+ 291 000e 01D0     		beq	.L36
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 292              		.loc 1 111 13 view .LVU72
+ 293 0010 0020     		movs	r0, #0
+ 294              	.LVL33:
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 295              		.loc 1 111 13 view .LVU73
+ 296 0012 7047     		bx	lr
+ 297              	.LVL34:
+ 298              	.L36:
+ 299              		.loc 1 113 9 discriminator 2 view .LVU74
+ 300 0014 036A     		ldr	r3, [r0, #32]
+ 301 0016 012B     		cmp	r3, #1
+ 302 0018 01D0     		beq	.L37
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 303              		.loc 1 111 13 view .LVU75
+ARM GAS  /tmp/ccay6N26.s 			page 9
+
+
+ 304 001a 0020     		movs	r0, #0
+ 305              	.LVL35:
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****         size = arm_depthwise_conv_fast_s16_get_buffer_size_dsp(input_dims, filter_dims);
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     return size;
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 306              		.loc 1 119 1 view .LVU76
+ 307 001c 7047     		bx	lr
+ 308              	.LVL36:
+ 309              	.L37:
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     (void)output_dims;
+ 310              		.loc 1 108 1 discriminator 3 view .LVU77
+ 311 001e 10B4     		push	{r4}
+ 312              	.LCFI3:
+ 313              		.cfi_def_cfa_offset 4
+ 314              		.cfi_offset 4, -4
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 315              		.loc 1 113 9 discriminator 3 view .LVU78
+ 316 0020 9468     		ldr	r4, [r2, #8]
+ 317 0022 5368     		ldr	r3, [r2, #4]
+ 318 0024 03FB04F2 		mul	r2, r3, r4
+ 319              	.LVL37:
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     {
+ 320              		.loc 1 113 9 discriminator 3 view .LVU79
+ 321 0028 B2F5007F 		cmp	r2, #512
+ 322 002c 06DA     		bge	.L30
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****     }
+ 323              		.loc 1 115 9 is_stmt 1 view .LVU80
+ 324              	.LVL38:
+ 325              	.LBB12:
+ 326              	.LBI12:
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c ****                                                                         const cmsis_nn_dims *filter
+ 327              		.loc 1 49 25 view .LVU81
+ 328              	.LBB13:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 329              		.loc 1 52 5 view .LVU82
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 330              		.loc 1 52 22 is_stmt 0 view .LVU83
+ 331 002e C868     		ldr	r0, [r1, #12]
+ 332              	.LVL39:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 333              		.loc 1 52 26 view .LVU84
+ 334 0030 00FB04F0 		mul	r0, r0, r4
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 335              		.loc 1 52 43 view .LVU85
+ 336 0034 00FB03F0 		mul	r0, r0, r3
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 337              		.loc 1 52 60 view .LVU86
+ 338 0038 4000     		lsls	r0, r0, #1
+ 339              	.LVL40:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 340              		.loc 1 52 60 view .LVU87
+ 341 003a 00E0     		b	.L25
+ 342              	.LVL41:
+ 343              	.L30:
+ARM GAS  /tmp/ccay6N26.s 			page 10
+
+
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 344              		.loc 1 52 60 view .LVU88
+ 345              	.LBE13:
+ 346              	.LBE12:
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** 
+ 347              		.loc 1 111 13 view .LVU89
+ 348 003c 0020     		movs	r0, #0
+ 349              	.LVL42:
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_depthwise_conv_get_buffer_sizes_s16.c **** }
+ 350              		.loc 1 118 5 is_stmt 1 view .LVU90
+ 351              	.L25:
+ 352              		.loc 1 119 1 is_stmt 0 view .LVU91
+ 353 003e 5DF8044B 		ldr	r4, [sp], #4
+ 354              	.LCFI4:
+ 355              		.cfi_restore 4
+ 356              		.cfi_def_cfa_offset 0
+ 357 0042 7047     		bx	lr
+ 358              		.cfi_endproc
+ 359              	.LFE52:
+ 361              		.text
+ 362              	.Letext0:
+ 363              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 364              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 365              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 366              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 367              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 368              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ARM GAS  /tmp/ccay6N26.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_depthwise_conv_get_buffer_sizes_s16.c
+     /tmp/ccay6N26.s:18     .text.arm_depthwise_conv_fast_s16_get_buffer_size:0000000000000000 $t
+     /tmp/ccay6N26.s:26     .text.arm_depthwise_conv_fast_s16_get_buffer_size:0000000000000000 arm_depthwise_conv_fast_s16_get_buffer_size
+     /tmp/ccay6N26.s:63     .text.arm_depthwise_conv_wrapper_s16_get_buffer_size:0000000000000000 $t
+     /tmp/ccay6N26.s:70     .text.arm_depthwise_conv_wrapper_s16_get_buffer_size:0000000000000000 arm_depthwise_conv_wrapper_s16_get_buffer_size
+     /tmp/ccay6N26.s:151    .text.arm_depthwise_conv_wrapper_s16_get_buffer_size_mve:0000000000000000 $t
+     /tmp/ccay6N26.s:158    .text.arm_depthwise_conv_wrapper_s16_get_buffer_size_mve:0000000000000000 arm_depthwise_conv_wrapper_s16_get_buffer_size_mve
+     /tmp/ccay6N26.s:257    .text.arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp:0000000000000000 $t
+     /tmp/ccay6N26.s:264    .text.arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp:0000000000000000 arm_depthwise_conv_wrapper_s16_get_buffer_size_dsp
+
+NO UNDEFINED SYMBOLS

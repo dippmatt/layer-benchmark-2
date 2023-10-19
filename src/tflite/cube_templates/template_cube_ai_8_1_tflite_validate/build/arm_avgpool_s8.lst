@@ -1,0 +1,1076 @@
+ARM GAS  /tmp/ccZViRUE.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_avgpool_s8.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.scale_q31_to_q7_and_clamp,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	scale_q31_to_q7_and_clamp:
+  26              	.LVL0:
+  27              	.LFB47:
+  28              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c"
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * SPDX-FileCopyrightText: Copyright 2010-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Title:        arm_avgpool_s8.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Description:  Pooling function implementations
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * $Date:        30 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * $Revision:    V.3.2.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * -------------------------------------------------------------------- */
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ARM GAS  /tmp/ccZViRUE.s 			page 2
+
+
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** #if defined(ARM_MATH_DSP) && !defined(ARM_MATH_MVEI)
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** static void scale_q31_to_q7_and_clamp(const int32_t *buffer,
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                       int8_t *target,
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                       int32_t length,
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                       const int32_t count,
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                       const int act_min,
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                       const int act_max)
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** {
+  29              		.loc 1 41 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 8, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		.loc 1 41 1 is_stmt 0 view .LVU1
+  34 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 20
+  37              		.cfi_offset 4, -20
+  38              		.cfi_offset 5, -16
+  39              		.cfi_offset 6, -12
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
+  42 0002 DDF814E0 		ldr	lr, [sp, #20]
+  43 0006 DDF818C0 		ldr	ip, [sp, #24]
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int half_count = count / 2;
+  44              		.loc 1 42 5 is_stmt 1 view .LVU2
+  45              		.loc 1 42 15 is_stmt 0 view .LVU3
+  46 000a 03EBD377 		add	r7, r3, r3, lsr #31
+  47 000e 7F10     		asrs	r7, r7, #1
+  48              	.LVL1:
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     for (int i = 0; i < length; i++)
+  49              		.loc 1 44 5 is_stmt 1 view .LVU4
+  50              	.LBB2:
+  51              		.loc 1 44 10 view .LVU5
+  52              		.loc 1 44 14 is_stmt 0 view .LVU6
+  53 0010 0025     		movs	r5, #0
+  54              		.loc 1 44 5 view .LVU7
+  55 0012 0AE0     		b	.L2
+  56              	.LVL2:
+  57              	.L3:
+  58              	.LBB3:
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         int32_t sum = buffer[i] > 0 ? (buffer[i] + half_count) : (buffer[i] - half_count);
+  59              		.loc 1 46 64 discriminator 2 view .LVU8
+  60 0014 E41B     		subs	r4, r4, r7
+  61              	.L4:
+  62              	.LVL3:
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = sum / count;
+  63              		.loc 1 47 9 is_stmt 1 discriminator 4 view .LVU9
+  64              		.loc 1 47 13 is_stmt 0 discriminator 4 view .LVU10
+  65 0016 94FBF3F4 		sdiv	r4, r4, r3
+  66              	.LVL4:
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = MAX(sum, act_min);
+  67              		.loc 1 48 9 is_stmt 1 discriminator 4 view .LVU11
+ARM GAS  /tmp/ccZViRUE.s 			page 3
+
+
+  68              		.loc 1 48 13 is_stmt 0 discriminator 4 view .LVU12
+  69 001a 7445     		cmp	r4, lr
+  70 001c B8BF     		it	lt
+  71 001e 7446     		movlt	r4, lr
+  72              	.LVL5:
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = MIN(sum, act_max);
+  73              		.loc 1 49 9 is_stmt 1 discriminator 4 view .LVU13
+  74              		.loc 1 49 13 is_stmt 0 discriminator 4 view .LVU14
+  75 0020 6445     		cmp	r4, ip
+  76 0022 A8BF     		it	ge
+  77 0024 6446     		movge	r4, ip
+  78              	.LVL6:
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         target[i] = (int8_t)sum;
+  79              		.loc 1 51 9 is_stmt 1 discriminator 4 view .LVU15
+  80              		.loc 1 51 19 is_stmt 0 discriminator 4 view .LVU16
+  81 0026 8C55     		strb	r4, [r1, r6]
+  82              	.LBE3:
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+  83              		.loc 1 44 33 is_stmt 1 discriminator 4 view .LVU17
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+  84              		.loc 1 44 34 is_stmt 0 discriminator 4 view .LVU18
+  85 0028 0135     		adds	r5, r5, #1
+  86              	.LVL7:
+  87              	.L2:
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+  88              		.loc 1 44 21 is_stmt 1 discriminator 2 view .LVU19
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+  89              		.loc 1 44 5 is_stmt 0 discriminator 2 view .LVU20
+  90 002a 9542     		cmp	r5, r2
+  91 002c 06DA     		bge	.L7
+  92              	.LBB4:
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = sum / count;
+  93              		.loc 1 46 9 is_stmt 1 view .LVU21
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = sum / count;
+  94              		.loc 1 46 29 is_stmt 0 view .LVU22
+  95 002e 2E46     		mov	r6, r5
+  96 0030 50F82540 		ldr	r4, [r0, r5, lsl #2]
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = sum / count;
+  97              		.loc 1 46 64 view .LVU23
+  98 0034 002C     		cmp	r4, #0
+  99 0036 EDDD     		ble	.L3
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = sum / count;
+ 100              		.loc 1 46 64 discriminator 1 view .LVU24
+ 101 0038 3C44     		add	r4, r4, r7
+ 102 003a ECE7     		b	.L4
+ 103              	.L7:
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         sum = sum / count;
+ 104              		.loc 1 46 64 discriminator 1 view .LVU25
+ 105              	.LBE4:
+ 106              	.LBE2:
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     }
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** }
+ 107              		.loc 1 53 1 view .LVU26
+ 108 003c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 109              		.loc 1 53 1 view .LVU27
+ 110              		.cfi_endproc
+ARM GAS  /tmp/ccZViRUE.s 			page 4
+
+
+ 111              	.LFE47:
+ 113              		.section	.text.arm_avgpool_s8,"ax",%progbits
+ 114              		.align	1
+ 115              		.global	arm_avgpool_s8
+ 116              		.syntax unified
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.fpu fpv4-sp-d16
+ 121              	arm_avgpool_s8:
+ 122              	.LVL8:
+ 123              	.LFB48:
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** #endif
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** /**
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *  @ingroup Public
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  */
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** /**
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * @addtogroup Pooling
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * @{
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  */
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** /*
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * s8 average pooling function
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  * Refer to header file for details.
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  *
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****  */
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** #if defined(ARM_MATH_MVEI)
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** arm_cmsis_nn_status arm_avgpool_s8(const cmsis_nn_context *ctx,
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_pool_params *pool_params,
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_dims *input_dims,
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const int8_t *src,
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_dims *filter_dims,
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_dims *output_dims,
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    int8_t *dst)
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** {
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     (void)ctx;
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t input_y = input_dims->h;
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t input_x = input_dims->w;
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t output_y = output_dims->h;
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t output_x = output_dims->w;
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t stride_y = pool_params->stride.h;
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t stride_x = pool_params->stride.w;
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t kernel_y = filter_dims->h;
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t kernel_x = filter_dims->w;
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t pad_y = pool_params->padding.h;
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t pad_x = pool_params->padding.w;
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t act_min = pool_params->activation.min;
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t act_max = pool_params->activation.max;
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t ch_src = input_dims->c;
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     for (int i_y = 0; i_y < output_y; i_y++)
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         for (int i_x = 0; i_x < output_x; i_x++)
+ARM GAS  /tmp/ccZViRUE.s 			page 5
+
+
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t k_y_start = MAX(0, i_y * stride_y - pad_y);
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t k_y_end = MIN(i_y * stride_y - pad_y + kernel_y, input_y);
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t k_x_start = MAX(0, i_x * stride_x - pad_x);
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t k_x_end = MIN(i_x * stride_x - pad_x + kernel_x, input_x);
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int8_t *src_base = src;
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             int8_t *out = &dst[ch_src * (i_x + i_y * output_x)];
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             int32_t ch_count = (ch_src + 15) / 16;
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             int32_t channels = ch_src;
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             while (ch_count > 0)
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int8x16_t temp;
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int16x8_t temp_lo, temp_hi;
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int32x4_t temp_lo_lo, temp_lo_hi, temp_hi_lo, temp_hi_hi;
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int32_t count = 0;
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int32x4_t sum_1 = vdupq_n_s32(0);
+ 121:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int32x4_t sum_2 = vdupq_n_s32(0);
+ 122:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int32x4_t sum_3 = vdupq_n_s32(0);
+ 123:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int32x4_t sum_4 = vdupq_n_s32(0);
+ 124:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 // Load store tail predicate
+ 125:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 const mve_pred16_t ld_st_p = vctp8q(channels);
+ 126:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 channels -= 16;
+ 127:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 128:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 for (int k_y = k_y_start; k_y < k_y_end; k_y++)
+ 129:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 130:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     for (int k_x = k_x_start; k_x < k_x_end; k_x++)
+ 131:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     {
+ 132:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         const int8_t *src_inner = src_base + (ch_src * (k_x + k_y * input_x));
+ 133:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp = vldrbq_z_s8(src_inner, ld_st_p);
+ 134:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 135:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp_lo = vmovlbq_s8(temp);
+ 136:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp_hi = vmovltq_s8(temp);
+ 137:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 138:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp_lo_lo = vmovlbq_s16(temp_lo);
+ 139:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp_lo_hi = vmovltq_s16(temp_lo);
+ 140:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 141:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp_hi_lo = vmovlbq_s16(temp_hi);
+ 142:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         temp_hi_hi = vmovltq_s16(temp_hi);
+ 143:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 144:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         sum_1 = vaddq_s32(sum_1, temp_lo_lo);
+ 145:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         sum_2 = vaddq_s32(sum_2, temp_lo_hi);
+ 146:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         sum_3 = vaddq_s32(sum_3, temp_hi_lo);
+ 147:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         sum_4 = vaddq_s32(sum_4, temp_hi_hi);
+ 148:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 149:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         count++;
+ 150:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     }
+ 151:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 }
+ 152:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 153:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 // Prevent static code issue DIVIDE_BY_ZERO.
+ 154:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 if (count == 0)
+ 155:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 156:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     return ARM_CMSIS_NN_ARG_ERROR;
+ARM GAS  /tmp/ccZViRUE.s 			page 6
+
+
+ 157:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 }
+ 158:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 159:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 // Perform the following operation
+ 160:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 // sum = sum > 0 ? (sum + count / 2) / count : (sum - count / 2) / count;
+ 161:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 const int32_t half_count = count / 2;
+ 162:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 // Predicate for 'sum > 0' operation
+ 163:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 mve_pred16_t p = vcmpgtq_n_s32(sum_1, 0);
+ 164:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_1 = vaddq_m_n_s32(sum_1, sum_1, half_count, p);
+ 165:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_1 = vsubq_m_n_s32(sum_1, sum_1, half_count, ~p);
+ 166:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 167:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 p = vcmpgtq_n_s32(sum_2, 0);
+ 168:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_2 = vaddq_m_n_s32(sum_2, sum_2, half_count, p);
+ 169:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_2 = vsubq_m_n_s32(sum_2, sum_2, half_count, ~p);
+ 170:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 171:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 p = vcmpgtq_n_s32(sum_3, 0);
+ 172:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_3 = vaddq_m_n_s32(sum_3, sum_3, half_count, p);
+ 173:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_3 = vsubq_m_n_s32(sum_3, sum_3, half_count, ~p);
+ 174:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 175:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 p = vcmpgtq_n_s32(sum_4, 0);
+ 176:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_4 = vaddq_m_n_s32(sum_4, sum_4, half_count, p);
+ 177:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_4 = vsubq_m_n_s32(sum_4, sum_4, half_count, ~p);
+ 178:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 179:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 for (int i = 0; i < 4; i++)
+ 180:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 181:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     sum_1[i] = sum_1[i] / count;
+ 182:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     sum_2[i] = sum_2[i] / count;
+ 183:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     sum_3[i] = sum_3[i] / count;
+ 184:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     sum_4[i] = sum_4[i] / count;
+ 185:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 }
+ 186:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 187:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_1 = vmaxq_s32(sum_1, vdupq_n_s32(act_min));
+ 188:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_1 = vminq_s32(sum_1, vdupq_n_s32(act_max));
+ 189:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 190:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_2 = vmaxq_s32(sum_2, vdupq_n_s32(act_min));
+ 191:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_2 = vminq_s32(sum_2, vdupq_n_s32(act_max));
+ 192:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 193:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_3 = vmaxq_s32(sum_3, vdupq_n_s32(act_min));
+ 194:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_3 = vminq_s32(sum_3, vdupq_n_s32(act_max));
+ 195:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 196:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_4 = vmaxq_s32(sum_4, vdupq_n_s32(act_min));
+ 197:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum_4 = vminq_s32(sum_4, vdupq_n_s32(act_max));
+ 198:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 199:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 temp_lo = vmovnbq_s32(temp_lo, sum_1);
+ 200:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 temp_lo = vmovntq_s32(temp_lo, sum_2);
+ 201:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 202:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 temp_hi = vmovnbq_s32(temp_hi, sum_3);
+ 203:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 temp_hi = vmovntq_s32(temp_hi, sum_4);
+ 204:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 205:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 temp = vmovnbq_s16(temp, temp_lo);
+ 206:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 temp = vmovntq_s16(temp, temp_hi);
+ 207:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 208:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 vstrbq_p_s8(out, temp, ld_st_p);
+ 209:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 out += 16;
+ 210:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 211:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 ch_count--;
+ 212:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 src_base += 16;
+ 213:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             }
+ARM GAS  /tmp/ccZViRUE.s 			page 7
+
+
+ 214:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         }
+ 215:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     }
+ 216:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     return ARM_CMSIS_NN_SUCCESS;
+ 217:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** }
+ 218:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 219:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** #else
+ 220:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** arm_cmsis_nn_status arm_avgpool_s8(const cmsis_nn_context *ctx,
+ 221:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_pool_params *pool_params,
+ 222:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_dims *input_dims,
+ 223:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const int8_t *src,
+ 224:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_dims *filter_dims,
+ 225:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    const cmsis_nn_dims *output_dims,
+ 226:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                                    int8_t *dst)
+ 227:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** {
+ 124              		.loc 1 227 1 is_stmt 1 view -0
+ 125              		.cfi_startproc
+ 126              		@ args = 12, pretend = 0, frame = 72
+ 127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128              		.loc 1 227 1 is_stmt 0 view .LVU29
+ 129 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 130              	.LCFI1:
+ 131              		.cfi_def_cfa_offset 36
+ 132              		.cfi_offset 4, -36
+ 133              		.cfi_offset 5, -32
+ 134              		.cfi_offset 6, -28
+ 135              		.cfi_offset 7, -24
+ 136              		.cfi_offset 8, -20
+ 137              		.cfi_offset 9, -16
+ 138              		.cfi_offset 10, -12
+ 139              		.cfi_offset 11, -8
+ 140              		.cfi_offset 14, -4
+ 141 0004 95B0     		sub	sp, sp, #84
+ 142              	.LCFI2:
+ 143              		.cfi_def_cfa_offset 120
+ 144 0006 0446     		mov	r4, r0
+ 145 0008 0593     		str	r3, [sp, #20]
+ 146 000a 1E9B     		ldr	r3, [sp, #120]
+ 147              	.LVL9:
+ 148              		.loc 1 227 1 view .LVU30
+ 149 000c 1F98     		ldr	r0, [sp, #124]
+ 150              	.LVL10:
+ 228:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t input_y = input_dims->h;
+ 151              		.loc 1 228 5 is_stmt 1 view .LVU31
+ 152              		.loc 1 228 19 is_stmt 0 view .LVU32
+ 153 000e 5568     		ldr	r5, [r2, #4]
+ 154 0010 0B95     		str	r5, [sp, #44]
+ 155              	.LVL11:
+ 229:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t input_x = input_dims->w;
+ 156              		.loc 1 229 5 is_stmt 1 view .LVU33
+ 157              		.loc 1 229 19 is_stmt 0 view .LVU34
+ 158 0012 9568     		ldr	r5, [r2, #8]
+ 159              	.LVL12:
+ 160              		.loc 1 229 19 view .LVU35
+ 161 0014 0495     		str	r5, [sp, #16]
+ 162              	.LVL13:
+ 230:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t output_y = output_dims->h;
+ 163              		.loc 1 230 5 is_stmt 1 view .LVU36
+ARM GAS  /tmp/ccZViRUE.s 			page 8
+
+
+ 164              		.loc 1 230 19 is_stmt 0 view .LVU37
+ 165 0016 4568     		ldr	r5, [r0, #4]
+ 166              	.LVL14:
+ 167              		.loc 1 230 19 view .LVU38
+ 168 0018 1195     		str	r5, [sp, #68]
+ 169              	.LVL15:
+ 231:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t output_x = output_dims->w;
+ 170              		.loc 1 231 5 is_stmt 1 view .LVU39
+ 171              		.loc 1 231 19 is_stmt 0 view .LVU40
+ 172 001a 8068     		ldr	r0, [r0, #8]
+ 173 001c 0A90     		str	r0, [sp, #40]
+ 174              	.LVL16:
+ 232:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t stride_y = pool_params->stride.h;
+ 175              		.loc 1 232 5 is_stmt 1 view .LVU41
+ 176              		.loc 1 232 19 is_stmt 0 view .LVU42
+ 177 001e 4868     		ldr	r0, [r1, #4]
+ 178              	.LVL17:
+ 179              		.loc 1 232 19 view .LVU43
+ 180 0020 1290     		str	r0, [sp, #72]
+ 181              	.LVL18:
+ 233:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t stride_x = pool_params->stride.w;
+ 182              		.loc 1 233 5 is_stmt 1 view .LVU44
+ 183              		.loc 1 233 19 is_stmt 0 view .LVU45
+ 184 0022 0868     		ldr	r0, [r1]
+ 185              	.LVL19:
+ 186              		.loc 1 233 19 view .LVU46
+ 187 0024 0C90     		str	r0, [sp, #48]
+ 188              	.LVL20:
+ 234:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t kernel_y = filter_dims->h;
+ 189              		.loc 1 234 5 is_stmt 1 view .LVU47
+ 190              		.loc 1 234 19 is_stmt 0 view .LVU48
+ 191 0026 5868     		ldr	r0, [r3, #4]
+ 192              	.LVL21:
+ 193              		.loc 1 234 19 view .LVU49
+ 194 0028 0D90     		str	r0, [sp, #52]
+ 195              	.LVL22:
+ 235:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t kernel_x = filter_dims->w;
+ 196              		.loc 1 235 5 is_stmt 1 view .LVU50
+ 197              		.loc 1 235 19 is_stmt 0 view .LVU51
+ 198 002a 9B68     		ldr	r3, [r3, #8]
+ 199 002c 0E93     		str	r3, [sp, #56]
+ 200              	.LVL23:
+ 236:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t pad_y = pool_params->padding.h;
+ 201              		.loc 1 236 5 is_stmt 1 view .LVU52
+ 202              		.loc 1 236 19 is_stmt 0 view .LVU53
+ 203 002e CD68     		ldr	r5, [r1, #12]
+ 204              	.LVL24:
+ 237:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t pad_x = pool_params->padding.w;
+ 205              		.loc 1 237 5 is_stmt 1 view .LVU54
+ 206              		.loc 1 237 19 is_stmt 0 view .LVU55
+ 207 0030 8B68     		ldr	r3, [r1, #8]
+ 208              	.LVL25:
+ 209              		.loc 1 237 19 view .LVU56
+ 210 0032 1393     		str	r3, [sp, #76]
+ 211              	.LVL26:
+ 238:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t act_min = pool_params->activation.min;
+ 212              		.loc 1 238 5 is_stmt 1 view .LVU57
+ARM GAS  /tmp/ccZViRUE.s 			page 9
+
+
+ 213              		.loc 1 238 19 is_stmt 0 view .LVU58
+ 214 0034 0B69     		ldr	r3, [r1, #16]
+ 215              	.LVL27:
+ 216              		.loc 1 238 19 view .LVU59
+ 217 0036 0F93     		str	r3, [sp, #60]
+ 218              	.LVL28:
+ 239:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t act_max = pool_params->activation.max;
+ 219              		.loc 1 239 5 is_stmt 1 view .LVU60
+ 220              		.loc 1 239 19 is_stmt 0 view .LVU61
+ 221 0038 4B69     		ldr	r3, [r1, #20]
+ 222              	.LVL29:
+ 223              		.loc 1 239 19 view .LVU62
+ 224 003a 1093     		str	r3, [sp, #64]
+ 225              	.LVL30:
+ 240:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     const int32_t ch_src = input_dims->c;
+ 226              		.loc 1 240 5 is_stmt 1 view .LVU63
+ 227              		.loc 1 240 19 is_stmt 0 view .LVU64
+ 228 003c D2F80CA0 		ldr	r10, [r2, #12]
+ 229              	.LVL31:
+ 241:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 242:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     if (ctx->buf == NULL && arm_avgpool_s8_get_buffer_size(output_dims->w, input_dims->c))
+ 230              		.loc 1 242 5 is_stmt 1 view .LVU65
+ 231              		.loc 1 242 12 is_stmt 0 view .LVU66
+ 232 0040 2368     		ldr	r3, [r4]
+ 233              	.LVL32:
+ 234              		.loc 1 242 8 view .LVU67
+ 235 0042 7BB1     		cbz	r3, .L32
+ 236              	.LVL33:
+ 237              	.L9:
+ 243:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 244:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         return ARM_CMSIS_NN_ARG_ERROR;
+ 245:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     }
+ 246:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     int32_t *buffer = (int32_t *)ctx->buf;
+ 238              		.loc 1 246 5 is_stmt 1 view .LVU68
+ 239              		.loc 1 246 14 is_stmt 0 view .LVU69
+ 240 0044 D4F800B0 		ldr	fp, [r4]
+ 241              	.LVL34:
+ 247:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 248:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     #if defined(ARM_MATH_DSP)
+ 249:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 250:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     /* Run the following code for CPU's with DSP extension
+ 251:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****      */
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     for (int i_y = 0, idx_y = -pad_y; i_y < output_y; idx_y += stride_y, i_y++)
+ 242              		.loc 1 252 5 is_stmt 1 view .LVU70
+ 243              	.LBB5:
+ 244              		.loc 1 252 10 view .LVU71
+ 245              		.loc 1 252 23 is_stmt 0 view .LVU72
+ 246 0048 6B42     		rsbs	r3, r5, #0
+ 247 004a 0393     		str	r3, [sp, #12]
+ 248              	.LVL35:
+ 249              		.loc 1 252 14 view .LVU73
+ 250 004c 0023     		movs	r3, #0
+ 251              	.LVL36:
+ 252              		.loc 1 252 14 view .LVU74
+ 253 004e 0993     		str	r3, [sp, #36]
+ 254              	.LVL37:
+ 255              	.L11:
+ARM GAS  /tmp/ccZViRUE.s 			page 10
+
+
+ 256              		.loc 1 252 39 is_stmt 1 discriminator 1 view .LVU75
+ 257              		.loc 1 252 5 is_stmt 0 discriminator 1 view .LVU76
+ 258 0050 099B     		ldr	r3, [sp, #36]
+ 259 0052 119A     		ldr	r2, [sp, #68]
+ 260 0054 9342     		cmp	r3, r2
+ 261 0056 7EDA     		bge	.L33
+ 253:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         for (int i_x = 0, idx_x = -pad_x; i_x < output_x; idx_x += stride_x, i_x++)
+ 262              		.loc 1 254 9 is_stmt 1 view .LVU77
+ 263              	.LBB6:
+ 264              		.loc 1 254 14 view .LVU78
+ 265              	.LVL38:
+ 266              		.loc 1 254 27 is_stmt 0 view .LVU79
+ 267 0058 139B     		ldr	r3, [sp, #76]
+ 268 005a 5B42     		rsbs	r3, r3, #0
+ 269 005c 0293     		str	r3, [sp, #8]
+ 270              	.LVL39:
+ 271              		.loc 1 254 18 view .LVU80
+ 272 005e 0023     		movs	r3, #0
+ 273              	.LVL40:
+ 274              		.loc 1 254 18 view .LVU81
+ 275 0060 0893     		str	r3, [sp, #32]
+ 276              		.loc 1 254 9 view .LVU82
+ 277 0062 50E0     		b	.L12
+ 278              	.LVL41:
+ 279              	.L32:
+ 280              		.loc 1 254 9 view .LVU83
+ 281              	.LBE6:
+ 282              	.LBE5:
+ 242:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 283              		.loc 1 242 29 discriminator 1 view .LVU84
+ 284 0064 5146     		mov	r1, r10
+ 285              	.LVL42:
+ 242:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 286              		.loc 1 242 29 discriminator 1 view .LVU85
+ 287 0066 0A98     		ldr	r0, [sp, #40]
+ 288              	.LVL43:
+ 242:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 289              		.loc 1 242 29 discriminator 1 view .LVU86
+ 290 0068 FFF7FEFF 		bl	arm_avgpool_s8_get_buffer_size
+ 291              	.LVL44:
+ 242:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 292              		.loc 1 242 26 discriminator 1 view .LVU87
+ 293 006c 0028     		cmp	r0, #0
+ 294 006e E9D0     		beq	.L9
+ 244:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     }
+ 295              		.loc 1 244 16 view .LVU88
+ 296 0070 4FF0FF30 		mov	r0, #-1
+ 297 0074 73E0     		b	.L10
+ 298              	.LVL45:
+ 299              	.L37:
+ 300              	.LBB23:
+ 301              	.LBB21:
+ 302              	.LBB7:
+ 255:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 256:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             /* Condition for kernel start dimension:
+ 257:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                       (base_idx_<x,y> + kernel_<x,y>_start) >= 0 */
+ARM GAS  /tmp/ccZViRUE.s 			page 11
+
+
+ 258:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_y_start = MAX(0, -idx_y);
+ 303              		.loc 1 258 44 discriminator 1 view .LVU89
+ 304 0076 C3F10008 		rsb	r8, r3, #0
+ 305 007a 4DE0     		b	.L13
+ 306              	.LVL46:
+ 307              	.L38:
+ 259:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_start = MAX(0, -idx_x);
+ 308              		.loc 1 259 44 discriminator 1 view .LVU90
+ 309 007c 5B42     		rsbs	r3, r3, #0
+ 310 007e 0793     		str	r3, [sp, #28]
+ 311 0080 4FE0     		b	.L14
+ 312              	.LVL47:
+ 313              	.L18:
+ 314              	.LBB8:
+ 315              	.LBB9:
+ 316              	.LBB10:
+ 317              	.LBB11:
+ 260:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 261:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             /* Condition for kernel end dimension:
+ 262:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                    (base_idx_<x,y> + kernel_<x,y>_end) < dim_src_<width,height> */
+ 263:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_y_end = MIN(kernel_y, input_y - idx_y);
+ 264:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_end = MIN(kernel_x, input_x - idx_x);
+ 265:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 266:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             int count = 0;
+ 267:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             for (int k_y = kernel_y_start; k_y < kernel_y_end; k_y++)
+ 269:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 for (int k_x = kernel_x_start; k_x < kernel_x_end; k_x++)
+ 271:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     const int8_t *start = src + ch_src * (k_x + idx_x + (k_y + idx_y) * input_x);
+ 273:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 274:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     if (count == 0)
+ 275:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     {
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         for (int i = 0; i < ch_src; i++)
+ 277:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 278:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                             buffer[i] = start[i];
+ 318              		.loc 1 278 29 is_stmt 1 discriminator 3 view .LVU91
+ 319              		.loc 1 278 46 is_stmt 0 discriminator 3 view .LVU92
+ 320 0082 EA56     		ldrsb	r2, [r5, r3]
+ 321              		.loc 1 278 39 discriminator 3 view .LVU93
+ 322 0084 4BF82320 		str	r2, [fp, r3, lsl #2]
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 323              		.loc 1 276 53 is_stmt 1 discriminator 3 view .LVU94
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 324              		.loc 1 276 54 is_stmt 0 discriminator 3 view .LVU95
+ 325 0088 0133     		adds	r3, r3, #1
+ 326              	.LVL48:
+ 327              	.L16:
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 328              		.loc 1 276 41 is_stmt 1 discriminator 1 view .LVU96
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 329              		.loc 1 276 25 is_stmt 0 discriminator 1 view .LVU97
+ 330 008a 5345     		cmp	r3, r10
+ 331 008c F9DB     		blt	.L18
+ 332 008e 0BE0     		b	.L19
+ 333              	.LVL49:
+ 334              	.L28:
+ARM GAS  /tmp/ccZViRUE.s 			page 12
+
+
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 335              		.loc 1 276 34 view .LVU98
+ 336 0090 3B46     		mov	r3, r7
+ 337 0092 FAE7     		b	.L16
+ 338              	.LVL50:
+ 339              	.L20:
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 340              		.loc 1 276 34 view .LVU99
+ 341              	.LBE11:
+ 342              	.LBB12:
+ 343              	.LBB13:
+ 279:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         }
+ 280:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     }
+ 281:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     else
+ 282:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     {
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         for (int i = 0; i < ch_src; i++)
+ 284:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 285:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                             buffer[i] = QADD(start[i], buffer[i]);
+ 344              		.loc 1 285 29 is_stmt 1 discriminator 3 view .LVU100
+ 345              		.loc 1 285 41 is_stmt 0 discriminator 3 view .LVU101
+ 346 0094 5BF82410 		ldr	r1, [fp, r4, lsl #2]
+ 347 0098 2857     		ldrsb	r0, [r5, r4]
+ 348 009a FFF7FEFF 		bl	__qadd
+ 349              	.LVL51:
+ 350              		.loc 1 285 39 discriminator 3 view .LVU102
+ 351 009e 4BF82400 		str	r0, [fp, r4, lsl #2]
+ 352              	.LBE13:
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 353              		.loc 1 283 53 is_stmt 1 discriminator 3 view .LVU103
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 354              		.loc 1 283 54 is_stmt 0 discriminator 3 view .LVU104
+ 355 00a2 0134     		adds	r4, r4, #1
+ 356              	.LVL52:
+ 357              	.L17:
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 358              		.loc 1 283 41 is_stmt 1 discriminator 1 view .LVU105
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 359              		.loc 1 283 25 is_stmt 0 discriminator 1 view .LVU106
+ 360 00a4 5445     		cmp	r4, r10
+ 361 00a6 F5DB     		blt	.L20
+ 362              	.LVL53:
+ 363              	.L19:
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 364              		.loc 1 283 25 discriminator 1 view .LVU107
+ 365              	.LBE12:
+ 286:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         }
+ 287:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     }
+ 288:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     count++;
+ 366              		.loc 1 288 21 is_stmt 1 discriminator 2 view .LVU108
+ 367              		.loc 1 288 26 is_stmt 0 discriminator 2 view .LVU109
+ 368 00a8 0137     		adds	r7, r7, #1
+ 369              	.LVL54:
+ 370              		.loc 1 288 26 discriminator 2 view .LVU110
+ 371              	.LBE10:
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 372              		.loc 1 270 68 is_stmt 1 discriminator 2 view .LVU111
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ARM GAS  /tmp/ccZViRUE.s 			page 13
+
+
+ 373              		.loc 1 270 71 is_stmt 0 discriminator 2 view .LVU112
+ 374 00aa 0136     		adds	r6, r6, #1
+ 375              	.LVL55:
+ 376              	.L22:
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 377              		.loc 1 270 48 is_stmt 1 discriminator 1 view .LVU113
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 378              		.loc 1 270 17 is_stmt 0 discriminator 1 view .LVU114
+ 379 00ac 4E45     		cmp	r6, r9
+ 380 00ae 0DDA     		bge	.L34
+ 381              	.LBB15:
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 382              		.loc 1 272 21 is_stmt 1 view .LVU115
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 383              		.loc 1 272 63 is_stmt 0 view .LVU116
+ 384 00b0 029B     		ldr	r3, [sp, #8]
+ 385 00b2 9D19     		adds	r5, r3, r6
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 386              		.loc 1 272 78 view .LVU117
+ 387 00b4 039B     		ldr	r3, [sp, #12]
+ 388 00b6 4344     		add	r3, r3, r8
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 389              		.loc 1 272 71 view .LVU118
+ 390 00b8 049A     		ldr	r2, [sp, #16]
+ 391 00ba 02FB0355 		mla	r5, r2, r3, r5
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 392              		.loc 1 272 35 view .LVU119
+ 393 00be 059B     		ldr	r3, [sp, #20]
+ 394 00c0 0AFB0535 		mla	r5, r10, r5, r3
+ 395              	.LVL56:
+ 274:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     {
+ 396              		.loc 1 274 21 is_stmt 1 view .LVU120
+ 274:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     {
+ 397              		.loc 1 274 24 is_stmt 0 view .LVU121
+ 398 00c4 002F     		cmp	r7, #0
+ 399 00c6 E3D0     		beq	.L28
+ 400              	.LBB14:
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 401              		.loc 1 283 34 view .LVU122
+ 402 00c8 0024     		movs	r4, #0
+ 403 00ca EBE7     		b	.L17
+ 404              	.LVL57:
+ 405              	.L34:
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 406              		.loc 1 283 34 view .LVU123
+ 407              	.LBE14:
+ 408              	.LBE15:
+ 409              	.LBE9:
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 410              		.loc 1 268 64 is_stmt 1 discriminator 2 view .LVU124
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 411              		.loc 1 268 67 is_stmt 0 discriminator 2 view .LVU125
+ 412 00cc 08F10108 		add	r8, r8, #1
+ 413              	.LVL58:
+ 414              	.L15:
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 415              		.loc 1 268 44 is_stmt 1 discriminator 1 view .LVU126
+ARM GAS  /tmp/ccZViRUE.s 			page 14
+
+
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 416              		.loc 1 268 13 is_stmt 0 discriminator 1 view .LVU127
+ 417 00d0 069B     		ldr	r3, [sp, #24]
+ 418 00d2 9845     		cmp	r8, r3
+ 419 00d4 01DA     		bge	.L35
+ 420              	.LBB16:
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 421              		.loc 1 270 26 view .LVU128
+ 422 00d6 079E     		ldr	r6, [sp, #28]
+ 423 00d8 E8E7     		b	.L22
+ 424              	.L35:
+ 425              	.LBE16:
+ 426              	.LBE8:
+ 289:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 }
+ 290:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             }
+ 291:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 292:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             // Prevent static code issue DIVIDE_BY_ZERO.
+ 293:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             if (count == 0)
+ 427              		.loc 1 293 13 is_stmt 1 view .LVU129
+ 428              		.loc 1 293 16 is_stmt 0 view .LVU130
+ 429 00da 002F     		cmp	r7, #0
+ 430 00dc 3DD0     		beq	.L30
+ 294:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 295:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 return ARM_CMSIS_NN_ARG_ERROR;
+ 296:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             }
+ 297:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 298:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             scale_q31_to_q7_and_clamp(buffer, dst, ch_src, count, act_min, act_max);
+ 431              		.loc 1 298 13 is_stmt 1 discriminator 2 view .LVU131
+ 432 00de 109B     		ldr	r3, [sp, #64]
+ 433 00e0 0193     		str	r3, [sp, #4]
+ 434 00e2 0F9B     		ldr	r3, [sp, #60]
+ 435 00e4 0093     		str	r3, [sp]
+ 436 00e6 3B46     		mov	r3, r7
+ 437 00e8 5246     		mov	r2, r10
+ 438 00ea 2099     		ldr	r1, [sp, #128]
+ 439 00ec 5846     		mov	r0, fp
+ 440 00ee FFF7FEFF 		bl	scale_q31_to_q7_and_clamp
+ 441              	.LVL59:
+ 299:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             dst += ch_src;
+ 442              		.loc 1 299 13 discriminator 2 view .LVU132
+ 443              		.loc 1 299 17 is_stmt 0 discriminator 2 view .LVU133
+ 444 00f2 209B     		ldr	r3, [sp, #128]
+ 445 00f4 5344     		add	r3, r3, r10
+ 446 00f6 2093     		str	r3, [sp, #128]
+ 447              	.LVL60:
+ 448              		.loc 1 299 17 discriminator 2 view .LVU134
+ 449              	.LBE7:
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 450              		.loc 1 254 59 is_stmt 1 discriminator 2 view .LVU135
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 451              		.loc 1 254 65 is_stmt 0 discriminator 2 view .LVU136
+ 452 00f8 029B     		ldr	r3, [sp, #8]
+ 453              	.LVL61:
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 454              		.loc 1 254 65 discriminator 2 view .LVU137
+ 455 00fa 0C9A     		ldr	r2, [sp, #48]
+ 456 00fc 1344     		add	r3, r3, r2
+ARM GAS  /tmp/ccZViRUE.s 			page 15
+
+
+ 457 00fe 0293     		str	r3, [sp, #8]
+ 458              	.LVL62:
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 459              		.loc 1 254 81 discriminator 2 view .LVU138
+ 460 0100 089B     		ldr	r3, [sp, #32]
+ 461              	.LVL63:
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 462              		.loc 1 254 81 discriminator 2 view .LVU139
+ 463 0102 0133     		adds	r3, r3, #1
+ 464 0104 0893     		str	r3, [sp, #32]
+ 465              	.LVL64:
+ 466              	.L12:
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 467              		.loc 1 254 43 is_stmt 1 discriminator 1 view .LVU140
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 468              		.loc 1 254 9 is_stmt 0 discriminator 1 view .LVU141
+ 469 0106 089B     		ldr	r3, [sp, #32]
+ 470 0108 0A9A     		ldr	r2, [sp, #40]
+ 471 010a 9342     		cmp	r3, r2
+ 472 010c 1BDA     		bge	.L36
+ 473              	.LBB19:
+ 258:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_start = MAX(0, -idx_x);
+ 474              		.loc 1 258 13 is_stmt 1 view .LVU142
+ 258:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_start = MAX(0, -idx_x);
+ 475              		.loc 1 258 44 is_stmt 0 view .LVU143
+ 476 010e 039B     		ldr	r3, [sp, #12]
+ 477 0110 002B     		cmp	r3, #0
+ 478 0112 B0DD     		ble	.L37
+ 479 0114 4FF00008 		mov	r8, #0
+ 480              	.L13:
+ 481              	.LVL65:
+ 259:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 482              		.loc 1 259 13 is_stmt 1 discriminator 4 view .LVU144
+ 259:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 483              		.loc 1 259 44 is_stmt 0 discriminator 4 view .LVU145
+ 484 0118 029B     		ldr	r3, [sp, #8]
+ 485 011a 002B     		cmp	r3, #0
+ 486 011c AEDD     		ble	.L38
+ 259:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 487              		.loc 1 259 44 view .LVU146
+ 488 011e 0023     		movs	r3, #0
+ 489 0120 0793     		str	r3, [sp, #28]
+ 490              	.L14:
+ 491              	.LVL66:
+ 263:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_end = MIN(kernel_x, input_x - idx_x);
+ 492              		.loc 1 263 13 is_stmt 1 discriminator 4 view .LVU147
+ 263:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_end = MIN(kernel_x, input_x - idx_x);
+ 493              		.loc 1 263 42 is_stmt 0 discriminator 4 view .LVU148
+ 494 0122 0B9B     		ldr	r3, [sp, #44]
+ 495 0124 039A     		ldr	r2, [sp, #12]
+ 496 0126 9B1A     		subs	r3, r3, r2
+ 263:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             const int32_t kernel_x_end = MIN(kernel_x, input_x - idx_x);
+ 497              		.loc 1 263 27 discriminator 4 view .LVU149
+ 498 0128 0D9A     		ldr	r2, [sp, #52]
+ 499 012a 9342     		cmp	r3, r2
+ 500 012c A8BF     		it	ge
+ 501 012e 1346     		movge	r3, r2
+ARM GAS  /tmp/ccZViRUE.s 			page 16
+
+
+ 502 0130 0693     		str	r3, [sp, #24]
+ 503              	.LVL67:
+ 264:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 504              		.loc 1 264 13 is_stmt 1 discriminator 4 view .LVU150
+ 264:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 505              		.loc 1 264 42 is_stmt 0 discriminator 4 view .LVU151
+ 506 0132 049B     		ldr	r3, [sp, #16]
+ 507              	.LVL68:
+ 264:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 508              		.loc 1 264 42 discriminator 4 view .LVU152
+ 509 0134 029A     		ldr	r2, [sp, #8]
+ 510 0136 A3EB0209 		sub	r9, r3, r2
+ 264:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 511              		.loc 1 264 27 discriminator 4 view .LVU153
+ 512 013a 0E9B     		ldr	r3, [sp, #56]
+ 513 013c 9945     		cmp	r9, r3
+ 514 013e A8BF     		it	ge
+ 515 0140 9946     		movge	r9, r3
+ 516              	.LVL69:
+ 266:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 517              		.loc 1 266 13 is_stmt 1 discriminator 4 view .LVU154
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 518              		.loc 1 268 13 discriminator 4 view .LVU155
+ 519              	.LBB17:
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 520              		.loc 1 268 18 discriminator 4 view .LVU156
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 521              		.loc 1 268 18 is_stmt 0 discriminator 4 view .LVU157
+ 522              	.LBE17:
+ 266:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 523              		.loc 1 266 17 discriminator 4 view .LVU158
+ 524 0142 0027     		movs	r7, #0
+ 525              	.LBB18:
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 526              		.loc 1 268 13 discriminator 4 view .LVU159
+ 527 0144 C4E7     		b	.L15
+ 528              	.LVL70:
+ 529              	.L36:
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 530              		.loc 1 268 13 discriminator 4 view .LVU160
+ 531              	.LBE18:
+ 532              	.LBE19:
+ 533              	.LBE21:
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 534              		.loc 1 252 55 is_stmt 1 discriminator 2 view .LVU161
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 535              		.loc 1 252 61 is_stmt 0 discriminator 2 view .LVU162
+ 536 0146 039B     		ldr	r3, [sp, #12]
+ 537              	.LVL71:
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 538              		.loc 1 252 61 discriminator 2 view .LVU163
+ 539 0148 129A     		ldr	r2, [sp, #72]
+ 540 014a 1344     		add	r3, r3, r2
+ 541 014c 0393     		str	r3, [sp, #12]
+ 542              	.LVL72:
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 543              		.loc 1 252 77 discriminator 2 view .LVU164
+ARM GAS  /tmp/ccZViRUE.s 			page 17
+
+
+ 544 014e 099B     		ldr	r3, [sp, #36]
+ 545              	.LVL73:
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 546              		.loc 1 252 77 discriminator 2 view .LVU165
+ 547 0150 0133     		adds	r3, r3, #1
+ 548 0152 0993     		str	r3, [sp, #36]
+ 549              	.LVL74:
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 550              		.loc 1 252 77 discriminator 2 view .LVU166
+ 551 0154 7CE7     		b	.L11
+ 552              	.LVL75:
+ 553              	.L33:
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 554              		.loc 1 252 77 discriminator 2 view .LVU167
+ 555              	.LBE23:
+ 300:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         }
+ 301:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     }
+ 302:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     #else
+ 303:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 304:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     /* Reference C code adapted from CMSIS-NN arm_avepool_q7_HWC.
+ 305:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****      */
+ 306:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     (void)buffer;
+ 307:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 308:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     for (int i_y = 0; i_y < output_y; i_y++)
+ 309:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     {
+ 310:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         for (int i_x = 0; i_x < output_x; i_x++)
+ 311:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         {
+ 312:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             for (int i_ch_in = 0; i_ch_in < ch_src; i_ch_in++)
+ 313:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             {
+ 314:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int sum = 0;
+ 315:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 int count = 0;
+ 316:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 for (int k_y = i_y * stride_y - pad_y; k_y < i_y * stride_y - pad_y + kernel_y; k_y
+ 317:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 318:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     for (int k_x = i_x * stride_x - pad_x; k_x < i_x * stride_x - pad_x + kernel_x;
+ 319:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     {
+ 320:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         if (k_y >= 0 && k_x >= 0 && k_y < input_y && k_x < input_x)
+ 321:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         {
+ 322:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                             sum += src[i_ch_in + ch_src * (k_x + k_y * input_x)];
+ 323:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                             count++;
+ 324:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                         }
+ 325:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     }
+ 326:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 }
+ 327:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 328:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 // Prevent static code issue DIVIDE_BY_ZERO.
+ 329:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 if (count == 0)
+ 330:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 {
+ 331:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                     return ARM_CMSIS_NN_ARG_ERROR;
+ 332:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 }
+ 333:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 334:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum = sum > 0 ? (sum + count / 2) / count : (sum - count / 2) / count;
+ 335:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum = MAX(sum, act_min);
+ 336:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 sum = MIN(sum, act_max);
+ 337:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 338:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****                 dst[i_ch_in + ch_src * (i_x + i_y * output_x)] = sum;
+ 339:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             }
+ 340:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****         }
+ 341:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     }
+ARM GAS  /tmp/ccZViRUE.s 			page 18
+
+
+ 342:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** 
+ 343:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     #endif
+ 344:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****     return ARM_CMSIS_NN_SUCCESS;
+ 556              		.loc 1 344 12 view .LVU168
+ 557 0156 0020     		movs	r0, #0
+ 558              	.LBB24:
+ 559 0158 01E0     		b	.L10
+ 560              	.LVL76:
+ 561              	.L30:
+ 562              	.LBB22:
+ 563              	.LBB20:
+ 295:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             }
+ 564              		.loc 1 295 24 view .LVU169
+ 565 015a 4FF0FF30 		mov	r0, #-1
+ 566              	.LVL77:
+ 567              	.L10:
+ 295:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c ****             }
+ 568              		.loc 1 295 24 view .LVU170
+ 569              	.LBE20:
+ 570              	.LBE22:
+ 571              	.LBE24:
+ 345:Middlewares/tensorflow/third_party/cmsis_nn/Source/PoolingFunctions/arm_avgpool_s8.c **** }
+ 572              		.loc 1 345 1 view .LVU171
+ 573 015e 15B0     		add	sp, sp, #84
+ 574              	.LCFI3:
+ 575              		.cfi_def_cfa_offset 36
+ 576              		@ sp needed
+ 577 0160 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 578              		.loc 1 345 1 view .LVU172
+ 579              		.cfi_endproc
+ 580              	.LFE48:
+ 582              		.text
+ 583              	.Letext0:
+ 584              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 585              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 586              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 587              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 588              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 589              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ 590              		.file 8 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnfunctions.h"
+ARM GAS  /tmp/ccZViRUE.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_avgpool_s8.c
+     /tmp/ccZViRUE.s:18     .text.scale_q31_to_q7_and_clamp:0000000000000000 $t
+     /tmp/ccZViRUE.s:25     .text.scale_q31_to_q7_and_clamp:0000000000000000 scale_q31_to_q7_and_clamp
+     /tmp/ccZViRUE.s:114    .text.arm_avgpool_s8:0000000000000000 $t
+     /tmp/ccZViRUE.s:121    .text.arm_avgpool_s8:0000000000000000 arm_avgpool_s8
+
+UNDEFINED SYMBOLS
+arm_avgpool_s8_get_buffer_size
+__qadd

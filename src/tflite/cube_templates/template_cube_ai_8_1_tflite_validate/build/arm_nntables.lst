@@ -1,0 +1,308 @@
+ARM GAS  /tmp/ccbI1gXB.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_nntables.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.global	sigmoid_table_uint16
+  18              		.section	.rodata.sigmoid_table_uint16,"a"
+  19              		.align	2
+  22              	sigmoid_table_uint16:
+  23 0000 0080     		.short	-32768
+  24 0002 AB82     		.short	-32085
+  25 0004 5585     		.short	-31403
+  26 0006 FD87     		.short	-30723
+  27 0008 A58A     		.short	-30043
+  28 000a 498D     		.short	-29367
+  29 000c EB8F     		.short	-28693
+  30 000e 8992     		.short	-28023
+  31 0010 2495     		.short	-27356
+  32 0012 B997     		.short	-26695
+  33 0014 4A9A     		.short	-26038
+  34 0016 D59C     		.short	-25387
+  35 0018 5A9F     		.short	-24742
+  36 001a D8A1     		.short	-24104
+  37 001c 50A4     		.short	-23472
+  38 001e C0A6     		.short	-22848
+  39 0020 28A9     		.short	-22232
+  40 0022 88AB     		.short	-21624
+  41 0024 DFAD     		.short	-21025
+  42 0026 2EB0     		.short	-20434
+  43 0028 73B2     		.short	-19853
+  44 002a AFB4     		.short	-19281
+  45 002c E1B6     		.short	-18719
+  46 002e 09B9     		.short	-18167
+  47 0030 27BB     		.short	-17625
+  48 0032 3BBD     		.short	-17093
+  49 0034 44BF     		.short	-16572
+  50 0036 43C1     		.short	-16061
+  51 0038 37C3     		.short	-15561
+  52 003a 20C5     		.short	-15072
+  53 003c FEC6     		.short	-14594
+  54 003e D1C8     		.short	-14127
+  55 0040 99CA     		.short	-13671
+  56 0042 57CC     		.short	-13225
+  57 0044 09CE     		.short	-12791
+  58 0046 B1CF     		.short	-12367
+  59 0048 4DD1     		.short	-11955
+ARM GAS  /tmp/ccbI1gXB.s 			page 2
+
+
+  60 004a DFD2     		.short	-11553
+  61 004c 66D4     		.short	-11162
+  62 004e E3D5     		.short	-10781
+  63 0050 55D7     		.short	-10411
+  64 0052 BDD8     		.short	-10051
+  65 0054 1ADA     		.short	-9702
+  66 0056 6EDB     		.short	-9362
+  67 0058 B7DC     		.short	-9033
+  68 005a F7DD     		.short	-8713
+  69 005c 2DDF     		.short	-8403
+  70 005e 59E0     		.short	-8103
+  71 0060 7CE1     		.short	-7812
+  72 0062 97E2     		.short	-7529
+  73 0064 A8E3     		.short	-7256
+  74 0066 B0E4     		.short	-6992
+  75 0068 B0E5     		.short	-6736
+  76 006a A8E6     		.short	-6488
+  77 006c 98E7     		.short	-6248
+  78 006e 7FE8     		.short	-6017
+  79 0070 5FE9     		.short	-5793
+  80 0072 37EA     		.short	-5577
+  81 0074 08EB     		.short	-5368
+  82 0076 D2EB     		.short	-5166
+  83 0078 95EC     		.short	-4971
+  84 007a 51ED     		.short	-4783
+  85 007c 07EE     		.short	-4601
+  86 007e B6EE     		.short	-4426
+  87 0080 5FEF     		.short	-4257
+  88 0082 01F0     		.short	-4095
+  89 0084 9FF0     		.short	-3937
+  90 0086 36F1     		.short	-3786
+  91 0088 C8F1     		.short	-3640
+  92 008a 54F2     		.short	-3500
+  93 008c DCF2     		.short	-3364
+  94 008e 5EF3     		.short	-3234
+  95 0090 DCF3     		.short	-3108
+  96 0092 55F4     		.short	-2987
+  97 0094 CAF4     		.short	-2870
+  98 0096 3AF5     		.short	-2758
+  99 0098 A6F5     		.short	-2650
+ 100 009a 0EF6     		.short	-2546
+ 101 009c 72F6     		.short	-2446
+ 102 009e D2F6     		.short	-2350
+ 103 00a0 2FF7     		.short	-2257
+ 104 00a2 88F7     		.short	-2168
+ 105 00a4 DEF7     		.short	-2082
+ 106 00a6 30F8     		.short	-2000
+ 107 00a8 7FF8     		.short	-1921
+ 108 00aa CBF8     		.short	-1845
+ 109 00ac 15F9     		.short	-1771
+ 110 00ae 5BF9     		.short	-1701
+ 111 00b0 9FF9     		.short	-1633
+ 112 00b2 E0F9     		.short	-1568
+ 113 00b4 1EFA     		.short	-1506
+ 114 00b6 5AFA     		.short	-1446
+ 115 00b8 94FA     		.short	-1388
+ 116 00ba CCFA     		.short	-1332
+ARM GAS  /tmp/ccbI1gXB.s 			page 3
+
+
+ 117 00bc 01FB     		.short	-1279
+ 118 00be 34FB     		.short	-1228
+ 119 00c0 65FB     		.short	-1179
+ 120 00c2 95FB     		.short	-1131
+ 121 00c4 C2FB     		.short	-1086
+ 122 00c6 EEFB     		.short	-1042
+ 123 00c8 18FC     		.short	-1000
+ 124 00ca 40FC     		.short	-960
+ 125 00cc 66FC     		.short	-922
+ 126 00ce 8CFC     		.short	-884
+ 127 00d0 AFFC     		.short	-849
+ 128 00d2 D1FC     		.short	-815
+ 129 00d4 F2FC     		.short	-782
+ 130 00d6 12FD     		.short	-750
+ 131 00d8 30FD     		.short	-720
+ 132 00da 4DFD     		.short	-691
+ 133 00dc 69FD     		.short	-663
+ 134 00de 84FD     		.short	-636
+ 135 00e0 9EFD     		.short	-610
+ 136 00e2 B6FD     		.short	-586
+ 137 00e4 CEFD     		.short	-562
+ 138 00e6 E5FD     		.short	-539
+ 139 00e8 FBFD     		.short	-517
+ 140 00ea 0FFE     		.short	-497
+ 141 00ec 24FE     		.short	-476
+ 142 00ee 37FE     		.short	-457
+ 143 00f0 49FE     		.short	-439
+ 144 00f2 5BFE     		.short	-421
+ 145 00f4 6CFE     		.short	-404
+ 146 00f6 7DFE     		.short	-387
+ 147 00f8 8CFE     		.short	-372
+ 148 00fa 9BFE     		.short	-357
+ 149 00fc AAFE     		.short	-342
+ 150 00fe B8FE     		.short	-328
+ 151 0100 C5FE     		.short	-315
+ 152 0102 D2FE     		.short	-302
+ 153 0104 DEFE     		.short	-290
+ 154 0106 EAFE     		.short	-278
+ 155 0108 F5FE     		.short	-267
+ 156 010a 00FF     		.short	-256
+ 157 010c 0BFF     		.short	-245
+ 158 010e 15FF     		.short	-235
+ 159 0110 1EFF     		.short	-226
+ 160 0112 27FF     		.short	-217
+ 161 0114 30FF     		.short	-208
+ 162 0116 39FF     		.short	-199
+ 163 0118 41FF     		.short	-191
+ 164 011a 48FF     		.short	-184
+ 165 011c 50FF     		.short	-176
+ 166 011e 57FF     		.short	-169
+ 167 0120 5EFF     		.short	-162
+ 168 0122 65FF     		.short	-155
+ 169 0124 6BFF     		.short	-149
+ 170 0126 71FF     		.short	-143
+ 171 0128 77FF     		.short	-137
+ 172 012a 7CFF     		.short	-132
+ 173 012c 82FF     		.short	-126
+ARM GAS  /tmp/ccbI1gXB.s 			page 4
+
+
+ 174 012e 87FF     		.short	-121
+ 175 0130 8CFF     		.short	-116
+ 176 0132 91FF     		.short	-111
+ 177 0134 95FF     		.short	-107
+ 178 0136 99FF     		.short	-103
+ 179 0138 9EFF     		.short	-98
+ 180 013a A2FF     		.short	-94
+ 181 013c A5FF     		.short	-91
+ 182 013e A9FF     		.short	-87
+ 183 0140 ADFF     		.short	-83
+ 184 0142 B0FF     		.short	-80
+ 185 0144 B3FF     		.short	-77
+ 186 0146 B6FF     		.short	-74
+ 187 0148 B9FF     		.short	-71
+ 188 014a BCFF     		.short	-68
+ 189 014c BFFF     		.short	-65
+ 190 014e C2FF     		.short	-62
+ 191 0150 C4FF     		.short	-60
+ 192 0152 C7FF     		.short	-57
+ 193 0154 C9FF     		.short	-55
+ 194 0156 CBFF     		.short	-53
+ 195 0158 CDFF     		.short	-51
+ 196 015a D0FF     		.short	-48
+ 197 015c D1FF     		.short	-47
+ 198 015e D3FF     		.short	-45
+ 199 0160 D5FF     		.short	-43
+ 200 0162 D7FF     		.short	-41
+ 201 0164 D9FF     		.short	-39
+ 202 0166 DAFF     		.short	-38
+ 203 0168 DCFF     		.short	-36
+ 204 016a DDFF     		.short	-35
+ 205 016c DFFF     		.short	-33
+ 206 016e E0FF     		.short	-32
+ 207 0170 E1FF     		.short	-31
+ 208 0172 E3FF     		.short	-29
+ 209 0174 E4FF     		.short	-28
+ 210 0176 E5FF     		.short	-27
+ 211 0178 E6FF     		.short	-26
+ 212 017a E7FF     		.short	-25
+ 213 017c E8FF     		.short	-24
+ 214 017e E9FF     		.short	-23
+ 215 0180 EAFF     		.short	-22
+ 216 0182 EBFF     		.short	-21
+ 217 0184 ECFF     		.short	-20
+ 218 0186 EDFF     		.short	-19
+ 219 0188 EDFF     		.short	-19
+ 220 018a EEFF     		.short	-18
+ 221 018c EFFF     		.short	-17
+ 222 018e F0FF     		.short	-16
+ 223 0190 F0FF     		.short	-16
+ 224 0192 F1FF     		.short	-15
+ 225 0194 F2FF     		.short	-14
+ 226 0196 F2FF     		.short	-14
+ 227 0198 F3FF     		.short	-13
+ 228 019a F3FF     		.short	-13
+ 229 019c F4FF     		.short	-12
+ 230 019e F4FF     		.short	-12
+ARM GAS  /tmp/ccbI1gXB.s 			page 5
+
+
+ 231 01a0 F5FF     		.short	-11
+ 232 01a2 F5FF     		.short	-11
+ 233 01a4 F6FF     		.short	-10
+ 234 01a6 F6FF     		.short	-10
+ 235 01a8 F6FF     		.short	-10
+ 236 01aa F7FF     		.short	-9
+ 237 01ac F7FF     		.short	-9
+ 238 01ae F8FF     		.short	-8
+ 239 01b0 F8FF     		.short	-8
+ 240 01b2 F8FF     		.short	-8
+ 241 01b4 F9FF     		.short	-7
+ 242 01b6 F9FF     		.short	-7
+ 243 01b8 F9FF     		.short	-7
+ 244 01ba F9FF     		.short	-7
+ 245 01bc FAFF     		.short	-6
+ 246 01be FAFF     		.short	-6
+ 247 01c0 FAFF     		.short	-6
+ 248 01c2 FAFF     		.short	-6
+ 249 01c4 FBFF     		.short	-5
+ 250 01c6 FBFF     		.short	-5
+ 251 01c8 FBFF     		.short	-5
+ 252 01ca FBFF     		.short	-5
+ 253 01cc FBFF     		.short	-5
+ 254 01ce FCFF     		.short	-4
+ 255 01d0 FCFF     		.short	-4
+ 256 01d2 FCFF     		.short	-4
+ 257 01d4 FCFF     		.short	-4
+ 258 01d6 FCFF     		.short	-4
+ 259 01d8 FCFF     		.short	-4
+ 260 01da FDFF     		.short	-3
+ 261 01dc FDFF     		.short	-3
+ 262 01de FDFF     		.short	-3
+ 263 01e0 FDFF     		.short	-3
+ 264 01e2 FDFF     		.short	-3
+ 265 01e4 FDFF     		.short	-3
+ 266 01e6 FDFF     		.short	-3
+ 267 01e8 FDFF     		.short	-3
+ 268 01ea FEFF     		.short	-2
+ 269 01ec FEFF     		.short	-2
+ 270 01ee FEFF     		.short	-2
+ 271 01f0 FEFF     		.short	-2
+ 272 01f2 FEFF     		.short	-2
+ 273 01f4 FEFF     		.short	-2
+ 274 01f6 FEFF     		.short	-2
+ 275 01f8 FEFF     		.short	-2
+ 276 01fa FEFF     		.short	-2
+ 277 01fc FEFF     		.short	-2
+ 278 01fe FFFF     		.short	-1
+ 279              		.text
+ 280              	.Letext0:
+ 281              		.file 1 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 282              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 283              		.file 3 "/usr/include/newlib/sys/_types.h"
+ 284              		.file 4 "/usr/include/newlib/sys/reent.h"
+ 285              		.file 5 "/usr/include/newlib/sys/lock.h"
+ 286              		.file 6 "Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nntables.c"
+ARM GAS  /tmp/ccbI1gXB.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_nntables.c
+     /tmp/ccbI1gXB.s:22     .rodata.sigmoid_table_uint16:0000000000000000 sigmoid_table_uint16
+     /tmp/ccbI1gXB.s:19     .rodata.sigmoid_table_uint16:0000000000000000 $d
+
+NO UNDEFINED SYMBOLS

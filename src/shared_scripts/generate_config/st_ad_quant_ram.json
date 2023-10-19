@@ -1,0 +1,13 @@
+{
+    "arguments": {
+        "-model": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/trained_models/ad01_int8.tflite",
+        "-input_tensors": "/home/matthias/Documents/BA/results/models_and_data/anomaly_detection/bin_data/int8.npz",
+        "-workdir": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/workdir",
+        "-stm32ai": "/home/matthias/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai",
+        "-cube_template": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/cube_templates/template_cube_ai_8_1_ram",
+        "-cube_template_validate": "/home/matthias/Documents/BA/layer-benchmark-2/src/st/cube_templates/template_cube_ai_8_1_ram_validate",
+        "-out_dir": "/home/matthias/Documents/BA/results/glow/usecases/test",
+        "-repetitions": "1"
+    },
+    "parameters": []
+}

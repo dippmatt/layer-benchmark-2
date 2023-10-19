@@ -113,17 +113,15 @@ def compile_project(workdir: Path,
     make_dir = generate_prj_dir / Path(project_name)
     compile_cmd = f"make -C {make_dir}"
 
-    if compile_mode == CompileMode.BENCHMARK:
-        generate_log = workdir / Path("generate_out.txt")
+    if compile_mode == CompileMode.VALIDATE:
+        generate_log = workdir / Path("generate_report.txt")
         with open(generate_log, "w") as outfile:
             result = subprocess.run(generate_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
             # Print the output to the terminal
             print(result.stdout, end='')
             outfile.write(result.stdout)
-
-        extract_network_analyze_report_info(workdir, generate_log, step_output)
     else:
-        subprocess.run(generate_command, shell=True)  
+        subprocess.run(generate_command, shell=True)
 
     if compile_mode in [CompileMode.BENCHMARK, CompileMode.REFERENCE]:
         # Set number of iterations per perf test to the reps variable, 
@@ -148,17 +146,17 @@ def compile_project(workdir: Path,
     if compile_mode == CompileMode.VALIDATE:
         flash_mcu(cube_programmer, elf_file)
         
-        # # analyze model
-        # analyze_command = f"{stm32ai} analyze \
-        #         --name network -m {model} \
-        #         --type tflite \
-        #         --compression none \
-        #         --verbosity 1 \
-        #         --output {network_output_directory} \
-        #         --allocate-inputs \
-        #         --series stm_series \
-        #         --allocate-outputs"
-        # subprocess.run(analyze_command, shell=True)
+        # analyze model
+        analyze_command = f"{stm32ai} analyze \
+                --name network -m {model} \
+                --type tflite \
+                --compression none \
+                --verbosity 1 \
+                --output {network_output_directory} \
+                --allocate-inputs \
+                --series stm_series \
+                --allocate-outputs"
+        subprocess.run(analyze_command, shell=True)
         
         # Validate the input data
         input_data_path = workdir / Path("data.npz")
@@ -176,17 +174,78 @@ def compile_project(workdir: Path,
                 --desc /dev/ttyACM0:115200"
         
         subprocess.run(validate_command, shell=True)
-        
+
+        network_analyze_report = network_output_directory / Path("network_analyze_report.txt")
+        extract_ram_flash(workdir, generate_log, step_output)
+        extract_layer_names(workdir, network_analyze_report, step_output)
         # Check if the validation was successful and we got the output tensors
         assert step_output["tensor_values"].exists()
    
     return
 
+def extract_layer_names(workdir: Path, analyze_report: Path, step_output: dict):
+    """Extracts flash & ram from the generate log.
 
-def extract_network_analyze_report_info(workdir: Path, generate_log: Path, step_output: dict):
-    """Extracts the network analyze report from the generate log.
+    Info found in the network generate report:
+    Flash usage, RAM usage in bytes: network only and network + framework (toolchain, runtime)
+    """
+    with open(analyze_report, "r") as f:
+        report = f.readlines()
+    
+    # extract layer names
+    layer_name_init_flag = False
+    layer_name_counter = 0
+    layer_names = []
 
-    Info found in the network analyze report:
+    # Example for layer name extraction:
+    
+    # Number of operations per c-layer
+    # ------- ------ ---------------- --------- ------------ --------- ---------- 
+    # c_id    m_id   name (type)            #op         type    #param   sparsity 
+    # ------- ------ ---------------- --------- ------------ --------- ---------- 
+    # 0       0      gemm_0 (dense)      82,048   smul_s8_s8    82,048     0.0865 
+    # 1       1      gemm_1 (dense)      16,512   smul_s8_s8    16,512     0.2378 
+    # 2       2      gemm_2 (dense)      16,512   smul_s8_s8    16,512     0.2889 
+    # 3       3      gemm_3 (dense)      16,512   smul_s8_s8    16,512     0.3058 
+    # 4       4      gemm_4 (dense)       1,032   smul_s8_s8     1,032     0.1047 
+    # 5       5      gemm_5 (dense)       1,152   smul_s8_s8     1,152     0.0321 
+    # 6       6      gemm_6 (dense)      16,512   smul_s8_s8    16,512     0.0653 
+    # 7       7      gemm_7 (dense)      16,512   smul_s8_s8    16,512     0.0411 
+    # 8       8      gemm_8 (dense)      16,512   smul_s8_s8    16,512     0.0270 
+    # 9       9      gemm_9 (dense)      82,560   smul_s8_s8    82,560     0.0158 
+    # ------- ------ ---------------- --------- ------------ --------- ---------- 
+    # total                             265,864                265,864     0.0921 
+    
+    for line in report: 
+        # remove trailing newline
+        line = line.strip()
+        # Detect start of layer naming block
+        if "Number of operations per c-layer" in line:
+            layer_name_init_flag = True
+        # Detect header
+        if layer_name_init_flag and '-------' in line:
+            layer_name_counter += 1
+            continue
+        # Extract layer names
+        if layer_name_counter == 2:
+            layer_name = line.split(' ')
+            # remove empty strings
+            layer_name = list(filter(None, layer_name))
+            layer_name = layer_name[-6] + ' ' + layer_name[-5] + ' ' + layer_name[-3]
+            layer_names.append(layer_name)
+        if layer_name_counter == 3:
+            layer_name_init_flag = False
+            
+    # save the results
+    step_output["layer_list"] = layer_names
+    
+    return
+
+
+def extract_ram_flash(workdir: Path, generate_log: Path, step_output: dict):
+    """Extracts the network generate report from the log.
+
+    Info found in the network generate report:
     Flash usage, RAM usage: network only and network + framework (toolchain, runtime)
     """
     with open(generate_log, "r") as f:
@@ -195,13 +254,12 @@ def extract_network_analyze_report_info(workdir: Path, generate_log: Path, step_
     extraction_start = False
     report = []
     for i, line in enumerate(lines):
-        if "Exec/report summary (analyze)" in line:
+        if "Exec/report summary (generate)" in line:
             extraction_start = True
         if extraction_start:
             report.append(line)
             if "Creating txt report file" in line:
                 report_file = line.split("Creating txt report file ")[1].strip()
-                print_in_color(Color.GREEN, f"Found network analyze report at {report_file}")
                 break
     report_file = workdir / (Path(report_file).stem + ".txt")
     
@@ -210,29 +268,6 @@ def extract_network_analyze_report_info(workdir: Path, generate_log: Path, step_
     
     # extract flash and ram usage, as well as layer names
     start_summery_flag = False
-    layer_name_init_flag = False
-    layer_name_counter = 0
-    layer_names = []
-
-
-    # Example for layer name extraction:
-    
-    # Number of operations per c-layer
-    # ------- ------ ---------------- --------- ------------
-    # c_id    m_id   name (type)            #op         type
-    # ------- ------ ---------------- --------- ------------
-    # 0       0      gemm_0 (dense)      82,048   smul_s8_s8
-    # 1       1      gemm_1 (dense)      16,512   smul_s8_s8
-    # 2       2      gemm_2 (dense)      16,512   smul_s8_s8
-    # 3       3      gemm_3 (dense)      16,512   smul_s8_s8
-    # 4       4      gemm_4 (dense)       1,032   smul_s8_s8
-    # 5       5      gemm_5 (dense)       1,152   smul_s8_s8
-    # 6       6      gemm_6 (dense)      16,512   smul_s8_s8
-    # 7       7      gemm_7 (dense)      16,512   smul_s8_s8
-    # 8       8      gemm_8 (dense)      16,512   smul_s8_s8
-    # 9       9      gemm_9 (dense)      82,560   smul_s8_s8
-    # ------- ------ ---------------- --------- ------------
-
 
     # Example for flash and ram usage extraction:
 
@@ -246,26 +281,6 @@ def extract_network_analyze_report_info(workdir: Path, generate_log: Path, step_
     # --------------------------------------------
     
     for line in report:
-        # Layer names
-        
-        # Detect start of layer naming block
-        if "Number of operations per c-layer" in line:
-            layer_name_init_flag = True
-        # Detect header
-        if layer_name_init_flag and '-------' in line:
-            layer_name_counter += 1
-            continue
-        # Extract layer names
-        if layer_name_counter == 2:
-            layer_name = line.split(' ')
-            # remove empty strings
-            layer_name = list(filter(None, layer_name))
-            layer_name = layer_name[-4] + ' ' + layer_name[-3] + ' ' + layer_name[-1]
-            layer_names.append(layer_name)
-        if layer_name_counter == 3:
-            layer_name_init_flag = False
-            
-        # Flash & Ram
         if "Summary per memory device type" in line:
             start_summery_flag = True
         if start_summery_flag:
@@ -284,10 +299,7 @@ def extract_network_analyze_report_info(workdir: Path, generate_log: Path, step_
                 ram_usage = result[1].replace(",", "")
                 break
     
-    
-    # save the results
-    step_output["layer_list"] = layer_names
-    # ram and flash in bytes 
+    # save the results for ram and flash in bytes 
     step_output["flash"] = int(flash_usage)
     step_output["ram"] = int(ram_usage)
     step_output["flash_rt"] = int(flash_usage_rt)

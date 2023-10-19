@@ -41,6 +41,8 @@ def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, repre
 
     # save npz in workdir for cube mx to use as input data
     data_save_path = workdir / Path("data.npz")
+    quant_data_save_path = workdir / Path("data_quant.npz")
+
     np.savez(data_save_path, input_tensors=input_tensors)
 
     if quantize:
@@ -60,7 +62,7 @@ def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, repre
     
     # next load the model again and test it on the input data
     if model_path.suffix == '.tflite':
-        quant_data_and_test_tflite(model_path, input_tensors, step_output)
+        quant_data_and_test_tflite(model_path, input_tensors, step_output, quant_data_save_path)
     elif model_path.suffix == '.onnx':
         raise NotImplementedError("test_onnx functionality is not implemented yet")
 
@@ -156,7 +158,7 @@ def floatBin2np(bin_files: Path, tensor_shape: tuple):
     
     return out_data
 
-def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, step_output: Dict):
+def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, step_output: Dict, quant_data_save_path: Path):
     """Runs the model on the input tensors
 
     Args:
@@ -179,7 +181,8 @@ def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, st
             processed_input_data = quantize_input_data(input_data, input_scale, input_zero_point, input_dtype)
     else:
         processed_input_data = input_data
-
+    
+    np.savez(quant_data_save_path, input_tensors=processed_input_data)
     step_output["input_tensors"] = processed_input_data
     reference_output = []
 
@@ -243,6 +246,7 @@ def quantize_input_data(input_tensor, scale, zero_point, dtype):
     else:  # int8
         quantized_tensor = np.round(input_tensor / scale + zero_point)
         quantized_tensor = np.clip(quantized_tensor, -128, 127).astype(np.int8)
+
     return quantized_tensor
 
 def dequantize_output(output_tensor, scale, zero_point):

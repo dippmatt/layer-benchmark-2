@@ -1,0 +1,1979 @@
+ARM GAS  /tmp/ccplzOQH.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_convolve_s16.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_convolve_s16,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_convolve_s16
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_convolve_s16:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * SPDX-FileCopyrightText: Copyright 2010-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Title:        arm_convolve_s16.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Description:  s16 version of convolution using symmetric quantization.
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * $Date:        30 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * $Revision:    V.2.1.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccplzOQH.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** /**
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *  @ingroup Public
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  */
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** /**
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * @addtogroup NNConv
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * @{
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  */
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** /*
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Basic s16 convolution function.
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * Refer header file for details. Optimal use case for the DSP/MVE implementation is when input and
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  * are multiples of 4 or atleast greater than 4.
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  *
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****  */
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** arm_cmsis_nn_status arm_convolve_s16(const cmsis_nn_context *ctx,
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const cmsis_nn_conv_params *conv_params,
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const cmsis_nn_per_channel_quant_params *quant_params,
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const cmsis_nn_dims *input_dims,
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const int16_t *input_data,
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const cmsis_nn_dims *filter_dims,
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const int8_t *filter_data,
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const cmsis_nn_dims *bias_dims,
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const int64_t *bias_data,
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      const cmsis_nn_dims *output_dims,
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                      int16_t *output_data)
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** {
+  30              		.loc 1 62 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 28, pretend = 0, frame = 112
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 62 1 is_stmt 0 view .LVU1
+  35 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 36
+  38              		.cfi_offset 4, -36
+  39              		.cfi_offset 5, -32
+  40              		.cfi_offset 6, -28
+  41              		.cfi_offset 7, -24
+  42              		.cfi_offset 8, -20
+  43              		.cfi_offset 9, -16
+  44              		.cfi_offset 10, -12
+  45              		.cfi_offset 11, -8
+  46              		.cfi_offset 14, -4
+  47 0004 9DB0     		sub	sp, sp, #116
+  48              	.LCFI1:
+  49              		.cfi_def_cfa_offset 152
+  50 0006 1846     		mov	r0, r3
+  51              	.LVL1:
+  52              		.loc 1 62 1 view .LVU2
+  53 0008 279C     		ldr	r4, [sp, #156]
+ARM GAS  /tmp/ccplzOQH.s 			page 3
+
+
+  54 000a 2B9B     		ldr	r3, [sp, #172]
+  55              	.LVL2:
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     (void)bias_dims;
+  56              		.loc 1 63 5 is_stmt 1 view .LVU3
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     (void)ctx;
+  57              		.loc 1 64 5 view .LVU4
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t input_batches = input_dims->n;
+  58              		.loc 1 66 5 view .LVU5
+  59              		.loc 1 66 19 is_stmt 0 view .LVU6
+  60 000c 0568     		ldr	r5, [r0]
+  61 000e 1395     		str	r5, [sp, #76]
+  62              	.LVL3:
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t input_x = input_dims->w;
+  63              		.loc 1 67 5 is_stmt 1 view .LVU7
+  64              		.loc 1 67 19 is_stmt 0 view .LVU8
+  65 0010 D0F808A0 		ldr	r10, [r0, #8]
+  66              	.LVL4:
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t input_y = input_dims->h;
+  67              		.loc 1 68 5 is_stmt 1 view .LVU9
+  68              		.loc 1 68 19 is_stmt 0 view .LVU10
+  69 0014 4568     		ldr	r5, [r0, #4]
+  70              	.LVL5:
+  71              		.loc 1 68 19 view .LVU11
+  72 0016 0F95     		str	r5, [sp, #60]
+  73              	.LVL6:
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t input_ch = input_dims->c;
+  74              		.loc 1 69 5 is_stmt 1 view .LVU12
+  75              		.loc 1 69 19 is_stmt 0 view .LVU13
+  76 0018 D0F80C90 		ldr	r9, [r0, #12]
+  77              	.LVL7:
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t kernel_x = filter_dims->w;
+  78              		.loc 1 70 5 is_stmt 1 view .LVU14
+  79              		.loc 1 70 19 is_stmt 0 view .LVU15
+  80 001c D4F808B0 		ldr	fp, [r4, #8]
+  81              	.LVL8:
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t kernel_y = filter_dims->h;
+  82              		.loc 1 71 5 is_stmt 1 view .LVU16
+  83              		.loc 1 71 19 is_stmt 0 view .LVU17
+  84 0020 6068     		ldr	r0, [r4, #4]
+  85              	.LVL9:
+  86              		.loc 1 71 19 view .LVU18
+  87 0022 0190     		str	r0, [sp, #4]
+  88              	.LVL10:
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t output_x = output_dims->w;
+  89              		.loc 1 72 5 is_stmt 1 view .LVU19
+  90              		.loc 1 72 19 is_stmt 0 view .LVU20
+  91 0024 9868     		ldr	r0, [r3, #8]
+  92              	.LVL11:
+  93              		.loc 1 72 19 view .LVU21
+  94 0026 0C90     		str	r0, [sp, #48]
+  95              	.LVL12:
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t output_y = output_dims->h;
+  96              		.loc 1 73 5 is_stmt 1 view .LVU22
+  97              		.loc 1 73 19 is_stmt 0 view .LVU23
+  98 0028 5868     		ldr	r0, [r3, #4]
+  99              	.LVL13:
+ARM GAS  /tmp/ccplzOQH.s 			page 4
+
+
+ 100              		.loc 1 73 19 view .LVU24
+ 101 002a 1090     		str	r0, [sp, #64]
+ 102              	.LVL14:
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t output_ch = output_dims->c;
+ 103              		.loc 1 74 5 is_stmt 1 view .LVU25
+ 104              		.loc 1 74 19 is_stmt 0 view .LVU26
+ 105 002c DB68     		ldr	r3, [r3, #12]
+ 106              	.LVL15:
+ 107              		.loc 1 74 19 view .LVU27
+ 108 002e 0D93     		str	r3, [sp, #52]
+ 109              	.LVL16:
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t pad_x = conv_params->padding.w;
+ 110              		.loc 1 76 5 is_stmt 1 view .LVU28
+ 111              		.loc 1 76 19 is_stmt 0 view .LVU29
+ 112 0030 0B69     		ldr	r3, [r1, #16]
+ 113              	.LVL17:
+ 114              		.loc 1 76 19 view .LVU30
+ 115 0032 1493     		str	r3, [sp, #80]
+ 116              	.LVL18:
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t pad_y = conv_params->padding.h;
+ 117              		.loc 1 77 5 is_stmt 1 view .LVU31
+ 118              		.loc 1 77 19 is_stmt 0 view .LVU32
+ 119 0034 4B69     		ldr	r3, [r1, #20]
+ 120              	.LVL19:
+ 121              		.loc 1 77 19 view .LVU33
+ 122 0036 1593     		str	r3, [sp, #84]
+ 123              	.LVL20:
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t stride_x = conv_params->stride.w;
+ 124              		.loc 1 78 5 is_stmt 1 view .LVU34
+ 125              		.loc 1 78 19 is_stmt 0 view .LVU35
+ 126 0038 8B68     		ldr	r3, [r1, #8]
+ 127              	.LVL21:
+ 128              		.loc 1 78 19 view .LVU36
+ 129 003a 1693     		str	r3, [sp, #88]
+ 130              	.LVL22:
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t stride_y = conv_params->stride.h;
+ 131              		.loc 1 79 5 is_stmt 1 view .LVU37
+ 132              		.loc 1 79 19 is_stmt 0 view .LVU38
+ 133 003c CB68     		ldr	r3, [r1, #12]
+ 134              	.LVL23:
+ 135              		.loc 1 79 19 view .LVU39
+ 136 003e 1793     		str	r3, [sp, #92]
+ 137              	.LVL24:
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t dilation_x = conv_params->dilation.w;
+ 138              		.loc 1 80 5 is_stmt 1 view .LVU40
+ 139              		.loc 1 80 19 is_stmt 0 view .LVU41
+ 140 0040 8B69     		ldr	r3, [r1, #24]
+ 141              	.LVL25:
+ 142              		.loc 1 80 19 view .LVU42
+ 143 0042 0593     		str	r3, [sp, #20]
+ 144              	.LVL26:
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t dilation_y = conv_params->dilation.h;
+ 145              		.loc 1 81 5 is_stmt 1 view .LVU43
+ 146              		.loc 1 81 19 is_stmt 0 view .LVU44
+ 147 0044 CB69     		ldr	r3, [r1, #28]
+ 148              	.LVL27:
+ARM GAS  /tmp/ccplzOQH.s 			page 5
+
+
+ 149              		.loc 1 81 19 view .LVU45
+ 150 0046 0693     		str	r3, [sp, #24]
+ 151              	.LVL28:
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t out_activation_min = conv_params->activation.min;
+ 152              		.loc 1 83 5 is_stmt 1 view .LVU46
+ 153              		.loc 1 83 19 is_stmt 0 view .LVU47
+ 154 0048 0B6A     		ldr	r3, [r1, #32]
+ 155              	.LVL29:
+ 156              		.loc 1 83 19 view .LVU48
+ 157 004a 1893     		str	r3, [sp, #96]
+ 158              	.LVL30:
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     const int32_t out_activation_max = conv_params->activation.max;
+ 159              		.loc 1 84 5 is_stmt 1 view .LVU49
+ 160              		.loc 1 84 19 is_stmt 0 view .LVU50
+ 161 004c 4B6A     		ldr	r3, [r1, #36]
+ 162              	.LVL31:
+ 163              		.loc 1 84 19 view .LVU51
+ 164 004e 1993     		str	r3, [sp, #100]
+ 165              	.LVL32:
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     int32_t *output_mult = quant_params->multiplier;
+ 166              		.loc 1 85 5 is_stmt 1 view .LVU52
+ 167              		.loc 1 85 14 is_stmt 0 view .LVU53
+ 168 0050 1368     		ldr	r3, [r2]
+ 169              	.LVL33:
+ 170              		.loc 1 85 14 view .LVU54
+ 171 0052 1A93     		str	r3, [sp, #104]
+ 172              	.LVL34:
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     int32_t *output_shift = quant_params->shift;
+ 173              		.loc 1 86 5 is_stmt 1 view .LVU55
+ 174              		.loc 1 86 14 is_stmt 0 view .LVU56
+ 175 0054 5368     		ldr	r3, [r2, #4]
+ 176              	.LVL35:
+ 177              		.loc 1 86 14 view .LVU57
+ 178 0056 1B93     		str	r3, [sp, #108]
+ 179              	.LVL36:
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     for (int i_batch = 0; i_batch < input_batches; i_batch++)
+ 180              		.loc 1 88 5 is_stmt 1 view .LVU58
+ 181              	.LBB14:
+ 182              		.loc 1 88 10 view .LVU59
+ 183              		.loc 1 88 14 is_stmt 0 view .LVU60
+ 184 0058 0023     		movs	r3, #0
+ 185              	.LVL37:
+ 186              		.loc 1 88 14 view .LVU61
+ 187 005a 0A93     		str	r3, [sp, #40]
+ 188 005c 5B46     		mov	r3, fp
+ 189 005e D346     		mov	fp, r10
+ 190              	.LVL38:
+ 191              		.loc 1 88 14 view .LVU62
+ 192 0060 9A46     		mov	r10, r3
+ 193              	.LVL39:
+ 194              		.loc 1 88 5 view .LVU63
+ 195 0062 E8E0     		b	.L2
+ 196              	.LVL40:
+ 197              	.L17:
+ 198              	.LBB15:
+ARM GAS  /tmp/ccplzOQH.s 			page 6
+
+
+ 199              	.LBB16:
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     {
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         /* Run the following code as reference implementation for Cortex-M0 and Cortex-M3 */
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         for (int32_t i_out_ch = 0; i_out_ch < output_ch; i_out_ch++)
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             const int32_t reduced_multiplier = REDUCE_MULTIPLIER(output_mult[i_out_ch]);
+ 200              		.loc 1 93 48 view .LVU64
+ 201 0064 47F6FF73 		movw	r3, #32767
+ 202 0068 0E93     		str	r3, [sp, #56]
+ 203              	.L3:
+ 204              	.LVL41:
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             for (int32_t base_idx_y = -pad_y, i_out_y = 0; i_out_y < output_y; base_idx_y += stride
+ 205              		.loc 1 95 13 is_stmt 1 discriminator 4 view .LVU65
+ 206              	.LBB17:
+ 207              		.loc 1 95 18 discriminator 4 view .LVU66
+ 208              		.loc 1 95 26 is_stmt 0 discriminator 4 view .LVU67
+ 209 006a 159B     		ldr	r3, [sp, #84]
+ 210 006c 5B42     		rsbs	r3, r3, #0
+ 211 006e 0393     		str	r3, [sp, #12]
+ 212              	.LVL42:
+ 213              		.loc 1 95 47 discriminator 4 view .LVU68
+ 214 0070 0023     		movs	r3, #0
+ 215              	.LVL43:
+ 216              		.loc 1 95 47 discriminator 4 view .LVU69
+ 217 0072 0993     		str	r3, [sp, #36]
+ 218              		.loc 1 95 13 discriminator 4 view .LVU70
+ 219 0074 A6E0     		b	.L4
+ 220              	.LVL44:
+ 221              	.L8:
+ 222              	.LBB18:
+ 223              	.LBB19:
+ 224              	.LBB20:
+ 225              	.LBB21:
+ 226              	.LBB22:
+ 227              	.LBB23:
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 for (int32_t base_idx_x = -pad_x, i_out_x = 0; i_out_x < output_x; base_idx_x += st
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     int64_t conv_out_acc = 0;
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t start_y_max = (-base_idx_y + dilation_y - 1) / dilation_y;
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_start = MAX(0, start_y_max);
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t start_x_max = (-base_idx_x + dilation_x - 1) / dilation_x;
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_start = MAX(0, start_x_max);
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_y = (input_y - base_idx_y + dilation_y - 1) / dilation_y;
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_x = (input_x - base_idx_x + dilation_x - 1) / dilation_x;
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_end = MIN(kernel_x, end_min_x);
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     for (int32_t i_ker_y = ker_y_start; i_ker_y < ker_y_end; i_ker_y++)
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         for (int32_t i_ker_x = ker_x_start; i_ker_x < ker_x_end; i_ker_x++)
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         {
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             const int32_t in_row = base_idx_y + dilation_y * i_ker_y;
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             const int32_t in_col = base_idx_x + dilation_x * i_ker_x;
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ARM GAS  /tmp/ccplzOQH.s 			page 7
+
+
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             for (int32_t i_input_ch = 0; i_input_ch < input_ch; i_input_ch++)
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                 conv_out_acc += input_data[(in_row * input_x + in_col) * input_ch +
+ 228              		.loc 1 119 33 is_stmt 1 discriminator 3 view .LVU71
+ 229              		.loc 1 119 78 is_stmt 0 discriminator 3 view .LVU72
+ 230 0076 0EFB0AC3 		mla	r3, lr, r10, ip
+ 231              		.loc 1 119 99 discriminator 3 view .LVU73
+ 232 007a 09FB0323 		mla	r3, r9, r3, r2
+ 233              		.loc 1 119 59 discriminator 3 view .LVU74
+ 234 007e 2699     		ldr	r1, [sp, #152]
+ 235 0080 31F91300 		ldrsh	r0, [r1, r3, lsl #1]
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                     filter_data[i_out_ch * input_ch * kernel_y * kernel_x +
+ 236              		.loc 1 120 58 discriminator 3 view .LVU75
+ 237 0084 09FB0BF3 		mul	r3, r9, fp
+ 238              		.loc 1 120 69 discriminator 3 view .LVU76
+ 239 0088 0199     		ldr	r1, [sp, #4]
+ 240 008a 01FB03F3 		mul	r3, r1, r3
+ 121:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                                 (i_ker_y * kernel_x + i_ker_x) * input_ch + i_input
+ 241              		.loc 1 121 69 discriminator 3 view .LVU77
+ 242 008e 08FB0541 		mla	r1, r8, r5, r4
+ 243              		.loc 1 121 80 discriminator 3 view .LVU78
+ 244 0092 09FB01F1 		mul	r1, r9, r1
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                     filter_data[i_out_ch * input_ch * kernel_y * kernel_x +
+ 245              		.loc 1 120 91 discriminator 3 view .LVU79
+ 246 0096 08FB0313 		mla	r3, r8, r3, r1
+ 247              		.loc 1 121 91 discriminator 3 view .LVU80
+ 248 009a 1344     		add	r3, r3, r2
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                     filter_data[i_out_ch * input_ch * kernel_y * kernel_x +
+ 249              		.loc 1 120 48 discriminator 3 view .LVU81
+ 250 009c 2899     		ldr	r1, [sp, #160]
+ 251 009e CB56     		ldrsb	r3, [r1, r3]
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                     filter_data[i_out_ch * input_ch * kernel_y * kernel_x +
+ 252              		.loc 1 119 113 discriminator 3 view .LVU82
+ 253 00a0 03FB00F0 		mul	r0, r3, r0
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                     filter_data[i_out_ch * input_ch * kernel_y * kernel_x +
+ 254              		.loc 1 119 46 discriminator 3 view .LVU83
+ 255 00a4 3618     		adds	r6, r6, r0
+ 256              	.LVL45:
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                                     filter_data[i_out_ch * input_ch * kernel_y * kernel_x +
+ 257              		.loc 1 119 46 discriminator 3 view .LVU84
+ 258 00a6 47EBE077 		adc	r7, r7, r0, asr #31
+ 259              	.LVL46:
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 260              		.loc 1 117 81 is_stmt 1 discriminator 3 view .LVU85
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 261              		.loc 1 117 91 is_stmt 0 discriminator 3 view .LVU86
+ 262 00aa 0132     		adds	r2, r2, #1
+ 263              	.LVL47:
+ 264              	.L7:
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 265              		.loc 1 117 58 is_stmt 1 discriminator 1 view .LVU87
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 266              		.loc 1 117 29 is_stmt 0 discriminator 1 view .LVU88
+ 267 00ac 4A45     		cmp	r2, r9
+ 268 00ae E2DB     		blt	.L8
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 269              		.loc 1 117 29 discriminator 1 view .LVU89
+ARM GAS  /tmp/ccplzOQH.s 			page 8
+
+
+ 270              	.LBE23:
+ 271              	.LBE22:
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         {
+ 272              		.loc 1 112 82 is_stmt 1 discriminator 2 view .LVU90
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         {
+ 273              		.loc 1 112 89 is_stmt 0 discriminator 2 view .LVU91
+ 274 00b0 0134     		adds	r4, r4, #1
+ 275              	.LVL48:
+ 276              	.L10:
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         {
+ 277              		.loc 1 112 61 is_stmt 1 discriminator 1 view .LVU92
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         {
+ 278              		.loc 1 112 25 is_stmt 0 discriminator 1 view .LVU93
+ 279 00b2 029B     		ldr	r3, [sp, #8]
+ 280 00b4 9C42     		cmp	r4, r3
+ 281 00b6 09DA     		bge	.L21
+ 282              	.LBB25:
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             const int32_t in_col = base_idx_x + dilation_x * i_ker_x;
+ 283              		.loc 1 114 29 is_stmt 1 view .LVU94
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             const int32_t in_col = base_idx_x + dilation_x * i_ker_x;
+ 284              		.loc 1 114 43 is_stmt 0 view .LVU95
+ 285 00b8 069B     		ldr	r3, [sp, #24]
+ 286 00ba 039A     		ldr	r2, [sp, #12]
+ 287 00bc 03FB052E 		mla	lr, r3, r5, r2
+ 288              	.LVL49:
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 289              		.loc 1 115 29 is_stmt 1 view .LVU96
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 290              		.loc 1 115 43 is_stmt 0 view .LVU97
+ 291 00c0 059B     		ldr	r3, [sp, #20]
+ 292 00c2 049A     		ldr	r2, [sp, #16]
+ 293 00c4 03FB042C 		mla	ip, r3, r4, r2
+ 294              	.LVL50:
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 295              		.loc 1 117 29 is_stmt 1 view .LVU98
+ 296              	.LBB24:
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 297              		.loc 1 117 34 view .LVU99
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 298              		.loc 1 117 42 is_stmt 0 view .LVU100
+ 299 00c8 0022     		movs	r2, #0
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 300              		.loc 1 117 29 view .LVU101
+ 301 00ca EFE7     		b	.L7
+ 302              	.LVL51:
+ 303              	.L21:
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             {
+ 304              		.loc 1 117 29 view .LVU102
+ 305              	.LBE24:
+ 306              	.LBE25:
+ 307              	.LBE21:
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 308              		.loc 1 110 78 is_stmt 1 discriminator 2 view .LVU103
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 309              		.loc 1 110 85 is_stmt 0 discriminator 2 view .LVU104
+ 310 00cc 0135     		adds	r5, r5, #1
+ 311              	.LVL52:
+ARM GAS  /tmp/ccplzOQH.s 			page 9
+
+
+ 312              	.L6:
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 313              		.loc 1 110 57 is_stmt 1 discriminator 1 view .LVU105
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 314              		.loc 1 110 21 is_stmt 0 discriminator 1 view .LVU106
+ 315 00ce 079B     		ldr	r3, [sp, #28]
+ 316 00d0 9D42     		cmp	r5, r3
+ 317 00d2 01DA     		bge	.L22
+ 318              	.LBB26:
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         {
+ 319              		.loc 1 112 38 view .LVU107
+ 320 00d4 089C     		ldr	r4, [sp, #32]
+ 321 00d6 ECE7     		b	.L10
+ 322              	.L22:
+ 323              	.LBE26:
+ 324              	.LBE20:
+ 122:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                             }
+ 123:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         }
+ 124:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     }
+ 125:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 126:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     if (bias_data)
+ 325              		.loc 1 126 21 is_stmt 1 view .LVU108
+ 326              		.loc 1 126 24 is_stmt 0 view .LVU109
+ 327 00d8 2A9B     		ldr	r3, [sp, #168]
+ 328 00da 3BB1     		cbz	r3, .L11
+ 127:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 128:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                         conv_out_acc += bias_data[i_out_ch];
+ 329              		.loc 1 128 25 is_stmt 1 view .LVU110
+ 330              		.loc 1 128 50 is_stmt 0 view .LVU111
+ 331 00dc 119A     		ldr	r2, [sp, #68]
+ 332 00de 03EBC203 		add	r3, r3, r2, lsl #3
+ 333 00e2 1A68     		ldr	r2, [r3]
+ 334 00e4 5B68     		ldr	r3, [r3, #4]
+ 335              		.loc 1 128 38 view .LVU112
+ 336 00e6 B618     		adds	r6, r6, r2
+ 337              	.LVL53:
+ 338              		.loc 1 128 38 view .LVU113
+ 339 00e8 43EB0707 		adc	r7, r3, r7
+ 340              	.LVL54:
+ 341              	.L11:
+ 129:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     }
+ 130:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 131:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     int32_t conv_out = arm_nn_requantize_s64(conv_out_acc, reduced_multiplier, outp
+ 342              		.loc 1 131 21 is_stmt 1 discriminator 2 view .LVU114
+ 343              		.loc 1 131 40 is_stmt 0 discriminator 2 view .LVU115
+ 344 00ec 1B9B     		ldr	r3, [sp, #108]
+ 345 00ee 129A     		ldr	r2, [sp, #72]
+ 346 00f0 9958     		ldr	r1, [r3, r2]
+ 347              	.LVL55:
+ 348              	.LBB27:
+ 349              	.LBI27:
+ 350              		.file 2 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h"
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * SPDX-FileCopyrightText: Copyright 2010-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ARM GAS  /tmp/ccplzOQH.s 			page 10
+
+
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Title:        arm_nnsupportfunctions.h
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Description:  Public header file of support functions for CMSIS NN Library
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * $Date:        13 Februari 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * $Revision:    V.15.0.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * -------------------------------------------------------------------- */
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #ifndef _ARM_NNSUPPORTFUNCTIONS_H_
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define _ARM_NNSUPPORTFUNCTIONS_H_
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #include "Internal/arm_nn_compiler.h"
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #include "arm_nn_math_types.h"
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #include "arm_nn_types.h"
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #include <stdbool.h>
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #ifdef __cplusplus
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** extern "C" {
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #endif
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define USE_FAST_DW_CONV_S16_FUNCTION(dw_conv_params, filter_dims, input_dims)                     
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     (dw_conv_params->ch_mult == 1 && dw_conv_params->dilation.w == 1 && dw_conv_params->dilation.h 
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****      filter_dims->w * filter_dims->h < 512)
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define LEFT_SHIFT(_shift) (_shift > 0 ? _shift : 0)
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define RIGHT_SHIFT(_shift) (_shift > 0 ? 0 : -_shift)
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MASK_IF_ZERO(x) (x) == 0 ? ~0 : 0
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MASK_IF_NON_ZERO(x) (x) != 0 ? ~0 : 0
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define SELECT_USING_MASK(mask, a, b) ((mask) & (a)) ^ (~(mask) & (b))
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MAX(A, B) ((A) > (B) ? (A) : (B))
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MIN(A, B) ((A) < (B) ? (A) : (B))
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define CLAMP(x, h, l) MAX(MIN((x), (h)), (l))
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define REDUCE_MULTIPLIER(_mult) ((_mult < 0x7FFF0000) ? ((_mult + (1 << 15)) >> 16) : 0x7FFF)
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // Number of channels processed in a block for DW Conv(MVE)
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // Requirement: Greater than 0 & less than 128
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // This can be fine tuned to match number of input channels for best performance.
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // A layer with lower number of channels than CH_IN_BLOCK_MVE will result in higher
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // scratch buffer usage and a layer with higher number of channels than CH_IN_BLOCK_MVE
+ARM GAS  /tmp/ccplzOQH.s 			page 11
+
+
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // will result in lower scratch buffer usage.
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define CH_IN_BLOCK_MVE (124)
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief definition to pack four 8 bit values.
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define PACK_S8x4_32x1(v0, v1, v2, v3)                                                             
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     ((((int32_t)(v0) << 0) & (int32_t)0x000000FF) | (((int32_t)(v1) << 8) & (int32_t)0x0000FF00) | 
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****      (((int32_t)(v2) << 16) & (int32_t)0x00FF0000) | (((int32_t)(v3) << 24) & (int32_t)0xFF000000))
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief definition to pack two 16 bit values.
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define PACK_Q15x2_32x1(v0, v1) (((int32_t)v0 & (int32_t)0xFFFF) | ((int32_t)v1 << 16))
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Union for SIMD access of q31/s16/s8 types
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** union arm_nnword
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t word;
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     /**< q31 type */
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int16_t half_words[2];
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     /**< s16 type */
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int8_t bytes[4];
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     /**< s8 type */
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** };
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Union for data type long long
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** struct arm_nn_double
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     uint32_t low;
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t high;
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** };
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** union arm_nn_long_long
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int64_t long_long;
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     struct arm_nn_double word;
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** };
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @defgroup groupSupport Private
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Internal Support functions. Not intended to be called direclty by a CMSIS-NN user.
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @defgroup supportConversion Data Conversion
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Perform data type conversion in-between neural network operations
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ARM GAS  /tmp/ccplzOQH.s 			page 12
+
+
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 121:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Converts the elements from a s8 vector to a s16 vector with an added offset
+ 122:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    src        pointer to the s8 input vector
+ 123:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]   dst        pointer to the s16 output vector
+ 124:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    block_size length of the input vector
+ 125:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    offset     s8 offset to be added to each input vector element.
+ 126:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 127:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * \par Description:
+ 128:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 129:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * The equation used for the conversion process is:
+ 130:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 131:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * <pre>
+ 132:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *  dst[n] = (int16_t) src[n] + offset;   0 <= n < block_size.
+ 133:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * </pre>
+ 134:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 135:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 136:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** void arm_q7_to_q15_with_offset(const int8_t *src, int16_t *dst, uint32_t block_size, int16_t offset
+ 137:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 138:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 139:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Depthwise conv on an im2col buffer where the input channel equals output channel.
+ 140:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    row     pointer to row
+ 141:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    col     pointer to im2col buffer, always consists of 2 columns.
+ 142:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    num_ch   number of channels
+ 143:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    out_shift  pointer to per output channel requantization shift parameter.
+ 144:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    out_mult   pointer to per output channel requantization multiplier parameter.
+ 145:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    out_offset      output tensor offset.
+ 146:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    activation_min   minimum value to clamp the output to. Range : int8
+ 147:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    activation_max   maximum value to clamp the output to. Range : int8
+ 148:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    kernel_size   number of elements in one column.
+ 149:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]    output_bias per output channel bias. Range : int32
+ 150:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]   out         pointer to output
+ 151:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function returns one of the two
+ 152:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              1. The incremented output pointer for a successful operation or
+ 153:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              2. NULL if implementation is not available.
+ 154:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 155:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @details     Supported framework: TensorFlow Lite micro.
+ 156:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 157:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** int8_t *arm_nn_depthwise_conv_s8_core(const int8_t *row,
+ 158:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int16_t *col,
+ 159:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const uint16_t num_ch,
+ 160:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t *out_shift,
+ 161:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t *out_mult,
+ 162:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t out_offset,
+ 163:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t activation_min,
+ 164:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t activation_max,
+ 165:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const uint16_t kernel_size,
+ 166:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t *const output_bias,
+ 167:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       int8_t *out);
+ 168:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 169:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 170:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief General Matrix-multiplication function with per-channel requantization.
+ 171:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       input_row    pointer to row operand
+ 172:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       input_col    pointer to col operand
+ 173:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_ch    number of rows of input_row
+ 174:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       col_batches  number of column batches. Range: 1 to 4
+ 175:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_shift  pointer to per output channel requantization shift parameter.
+ 176:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_mult   pointer to per output channel requantization multiplier parameter
+ARM GAS  /tmp/ccplzOQH.s 			page 13
+
+
+ 177:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_offset    output tensor offset.
+ 178:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       col_offset    input tensor(col) offset.
+ 179:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_offset    kernel offset(row). Not used.
+ 180:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_activation_min   minimum value to clamp the output to. Range : int8
+ 181:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_activation_max   maximum value to clamp the output to. Range : int8
+ 182:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_len       number of elements in each row
+ 183:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       bias          per output channel bias. Range : int32
+ 184:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in,out]   out           pointer to output
+ 185:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function returns one of the two
+ 186:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              1. The incremented output pointer for a successful operation or
+ 187:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              2. NULL if implementation is not available.
+ 188:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 189:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @details   Supported framework: TensorFlow Lite
+ 190:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 191:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** int8_t *arm_nn_mat_mult_s8(const int8_t *input_row,
+ 192:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int8_t *input_col,
+ 193:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const uint16_t output_ch,
+ 194:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const uint16_t col_batches,
+ 195:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int32_t *output_shift,
+ 196:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int32_t *output_mult,
+ 197:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int32_t out_offset,
+ 198:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int32_t col_offset,
+ 199:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int32_t row_offset,
+ 200:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int16_t out_activation_min,
+ 201:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int16_t out_activation_max,
+ 202:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const uint16_t row_len,
+ 203:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            const int32_t *const bias,
+ 204:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                            int8_t *out);
+ 205:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 206:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Matrix-multiplication function for convolution with per-channel requantization for 16 bit
+ 207:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       input_a     pointer to operand A
+ 208:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       input_b     pointer to operand B, always consists of 2 vectors.
+ 209:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_ch   number of rows of A
+ 210:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_shift  pointer to per output channel requantization shift parameter.
+ 211:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_mult   pointer to per output channel requantization multiplier parameter.
+ 212:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       activation_min   minimum value to clamp the output to. Range : int16
+ 213:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       activation_max   maximum value to clamp the output to. Range : int16
+ 214:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       num_col_a   number of columns of A
+ 215:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_bias per output channel bias. Range : int64
+ 216:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in,out]   out_0       pointer to output
+ 217:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function returns one of the two
+ 218:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              1. The incremented output pointer for a successful operation or
+ 219:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              2. NULL if implementation is not available.
+ 220:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 221:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @details   This function does the matrix multiplication of weight matrix for all output channels
+ 222:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *            with 2 columns from im2col and produces two elements/output_channel. The outputs are
+ 223:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *            clamped in the range provided by activation min and max.
+ 224:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *            Supported framework: TensorFlow Lite micro.
+ 225:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 226:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** int16_t *arm_nn_mat_mult_kernel_s16(const int8_t *input_a,
+ 227:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int16_t *input_b,
+ 228:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int32_t output_ch,
+ 229:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int32_t *out_shift,
+ 230:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int32_t *out_mult,
+ 231:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int16_t activation_min,
+ 232:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int16_t activation_max,
+ 233:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int32_t num_col_a,
+ARM GAS  /tmp/ccplzOQH.s 			page 14
+
+
+ 234:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     const int64_t *const output_bias,
+ 235:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                     int16_t *out_0);
+ 236:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 237:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 238:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief General Vector by Matrix multiplication with requantization and storage of result.
+ 239:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_elements          number of row elements
+ 240:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       skipped_row_elements  number of row elements skipped due to padding.
+ 241:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                        row_elements + skipped_row_elements = (kernel_x * kernel_
+ 242:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_base_ref          pointer to row operand
+ 243:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       col_base_ref          pointer to col operand
+ 244:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]      out_ch                Number of output channels
+ 245:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       conv_params           Pointer to convolution parameters like offsets and activa
+ 246:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       quant_params          Pointer to per-channel quantization parameters
+ 247:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       bias                  Pointer to optional per-channel bias
+ 248:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]      output                Pointer to output where int8 results are stored.
+ 249:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function performs matrix(row_base_ref) multiplication with vector(col_base_ref) 
+ 250:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *             scaled result is stored in memory.
+ 251:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 252:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @details Pseudo-code
+ 253:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *      *output = 0
+ 254:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *      sum_col = 0
+ 255:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *      for (j = 0; j < out_ch; j++)
+ 256:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *      for (i = 0; i < row_elements; i++)
+ 257:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *          *output += row_base_ref[i] * col_base_ref[i]
+ 258:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *          sum_col += col_base_ref[i]
+ 259:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *      scale sum_col using quant_params and bias
+ 260:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *      store result in 'output'
+ 261:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 262:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 263:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 264:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_mat_mul_core_1x_s8(int32_t row_elements,
+ 265:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t skipped_row_elements,
+ 266:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int8_t *row_base_ref,
+ 267:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int8_t *col_base_ref,
+ 268:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t out_ch,
+ 269:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const cmsis_nn_conv_params *conv_params,
+ 270:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const cmsis_nn_per_channel_quant_params *quant_params
+ 271:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t *bias,
+ 272:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               int8_t *output);
+ 273:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 274:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 275:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Matrix-multiplication with requantization & activation function for four rows and one col
+ 276:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_elements  number of row elements
+ 277:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       offset        offset between rows. Can be the same as row_elements.
+ 278:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                For e.g, in a 1x1 conv scenario with stride as 1.
+ 279:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_base      pointer to row operand
+ 280:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       col_base      pointer to col operand
+ 281:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_ch        Number of output channels
+ 282:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       conv_params   Pointer to convolution parameters like offsets and activation val
+ 283:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       quant_params  Pointer to per-channel quantization parameters
+ 284:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       bias          Pointer to per-channel bias
+ 285:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]      output        Pointer to output where int8 results are stored.
+ 286:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 287:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function returns the updated output pointer or NULL if implementation is not ava
+ 288:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 289:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @details Compliant to TFLM int8 specification. MVE implementation only
+ 290:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ARM GAS  /tmp/ccplzOQH.s 			page 15
+
+
+ 291:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** int8_t *arm_nn_mat_mul_core_4x_s8(const int32_t row_elements,
+ 292:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const int32_t offset,
+ 293:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const int8_t *row_base,
+ 294:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const int8_t *col_base,
+ 295:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const int32_t out_ch,
+ 296:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const cmsis_nn_conv_params *conv_params,
+ 297:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const cmsis_nn_per_channel_quant_params *quant_params,
+ 298:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   const int32_t *bias,
+ 299:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                   int8_t *output);
+ 300:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 301:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 302:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief General Matrix-multiplication function with per-channel requantization.
+ 303:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *        This function assumes:
+ 304:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *        - LHS input matrix NOT transposed (nt)
+ 305:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *        - RHS input matrix transposed (t)
+ 306:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 307:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *  @note This operation also performs the broadcast bias addition before the requantization
+ 308:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 309:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  lhs                Pointer to the LHS input matrix
+ 310:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  rhs                Pointer to the RHS input matrix
+ 311:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  bias               Pointer to the bias vector. The length of this vector is equal to
+ 312:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * output columns (or RHS input rows)
+ 313:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out] dst                Pointer to the output matrix with "m" rows and "n" columns
+ 314:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  dst_multipliers    Pointer to the multipliers vector needed for the per-channel requ
+ 315:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                The length of this vector is equal to the number of output column
+ 316:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * rows)
+ 317:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  dst_shifts         Pointer to the shifts vector needed for the per-channel requantiz
+ 318:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * of this vector is equal to the number of output columns (or RHS input rows)
+ 319:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  lhs_rows           Number of LHS input rows
+ 320:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  rhs_rows           Number of RHS input rows
+ 321:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  rhs_cols           Number of LHS/RHS input columns
+ 322:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  lhs_offset         Offset to be applied to the LHS input value
+ 323:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  dst_offset         Offset to be applied the output result
+ 324:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  activation_min     Minimum value to clamp down the output. Range : int8
+ 325:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  activation_max     Maximum value to clamp up the output. Range : int8
+ 326:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  rhs_cols_offset    Offset between input columns. Used to handle non-unity strides
+ 327:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                Expected value : x * rhs_cols, where x >= 1
+ 328:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 329:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function returns <code>ARM_CMSIS_NN_SUCCESS</code>
+ 330:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 331:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 332:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_mat_mult_nt_t_s8(const int8_t *lhs,
+ 333:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int8_t *rhs,
+ 334:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t *bias,
+ 335:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             int8_t *dst,
+ 336:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t *dst_multipliers,
+ 337:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t *dst_shifts,
+ 338:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t lhs_rows,
+ 339:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t rhs_rows,
+ 340:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t rhs_cols,
+ 341:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t lhs_offset,
+ 342:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t dst_offset,
+ 343:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t activation_min,
+ 344:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t activation_max,
+ 345:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                             const int32_t rhs_cols_offset);
+ 346:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 347:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ARM GAS  /tmp/ccplzOQH.s 			page 16
+
+
+ 348:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief s8 Vector by Matrix (transposed) multiplication
+ 349:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 350:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs             Input left-hand side vector
+ 351:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs             Input right-hand side matrix (transposed)
+ 352:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      bias            Input bias
+ 353:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]     dst             Output vector
+ 354:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs_offset      Offset to be added to the input values of the left-hand side vec
+ 355:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                 Range: -127 to 128
+ 356:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_offset      Offset to be added to the output values. Range: -127 to 128
+ 357:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_multiplier  Output multiplier
+ 358:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_shift       Output shift
+ 359:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs_cols        Number of columns in the right-hand side input matrix
+ 360:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs_rows        Number of rows in the right-hand side input matrix
+ 361:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_min  Minimum value to clamp the output to. Range: int8
+ 362:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_max  Maximum value to clamp the output to. Range: int8
+ 363:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      address_offset  Memory position offset for dst. First output is stored at 'dst',
+ 364:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                 second at 'dst + address_offset' and so on. Default value is typ
+ 365:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 366:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return         The function returns <code>ARM_CMSIS_NN_SUCCESS</code>
+ 367:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 368:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 369:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_vec_mat_mult_t_s8(const int8_t *lhs,
+ 370:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int8_t *rhs,
+ 371:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t *bias,
+ 372:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              int8_t *dst,
+ 373:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t lhs_offset,
+ 374:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t dst_offset,
+ 375:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t dst_multiplier,
+ 376:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t dst_shift,
+ 377:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t rhs_cols,
+ 378:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t rhs_rows,
+ 379:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t activation_min,
+ 380:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t activation_max,
+ 381:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                              const int32_t address_offset);
+ 382:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 383:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 384:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief s16 Vector by Matrix (transposed) multiplication
+ 385:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 386:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs             Input left-hand side vector
+ 387:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs             Input right-hand side matrix (transposed)
+ 388:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      bias            Input bias
+ 389:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]     dst             Output vector
+ 390:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_multiplier  Output multiplier
+ 391:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_shift       Output shift
+ 392:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs_cols        Number of columns in the right-hand side input matrix
+ 393:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs_rows        Number of rows in the right-hand side input matrix
+ 394:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_min  Minimum value to clamp the output to. Range: int16
+ 395:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_max  Maximum value to clamp the output to. Range: int16
+ 396:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 397:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return         The function returns <code>ARM_CMSIS_NN_SUCCESS</code>
+ 398:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 399:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 400:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_vec_mat_mult_t_s16(const int16_t *lhs,
+ 401:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int8_t *rhs,
+ 402:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int64_t *bias,
+ 403:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               int16_t *dst,
+ 404:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t dst_multiplier,
+ARM GAS  /tmp/ccplzOQH.s 			page 17
+
+
+ 405:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t dst_shift,
+ 406:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t rhs_cols,
+ 407:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t rhs_rows,
+ 408:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t activation_min,
+ 409:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                               const int32_t activation_max);
+ 410:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 411:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 412:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief s8 Vector by Matrix (transposed) multiplication with s16 output
+ 413:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 414:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs             Input left-hand side vector
+ 415:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs             Input right-hand side matrix (transposed)
+ 416:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out]     dst             Output vector
+ 417:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs_offset      Offset to be added to the input values of the left-hand side
+ 418:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                 vector. Range: -127 to 128
+ 419:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      scatter_offset  Address offset for dst. First output is stored at 'dst', the
+ 420:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                                 second at 'dst + scatter_offset' and so on.
+ 421:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_multiplier  Output multiplier
+ 422:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      dst_shift       Output shift
+ 423:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs_cols        Number of columns in the right-hand side input matrix
+ 424:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs_rows        Number of rows in the right-hand side input matrix
+ 425:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_min  Minimum value to clamp the output to. Range: int16
+ 426:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_max  Maximum value to clamp the output to. Range: int16
+ 427:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 428:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return         The function returns <code>ARM_CMSIS_NN_SUCCESS</code>
+ 429:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 430:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 431:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_vec_mat_mult_t_svdf_s8(const int8_t *lhs,
+ 432:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int8_t *rhs,
+ 433:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   int16_t *dst,
+ 434:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t lhs_offset,
+ 435:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t scatter_offset,
+ 436:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t dst_multiplier,
+ 437:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t dst_shift,
+ 438:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t rhs_cols,
+ 439:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t rhs_rows,
+ 440:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t activation_min,
+ 441:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t activation_max);
+ 442:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 443:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 444:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in padded 
+ 445:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *        the padding is -lhs_offset(Range: int8). Dimensions are the same for lhs and rhs.
+ 446:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 447:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs             Input left-hand side matrix
+ 448:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs             Input right-hand side matrix (transposed)
+ 449:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs_offset      LHS matrix offset(input offset). Range: -127 to 128
+ 450:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      active_ch       Subset of total_ch processed
+ 451:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      total_ch        Number of channels in LHS/RHS
+ 452:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_shift       Per channel output shift. Length of vector is equal to number of
+ 453:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_mult        Per channel output multiplier. Length of vector is equal to numb
+ 454:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_offset      Offset to be added to the output values. Range: -127 to 128
+ 455:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_min  Minimum value to clamp the output to. Range: int8
+ 456:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_max  Maximum value to clamp the output to. Range: int8
+ 457:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_x_col       (row_dimension * col_dimension) of LHS/RHS matrix
+ 458:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      output_bias     Per channel output bias. Length of vector is equal to number of 
+ 459:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out             Output pointer
+ 460:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 461:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return         The function returns one of the two
+ARM GAS  /tmp/ccplzOQH.s 			page 18
+
+
+ 462:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Updated output pointer if an implementation is available
+ 463:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - NULL if no implementation is available.
+ 464:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 465:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @note           If number of channels is not a multiple of 4, upto 3 elements outside the bounda
+ 466:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * out for the following.
+ 467:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output shift
+ 468:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output multiplier
+ 469:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output bias
+ 470:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - rhs
+ 471:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 472:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_depthwise_conv_nt_t_padded_s8(const int8_t *lhs,
+ 473:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int8_t *rhs,
+ 474:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t lhs_offset,
+ 475:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t active_ch,
+ 476:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t total_ch,
+ 477:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t *out_shift,
+ 478:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t *out_mult,
+ 479:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t out_offset,
+ 480:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t activation_min,
+ 481:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t activation_max,
+ 482:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const uint16_t row_x_col,
+ 483:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          const int32_t *const output_bias,
+ 484:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                          int8_t *out);
+ 485:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 486:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 487:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in non-pad
+ 488:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *        Dimensions are the same for lhs and rhs.
+ 489:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 490:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs             Input left-hand side matrix
+ 491:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs             Input right-hand side matrix (transposed)
+ 492:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs_offset      LHS matrix offset(input offset). Range: -127 to 128
+ 493:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      active_ch       Subset of total_ch processed
+ 494:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      total_ch        Number of channels in LHS/RHS
+ 495:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_shift       Per channel output shift. Length of vector is equal to number of
+ 496:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_mult        Per channel output multiplier. Length of vector is equal to numb
+ 497:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_offset      Offset to be added to the output values. Range: -127 to 128
+ 498:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_min  Minimum value to clamp the output to. Range: int8
+ 499:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_max  Maximum value to clamp the output to. Range: int8
+ 500:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_x_col       (row_dimension * col_dimension) of LHS/RHS matrix
+ 501:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      output_bias     Per channel output bias. Length of vector is equal to number of 
+ 502:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out             Output pointer
+ 503:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 504:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return         The function returns one of the two
+ 505:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Updated output pointer if an implementation is available
+ 506:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - NULL if no implementation is available.
+ 507:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 508:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @note           If number of channels is not a multiple of 4, upto 3 elements outside the bounda
+ 509:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * out for the following.
+ 510:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output shift
+ 511:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output multiplier
+ 512:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output bias
+ 513:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - rhs
+ 514:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 515:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** arm_cmsis_nn_status arm_nn_depthwise_conv_nt_t_s8(const int8_t *lhs,
+ 516:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int8_t *rhs,
+ 517:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t lhs_offset,
+ 518:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t active_ch,
+ARM GAS  /tmp/ccplzOQH.s 			page 19
+
+
+ 519:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t total_ch,
+ 520:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t *out_shift,
+ 521:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t *out_mult,
+ 522:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t out_offset,
+ 523:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t activation_min,
+ 524:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t activation_max,
+ 525:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const uint16_t row_x_col,
+ 526:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   const int32_t *const output_bias,
+ 527:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                   int8_t *out);
+ 528:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 529:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 530:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Depthwise convolution of transposed rhs matrix with 4 lhs matrices. To be used in non-pad
+ 531:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *        Dimensions are the same for lhs and rhs.
+ 532:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 533:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      lhs             Input left-hand side matrix
+ 534:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      rhs             Input right-hand side matrix (transposed)
+ 535:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      num_ch          Number of channels in LHS/RHS
+ 536:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_shift       Per channel output shift. Length of vector is equal to number of
+ 537:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out_mult        Per channel output multiplier. Length of vector is equal to numb
+ 538:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_min  Minimum value to clamp the output to. Range: int8
+ 539:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      activation_max  Maximum value to clamp the output to. Range: int8
+ 540:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       row_x_col       (row_dimension * col_dimension) of LHS/RHS matrix
+ 541:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      output_bias     Per channel output bias. Length of vector is equal to number of 
+ 542:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]      out             Output pointer
+ 543:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 544:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return         The function returns one of the two
+ 545:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Updated output pointer if an implementation is available
+ 546:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - NULL if no implementation is available.
+ 547:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 548:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @note           If number of channels is not a multiple of 4, upto 3 elements outside the bounda
+ 549:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * out for the following.
+ 550:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output shift
+ 551:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output multiplier
+ 552:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - Output bias
+ 553:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  - rhs
+ 554:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 555:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** int16_t *arm_nn_depthwise_conv_nt_t_s16(const int16_t *lhs,
+ 556:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const int8_t *rhs,
+ 557:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const uint16_t num_ch,
+ 558:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const int32_t *out_shift,
+ 559:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const int32_t *out_mult,
+ 560:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const int32_t activation_min,
+ 561:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const int32_t activation_max,
+ 562:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const uint16_t row_x_col,
+ 563:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         const int64_t *const output_bias,
+ 564:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                         int16_t *out);
+ 565:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 566:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 567:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @brief         Read 2 s16 elements and post increment pointer.
+ 568:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @param[in]     in_q15   Pointer to pointer that holds address of input.
+ 569:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @return        q31 value
+ 570:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 571:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_read_q15x2_ia(const int16_t **in_q15)
+ 572:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 573:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t val;
+ 574:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 575:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     memcpy(&val, *in_q15, 4);
+ARM GAS  /tmp/ccplzOQH.s 			page 20
+
+
+ 576:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *in_q15 += 2;
+ 577:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 578:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return (val);
+ 579:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 580:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 581:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 582:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @brief         Read 4 s8 from s8 pointer and post increment pointer.
+ 583:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @param[in]     in_s8       Pointer to pointer that holds address of input.
+ 584:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @return        q31 value
+ 585:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 586:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_read_s8x4_ia(const int8_t **in_s8)
+ 587:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 588:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t val;
+ 589:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     memcpy(&val, *in_s8, 4);
+ 590:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *in_s8 += 4;
+ 591:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 592:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return (val);
+ 593:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 594:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 595:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 596:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @brief         Read 2 int16 values from int16 pointer.
+ 597:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @param[in]     in     pointer to address of input.
+ 598:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @return        s32    value
+ 599:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 600:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_read_s16x2(const int16_t *in)
+ 601:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 602:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t val;
+ 603:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     memcpy(&val, in, 4);
+ 604:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 605:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return (val);
+ 606:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 607:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 608:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 609:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @brief         Read 4 s8 values.
+ 610:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @param[in]     in_s8       pointer to address of input.
+ 611:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @return        s32 value
+ 612:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 613:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_read_s8x4(const int8_t *in_s8)
+ 614:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 615:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t val;
+ 616:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     memcpy(&val, in_s8, 4);
+ 617:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 618:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return (val);
+ 619:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 620:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 621:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 622:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @brief         Write four s8 to s8 pointer and increment pointer afterwards.
+ 623:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @param[in]     in       Double pointer to input value
+ 624:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****   @param[in]     value    Four bytes to copy
+ 625:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 626:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE void arm_nn_write_s8x4_ia(int8_t **in, int32_t value)
+ 627:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 628:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     memcpy(*in, &value, 4);
+ 629:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *in += 4;
+ 630:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 631:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 632:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ARM GAS  /tmp/ccplzOQH.s 			page 21
+
+
+ 633:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief           memset optimized for MVE
+ 634:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in, out]  dst         Destination pointer
+ 635:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       val         Value to set
+ 636:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       block_size  Number of bytes to copy.
+ 637:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 638:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 639:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE void arm_memset_s8(int8_t *dst, const int8_t val, uint32_t block_size)
+ 640:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 641:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #if defined(ARM_MATH_MVEI)
+ 642:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     __asm volatile("   vdup.8                  q0, %[set_val]             \n"
+ 643:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    "   wlstp.8                 lr, %[cnt], 1f             \n"
+ 644:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    "2:                                                    \n"
+ 645:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    "   vstrb.8                 q0, [%[in]], #16            \n"
+ 646:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    "   letp                    lr, 2b                     \n"
+ 647:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    "1:                                                    \n"
+ 648:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    : [in] "+r"(dst)
+ 649:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    : [cnt] "r"(block_size), [set_val] "r"(val)
+ 650:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                    : "q0", "memory", "r14");
+ 651:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #else
+ 652:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     memset(dst, val, block_size);
+ 653:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #endif
+ 654:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 655:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 656:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #if defined(ARM_MATH_DSP)
+ 657:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 658:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 659:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief read and expand one s8 word into two s16 words
+ 660:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 661:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 662:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE const int8_t *read_and_pad(const int8_t *source, int32_t *out1, int32_t *out2)
+ 663:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 664:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t inA = arm_nn_read_s8x4_ia(&source);
+ 665:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t inAbuf1 = SXTB16_RORn((uint32_t)inA, 8);
+ 666:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t inAbuf2 = SXTB16(inA);
+ 667:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 668:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #ifndef ARM_MATH_BIG_ENDIAN
+ 669:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out2 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+ 670:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out1 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+ 671:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #else
+ 672:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out1 = (int32_t)(PKHTB(inAbuf1, inAbuf2, 16));
+ 673:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out2 = (int32_t)(PKHBT(inAbuf2, inAbuf1, 16));
+ 674:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #endif
+ 675:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 676:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return source;
+ 677:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 678:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 679:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 680:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief read and expand one s8 word into two s16 words with reordering
+ 681:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 682:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 683:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE const int8_t *read_and_pad_reordered(const int8_t *source, int32_t *out1, int3
+ 684:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 685:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t inA = arm_nn_read_s8x4_ia(&source);
+ 686:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #ifndef ARM_MATH_BIG_ENDIAN
+ 687:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out2 = SXTB16(ROR((uint32_t)inA, 8));
+ 688:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out1 = SXTB16(inA);
+ 689:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #else
+ARM GAS  /tmp/ccplzOQH.s 			page 22
+
+
+ 690:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out1 = SXTB16(ROR((uint32_t)inA, 8));
+ 691:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     *out2 = SXTB16(inA);
+ 692:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #endif
+ 693:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 694:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return source;
+ 695:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 696:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 697:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #endif
+ 698:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 699:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 700:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Matrix-multiplication function for convolution with per-channel requantization.
+ 701:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       input_a     pointer to operand A
+ 702:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       input_b     pointer to operand B, always consists of 2 vectors.
+ 703:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_ch   number of rows of A
+ 704:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_shift  pointer to per output channel requantization shift parameter.
+ 705:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_mult   pointer to per output channel requantization multiplier parameter.
+ 706:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       out_offset      output tensor offset.
+ 707:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       activation_min   minimum value to clamp the output to. Range : int8
+ 708:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       activation_max   maximum value to clamp the output to. Range : int8
+ 709:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       num_col_a   number of columns of A
+ 710:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       output_bias per output channel bias. Range : int32
+ 711:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in,out]   out_0       pointer to output
+ 712:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return     The function returns one of the two
+ 713:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              1. The incremented output pointer for a successful operation or
+ 714:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *              2. NULL if implementation is not available.
+ 715:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 716:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @details   This function does the matrix multiplication of weight matrix for all output channels
+ 717:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *            with 2 columns from im2col and produces two elements/output_channel. The outputs are
+ 718:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *            clamped in the range provided by activation min and max.
+ 719:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *            Supported framework: TensorFlow Lite micro.
+ 720:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 721:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** int8_t *arm_nn_mat_mult_kernel_s8_s16(const int8_t *input_a,
+ 722:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int16_t *input_b,
+ 723:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const uint16_t output_ch,
+ 724:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t *out_shift,
+ 725:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t *out_mult,
+ 726:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t out_offset,
+ 727:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int16_t activation_min,
+ 728:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int16_t activation_max,
+ 729:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const uint16_t num_col_a,
+ 730:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       const int32_t *const output_bias,
+ 731:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                       int8_t *out_0);
+ 732:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 733:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 734:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief Common softmax function for s8 input and s8 or s16 output
+ 735:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  input          Pointer to the input tensor
+ 736:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  num_rows       Number of rows in the input tensor
+ 737:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  row_size       Number of elements in each input row
+ 738:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  mult           Input quantization multiplier
+ 739:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  shift          Input quantization shift within the range [0, 31]
+ 740:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  diff_min       Minimum difference with max in row. Used to check if
+ 741:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                            the quantized exponential operation can be performed
+ 742:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]  int16_output   Indicating s8 output if 0 else s16 output
+ 743:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[out] output         Pointer to the output tensor
+ 744:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 745:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @note Supported framework: TensorFlow Lite micro (bit-accurate)
+ 746:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ARM GAS  /tmp/ccplzOQH.s 			page 23
+
+
+ 747:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 748:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** void arm_nn_softmax_common_s8(const int8_t *input,
+ 749:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               const int32_t num_rows,
+ 750:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               const int32_t row_size,
+ 751:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               const int32_t mult,
+ 752:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               const int32_t shift,
+ 753:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               const int32_t diff_min,
+ 754:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               const bool int16_output,
+ 755:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                               void *output);
+ 756:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 757:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 758:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief macro for adding rounding offset
+ 759:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 760:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #ifndef ARM_NN_TRUNCATE
+ 761:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #define NN_ROUND(out_shift) ((0x1 << out_shift) >> 1)
+ 762:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #else
+ 763:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     #define NN_ROUND(out_shift) 0
+ 764:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #endif
+ 765:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 766:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** // Macros for shortening quantization functions' names and avoid long lines
+ 767:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MUL_SAT(a, b) arm_nn_doubling_high_mult((a), (b))
+ 768:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MUL_SAT_MVE(a, b) arm_doubling_high_mult_mve_32x4((a), (b))
+ 769:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define MUL_POW2(a, b) arm_nn_mult_by_power_of_two((a), (b))
+ 770:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 771:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define DIV_POW2(a, b) arm_nn_divide_by_power_of_two((a), (b))
+ 772:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define DIV_POW2_MVE(a, b) arm_divide_by_power_of_two_mve((a), (b))
+ 773:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 774:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define EXP_ON_NEG(x) arm_nn_exp_on_negative_values((x))
+ 775:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #define ONE_OVER1(x) arm_nn_one_over_one_plus_x_for_x_in_0_1((x))
+ 776:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 777:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 778:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief           Saturating doubling high multiply. Result matches
+ 779:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  NEON instruction VQRDMULH.
+ 780:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       m1        Multiplicand. Range: {NN_Q31_MIN, NN_Q31_MAX}
+ 781:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       m2        Multiplier. Range: {NN_Q31_MIN, NN_Q31_MAX}
+ 782:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return          Result of multiplication.
+ 783:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 784:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 785:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_doubling_high_mult(const int32_t m1, const int32_t m2)
+ 786:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 787:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t result = 0;
+ 788:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Rounding offset to add for a right shift of 31
+ 789:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int64_t mult = 1 << 30;
+ 790:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 791:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     if ((m1 < 0) ^ (m2 < 0))
+ 792:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     {
+ 793:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****         mult = 1 - mult;
+ 794:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     }
+ 795:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Gets resolved as a SMLAL instruction
+ 796:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     mult = mult + (int64_t)m1 * m2;
+ 797:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 798:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Utilize all of the upper 32 bits. This is the doubling step
+ 799:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // as well.
+ 800:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     result = (int32_t)(mult / (1ll << 31));
+ 801:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 802:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     if ((m1 == m2) && (m1 == (int32_t)NN_Q31_MIN))
+ 803:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     {
+ARM GAS  /tmp/ccplzOQH.s 			page 24
+
+
+ 804:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****         result = NN_Q31_MAX;
+ 805:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     }
+ 806:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return result;
+ 807:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 808:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 809:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 810:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief           Doubling high multiply without saturation. This is intended
+ 811:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  for requantization where the scale is a positive integer
+ 812:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 813:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       m1        Multiplicand. Range: {NN_Q31_MIN, NN_Q31_MAX}
+ 814:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       m2        Multiplier Range: {NN_Q31_MIN, NN_Q31_MAX}
+ 815:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return          Result of multiplication.
+ 816:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @note            The result of this matches that of neon instruction
+ 817:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  VQRDMULH for m1 in range {NN_Q31_MIN, NN_Q31_MAX} and m2 in
+ 818:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  range {NN_Q31_MIN + 1, NN_Q31_MAX}. Saturation occurs when
+ 819:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  m1 equals m2 equals NN_Q31_MIN and that is not handled by
+ 820:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                  this function.
+ 821:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 822:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 823:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_doubling_high_mult_no_sat(const int32_t m1, const int32_t m2)
+ 824:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 825:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t result = 0;
+ 826:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     union arm_nn_long_long mult;
+ 827:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 828:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Rounding offset to add for a right shift of 31
+ 829:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     mult.word.low = 1 << 30;
+ 830:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     mult.word.high = 0;
+ 831:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 832:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Gets resolved as a SMLAL instruction
+ 833:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     mult.long_long = mult.long_long + (int64_t)m1 * m2;
+ 834:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 835:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Utilize all of the upper 32 bits. This is the doubling step
+ 836:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // as well.
+ 837:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     result = (int32_t)(mult.long_long >> 31);
+ 838:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 839:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return result;
+ 840:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 841:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 842:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 843:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief           Rounding divide by power of two.
+ 844:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       dividend - Dividend
+ 845:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       exponent - Divisor = power(2, exponent)
+ 846:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *                             Range: [0, 31]
+ 847:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return          Rounded result of division. Midpoint is rounded away from zero.
+ 848:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 849:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 850:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_divide_by_power_of_two(const int32_t dividend, const int32_t ex
+ 851:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 852:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t result = 0;
+ 853:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     const int32_t remainder_mask = (1 << exponent) - 1;
+ 854:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t remainder = remainder_mask & dividend;
+ 855:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 856:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Basic division
+ 857:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     result = dividend >> exponent;
+ 858:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 859:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     // Adjust 'result' for rounding (mid point away from zero)
+ 860:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t threshold = remainder_mask >> 1;
+ARM GAS  /tmp/ccplzOQH.s 			page 25
+
+
+ 861:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     if (result < 0)
+ 862:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     {
+ 863:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****         threshold++;
+ 864:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     }
+ 865:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     if (remainder > threshold)
+ 866:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     {
+ 867:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****         result++;
+ 868:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     }
+ 869:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 870:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return result;
+ 871:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 872:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 873:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 874:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief           Requantize a given value.
+ 875:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       val         Value to be requantized
+ 876:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       multiplier  multiplier. Range {NN_Q31_MIN + 1, Q32_MAX}
+ 877:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       shift       left or right shift for 'val * multiplier'
+ 878:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 879:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return          Returns (val * multiplier)/(2 ^ shift)
+ 880:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 881:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 882:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_requantize(const int32_t val, const int32_t multiplier, const i
+ 883:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 884:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #ifdef CMSIS_NN_USE_SINGLE_ROUNDING
+ 885:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     const int64_t total_shift = 31 - shift;
+ 886:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     const int64_t new_val = val * (int64_t)multiplier;
+ 887:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 888:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t result = new_val >> (total_shift - 1);
+ 889:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     result = (result + 1) >> 1;
+ 890:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 891:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return result;
+ 892:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #else
+ 893:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return arm_nn_divide_by_power_of_two(arm_nn_doubling_high_mult_no_sat(val * (1 << LEFT_SHIFT(sh
+ 894:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                          RIGHT_SHIFT(shift));
+ 895:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** #endif
+ 896:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** }
+ 897:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 898:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** /**
+ 899:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @brief           Requantize a given 64 bit value.
+ 900:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       val                 Value to be requantized in the range {-(1<<47)} to {(1<<47)
+ 901:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       reduced_multiplier  Reduced multiplier in the range {NN_Q31_MIN + 1, Q32_MAX} t
+ 902:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * Q16_MAX}
+ 903:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @param[in]       shift               Left or right shift for 'val * multiplier' in the range {-3
+ 904:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 905:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  * @return          Returns (val * multiplier)/(2 ^ shift)
+ 906:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  *
+ 907:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****  */
+ 908:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** __STATIC_FORCEINLINE int32_t arm_nn_requantize_s64(const int64_t val,
+ 351              		.loc 2 908 30 is_stmt 1 discriminator 2 view .LVU116
+ 352              	.LBB28:
+ 909:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                    const int32_t reduced_multiplier,
+ 910:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****                                                    const int32_t shift)
+ 911:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** {
+ 912:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     const int64_t new_val = val * reduced_multiplier;
+ 353              		.loc 2 912 5 discriminator 2 view .LVU117
+ 354              		.loc 2 912 33 is_stmt 0 discriminator 2 view .LVU118
+ 355 00f2 0E98     		ldr	r0, [sp, #56]
+ARM GAS  /tmp/ccplzOQH.s 			page 26
+
+
+ 356 00f4 C517     		asrs	r5, r0, #31
+ 357              	.LVL56:
+ 358              		.loc 2 912 33 discriminator 2 view .LVU119
+ 359 00f6 2B46     		mov	r3, r5
+ 360              		.loc 2 912 19 discriminator 2 view .LVU120
+ 361 00f8 06FB03F3 		mul	r3, r6, r3
+ 362 00fc 00FB0733 		mla	r3, r0, r7, r3
+ 363 0100 A6FB0045 		umull	r4, r5, r6, r0
+ 364 0104 1D44     		add	r5, r5, r3
+ 365              	.LVL57:
+ 913:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 914:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     int32_t result = new_val >> (14 - shift); // 64->32 bit reduction
+ 366              		.loc 2 914 5 is_stmt 1 discriminator 2 view .LVU121
+ 367              		.loc 2 914 37 is_stmt 0 discriminator 2 view .LVU122
+ 368 0106 C1F10E03 		rsb	r3, r1, #14
+ 369              		.loc 2 914 30 discriminator 2 view .LVU123
+ 370 010a 1231     		adds	r1, r1, #18
+ 371              	.LVL58:
+ 372              		.loc 2 914 30 discriminator 2 view .LVU124
+ 373 010c B3F12002 		subs	r2, r3, #32
+ 374              	.LVL59:
+ 375              		.loc 2 914 30 discriminator 2 view .LVU125
+ 376 0110 24FA03F3 		lsr	r3, r4, r3
+ 377 0114 05FA01F1 		lsl	r1, r5, r1
+ 378 0118 43EA0103 		orr	r3, r3, r1
+ 379 011c 02D4     		bmi	.L12
+ 380              		.loc 2 914 30 discriminator 2 view .LVU126
+ 381 011e 45FA02F2 		asr	r2, r5, r2
+ 382 0122 1343     		orrs	r3, r3, r2
+ 383              	.L12:
+ 384              	.LVL60:
+ 915:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     result = (result + 1) >> 1;               // Last shift position and insert round
+ 385              		.loc 2 915 5 is_stmt 1 discriminator 2 view .LVU127
+ 386              		.loc 2 915 22 is_stmt 0 discriminator 2 view .LVU128
+ 387 0124 0133     		adds	r3, r3, #1
+ 388              	.LVL61:
+ 389              		.loc 2 915 12 discriminator 2 view .LVU129
+ 390 0126 5B10     		asrs	r3, r3, #1
+ 391              	.LVL62:
+ 916:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h **** 
+ 917:Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h ****     return result;
+ 392              		.loc 2 917 5 is_stmt 1 discriminator 2 view .LVU130
+ 393              		.loc 2 917 5 is_stmt 0 discriminator 2 view .LVU131
+ 394              	.LBE28:
+ 395              	.LBE27:
+ 132:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     conv_out = MAX(conv_out, out_activation_min);
+ 396              		.loc 1 132 21 is_stmt 1 discriminator 2 view .LVU132
+ 397              		.loc 1 132 30 is_stmt 0 discriminator 2 view .LVU133
+ 398 0128 189A     		ldr	r2, [sp, #96]
+ 399 012a 9342     		cmp	r3, r2
+ 400 012c B8BF     		it	lt
+ 401 012e 1346     		movlt	r3, r2
+ 402              	.LVL63:
+ 133:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     conv_out = MIN(conv_out, out_activation_max);
+ 403              		.loc 1 133 21 is_stmt 1 discriminator 2 view .LVU134
+ 404              		.loc 1 133 30 is_stmt 0 discriminator 2 view .LVU135
+ 405 0130 199A     		ldr	r2, [sp, #100]
+ARM GAS  /tmp/ccplzOQH.s 			page 27
+
+
+ 406 0132 9342     		cmp	r3, r2
+ 407 0134 A8BF     		it	ge
+ 408 0136 1346     		movge	r3, r2
+ 409              	.LVL64:
+ 134:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     output_data[i_out_ch + (i_out_y * output_x + i_out_x) * output_ch] = (int16_t)c
+ 410              		.loc 1 134 21 is_stmt 1 discriminator 2 view .LVU136
+ 411              		.loc 1 134 64 is_stmt 0 discriminator 2 view .LVU137
+ 412 0138 099A     		ldr	r2, [sp, #36]
+ 413 013a 0C99     		ldr	r1, [sp, #48]
+ 414 013c 0C46     		mov	r4, r1
+ 415 013e 0B99     		ldr	r1, [sp, #44]
+ 416 0140 04FB0212 		mla	r2, r4, r2, r1
+ 417              		.loc 1 134 42 discriminator 2 view .LVU138
+ 418 0144 0D98     		ldr	r0, [sp, #52]
+ 419 0146 00FB02B2 		mla	r2, r0, r2, fp
+ 420              		.loc 1 134 88 discriminator 2 view .LVU139
+ 421 014a 2C98     		ldr	r0, [sp, #176]
+ 422 014c 20F81230 		strh	r3, [r0, r2, lsl #1]	@ movhi
+ 423              	.LBE19:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 424              		.loc 1 97 84 is_stmt 1 discriminator 2 view .LVU140
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 425              		.loc 1 97 95 is_stmt 0 discriminator 2 view .LVU141
+ 426 0150 049B     		ldr	r3, [sp, #16]
+ 427              	.LVL65:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 428              		.loc 1 97 95 discriminator 2 view .LVU142
+ 429 0152 169A     		ldr	r2, [sp, #88]
+ 430 0154 1344     		add	r3, r3, r2
+ 431 0156 0493     		str	r3, [sp, #16]
+ 432              	.LVL66:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 433              		.loc 1 97 115 discriminator 2 view .LVU143
+ 434 0158 4B1C     		adds	r3, r1, #1
+ 435              	.LVL67:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 436              		.loc 1 97 115 discriminator 2 view .LVU144
+ 437 015a 0B93     		str	r3, [sp, #44]
+ 438              	.LVL68:
+ 439              	.L5:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 440              		.loc 1 97 64 is_stmt 1 discriminator 1 view .LVU145
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 441              		.loc 1 97 17 is_stmt 0 discriminator 1 view .LVU146
+ 442 015c 0B9B     		ldr	r3, [sp, #44]
+ 443 015e 0C9A     		ldr	r2, [sp, #48]
+ 444 0160 9342     		cmp	r3, r2
+ 445 0162 28DA     		bge	.L23
+ 446              	.LBB31:
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 447              		.loc 1 99 21 is_stmt 1 view .LVU147
+ 448              	.LVL69:
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_start = MAX(0, start_y_max);
+ 449              		.loc 1 101 21 view .LVU148
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_start = MAX(0, start_y_max);
+ 450              		.loc 1 101 62 is_stmt 0 view .LVU149
+ 451 0164 069A     		ldr	r2, [sp, #24]
+ARM GAS  /tmp/ccplzOQH.s 			page 28
+
+
+ 452 0166 039C     		ldr	r4, [sp, #12]
+ 453 0168 151B     		subs	r5, r2, r4
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_start = MAX(0, start_y_max);
+ 454              		.loc 1 101 75 view .LVU150
+ 455 016a 013D     		subs	r5, r5, #1
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_start = MAX(0, start_y_max);
+ 456              		.loc 1 101 35 view .LVU151
+ 457 016c 95FBF2F5 		sdiv	r5, r5, r2
+ 458              	.LVL70:
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t start_x_max = (-base_idx_x + dilation_x - 1) / dilation_x;
+ 459              		.loc 1 102 21 is_stmt 1 view .LVU152
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t start_x_max = (-base_idx_x + dilation_x - 1) / dilation_x;
+ 460              		.loc 1 102 35 is_stmt 0 view .LVU153
+ 461 0170 25EAE575 		bic	r5, r5, r5, asr #31
+ 462              	.LVL71:
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_start = MAX(0, start_x_max);
+ 463              		.loc 1 103 21 is_stmt 1 view .LVU154
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_start = MAX(0, start_x_max);
+ 464              		.loc 1 103 62 is_stmt 0 view .LVU155
+ 465 0174 0598     		ldr	r0, [sp, #20]
+ 466 0176 049E     		ldr	r6, [sp, #16]
+ 467 0178 831B     		subs	r3, r0, r6
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_start = MAX(0, start_x_max);
+ 468              		.loc 1 103 75 view .LVU156
+ 469 017a 013B     		subs	r3, r3, #1
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_start = MAX(0, start_x_max);
+ 470              		.loc 1 103 35 view .LVU157
+ 471 017c 93FBF0F3 		sdiv	r3, r3, r0
+ 472              	.LVL72:
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_y = (input_y - base_idx_y + dilation_y - 1) / dilation_y;
+ 473              		.loc 1 104 21 is_stmt 1 view .LVU158
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_y = (input_y - base_idx_y + dilation_y - 1) / dilation_y;
+ 474              		.loc 1 104 35 is_stmt 0 view .LVU159
+ 475 0180 23EAE373 		bic	r3, r3, r3, asr #31
+ 476              	.LVL73:
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_y = (input_y - base_idx_y + dilation_y - 1) / dilation_y;
+ 477              		.loc 1 104 35 view .LVU160
+ 478 0184 0893     		str	r3, [sp, #32]
+ 479              	.LVL74:
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 480              		.loc 1 105 21 is_stmt 1 view .LVU161
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 481              		.loc 1 105 56 is_stmt 0 view .LVU162
+ 482 0186 0F9B     		ldr	r3, [sp, #60]
+ 483              	.LVL75:
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 484              		.loc 1 105 56 view .LVU163
+ 485 0188 1B1B     		subs	r3, r3, r4
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 486              		.loc 1 105 69 view .LVU164
+ 487 018a 1344     		add	r3, r3, r2
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 488              		.loc 1 105 82 view .LVU165
+ 489 018c 013B     		subs	r3, r3, #1
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_y_end = MIN(kernel_y, end_min_y);
+ 490              		.loc 1 105 35 view .LVU166
+ 491 018e 93FBF2F3 		sdiv	r3, r3, r2
+ARM GAS  /tmp/ccplzOQH.s 			page 29
+
+
+ 492              	.LVL76:
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_x = (input_x - base_idx_x + dilation_x - 1) / dilation_x;
+ 493              		.loc 1 106 21 is_stmt 1 view .LVU167
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_x = (input_x - base_idx_x + dilation_x - 1) / dilation_x;
+ 494              		.loc 1 106 35 is_stmt 0 view .LVU168
+ 495 0192 019A     		ldr	r2, [sp, #4]
+ 496              	.LVL77:
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_x = (input_x - base_idx_x + dilation_x - 1) / dilation_x;
+ 497              		.loc 1 106 35 view .LVU169
+ 498 0194 9342     		cmp	r3, r2
+ 499 0196 A8BF     		it	ge
+ 500 0198 1346     		movge	r3, r2
+ 501              	.LVL78:
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t end_min_x = (input_x - base_idx_x + dilation_x - 1) / dilation_x;
+ 502              		.loc 1 106 35 view .LVU170
+ 503 019a 0793     		str	r3, [sp, #28]
+ 504              	.LVL79:
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_end = MIN(kernel_x, end_min_x);
+ 505              		.loc 1 107 21 is_stmt 1 view .LVU171
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_end = MIN(kernel_x, end_min_x);
+ 506              		.loc 1 107 56 is_stmt 0 view .LVU172
+ 507 019c AAEB0603 		sub	r3, r10, r6
+ 508              	.LVL80:
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_end = MIN(kernel_x, end_min_x);
+ 509              		.loc 1 107 69 view .LVU173
+ 510 01a0 0344     		add	r3, r3, r0
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_end = MIN(kernel_x, end_min_x);
+ 511              		.loc 1 107 82 view .LVU174
+ 512 01a2 013B     		subs	r3, r3, #1
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     const int32_t ker_x_end = MIN(kernel_x, end_min_x);
+ 513              		.loc 1 107 35 view .LVU175
+ 514 01a4 93FBF0F3 		sdiv	r3, r3, r0
+ 515              	.LVL81:
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 516              		.loc 1 108 21 is_stmt 1 view .LVU176
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 517              		.loc 1 108 35 is_stmt 0 view .LVU177
+ 518 01a8 4345     		cmp	r3, r8
+ 519 01aa A8BF     		it	ge
+ 520 01ac 4346     		movge	r3, r8
+ 521              	.LVL82:
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 522              		.loc 1 108 35 view .LVU178
+ 523 01ae 0293     		str	r3, [sp, #8]
+ 524              	.LVL83:
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 525              		.loc 1 110 21 is_stmt 1 view .LVU179
+ 526              	.LBB29:
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 527              		.loc 1 110 26 view .LVU180
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 528              		.loc 1 110 26 is_stmt 0 view .LVU181
+ 529              	.LBE29:
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 530              		.loc 1 99 29 view .LVU182
+ 531 01b0 0026     		movs	r6, #0
+ 532 01b2 0027     		movs	r7, #0
+ARM GAS  /tmp/ccplzOQH.s 			page 30
+
+
+ 533              	.LBB30:
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 534              		.loc 1 110 21 view .LVU183
+ 535 01b4 8BE7     		b	.L6
+ 536              	.LVL84:
+ 537              	.L23:
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                     {
+ 538              		.loc 1 110 21 view .LVU184
+ 539              	.LBE30:
+ 540              	.LBE31:
+ 541              	.LBE18:
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 542              		.loc 1 95 80 is_stmt 1 discriminator 2 view .LVU185
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 543              		.loc 1 95 91 is_stmt 0 discriminator 2 view .LVU186
+ 544 01b6 039B     		ldr	r3, [sp, #12]
+ 545              	.LVL85:
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 546              		.loc 1 95 91 discriminator 2 view .LVU187
+ 547 01b8 179A     		ldr	r2, [sp, #92]
+ 548 01ba 1344     		add	r3, r3, r2
+ 549 01bc 0393     		str	r3, [sp, #12]
+ 550              	.LVL86:
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 551              		.loc 1 95 111 discriminator 2 view .LVU188
+ 552 01be 099B     		ldr	r3, [sp, #36]
+ 553              	.LVL87:
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 554              		.loc 1 95 111 discriminator 2 view .LVU189
+ 555 01c0 0133     		adds	r3, r3, #1
+ 556 01c2 0993     		str	r3, [sp, #36]
+ 557              	.LVL88:
+ 558              	.L4:
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 559              		.loc 1 95 60 is_stmt 1 discriminator 1 view .LVU190
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             {
+ 560              		.loc 1 95 13 is_stmt 0 discriminator 1 view .LVU191
+ 561 01c4 099B     		ldr	r3, [sp, #36]
+ 562 01c6 109A     		ldr	r2, [sp, #64]
+ 563 01c8 9342     		cmp	r3, r2
+ 564 01ca 05DA     		bge	.L24
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 565              		.loc 1 97 17 is_stmt 1 view .LVU192
+ 566              	.LBB32:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 567              		.loc 1 97 22 view .LVU193
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 568              		.loc 1 97 30 is_stmt 0 view .LVU194
+ 569 01cc 149B     		ldr	r3, [sp, #80]
+ 570 01ce 5B42     		rsbs	r3, r3, #0
+ 571 01d0 0493     		str	r3, [sp, #16]
+ 572              	.LVL89:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 573              		.loc 1 97 51 view .LVU195
+ 574 01d2 0023     		movs	r3, #0
+ 575              	.LVL90:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ARM GAS  /tmp/ccplzOQH.s 			page 31
+
+
+ 576              		.loc 1 97 51 view .LVU196
+ 577 01d4 0B93     		str	r3, [sp, #44]
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 578              		.loc 1 97 17 view .LVU197
+ 579 01d6 C1E7     		b	.L5
+ 580              	.LVL91:
+ 581              	.L24:
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 {
+ 582              		.loc 1 97 17 view .LVU198
+ 583              	.LBE32:
+ 584              	.LBE17:
+ 585              	.LBE16:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 586              		.loc 1 91 58 is_stmt 1 discriminator 2 view .LVU199
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 587              		.loc 1 91 66 is_stmt 0 discriminator 2 view .LVU200
+ 588 01d8 0BF1010B 		add	fp, fp, #1
+ 589              	.LVL92:
+ 590              	.L16:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 591              		.loc 1 91 36 is_stmt 1 discriminator 1 view .LVU201
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 592              		.loc 1 91 9 is_stmt 0 discriminator 1 view .LVU202
+ 593 01dc 0D9B     		ldr	r3, [sp, #52]
+ 594 01de 9B45     		cmp	fp, r3
+ 595 01e0 10DA     		bge	.L25
+ 596              	.LBB33:
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 597              		.loc 1 93 13 is_stmt 1 view .LVU203
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 598              		.loc 1 93 48 is_stmt 0 view .LVU204
+ 599 01e2 CDF844B0 		str	fp, [sp, #68]
+ 600 01e6 4FEA8B03 		lsl	r3, fp, #2
+ 601 01ea 1293     		str	r3, [sp, #72]
+ 602 01ec 1A9B     		ldr	r3, [sp, #104]
+ 603 01ee 53F82B30 		ldr	r3, [r3, fp, lsl #2]
+ 604 01f2 184A     		ldr	r2, .L27
+ 605 01f4 9342     		cmp	r3, r2
+ 606 01f6 3FF735AF 		bgt	.L17
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 607              		.loc 1 93 48 discriminator 1 view .LVU205
+ 608 01fa 03F50043 		add	r3, r3, #32768
+ 609 01fe 1B14     		asrs	r3, r3, #16
+ 610 0200 0E93     		str	r3, [sp, #56]
+ 611 0202 32E7     		b	.L3
+ 612              	.L25:
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 613              		.loc 1 93 48 discriminator 1 view .LVU206
+ 614 0204 D346     		mov	fp, r10
+ 615              	.LVL93:
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 616              		.loc 1 93 48 discriminator 1 view .LVU207
+ 617 0206 C246     		mov	r10, r8
+ 618              	.LVL94:
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 619              		.loc 1 93 48 discriminator 1 view .LVU208
+ 620              	.LBE33:
+ARM GAS  /tmp/ccplzOQH.s 			page 32
+
+
+ 621              	.LBE15:
+ 135:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****                 }
+ 136:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****             }
+ 137:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         }
+ 138:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         /* Advance to the next batch */
+ 139:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         input_data += (input_x * input_y * input_ch);
+ 622              		.loc 1 139 9 is_stmt 1 discriminator 2 view .LVU209
+ 623              		.loc 1 139 32 is_stmt 0 discriminator 2 view .LVU210
+ 624 0208 0F9B     		ldr	r3, [sp, #60]
+ 625 020a 03FB0BF3 		mul	r3, r3, fp
+ 626              		.loc 1 139 42 discriminator 2 view .LVU211
+ 627 020e 09FB03F3 		mul	r3, r9, r3
+ 628              		.loc 1 139 20 discriminator 2 view .LVU212
+ 629 0212 269A     		ldr	r2, [sp, #152]
+ 630 0214 02EB4303 		add	r3, r2, r3, lsl #1
+ 631 0218 2693     		str	r3, [sp, #152]
+ 632              	.LVL95:
+ 140:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         output_data += (output_x * output_y * output_ch);
+ 633              		.loc 1 140 9 is_stmt 1 discriminator 2 view .LVU213
+ 634              		.loc 1 140 34 is_stmt 0 discriminator 2 view .LVU214
+ 635 021a 109B     		ldr	r3, [sp, #64]
+ 636              	.LVL96:
+ 637              		.loc 1 140 34 discriminator 2 view .LVU215
+ 638 021c 0C9A     		ldr	r2, [sp, #48]
+ 639 021e 03FB02F3 		mul	r3, r3, r2
+ 640              		.loc 1 140 45 discriminator 2 view .LVU216
+ 641 0222 0D9A     		ldr	r2, [sp, #52]
+ 642 0224 02FB03F3 		mul	r3, r2, r3
+ 643              		.loc 1 140 21 discriminator 2 view .LVU217
+ 644 0228 2C9A     		ldr	r2, [sp, #176]
+ 645 022a 02EB4303 		add	r3, r2, r3, lsl #1
+ 646 022e 2C93     		str	r3, [sp, #176]
+ 647              	.LVL97:
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     {
+ 648              		.loc 1 88 52 is_stmt 1 discriminator 2 view .LVU218
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     {
+ 649              		.loc 1 88 59 is_stmt 0 discriminator 2 view .LVU219
+ 650 0230 0A9B     		ldr	r3, [sp, #40]
+ 651              	.LVL98:
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     {
+ 652              		.loc 1 88 59 discriminator 2 view .LVU220
+ 653 0232 0133     		adds	r3, r3, #1
+ 654 0234 0A93     		str	r3, [sp, #40]
+ 655              	.LVL99:
+ 656              	.L2:
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     {
+ 657              		.loc 1 88 27 is_stmt 1 discriminator 1 view .LVU221
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     {
+ 658              		.loc 1 88 5 is_stmt 0 discriminator 1 view .LVU222
+ 659 0236 0A9B     		ldr	r3, [sp, #40]
+ 660 0238 139A     		ldr	r2, [sp, #76]
+ 661 023a 9342     		cmp	r3, r2
+ 662 023c 06DA     		bge	.L26
+ 663              	.LBB34:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 664              		.loc 1 91 22 view .LVU223
+ 665 023e 4FF00008 		mov	r8, #0
+ARM GAS  /tmp/ccplzOQH.s 			page 33
+
+
+ 666 0242 5346     		mov	r3, r10
+ 667 0244 DA46     		mov	r10, fp
+ 668              	.LVL100:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 669              		.loc 1 91 22 view .LVU224
+ 670 0246 C346     		mov	fp, r8
+ 671              	.LVL101:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 672              		.loc 1 91 22 view .LVU225
+ 673 0248 9846     		mov	r8, r3
+ 674 024a C7E7     		b	.L16
+ 675              	.LVL102:
+ 676              	.L26:
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****         {
+ 677              		.loc 1 91 22 view .LVU226
+ 678              	.LBE34:
+ 679              	.LBE14:
+ 141:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     }
+ 142:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** 
+ 143:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     /* Return to application */
+ 144:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c ****     return ARM_CMSIS_NN_SUCCESS;
+ 680              		.loc 1 144 5 is_stmt 1 view .LVU227
+ 145:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_s16.c **** }
+ 681              		.loc 1 145 1 is_stmt 0 view .LVU228
+ 682 024c 0020     		movs	r0, #0
+ 683 024e 1DB0     		add	sp, sp, #116
+ 684              	.LCFI2:
+ 685              		.cfi_def_cfa_offset 36
+ 686              		@ sp needed
+ 687 0250 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 688              	.LVL103:
+ 689              	.L28:
+ 690              		.loc 1 145 1 view .LVU229
+ 691              		.align	2
+ 692              	.L27:
+ 693 0254 FFFFFE7F 		.word	2147418111
+ 694              		.cfi_endproc
+ 695              	.LFE47:
+ 697              		.text
+ 698              	.Letext0:
+ 699              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 700              		.file 4 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 701              		.file 5 "/usr/include/newlib/sys/_types.h"
+ 702              		.file 6 "/usr/include/newlib/sys/reent.h"
+ 703              		.file 7 "/usr/include/newlib/sys/lock.h"
+ 704              		.file 8 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ARM GAS  /tmp/ccplzOQH.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_convolve_s16.c
+     /tmp/ccplzOQH.s:18     .text.arm_convolve_s16:0000000000000000 $t
+     /tmp/ccplzOQH.s:26     .text.arm_convolve_s16:0000000000000000 arm_convolve_s16
+     /tmp/ccplzOQH.s:693    .text.arm_convolve_s16:0000000000000254 $d
+
+NO UNDEFINED SYMBOLS

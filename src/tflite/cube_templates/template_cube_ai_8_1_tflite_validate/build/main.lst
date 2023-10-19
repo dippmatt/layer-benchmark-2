@@ -1,0 +1,2554 @@
+ARM GAS  /tmp/ccE4Rdf4.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.MX_GPIO_Init,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	MX_GPIO_Init:
+  26              	.LFB140:
+  27              		.file 1 "Core/Src/main.c"
+   1:Core/Src/main.c **** /* USER CODE BEGIN Header */
+   2:Core/Src/main.c **** /**
+   3:Core/Src/main.c ****   ******************************************************************************
+   4:Core/Src/main.c ****   * @file           : main.c
+   5:Core/Src/main.c ****   * @brief          : Main program body
+   6:Core/Src/main.c ****   ******************************************************************************
+   7:Core/Src/main.c ****   * @attention
+   8:Core/Src/main.c ****   *
+   9:Core/Src/main.c ****   * Copyright (c) 2023 STMicroelectronics.
+  10:Core/Src/main.c ****   * All rights reserved.
+  11:Core/Src/main.c ****   *
+  12:Core/Src/main.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  13:Core/Src/main.c ****   * in the root directory of this software component.
+  14:Core/Src/main.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Core/Src/main.c ****   *
+  16:Core/Src/main.c ****   ******************************************************************************
+  17:Core/Src/main.c ****   */
+  18:Core/Src/main.c **** /* USER CODE END Header */
+  19:Core/Src/main.c **** /* Includes ------------------------------------------------------------------*/
+  20:Core/Src/main.c **** #include "main.h"
+  21:Core/Src/main.c **** #include "app_x-cube-ai.h"
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c **** /* Private includes ----------------------------------------------------------*/
+  24:Core/Src/main.c **** /* USER CODE BEGIN Includes */
+  25:Core/Src/main.c **** 
+  26:Core/Src/main.c **** /* USER CODE END Includes */
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c **** /* Private typedef -----------------------------------------------------------*/
+  29:Core/Src/main.c **** /* USER CODE BEGIN PTD */
+  30:Core/Src/main.c **** 
+  31:Core/Src/main.c **** /* USER CODE END PTD */
+ARM GAS  /tmp/ccE4Rdf4.s 			page 2
+
+
+  32:Core/Src/main.c **** 
+  33:Core/Src/main.c **** /* Private define ------------------------------------------------------------*/
+  34:Core/Src/main.c **** /* USER CODE BEGIN PD */
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c **** /* USER CODE END PD */
+  37:Core/Src/main.c **** 
+  38:Core/Src/main.c **** /* Private macro -------------------------------------------------------------*/
+  39:Core/Src/main.c **** /* USER CODE BEGIN PM */
+  40:Core/Src/main.c **** 
+  41:Core/Src/main.c **** /* USER CODE END PM */
+  42:Core/Src/main.c **** 
+  43:Core/Src/main.c **** /* Private variables ---------------------------------------------------------*/
+  44:Core/Src/main.c **** CRC_HandleTypeDef hcrc;
+  45:Core/Src/main.c **** 
+  46:Core/Src/main.c **** UART_HandleTypeDef hlpuart1;
+  47:Core/Src/main.c **** UART_HandleTypeDef huart3;
+  48:Core/Src/main.c **** 
+  49:Core/Src/main.c **** PCD_HandleTypeDef hpcd_USB_OTG_FS;
+  50:Core/Src/main.c **** 
+  51:Core/Src/main.c **** /* USER CODE BEGIN PV */
+  52:Core/Src/main.c **** 
+  53:Core/Src/main.c **** /* USER CODE END PV */
+  54:Core/Src/main.c **** 
+  55:Core/Src/main.c **** /* Private function prototypes -----------------------------------------------*/
+  56:Core/Src/main.c **** void SystemClock_Config(void);
+  57:Core/Src/main.c **** static void MX_GPIO_Init(void);
+  58:Core/Src/main.c **** static void MX_USART3_UART_Init(void);
+  59:Core/Src/main.c **** static void MX_USB_OTG_FS_PCD_Init(void);
+  60:Core/Src/main.c **** static void MX_CRC_Init(void);
+  61:Core/Src/main.c **** /* USER CODE BEGIN PFP */
+  62:Core/Src/main.c **** 
+  63:Core/Src/main.c **** /* USER CODE END PFP */
+  64:Core/Src/main.c **** 
+  65:Core/Src/main.c **** /* Private user code ---------------------------------------------------------*/
+  66:Core/Src/main.c **** /* USER CODE BEGIN 0 */
+  67:Core/Src/main.c **** 
+  68:Core/Src/main.c **** /* USER CODE END 0 */
+  69:Core/Src/main.c **** 
+  70:Core/Src/main.c **** /**
+  71:Core/Src/main.c ****   * @brief  The application entry point.
+  72:Core/Src/main.c ****   * @retval int
+  73:Core/Src/main.c ****   */
+  74:Core/Src/main.c **** int main(void)
+  75:Core/Src/main.c **** {
+  76:Core/Src/main.c ****   /* USER CODE BEGIN 1 */
+  77:Core/Src/main.c **** 
+  78:Core/Src/main.c ****   /* USER CODE END 1 */
+  79:Core/Src/main.c **** 
+  80:Core/Src/main.c ****   /* MCU Configuration--------------------------------------------------------*/
+  81:Core/Src/main.c **** 
+  82:Core/Src/main.c ****   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  83:Core/Src/main.c ****   HAL_Init();
+  84:Core/Src/main.c **** 
+  85:Core/Src/main.c ****   /* USER CODE BEGIN Init */
+  86:Core/Src/main.c **** 
+  87:Core/Src/main.c ****   /* USER CODE END Init */
+  88:Core/Src/main.c **** 
+ARM GAS  /tmp/ccE4Rdf4.s 			page 3
+
+
+  89:Core/Src/main.c ****   /* Configure the system clock */
+  90:Core/Src/main.c ****   SystemClock_Config();
+  91:Core/Src/main.c **** 
+  92:Core/Src/main.c ****   /* USER CODE BEGIN SysInit */
+  93:Core/Src/main.c **** 
+  94:Core/Src/main.c ****   /* USER CODE END SysInit */
+  95:Core/Src/main.c **** 
+  96:Core/Src/main.c ****   /* Initialize all configured peripherals */
+  97:Core/Src/main.c ****   MX_GPIO_Init();
+  98:Core/Src/main.c ****   MX_USART3_UART_Init();
+  99:Core/Src/main.c ****   MX_USB_OTG_FS_PCD_Init();
+ 100:Core/Src/main.c ****   MX_CRC_Init();
+ 101:Core/Src/main.c ****   MX_X_CUBE_AI_Init();
+ 102:Core/Src/main.c ****   /* USER CODE BEGIN 2 */
+ 103:Core/Src/main.c **** 
+ 104:Core/Src/main.c ****   /* USER CODE END 2 */
+ 105:Core/Src/main.c **** 
+ 106:Core/Src/main.c ****   /* Infinite loop */
+ 107:Core/Src/main.c ****   /* USER CODE BEGIN WHILE */
+ 108:Core/Src/main.c ****   while (1)
+ 109:Core/Src/main.c ****   {
+ 110:Core/Src/main.c ****     /* USER CODE END WHILE */
+ 111:Core/Src/main.c **** 
+ 112:Core/Src/main.c ****   MX_X_CUBE_AI_Process();
+ 113:Core/Src/main.c ****     /* USER CODE BEGIN 3 */
+ 114:Core/Src/main.c ****   }
+ 115:Core/Src/main.c ****   /* USER CODE END 3 */
+ 116:Core/Src/main.c **** }
+ 117:Core/Src/main.c **** 
+ 118:Core/Src/main.c **** /**
+ 119:Core/Src/main.c ****   * @brief System Clock Configuration
+ 120:Core/Src/main.c ****   * @retval None
+ 121:Core/Src/main.c ****   */
+ 122:Core/Src/main.c **** void SystemClock_Config(void)
+ 123:Core/Src/main.c **** {
+ 124:Core/Src/main.c ****   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+ 125:Core/Src/main.c ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ 126:Core/Src/main.c **** 
+ 127:Core/Src/main.c ****   /** Configure the main internal regulator output voltage
+ 128:Core/Src/main.c ****   */
+ 129:Core/Src/main.c ****   if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST) != HAL_OK)
+ 130:Core/Src/main.c ****   {
+ 131:Core/Src/main.c ****     Error_Handler();
+ 132:Core/Src/main.c ****   }
+ 133:Core/Src/main.c **** 
+ 134:Core/Src/main.c ****   /** Initializes the RCC Oscillators according to the specified parameters
+ 135:Core/Src/main.c ****   * in the RCC_OscInitTypeDef structure.
+ 136:Core/Src/main.c ****   */
+ 137:Core/Src/main.c ****   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSI;
+ 138:Core/Src/main.c ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 139:Core/Src/main.c ****   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
+ 140:Core/Src/main.c ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+ 141:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 142:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+ 143:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLM = 2;
+ 144:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLN = 30;
+ 145:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 4
+
+
+ 146:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+ 147:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+ 148:Core/Src/main.c ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 149:Core/Src/main.c ****   {
+ 150:Core/Src/main.c ****     Error_Handler();
+ 151:Core/Src/main.c ****   }
+ 152:Core/Src/main.c **** 
+ 153:Core/Src/main.c ****   /** Initializes the CPU, AHB and APB buses clocks
+ 154:Core/Src/main.c ****   */
+ 155:Core/Src/main.c ****   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+ 156:Core/Src/main.c ****                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+ 157:Core/Src/main.c ****   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+ 158:Core/Src/main.c ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 159:Core/Src/main.c ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+ 160:Core/Src/main.c ****   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+ 161:Core/Src/main.c **** 
+ 162:Core/Src/main.c ****   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+ 163:Core/Src/main.c ****   {
+ 164:Core/Src/main.c ****     Error_Handler();
+ 165:Core/Src/main.c ****   }
+ 166:Core/Src/main.c **** }
+ 167:Core/Src/main.c **** 
+ 168:Core/Src/main.c **** /**
+ 169:Core/Src/main.c ****   * @brief CRC Initialization Function
+ 170:Core/Src/main.c ****   * @param None
+ 171:Core/Src/main.c ****   * @retval None
+ 172:Core/Src/main.c ****   */
+ 173:Core/Src/main.c **** static void MX_CRC_Init(void)
+ 174:Core/Src/main.c **** {
+ 175:Core/Src/main.c **** 
+ 176:Core/Src/main.c ****   /* USER CODE BEGIN CRC_Init 0 */
+ 177:Core/Src/main.c **** 
+ 178:Core/Src/main.c ****   /* USER CODE END CRC_Init 0 */
+ 179:Core/Src/main.c **** 
+ 180:Core/Src/main.c ****   /* USER CODE BEGIN CRC_Init 1 */
+ 181:Core/Src/main.c **** 
+ 182:Core/Src/main.c ****   /* USER CODE END CRC_Init 1 */
+ 183:Core/Src/main.c ****   hcrc.Instance = CRC;
+ 184:Core/Src/main.c ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+ 185:Core/Src/main.c ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+ 186:Core/Src/main.c ****   hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+ 187:Core/Src/main.c ****   hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+ 188:Core/Src/main.c ****   hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+ 189:Core/Src/main.c ****   if (HAL_CRC_Init(&hcrc) != HAL_OK)
+ 190:Core/Src/main.c ****   {
+ 191:Core/Src/main.c ****     Error_Handler();
+ 192:Core/Src/main.c ****   }
+ 193:Core/Src/main.c ****   /* USER CODE BEGIN CRC_Init 2 */
+ 194:Core/Src/main.c **** 
+ 195:Core/Src/main.c ****   /* USER CODE END CRC_Init 2 */
+ 196:Core/Src/main.c **** 
+ 197:Core/Src/main.c **** }
+ 198:Core/Src/main.c **** 
+ 199:Core/Src/main.c **** /**
+ 200:Core/Src/main.c ****   * @brief LPUART1 Initialization Function
+ 201:Core/Src/main.c ****   * @param None
+ 202:Core/Src/main.c ****   * @retval None
+ARM GAS  /tmp/ccE4Rdf4.s 			page 5
+
+
+ 203:Core/Src/main.c ****   */
+ 204:Core/Src/main.c **** void MX_LPUART1_UART_Init(void)
+ 205:Core/Src/main.c **** {
+ 206:Core/Src/main.c **** 
+ 207:Core/Src/main.c ****   /* USER CODE BEGIN LPUART1_Init 0 */
+ 208:Core/Src/main.c **** 
+ 209:Core/Src/main.c ****   /* USER CODE END LPUART1_Init 0 */
+ 210:Core/Src/main.c **** 
+ 211:Core/Src/main.c ****   /* USER CODE BEGIN LPUART1_Init 1 */
+ 212:Core/Src/main.c **** 
+ 213:Core/Src/main.c ****   /* USER CODE END LPUART1_Init 1 */
+ 214:Core/Src/main.c ****   hlpuart1.Instance = LPUART1;
+ 215:Core/Src/main.c ****   hlpuart1.Init.BaudRate = 115200;
+ 216:Core/Src/main.c ****   hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 217:Core/Src/main.c ****   hlpuart1.Init.StopBits = UART_STOPBITS_1;
+ 218:Core/Src/main.c ****   hlpuart1.Init.Parity = UART_PARITY_NONE;
+ 219:Core/Src/main.c ****   hlpuart1.Init.Mode = UART_MODE_TX_RX;
+ 220:Core/Src/main.c ****   hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 221:Core/Src/main.c ****   hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 222:Core/Src/main.c ****   hlpuart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 223:Core/Src/main.c ****   hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 224:Core/Src/main.c ****   hlpuart1.FifoMode = UART_FIFOMODE_DISABLE;
+ 225:Core/Src/main.c ****   if (HAL_UART_Init(&hlpuart1) != HAL_OK)
+ 226:Core/Src/main.c ****   {
+ 227:Core/Src/main.c ****     Error_Handler();
+ 228:Core/Src/main.c ****   }
+ 229:Core/Src/main.c ****   if (HAL_UARTEx_SetTxFifoThreshold(&hlpuart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+ 230:Core/Src/main.c ****   {
+ 231:Core/Src/main.c ****     Error_Handler();
+ 232:Core/Src/main.c ****   }
+ 233:Core/Src/main.c ****   if (HAL_UARTEx_SetRxFifoThreshold(&hlpuart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+ 234:Core/Src/main.c ****   {
+ 235:Core/Src/main.c ****     Error_Handler();
+ 236:Core/Src/main.c ****   }
+ 237:Core/Src/main.c ****   if (HAL_UARTEx_DisableFifoMode(&hlpuart1) != HAL_OK)
+ 238:Core/Src/main.c ****   {
+ 239:Core/Src/main.c ****     Error_Handler();
+ 240:Core/Src/main.c ****   }
+ 241:Core/Src/main.c ****   /* USER CODE BEGIN LPUART1_Init 2 */
+ 242:Core/Src/main.c **** 
+ 243:Core/Src/main.c ****   /* USER CODE END LPUART1_Init 2 */
+ 244:Core/Src/main.c **** 
+ 245:Core/Src/main.c **** }
+ 246:Core/Src/main.c **** 
+ 247:Core/Src/main.c **** /**
+ 248:Core/Src/main.c ****   * @brief USART3 Initialization Function
+ 249:Core/Src/main.c ****   * @param None
+ 250:Core/Src/main.c ****   * @retval None
+ 251:Core/Src/main.c ****   */
+ 252:Core/Src/main.c **** static void MX_USART3_UART_Init(void)
+ 253:Core/Src/main.c **** {
+ 254:Core/Src/main.c **** 
+ 255:Core/Src/main.c ****   /* USER CODE BEGIN USART3_Init 0 */
+ 256:Core/Src/main.c **** 
+ 257:Core/Src/main.c ****   /* USER CODE END USART3_Init 0 */
+ 258:Core/Src/main.c **** 
+ 259:Core/Src/main.c ****   /* USER CODE BEGIN USART3_Init 1 */
+ARM GAS  /tmp/ccE4Rdf4.s 			page 6
+
+
+ 260:Core/Src/main.c **** 
+ 261:Core/Src/main.c ****   /* USER CODE END USART3_Init 1 */
+ 262:Core/Src/main.c ****   huart3.Instance = USART3;
+ 263:Core/Src/main.c ****   huart3.Init.BaudRate = 115200;
+ 264:Core/Src/main.c ****   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+ 265:Core/Src/main.c ****   huart3.Init.StopBits = UART_STOPBITS_1;
+ 266:Core/Src/main.c ****   huart3.Init.Parity = UART_PARITY_NONE;
+ 267:Core/Src/main.c ****   huart3.Init.Mode = UART_MODE_TX_RX;
+ 268:Core/Src/main.c ****   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 269:Core/Src/main.c ****   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+ 270:Core/Src/main.c ****   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 271:Core/Src/main.c ****   huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 272:Core/Src/main.c ****   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 273:Core/Src/main.c ****   if (HAL_UART_Init(&huart3) != HAL_OK)
+ 274:Core/Src/main.c ****   {
+ 275:Core/Src/main.c ****     Error_Handler();
+ 276:Core/Src/main.c ****   }
+ 277:Core/Src/main.c ****   if (HAL_UARTEx_SetTxFifoThreshold(&huart3, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+ 278:Core/Src/main.c ****   {
+ 279:Core/Src/main.c ****     Error_Handler();
+ 280:Core/Src/main.c ****   }
+ 281:Core/Src/main.c ****   if (HAL_UARTEx_SetRxFifoThreshold(&huart3, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+ 282:Core/Src/main.c ****   {
+ 283:Core/Src/main.c ****     Error_Handler();
+ 284:Core/Src/main.c ****   }
+ 285:Core/Src/main.c ****   if (HAL_UARTEx_DisableFifoMode(&huart3) != HAL_OK)
+ 286:Core/Src/main.c ****   {
+ 287:Core/Src/main.c ****     Error_Handler();
+ 288:Core/Src/main.c ****   }
+ 289:Core/Src/main.c ****   /* USER CODE BEGIN USART3_Init 2 */
+ 290:Core/Src/main.c **** 
+ 291:Core/Src/main.c ****   /* USER CODE END USART3_Init 2 */
+ 292:Core/Src/main.c **** 
+ 293:Core/Src/main.c **** }
+ 294:Core/Src/main.c **** 
+ 295:Core/Src/main.c **** /**
+ 296:Core/Src/main.c ****   * @brief USB_OTG_FS Initialization Function
+ 297:Core/Src/main.c ****   * @param None
+ 298:Core/Src/main.c ****   * @retval None
+ 299:Core/Src/main.c ****   */
+ 300:Core/Src/main.c **** static void MX_USB_OTG_FS_PCD_Init(void)
+ 301:Core/Src/main.c **** {
+ 302:Core/Src/main.c **** 
+ 303:Core/Src/main.c ****   /* USER CODE BEGIN USB_OTG_FS_Init 0 */
+ 304:Core/Src/main.c **** 
+ 305:Core/Src/main.c ****   /* USER CODE END USB_OTG_FS_Init 0 */
+ 306:Core/Src/main.c **** 
+ 307:Core/Src/main.c ****   /* USER CODE BEGIN USB_OTG_FS_Init 1 */
+ 308:Core/Src/main.c **** 
+ 309:Core/Src/main.c ****   /* USER CODE END USB_OTG_FS_Init 1 */
+ 310:Core/Src/main.c ****   hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
+ 311:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.dev_endpoints = 6;
+ 312:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
+ 313:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.Sof_enable = ENABLE;
+ 314:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
+ 315:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
+ 316:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.battery_charging_enable = ENABLE;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 7
+
+
+ 317:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
+ 318:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
+ 319:Core/Src/main.c ****   if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
+ 320:Core/Src/main.c ****   {
+ 321:Core/Src/main.c ****     Error_Handler();
+ 322:Core/Src/main.c ****   }
+ 323:Core/Src/main.c ****   /* USER CODE BEGIN USB_OTG_FS_Init 2 */
+ 324:Core/Src/main.c **** 
+ 325:Core/Src/main.c ****   /* USER CODE END USB_OTG_FS_Init 2 */
+ 326:Core/Src/main.c **** 
+ 327:Core/Src/main.c **** }
+ 328:Core/Src/main.c **** 
+ 329:Core/Src/main.c **** /**
+ 330:Core/Src/main.c ****   * @brief GPIO Initialization Function
+ 331:Core/Src/main.c ****   * @param None
+ 332:Core/Src/main.c ****   * @retval None
+ 333:Core/Src/main.c ****   */
+ 334:Core/Src/main.c **** static void MX_GPIO_Init(void)
+ 335:Core/Src/main.c **** {
+  28              		.loc 1 335 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 48
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 20
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  40 0002 8DB0     		sub	sp, sp, #52
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 72
+ 336:Core/Src/main.c ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  43              		.loc 1 336 3 view .LVU1
+  44              		.loc 1 336 20 is_stmt 0 view .LVU2
+  45 0004 0025     		movs	r5, #0
+  46 0006 0795     		str	r5, [sp, #28]
+  47 0008 0895     		str	r5, [sp, #32]
+  48 000a 0995     		str	r5, [sp, #36]
+  49 000c 0A95     		str	r5, [sp, #40]
+  50 000e 0B95     		str	r5, [sp, #44]
+ 337:Core/Src/main.c **** /* USER CODE BEGIN MX_GPIO_Init_1 */
+ 338:Core/Src/main.c **** /* USER CODE END MX_GPIO_Init_1 */
+ 339:Core/Src/main.c **** 
+ 340:Core/Src/main.c ****   /* GPIO Ports Clock Enable */
+ 341:Core/Src/main.c ****   __HAL_RCC_GPIOC_CLK_ENABLE();
+  51              		.loc 1 341 3 is_stmt 1 view .LVU3
+  52              	.LBB4:
+  53              		.loc 1 341 3 view .LVU4
+  54              		.loc 1 341 3 view .LVU5
+  55 0010 374C     		ldr	r4, .L3
+  56 0012 E36C     		ldr	r3, [r4, #76]
+  57 0014 43F00403 		orr	r3, r3, #4
+  58 0018 E364     		str	r3, [r4, #76]
+  59              		.loc 1 341 3 view .LVU6
+ARM GAS  /tmp/ccE4Rdf4.s 			page 8
+
+
+  60 001a E36C     		ldr	r3, [r4, #76]
+  61 001c 03F00403 		and	r3, r3, #4
+  62 0020 0193     		str	r3, [sp, #4]
+  63              		.loc 1 341 3 view .LVU7
+  64 0022 019B     		ldr	r3, [sp, #4]
+  65              	.LBE4:
+  66              		.loc 1 341 3 view .LVU8
+ 342:Core/Src/main.c ****   __HAL_RCC_GPIOH_CLK_ENABLE();
+  67              		.loc 1 342 3 view .LVU9
+  68              	.LBB5:
+  69              		.loc 1 342 3 view .LVU10
+  70              		.loc 1 342 3 view .LVU11
+  71 0024 E36C     		ldr	r3, [r4, #76]
+  72 0026 43F08003 		orr	r3, r3, #128
+  73 002a E364     		str	r3, [r4, #76]
+  74              		.loc 1 342 3 view .LVU12
+  75 002c E36C     		ldr	r3, [r4, #76]
+  76 002e 03F08003 		and	r3, r3, #128
+  77 0032 0293     		str	r3, [sp, #8]
+  78              		.loc 1 342 3 view .LVU13
+  79 0034 029B     		ldr	r3, [sp, #8]
+  80              	.LBE5:
+  81              		.loc 1 342 3 view .LVU14
+ 343:Core/Src/main.c ****   __HAL_RCC_GPIOB_CLK_ENABLE();
+  82              		.loc 1 343 3 view .LVU15
+  83              	.LBB6:
+  84              		.loc 1 343 3 view .LVU16
+  85              		.loc 1 343 3 view .LVU17
+  86 0036 E36C     		ldr	r3, [r4, #76]
+  87 0038 43F00203 		orr	r3, r3, #2
+  88 003c E364     		str	r3, [r4, #76]
+  89              		.loc 1 343 3 view .LVU18
+  90 003e E36C     		ldr	r3, [r4, #76]
+  91 0040 03F00203 		and	r3, r3, #2
+  92 0044 0393     		str	r3, [sp, #12]
+  93              		.loc 1 343 3 view .LVU19
+  94 0046 039B     		ldr	r3, [sp, #12]
+  95              	.LBE6:
+  96              		.loc 1 343 3 view .LVU20
+ 344:Core/Src/main.c ****   __HAL_RCC_GPIOD_CLK_ENABLE();
+  97              		.loc 1 344 3 view .LVU21
+  98              	.LBB7:
+  99              		.loc 1 344 3 view .LVU22
+ 100              		.loc 1 344 3 view .LVU23
+ 101 0048 E36C     		ldr	r3, [r4, #76]
+ 102 004a 43F00803 		orr	r3, r3, #8
+ 103 004e E364     		str	r3, [r4, #76]
+ 104              		.loc 1 344 3 view .LVU24
+ 105 0050 E36C     		ldr	r3, [r4, #76]
+ 106 0052 03F00803 		and	r3, r3, #8
+ 107 0056 0493     		str	r3, [sp, #16]
+ 108              		.loc 1 344 3 view .LVU25
+ 109 0058 049B     		ldr	r3, [sp, #16]
+ 110              	.LBE7:
+ 111              		.loc 1 344 3 view .LVU26
+ 345:Core/Src/main.c ****   __HAL_RCC_GPIOG_CLK_ENABLE();
+ 112              		.loc 1 345 3 view .LVU27
+ARM GAS  /tmp/ccE4Rdf4.s 			page 9
+
+
+ 113              	.LBB8:
+ 114              		.loc 1 345 3 view .LVU28
+ 115              		.loc 1 345 3 view .LVU29
+ 116 005a E36C     		ldr	r3, [r4, #76]
+ 117 005c 43F04003 		orr	r3, r3, #64
+ 118 0060 E364     		str	r3, [r4, #76]
+ 119              		.loc 1 345 3 view .LVU30
+ 120 0062 E36C     		ldr	r3, [r4, #76]
+ 121 0064 03F04003 		and	r3, r3, #64
+ 122 0068 0593     		str	r3, [sp, #20]
+ 123              		.loc 1 345 3 view .LVU31
+ 124 006a 059B     		ldr	r3, [sp, #20]
+ 125              	.LBE8:
+ 126              		.loc 1 345 3 view .LVU32
+ 346:Core/Src/main.c ****   HAL_PWREx_EnableVddIO2();
+ 127              		.loc 1 346 3 view .LVU33
+ 128 006c FFF7FEFF 		bl	HAL_PWREx_EnableVddIO2
+ 129              	.LVL0:
+ 347:Core/Src/main.c ****   __HAL_RCC_GPIOA_CLK_ENABLE();
+ 130              		.loc 1 347 3 view .LVU34
+ 131              	.LBB9:
+ 132              		.loc 1 347 3 view .LVU35
+ 133              		.loc 1 347 3 view .LVU36
+ 134 0070 E36C     		ldr	r3, [r4, #76]
+ 135 0072 43F00103 		orr	r3, r3, #1
+ 136 0076 E364     		str	r3, [r4, #76]
+ 137              		.loc 1 347 3 view .LVU37
+ 138 0078 E36C     		ldr	r3, [r4, #76]
+ 139 007a 03F00103 		and	r3, r3, #1
+ 140 007e 0693     		str	r3, [sp, #24]
+ 141              		.loc 1 347 3 view .LVU38
+ 142 0080 069B     		ldr	r3, [sp, #24]
+ 143              	.LBE9:
+ 144              		.loc 1 347 3 view .LVU39
+ 348:Core/Src/main.c **** 
+ 349:Core/Src/main.c ****   /*Configure GPIO pin Output Level */
+ 350:Core/Src/main.c ****   HAL_GPIO_WritePin(GPIOB, LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
+ 145              		.loc 1 350 3 view .LVU40
+ 146 0082 1C4F     		ldr	r7, .L3+4
+ 147 0084 2A46     		mov	r2, r5
+ 148 0086 4FF48141 		mov	r1, #16512
+ 149 008a 3846     		mov	r0, r7
+ 150 008c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 151              	.LVL1:
+ 351:Core/Src/main.c **** 
+ 352:Core/Src/main.c ****   /*Configure GPIO pin Output Level */
+ 353:Core/Src/main.c ****   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
+ 152              		.loc 1 353 3 view .LVU41
+ 153 0090 194C     		ldr	r4, .L3+8
+ 154 0092 2A46     		mov	r2, r5
+ 155 0094 4021     		movs	r1, #64
+ 156 0096 2046     		mov	r0, r4
+ 157 0098 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 158              	.LVL2:
+ 354:Core/Src/main.c **** 
+ 355:Core/Src/main.c ****   /*Configure GPIO pin : B1_Pin */
+ 356:Core/Src/main.c ****   GPIO_InitStruct.Pin = B1_Pin;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 10
+
+
+ 159              		.loc 1 356 3 view .LVU42
+ 160              		.loc 1 356 23 is_stmt 0 view .LVU43
+ 161 009c 4FF40053 		mov	r3, #8192
+ 162 00a0 0793     		str	r3, [sp, #28]
+ 357:Core/Src/main.c ****   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+ 163              		.loc 1 357 3 is_stmt 1 view .LVU44
+ 164              		.loc 1 357 24 is_stmt 0 view .LVU45
+ 165 00a2 4FF48813 		mov	r3, #1114112
+ 166 00a6 0893     		str	r3, [sp, #32]
+ 358:Core/Src/main.c ****   GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 167              		.loc 1 358 3 is_stmt 1 view .LVU46
+ 168              		.loc 1 358 24 is_stmt 0 view .LVU47
+ 169 00a8 0995     		str	r5, [sp, #36]
+ 359:Core/Src/main.c ****   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+ 170              		.loc 1 359 3 is_stmt 1 view .LVU48
+ 171 00aa 07A9     		add	r1, sp, #28
+ 172 00ac 1348     		ldr	r0, .L3+12
+ 173 00ae FFF7FEFF 		bl	HAL_GPIO_Init
+ 174              	.LVL3:
+ 360:Core/Src/main.c **** 
+ 361:Core/Src/main.c ****   /*Configure GPIO pins : LD3_Pin LD2_Pin */
+ 362:Core/Src/main.c ****   GPIO_InitStruct.Pin = LD3_Pin|LD2_Pin;
+ 175              		.loc 1 362 3 view .LVU49
+ 176              		.loc 1 362 23 is_stmt 0 view .LVU50
+ 177 00b2 4FF48143 		mov	r3, #16512
+ 178 00b6 0793     		str	r3, [sp, #28]
+ 363:Core/Src/main.c ****   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+ 179              		.loc 1 363 3 is_stmt 1 view .LVU51
+ 180              		.loc 1 363 24 is_stmt 0 view .LVU52
+ 181 00b8 0126     		movs	r6, #1
+ 182 00ba 0896     		str	r6, [sp, #32]
+ 364:Core/Src/main.c ****   GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 183              		.loc 1 364 3 is_stmt 1 view .LVU53
+ 184              		.loc 1 364 24 is_stmt 0 view .LVU54
+ 185 00bc 0995     		str	r5, [sp, #36]
+ 365:Core/Src/main.c ****   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 186              		.loc 1 365 3 is_stmt 1 view .LVU55
+ 187              		.loc 1 365 25 is_stmt 0 view .LVU56
+ 188 00be 0A95     		str	r5, [sp, #40]
+ 366:Core/Src/main.c ****   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 189              		.loc 1 366 3 is_stmt 1 view .LVU57
+ 190 00c0 07A9     		add	r1, sp, #28
+ 191 00c2 3846     		mov	r0, r7
+ 192 00c4 FFF7FEFF 		bl	HAL_GPIO_Init
+ 193              	.LVL4:
+ 367:Core/Src/main.c **** 
+ 368:Core/Src/main.c ****   /*Configure GPIO pin : USB_OverCurrent_Pin */
+ 369:Core/Src/main.c ****   GPIO_InitStruct.Pin = USB_OverCurrent_Pin;
+ 194              		.loc 1 369 3 view .LVU58
+ 195              		.loc 1 369 23 is_stmt 0 view .LVU59
+ 196 00c8 2023     		movs	r3, #32
+ 197 00ca 0793     		str	r3, [sp, #28]
+ 370:Core/Src/main.c ****   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+ 198              		.loc 1 370 3 is_stmt 1 view .LVU60
+ 199              		.loc 1 370 24 is_stmt 0 view .LVU61
+ 200 00cc 0895     		str	r5, [sp, #32]
+ 371:Core/Src/main.c ****   GPIO_InitStruct.Pull = GPIO_NOPULL;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 11
+
+
+ 201              		.loc 1 371 3 is_stmt 1 view .LVU62
+ 202              		.loc 1 371 24 is_stmt 0 view .LVU63
+ 203 00ce 0995     		str	r5, [sp, #36]
+ 372:Core/Src/main.c ****   HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+ 204              		.loc 1 372 3 is_stmt 1 view .LVU64
+ 205 00d0 07A9     		add	r1, sp, #28
+ 206 00d2 2046     		mov	r0, r4
+ 207 00d4 FFF7FEFF 		bl	HAL_GPIO_Init
+ 208              	.LVL5:
+ 373:Core/Src/main.c **** 
+ 374:Core/Src/main.c ****   /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
+ 375:Core/Src/main.c ****   GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;
+ 209              		.loc 1 375 3 view .LVU65
+ 210              		.loc 1 375 23 is_stmt 0 view .LVU66
+ 211 00d8 4023     		movs	r3, #64
+ 212 00da 0793     		str	r3, [sp, #28]
+ 376:Core/Src/main.c ****   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+ 213              		.loc 1 376 3 is_stmt 1 view .LVU67
+ 214              		.loc 1 376 24 is_stmt 0 view .LVU68
+ 215 00dc 0896     		str	r6, [sp, #32]
+ 377:Core/Src/main.c ****   GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 216              		.loc 1 377 3 is_stmt 1 view .LVU69
+ 217              		.loc 1 377 24 is_stmt 0 view .LVU70
+ 218 00de 0995     		str	r5, [sp, #36]
+ 378:Core/Src/main.c ****   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 219              		.loc 1 378 3 is_stmt 1 view .LVU71
+ 220              		.loc 1 378 25 is_stmt 0 view .LVU72
+ 221 00e0 0A95     		str	r5, [sp, #40]
+ 379:Core/Src/main.c ****   HAL_GPIO_Init(USB_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
+ 222              		.loc 1 379 3 is_stmt 1 view .LVU73
+ 223 00e2 07A9     		add	r1, sp, #28
+ 224 00e4 2046     		mov	r0, r4
+ 225 00e6 FFF7FEFF 		bl	HAL_GPIO_Init
+ 226              	.LVL6:
+ 380:Core/Src/main.c **** 
+ 381:Core/Src/main.c **** /* USER CODE BEGIN MX_GPIO_Init_2 */
+ 382:Core/Src/main.c **** /* USER CODE END MX_GPIO_Init_2 */
+ 383:Core/Src/main.c **** }
+ 227              		.loc 1 383 1 is_stmt 0 view .LVU74
+ 228 00ea 0DB0     		add	sp, sp, #52
+ 229              	.LCFI2:
+ 230              		.cfi_def_cfa_offset 20
+ 231              		@ sp needed
+ 232 00ec F0BD     		pop	{r4, r5, r6, r7, pc}
+ 233              	.L4:
+ 234 00ee 00BF     		.align	2
+ 235              	.L3:
+ 236 00f0 00100240 		.word	1073876992
+ 237 00f4 00040048 		.word	1207960576
+ 238 00f8 00180048 		.word	1207965696
+ 239 00fc 00080048 		.word	1207961600
+ 240              		.cfi_endproc
+ 241              	.LFE140:
+ 243              		.section	.text.Error_Handler,"ax",%progbits
+ 244              		.align	1
+ 245              		.global	Error_Handler
+ 246              		.syntax unified
+ARM GAS  /tmp/ccE4Rdf4.s 			page 12
+
+
+ 247              		.thumb
+ 248              		.thumb_func
+ 249              		.fpu fpv4-sp-d16
+ 251              	Error_Handler:
+ 252              	.LFB141:
+ 384:Core/Src/main.c **** 
+ 385:Core/Src/main.c **** /* USER CODE BEGIN 4 */
+ 386:Core/Src/main.c **** 
+ 387:Core/Src/main.c **** /* USER CODE END 4 */
+ 388:Core/Src/main.c **** 
+ 389:Core/Src/main.c **** /**
+ 390:Core/Src/main.c ****   * @brief  This function is executed in case of error occurrence.
+ 391:Core/Src/main.c ****   * @retval None
+ 392:Core/Src/main.c ****   */
+ 393:Core/Src/main.c **** void Error_Handler(void)
+ 394:Core/Src/main.c **** {
+ 253              		.loc 1 394 1 is_stmt 1 view -0
+ 254              		.cfi_startproc
+ 255              		@ Volatile: function does not return.
+ 256              		@ args = 0, pretend = 0, frame = 0
+ 257              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258              		@ link register save eliminated.
+ 395:Core/Src/main.c ****   /* USER CODE BEGIN Error_Handler_Debug */
+ 396:Core/Src/main.c ****   /* User can add his own implementation to report the HAL error return state */
+ 397:Core/Src/main.c ****   __disable_irq();
+ 259              		.loc 1 397 3 view .LVU76
+ 260              	.LBB10:
+ 261              	.LBI10:
+ 262              		.file 2 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h"
+   1:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * @version  V5.4.1
+   5:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * @date     27. May 2021
+   6:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /*
+   8:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2021 Arm Limited. All rights reserved.
+   9:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  *
+  10:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  *
+  12:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  *
+  16:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  *
+  18:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+  24:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+  25:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+  28:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+ARM GAS  /tmp/ccE4Rdf4.s 			page 13
+
+
+  29:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+  34:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  38:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+  39:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  43:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  46:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  49:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE
+  50:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  52:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  55:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  58:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  61:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  64:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  67:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  70:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  78:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ARM GAS  /tmp/ccE4Rdf4.s 			page 14
+
+
+  86:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+  94:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 102:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 110:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 113:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 116:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 117:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 118:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 119:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 120:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+ 121:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 122:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __PROGRAM_START
+ 123:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 124:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 125:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Initializes data and bss sections
+ 126:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details This default implementations initialized all data and additional bss
+ 127:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            sections relying on .copy.table and .zero.table specified properly
+ 128:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            in the used linker script.
+ 129:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 130:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 131:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+ 132:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 133:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
+ 134:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 135:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   typedef struct {
+ 136:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t const* src;
+ 137:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t* dest;
+ 138:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t  wlen;
+ 139:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   } __copy_table_t;
+ 140:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 141:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   typedef struct {
+ 142:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t* dest;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 15
+
+
+ 143:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t  wlen;
+ 144:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   } __zero_table_t;
+ 145:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 146:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_start__;
+ 147:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_end__;
+ 148:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_start__;
+ 149:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_end__;
+ 150:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 151:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+ 152:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 153:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 154:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     }
+ 155:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 156:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 157:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+ 158:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 159:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 160:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     }
+ 161:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 162:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 163:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   _start();
+ 164:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 165:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 166:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __PROGRAM_START           __cmsis_start
+ 167:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 168:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 169:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __INITIAL_SP
+ 170:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __INITIAL_SP              __StackTop
+ 171:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 172:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 173:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __STACK_LIMIT
+ 174:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
+ 175:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 176:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 177:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
+ 178:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
+ 179:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 180:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 181:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+ 182:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute__((used, section(".vectors")))
+ 183:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 184:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 185:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+ 186:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __STACK_SEAL
+ 187:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __STACK_SEAL              __StackSeal
+ 188:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 189:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 190:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __TZ_STACK_SEAL_SIZE
+ 191:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __TZ_STACK_SEAL_SIZE      8U
+ 192:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 193:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 194:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #ifndef __TZ_STACK_SEAL_VALUE
+ 195:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __TZ_STACK_SEAL_VALUE     0xFEF5EDA5FEF5EDA5ULL
+ 196:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 197:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 198:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 199:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_STACKSEAL_S (uint32_t* stackTop) {
+ARM GAS  /tmp/ccE4Rdf4.s 			page 16
+
+
+ 200:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   *((uint64_t *)stackTop) = __TZ_STACK_SEAL_VALUE;
+ 201:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 202:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 203:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 204:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 205:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* ##########################  Core Instruction Access  ######################### */
+ 206:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+ 207:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   Access to dedicated instructions
+ 208:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   @{
+ 209:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** */
+ 210:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 211:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 212:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
+ 213:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
+ 214:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 215:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 216:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+l" (r)
+ 217:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 218:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 219:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 220:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+r" (r)
+ 221:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 222:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 223:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 224:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 225:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   No Operation
+ 226:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details No Operation does nothing. This instruction can be used for code alignment purposes.
+ 227:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 228:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __NOP()                             __ASM volatile ("nop")
+ 229:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 230:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 231:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Wait For Interrupt
+ 232:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Wait For Interrupt is a hint instruction that suspends execution until one of a number o
+ 233:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 234:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __WFI()                             __ASM volatile ("wfi":::"memory")
+ 235:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 236:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 237:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 238:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Wait For Event
+ 239:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Wait For Event is a hint instruction that permits the processor to enter
+ 240:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            a low-power state until one of a number of events occurs.
+ 241:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 242:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __WFE()                             __ASM volatile ("wfe":::"memory")
+ 243:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 244:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 245:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 246:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Send Event
+ 247:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+ 248:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 249:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __SEV()                             __ASM volatile ("sev")
+ 250:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 251:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 252:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 253:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Instruction Synchronization Barrier
+ 254:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Instruction Synchronization Barrier flushes the pipeline in the processor,
+ 255:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            so that all instructions following the ISB are fetched from cache or memory,
+ 256:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            after the instruction has been completed.
+ARM GAS  /tmp/ccE4Rdf4.s 			page 17
+
+
+ 257:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 258:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __ISB(void)
+ 259:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 260:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("isb 0xF":::"memory");
+ 261:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 262:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 263:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 264:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 265:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Data Synchronization Barrier
+ 266:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Acts as a special kind of Data Memory Barrier.
+ 267:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
+ 268:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 269:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
+ 270:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 271:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
+ 272:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 273:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 274:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 275:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 276:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Data Memory Barrier
+ 277:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Ensures the apparent order of the explicit memory operations before
+ 278:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            and after the instruction, without ensuring their completion.
+ 279:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 280:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DMB(void)
+ 281:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 282:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("dmb 0xF":::"memory");
+ 283:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 284:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 285:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 286:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 287:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Reverse byte order (32 bit)
+ 288:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Reverses the byte order in unsigned integer value. For example, 0x12345678 becomes 0x785
+ 289:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    value  Value to reverse
+ 290:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return               Reversed value
+ 291:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 292:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __REV(uint32_t value)
+ 293:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 294:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+ 295:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return __builtin_bswap32(value);
+ 296:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 297:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   uint32_t result;
+ 298:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 299:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM ("rev %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
+ 300:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return result;
+ 301:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 302:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 303:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 304:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 305:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 306:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Reverse byte order (16 bit)
+ 307:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Reverses the byte order within each halfword of a word. For example, 0x12345678 becomes 
+ 308:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    value  Value to reverse
+ 309:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return               Reversed value
+ 310:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 311:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __REV16(uint32_t value)
+ 312:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 313:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   uint32_t result;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 18
+
+
+ 314:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 315:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM ("rev16 %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
+ 316:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return result;
+ 317:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 318:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 319:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 320:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 321:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Reverse byte order (16 bit)
+ 322:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Reverses the byte order in a 16-bit value and returns the signed 16-bit result. For exam
+ 323:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    value  Value to reverse
+ 324:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return               Reversed value
+ 325:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 326:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE int16_t __REVSH(int16_t value)
+ 327:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 328:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+ 329:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return (int16_t)__builtin_bswap16(value);
+ 330:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 331:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   int16_t result;
+ 332:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 333:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM ("revsh %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
+ 334:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return result;
+ 335:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 336:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 337:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 338:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 339:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 340:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Rotate Right in unsigned value (32 bit)
+ 341:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Rotate Right (immediate) provides the value of the contents of a register rotated by a v
+ 342:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    op1  Value to rotate
+ 343:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    op2  Number of Bits to rotate
+ 344:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return               Rotated value
+ 345:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 346:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
+ 347:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 348:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   op2 %= 32U;
+ 349:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   if (op2 == 0U)
+ 350:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   {
+ 351:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     return op1;
+ 352:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 353:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return (op1 >> op2) | (op1 << (32U - op2));
+ 354:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 355:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 356:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 357:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 358:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Breakpoint
+ 359:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Causes the processor to enter Debug state.
+ 360:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            Debug tools can use this to investigate system state when the instruction at a particula
+ 361:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    value  is ignored by the processor.
+ 362:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****                  If required, a debugger can use it to store additional information about the break
+ 363:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 364:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __BKPT(value)                       __ASM volatile ("bkpt "#value)
+ 365:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 366:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 367:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 368:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Reverse bit order of value
+ 369:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Reverses the bit order of the given value.
+ 370:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    value  Value to reverse
+ARM GAS  /tmp/ccE4Rdf4.s 			page 19
+
+
+ 371:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return               Reversed value
+ 372:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 373:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __RBIT(uint32_t value)
+ 374:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 375:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   uint32_t result;
+ 376:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 377:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 378:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 379:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
+ 380:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM ("rbit %0, %1" : "=r" (result) : "r" (value) );
+ 381:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 382:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   uint32_t s = (4U /*sizeof(v)*/ * 8U) - 1U; /* extra shift needed at end */
+ 383:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 384:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   result = value;                      /* r will be reversed bits of v; first get LSB of v */
+ 385:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   for (value >>= 1U; value != 0U; value >>= 1U)
+ 386:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   {
+ 387:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     result <<= 1U;
+ 388:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     result |= value & 1U;
+ 389:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     s--;
+ 390:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 391:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   result <<= s;                        /* shift when v's highest bits are zero */
+ 392:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 393:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return result;
+ 394:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 395:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 396:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 397:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 398:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Count leading zeros
+ 399:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Counts the number of leading zeros of a data value.
+ 400:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to count the leading zeros
+ 401:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             number of leading zeros in value
+ 402:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 403:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __CLZ(uint32_t value)
+ 404:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 405:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   /* Even though __builtin_clz produces a CLZ instruction on ARM, formally
+ 406:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      __builtin_clz(0) is undefined behaviour, so handle this case specially.
+ 407:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      This guarantees ARM-compatible results if happening to compile on a non-ARM
+ 408:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      target, and ensures the compiler doesn't decide to activate any
+ 409:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      optimisations using the logic "value was passed to __builtin_clz, so it
+ 410:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      is non-zero".
+ 411:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      ARM GCC 7.3 and possibly earlier will optimise this test away, leaving a
+ 412:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      single CLZ instruction.
+ 413:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    */
+ 414:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   if (value == 0U)
+ 415:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   {
+ 416:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     return 32U;
+ 417:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 418:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return __builtin_clz(value);
+ 419:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 420:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 421:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 422:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 423:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 424:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 425:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
+ 426:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 427:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   LDR Exclusive (8 bit)
+ARM GAS  /tmp/ccE4Rdf4.s 			page 20
+
+
+ 428:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a exclusive LDR instruction for 8 bit value.
+ 429:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 430:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             value of type uint8_t at (*ptr)
+ 431:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 432:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __LDREXB(volatile uint8_t *addr)
+ 433:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 434:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 435:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 436:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+ 437:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexb %0, %1" : "=r" (result) : "Q" (*addr) );
+ 438:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 439:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+ 440:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****        accepted by assembler. So has to use following less efficient pattern.
+ 441:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     */
+ 442:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexb %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
+ 443:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 444:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint8_t) result);    /* Add explicit type cast here */
+ 445:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 446:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 447:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 448:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 449:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   LDR Exclusive (16 bit)
+ 450:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a exclusive LDR instruction for 16 bit values.
+ 451:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 452:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint16_t at (*ptr)
+ 453:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 454:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint16_t __LDREXH(volatile uint16_t *addr)
+ 455:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 456:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 457:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 458:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+ 459:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexh %0, %1" : "=r" (result) : "Q" (*addr) );
+ 460:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 461:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+ 462:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****        accepted by assembler. So has to use following less efficient pattern.
+ 463:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     */
+ 464:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrexh %0, [%1]" : "=r" (result) : "r" (addr) : "memory" );
+ 465:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 466:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint16_t) result);    /* Add explicit type cast here */
+ 467:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 468:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 469:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 470:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 471:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   LDR Exclusive (32 bit)
+ 472:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a exclusive LDR instruction for 32 bit values.
+ 473:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 474:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint32_t at (*ptr)
+ 475:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 476:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __LDREXW(volatile uint32_t *addr)
+ 477:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 478:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 479:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 480:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrex %0, %1" : "=r" (result) : "Q" (*addr) );
+ 481:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 482:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 483:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 484:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccE4Rdf4.s 			page 21
+
+
+ 485:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 486:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   STR Exclusive (8 bit)
+ 487:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a exclusive STR instruction for 8 bit values.
+ 488:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 489:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 490:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          0  Function succeeded
+ 491:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          1  Function failed
+ 492:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 493:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __STREXB(uint8_t value, volatile uint8_t *addr)
+ 494:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 495:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    uint32_t result;
+ 496:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 497:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("strexb %0, %2, %1" : "=&r" (result), "=Q" (*addr) : "r" ((uint32_t)value) );
+ 498:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 499:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 500:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 501:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 502:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 503:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   STR Exclusive (16 bit)
+ 504:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a exclusive STR instruction for 16 bit values.
+ 505:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 506:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 507:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          0  Function succeeded
+ 508:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          1  Function failed
+ 509:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 510:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __STREXH(uint16_t value, volatile uint16_t *addr)
+ 511:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 512:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    uint32_t result;
+ 513:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 514:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("strexh %0, %2, %1" : "=&r" (result), "=Q" (*addr) : "r" ((uint32_t)value) );
+ 515:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 516:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 517:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 518:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 519:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 520:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   STR Exclusive (32 bit)
+ 521:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a exclusive STR instruction for 32 bit values.
+ 522:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 523:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 524:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          0  Function succeeded
+ 525:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          1  Function failed
+ 526:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 527:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __STREXW(uint32_t value, volatile uint32_t *addr)
+ 528:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 529:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    uint32_t result;
+ 530:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 531:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("strex %0, %2, %1" : "=&r" (result), "=Q" (*addr) : "r" (value) );
+ 532:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 533:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 534:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 535:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 536:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 537:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Remove the exclusive lock
+ 538:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Removes the exclusive lock which is created by LDREX.
+ 539:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 540:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __CLREX(void)
+ 541:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ARM GAS  /tmp/ccE4Rdf4.s 			page 22
+
+
+ 542:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("clrex" ::: "memory");
+ 543:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 544:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 545:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 546:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 547:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 548:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
+ 549:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 550:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 551:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 552:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 553:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
+ 554:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 555:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Signed Saturate
+ 556:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Saturates a signed value.
+ 557:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  ARG1  Value to be saturated
+ 558:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  ARG2  Bit position to saturate to (1..32)
+ 559:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             Saturated value
+ 560:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 561:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __SSAT(ARG1, ARG2) \
+ 562:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __extension__ \
+ 563:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** ({                          \
+ 564:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   int32_t __RES, __ARG1 = (ARG1); \
+ 565:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("ssat %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) : "cc" ); \
+ 566:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __RES; \
+ 567:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  })
+ 568:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 569:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 570:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 571:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Unsigned Saturate
+ 572:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Saturates an unsigned value.
+ 573:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  ARG1  Value to be saturated
+ 574:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  ARG2  Bit position to saturate to (0..31)
+ 575:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             Saturated value
+ 576:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 577:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #define __USAT(ARG1, ARG2) \
+ 578:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __extension__ \
+ 579:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** ({                          \
+ 580:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   uint32_t __RES, __ARG1 = (ARG1); \
+ 581:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("usat %0, %1, %2" : "=r" (__RES) :  "I" (ARG2), "r" (__ARG1) : "cc" ); \
+ 582:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __RES; \
+ 583:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  })
+ 584:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 585:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 586:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 587:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Rotate Right with Extend (32 bit)
+ 588:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Moves each bit of a bitstring right by one bit.
+ 589:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            The carry input is shifted in at the left end of the bitstring.
+ 590:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    value  Value to rotate
+ 591:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return               Rotated value
+ 592:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 593:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __RRX(uint32_t value)
+ 594:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 595:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   uint32_t result;
+ 596:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 597:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("rrx %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
+ 598:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return(result);
+ARM GAS  /tmp/ccE4Rdf4.s 			page 23
+
+
+ 599:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 600:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 601:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 602:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 603:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   LDRT Unprivileged (8 bit)
+ 604:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a Unprivileged LDRT instruction for 8 bit value.
+ 605:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 606:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             value of type uint8_t at (*ptr)
+ 607:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 608:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __LDRBT(volatile uint8_t *ptr)
+ 609:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 610:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 611:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 612:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+ 613:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrbt %0, %1" : "=r" (result) : "Q" (*ptr) );
+ 614:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 615:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+ 616:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****        accepted by assembler. So has to use following less efficient pattern.
+ 617:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     */
+ 618:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrbt %0, [%1]" : "=r" (result) : "r" (ptr) : "memory" );
+ 619:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 620:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint8_t) result);    /* Add explicit type cast here */
+ 621:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 622:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 623:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 624:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 625:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   LDRT Unprivileged (16 bit)
+ 626:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a Unprivileged LDRT instruction for 16 bit values.
+ 627:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 628:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint16_t at (*ptr)
+ 629:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 630:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint16_t __LDRHT(volatile uint16_t *ptr)
+ 631:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 632:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 633:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 634:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8)
+ 635:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrht %0, %1" : "=r" (result) : "Q" (*ptr) );
+ 636:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else
+ 637:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     /* Prior to GCC 4.8, "Q" will be expanded to [rx, #0] which is not
+ 638:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****        accepted by assembler. So has to use following less efficient pattern.
+ 639:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     */
+ 640:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrht %0, [%1]" : "=r" (result) : "r" (ptr) : "memory" );
+ 641:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif
+ 642:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint16_t) result);    /* Add explicit type cast here */
+ 643:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 644:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 645:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 646:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 647:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   LDRT Unprivileged (32 bit)
+ 648:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a Unprivileged LDRT instruction for 32 bit values.
+ 649:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 650:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint32_t at (*ptr)
+ 651:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 652:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __LDRT(volatile uint32_t *ptr)
+ 653:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 654:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 655:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccE4Rdf4.s 			page 24
+
+
+ 656:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldrt %0, %1" : "=r" (result) : "Q" (*ptr) );
+ 657:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 658:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 659:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 660:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 661:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 662:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   STRT Unprivileged (8 bit)
+ 663:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a Unprivileged STRT instruction for 8 bit values.
+ 664:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 665:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 666:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 667:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STRBT(uint8_t value, volatile uint8_t *ptr)
+ 668:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 669:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("strbt %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
+ 670:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 671:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 672:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 673:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 674:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   STRT Unprivileged (16 bit)
+ 675:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a Unprivileged STRT instruction for 16 bit values.
+ 676:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 677:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 678:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 679:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STRHT(uint16_t value, volatile uint16_t *ptr)
+ 680:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 681:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("strht %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) );
+ 682:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 683:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 684:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 685:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 686:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   STRT Unprivileged (32 bit)
+ 687:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a Unprivileged STRT instruction for 32 bit values.
+ 688:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 689:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 690:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 691:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STRT(uint32_t value, volatile uint32_t *ptr)
+ 692:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 693:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("strt %1, %0" : "=Q" (*ptr) : "r" (value) );
+ 694:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 695:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 696:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #else  /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 697:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 698:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
+ 699:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 700:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 701:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Signed Saturate
+ 702:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Saturates a signed value.
+ 703:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to be saturated
+ 704:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    sat  Bit position to saturate to (1..32)
+ 705:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             Saturated value
+ 706:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 707:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE int32_t __SSAT(int32_t val, uint32_t sat)
+ 708:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 709:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   if ((sat >= 1U) && (sat <= 32U))
+ 710:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   {
+ 711:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     const int32_t max = (int32_t)((1U << (sat - 1U)) - 1U);
+ 712:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     const int32_t min = -1 - max ;
+ARM GAS  /tmp/ccE4Rdf4.s 			page 25
+
+
+ 713:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     if (val > max)
+ 714:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     {
+ 715:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****       return max;
+ 716:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     }
+ 717:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     else if (val < min)
+ 718:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     {
+ 719:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****       return min;
+ 720:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     }
+ 721:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 722:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return val;
+ 723:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 724:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 725:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 726:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Unsigned Saturate
+ 727:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Saturates an unsigned value.
+ 728:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to be saturated
+ 729:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    sat  Bit position to saturate to (0..31)
+ 730:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             Saturated value
+ 731:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 732:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __USAT(int32_t val, uint32_t sat)
+ 733:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 734:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   if (sat <= 31U)
+ 735:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   {
+ 736:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     const uint32_t max = ((1U << sat) - 1U);
+ 737:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     if (val > (int32_t)max)
+ 738:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     {
+ 739:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****       return max;
+ 740:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     }
+ 741:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     else if (val < 0)
+ 742:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     {
+ 743:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****       return 0U;
+ 744:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     }
+ 745:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   }
+ 746:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   return (uint32_t)val;
+ 747:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 748:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 749:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_7M__      ) && (__ARM_ARCH_7M__      == 1)) || \
+ 750:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
+ 751:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
+ 752:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 753:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 754:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 755:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
+ 756:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 757:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Load-Acquire (8 bit)
+ 758:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a LDAB instruction for 8 bit value.
+ 759:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 760:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             value of type uint8_t at (*ptr)
+ 761:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 762:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
+ 763:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 764:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 765:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 766:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldab %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
+ 767:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint8_t) result);
+ 768:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 769:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccE4Rdf4.s 			page 26
+
+
+ 770:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 771:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 772:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Load-Acquire (16 bit)
+ 773:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a LDAH instruction for 16 bit values.
+ 774:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 775:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint16_t at (*ptr)
+ 776:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 777:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint16_t __LDAH(volatile uint16_t *ptr)
+ 778:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 779:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 780:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 781:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldah %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
+ 782:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint16_t) result);
+ 783:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 784:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 785:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 786:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 787:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Load-Acquire (32 bit)
+ 788:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a LDA instruction for 32 bit values.
+ 789:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 790:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint32_t at (*ptr)
+ 791:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 792:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __LDA(volatile uint32_t *ptr)
+ 793:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 794:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 795:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 796:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("lda %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
+ 797:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 798:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 799:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 800:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 801:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 802:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Store-Release (8 bit)
+ 803:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a STLB instruction for 8 bit values.
+ 804:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 805:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 806:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 807:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STLB(uint8_t value, volatile uint8_t *ptr)
+ 808:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 809:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("stlb %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) : "memory" );
+ 810:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 811:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 812:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 813:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 814:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Store-Release (16 bit)
+ 815:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a STLH instruction for 16 bit values.
+ 816:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 817:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 818:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 819:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STLH(uint16_t value, volatile uint16_t *ptr)
+ 820:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 821:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("stlh %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) : "memory" );
+ 822:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 823:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 824:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 825:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 826:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Store-Release (32 bit)
+ARM GAS  /tmp/ccE4Rdf4.s 			page 27
+
+
+ 827:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a STL instruction for 32 bit values.
+ 828:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 829:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 830:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 831:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STL(uint32_t value, volatile uint32_t *ptr)
+ 832:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 833:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("stl %1, %0" : "=Q" (*ptr) : "r" ((uint32_t)value) : "memory" );
+ 834:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 835:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 836:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 837:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 838:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Load-Acquire Exclusive (8 bit)
+ 839:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a LDAB exclusive instruction for 8 bit value.
+ 840:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 841:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return             value of type uint8_t at (*ptr)
+ 842:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 843:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __LDAEXB(volatile uint8_t *ptr)
+ 844:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 845:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 846:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 847:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldaexb %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
+ 848:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint8_t) result);
+ 849:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 850:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 851:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 852:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 853:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Load-Acquire Exclusive (16 bit)
+ 854:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a LDAH exclusive instruction for 16 bit values.
+ 855:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 856:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint16_t at (*ptr)
+ 857:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 858:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint16_t __LDAEXH(volatile uint16_t *ptr)
+ 859:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 860:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 861:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 862:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldaexh %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
+ 863:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return ((uint16_t) result);
+ 864:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 865:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 866:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 867:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 868:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Load-Acquire Exclusive (32 bit)
+ 869:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a LDA exclusive instruction for 32 bit values.
+ 870:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
+ 871:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return        value of type uint32_t at (*ptr)
+ 872:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 873:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __LDAEX(volatile uint32_t *ptr)
+ 874:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 875:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     uint32_t result;
+ 876:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 877:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("ldaex %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
+ 878:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 879:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 880:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 881:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 882:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 883:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Store-Release Exclusive (8 bit)
+ARM GAS  /tmp/ccE4Rdf4.s 			page 28
+
+
+ 884:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a STLB exclusive instruction for 8 bit values.
+ 885:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 886:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 887:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          0  Function succeeded
+ 888:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          1  Function failed
+ 889:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 890:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __STLEXB(uint8_t value, volatile uint8_t *ptr)
+ 891:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 892:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    uint32_t result;
+ 893:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 894:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("stlexb %0, %2, %1" : "=&r" (result), "=Q" (*ptr) : "r" ((uint32_t)value) : "mem
+ 895:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 896:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 897:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 898:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 899:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 900:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Store-Release Exclusive (16 bit)
+ 901:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a STLH exclusive instruction for 16 bit values.
+ 902:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 903:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 904:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          0  Function succeeded
+ 905:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          1  Function failed
+ 906:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 907:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __STLEXH(uint16_t value, volatile uint16_t *ptr)
+ 908:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 909:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    uint32_t result;
+ 910:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 911:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("stlexh %0, %2, %1" : "=&r" (result), "=Q" (*ptr) : "r" ((uint32_t)value) : "mem
+ 912:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 913:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 914:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 915:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 916:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 917:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Store-Release Exclusive (32 bit)
+ 918:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Executes a STL exclusive instruction for 32 bit values.
+ 919:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]  value  Value to store
+ 920:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
+ 921:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          0  Function succeeded
+ 922:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \return          1  Function failed
+ 923:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 924:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __STLEX(uint32_t value, volatile uint32_t *ptr)
+ 925:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 926:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    uint32_t result;
+ 927:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 928:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    __ASM volatile ("stlex %0, %2, %1" : "=&r" (result), "=Q" (*ptr) : "r" ((uint32_t)value) : "memo
+ 929:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****    return(result);
+ 930:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 931:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 932:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
+ 933:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
+ 934:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 935:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /*@}*/ /* end of group CMSIS_Core_InstructionInterface */
+ 936:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 937:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 938:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 939:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 940:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ARM GAS  /tmp/ccE4Rdf4.s 			page 29
+
+
+ 941:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   @{
+ 942:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 943:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 944:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 945:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 946:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing special-purpose register PRIMASK.
+ 947:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 948:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 949:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 950:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 951:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 952:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** }
+ 953:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 954:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** 
+ 955:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** /**
+ 956:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 957:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting special-purpose register PRIMASK.
+ 958:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 959:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****  */
+ 960:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 263              		.loc 2 960 27 view .LVU77
+ 264              	.LBB11:
+ 961:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h **** {
+ 962:Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 265              		.loc 2 962 3 view .LVU78
+ 266              		.syntax unified
+ 267              	@ 962 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/cmsis_gcc.h" 1
+ 268 0000 72B6     		cpsid i
+ 269              	@ 0 "" 2
+ 270              		.thumb
+ 271              		.syntax unified
+ 272              	.L6:
+ 273              	.LBE11:
+ 274              	.LBE10:
+ 398:Core/Src/main.c ****   while (1)
+ 275              		.loc 1 398 3 discriminator 1 view .LVU79
+ 399:Core/Src/main.c ****   {
+ 400:Core/Src/main.c ****   }
+ 276              		.loc 1 400 3 discriminator 1 view .LVU80
+ 398:Core/Src/main.c ****   while (1)
+ 277              		.loc 1 398 9 discriminator 1 view .LVU81
+ 278 0002 FEE7     		b	.L6
+ 279              		.cfi_endproc
+ 280              	.LFE141:
+ 282              		.section	.text.MX_USART3_UART_Init,"ax",%progbits
+ 283              		.align	1
+ 284              		.syntax unified
+ 285              		.thumb
+ 286              		.thumb_func
+ 287              		.fpu fpv4-sp-d16
+ 289              	MX_USART3_UART_Init:
+ 290              	.LFB138:
+ 253:Core/Src/main.c **** 
+ 291              		.loc 1 253 1 view -0
+ 292              		.cfi_startproc
+ 293              		@ args = 0, pretend = 0, frame = 0
+ 294              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccE4Rdf4.s 			page 30
+
+
+ 295 0000 08B5     		push	{r3, lr}
+ 296              	.LCFI3:
+ 297              		.cfi_def_cfa_offset 8
+ 298              		.cfi_offset 3, -8
+ 299              		.cfi_offset 14, -4
+ 262:Core/Src/main.c ****   huart3.Init.BaudRate = 115200;
+ 300              		.loc 1 262 3 view .LVU83
+ 262:Core/Src/main.c ****   huart3.Init.BaudRate = 115200;
+ 301              		.loc 1 262 19 is_stmt 0 view .LVU84
+ 302 0002 1548     		ldr	r0, .L17
+ 303 0004 154B     		ldr	r3, .L17+4
+ 304 0006 0360     		str	r3, [r0]
+ 263:Core/Src/main.c ****   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+ 305              		.loc 1 263 3 is_stmt 1 view .LVU85
+ 263:Core/Src/main.c ****   huart3.Init.WordLength = UART_WORDLENGTH_8B;
+ 306              		.loc 1 263 24 is_stmt 0 view .LVU86
+ 307 0008 4FF4E133 		mov	r3, #115200
+ 308 000c 4360     		str	r3, [r0, #4]
+ 264:Core/Src/main.c ****   huart3.Init.StopBits = UART_STOPBITS_1;
+ 309              		.loc 1 264 3 is_stmt 1 view .LVU87
+ 264:Core/Src/main.c ****   huart3.Init.StopBits = UART_STOPBITS_1;
+ 310              		.loc 1 264 26 is_stmt 0 view .LVU88
+ 311 000e 0023     		movs	r3, #0
+ 312 0010 8360     		str	r3, [r0, #8]
+ 265:Core/Src/main.c ****   huart3.Init.Parity = UART_PARITY_NONE;
+ 313              		.loc 1 265 3 is_stmt 1 view .LVU89
+ 265:Core/Src/main.c ****   huart3.Init.Parity = UART_PARITY_NONE;
+ 314              		.loc 1 265 24 is_stmt 0 view .LVU90
+ 315 0012 C360     		str	r3, [r0, #12]
+ 266:Core/Src/main.c ****   huart3.Init.Mode = UART_MODE_TX_RX;
+ 316              		.loc 1 266 3 is_stmt 1 view .LVU91
+ 266:Core/Src/main.c ****   huart3.Init.Mode = UART_MODE_TX_RX;
+ 317              		.loc 1 266 22 is_stmt 0 view .LVU92
+ 318 0014 0361     		str	r3, [r0, #16]
+ 267:Core/Src/main.c ****   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 319              		.loc 1 267 3 is_stmt 1 view .LVU93
+ 267:Core/Src/main.c ****   huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 320              		.loc 1 267 20 is_stmt 0 view .LVU94
+ 321 0016 0C22     		movs	r2, #12
+ 322 0018 4261     		str	r2, [r0, #20]
+ 268:Core/Src/main.c ****   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+ 323              		.loc 1 268 3 is_stmt 1 view .LVU95
+ 268:Core/Src/main.c ****   huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+ 324              		.loc 1 268 25 is_stmt 0 view .LVU96
+ 325 001a 8361     		str	r3, [r0, #24]
+ 269:Core/Src/main.c ****   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 326              		.loc 1 269 3 is_stmt 1 view .LVU97
+ 269:Core/Src/main.c ****   huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 327              		.loc 1 269 28 is_stmt 0 view .LVU98
+ 328 001c C361     		str	r3, [r0, #28]
+ 270:Core/Src/main.c ****   huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 329              		.loc 1 270 3 is_stmt 1 view .LVU99
+ 270:Core/Src/main.c ****   huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 330              		.loc 1 270 30 is_stmt 0 view .LVU100
+ 331 001e 0362     		str	r3, [r0, #32]
+ 271:Core/Src/main.c ****   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 332              		.loc 1 271 3 is_stmt 1 view .LVU101
+ARM GAS  /tmp/ccE4Rdf4.s 			page 31
+
+
+ 271:Core/Src/main.c ****   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 333              		.loc 1 271 30 is_stmt 0 view .LVU102
+ 334 0020 4362     		str	r3, [r0, #36]
+ 272:Core/Src/main.c ****   if (HAL_UART_Init(&huart3) != HAL_OK)
+ 335              		.loc 1 272 3 is_stmt 1 view .LVU103
+ 272:Core/Src/main.c ****   if (HAL_UART_Init(&huart3) != HAL_OK)
+ 336              		.loc 1 272 38 is_stmt 0 view .LVU104
+ 337 0022 8362     		str	r3, [r0, #40]
+ 273:Core/Src/main.c ****   {
+ 338              		.loc 1 273 3 is_stmt 1 view .LVU105
+ 273:Core/Src/main.c ****   {
+ 339              		.loc 1 273 7 is_stmt 0 view .LVU106
+ 340 0024 FFF7FEFF 		bl	HAL_UART_Init
+ 341              	.LVL7:
+ 273:Core/Src/main.c ****   {
+ 342              		.loc 1 273 6 view .LVU107
+ 343 0028 70B9     		cbnz	r0, .L13
+ 277:Core/Src/main.c ****   {
+ 344              		.loc 1 277 3 is_stmt 1 view .LVU108
+ 277:Core/Src/main.c ****   {
+ 345              		.loc 1 277 7 is_stmt 0 view .LVU109
+ 346 002a 0021     		movs	r1, #0
+ 347 002c 0A48     		ldr	r0, .L17
+ 348 002e FFF7FEFF 		bl	HAL_UARTEx_SetTxFifoThreshold
+ 349              	.LVL8:
+ 277:Core/Src/main.c ****   {
+ 350              		.loc 1 277 6 view .LVU110
+ 351 0032 58B9     		cbnz	r0, .L14
+ 281:Core/Src/main.c ****   {
+ 352              		.loc 1 281 3 is_stmt 1 view .LVU111
+ 281:Core/Src/main.c ****   {
+ 353              		.loc 1 281 7 is_stmt 0 view .LVU112
+ 354 0034 0021     		movs	r1, #0
+ 355 0036 0848     		ldr	r0, .L17
+ 356 0038 FFF7FEFF 		bl	HAL_UARTEx_SetRxFifoThreshold
+ 357              	.LVL9:
+ 281:Core/Src/main.c ****   {
+ 358              		.loc 1 281 6 view .LVU113
+ 359 003c 40B9     		cbnz	r0, .L15
+ 285:Core/Src/main.c ****   {
+ 360              		.loc 1 285 3 is_stmt 1 view .LVU114
+ 285:Core/Src/main.c ****   {
+ 361              		.loc 1 285 7 is_stmt 0 view .LVU115
+ 362 003e 0648     		ldr	r0, .L17
+ 363 0040 FFF7FEFF 		bl	HAL_UARTEx_DisableFifoMode
+ 364              	.LVL10:
+ 285:Core/Src/main.c ****   {
+ 365              		.loc 1 285 6 view .LVU116
+ 366 0044 30B9     		cbnz	r0, .L16
+ 293:Core/Src/main.c **** 
+ 367              		.loc 1 293 1 view .LVU117
+ 368 0046 08BD     		pop	{r3, pc}
+ 369              	.L13:
+ 275:Core/Src/main.c ****   }
+ 370              		.loc 1 275 5 is_stmt 1 view .LVU118
+ 371 0048 FFF7FEFF 		bl	Error_Handler
+ 372              	.LVL11:
+ARM GAS  /tmp/ccE4Rdf4.s 			page 32
+
+
+ 373              	.L14:
+ 279:Core/Src/main.c ****   }
+ 374              		.loc 1 279 5 view .LVU119
+ 375 004c FFF7FEFF 		bl	Error_Handler
+ 376              	.LVL12:
+ 377              	.L15:
+ 283:Core/Src/main.c ****   }
+ 378              		.loc 1 283 5 view .LVU120
+ 379 0050 FFF7FEFF 		bl	Error_Handler
+ 380              	.LVL13:
+ 381              	.L16:
+ 287:Core/Src/main.c ****   }
+ 382              		.loc 1 287 5 view .LVU121
+ 383 0054 FFF7FEFF 		bl	Error_Handler
+ 384              	.LVL14:
+ 385              	.L18:
+ 386              		.align	2
+ 387              	.L17:
+ 388 0058 00000000 		.word	huart3
+ 389 005c 00480040 		.word	1073760256
+ 390              		.cfi_endproc
+ 391              	.LFE138:
+ 393              		.section	.text.MX_USB_OTG_FS_PCD_Init,"ax",%progbits
+ 394              		.align	1
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 398              		.fpu fpv4-sp-d16
+ 400              	MX_USB_OTG_FS_PCD_Init:
+ 401              	.LFB139:
+ 301:Core/Src/main.c **** 
+ 402              		.loc 1 301 1 view -0
+ 403              		.cfi_startproc
+ 404              		@ args = 0, pretend = 0, frame = 0
+ 405              		@ frame_needed = 0, uses_anonymous_args = 0
+ 406 0000 08B5     		push	{r3, lr}
+ 407              	.LCFI4:
+ 408              		.cfi_def_cfa_offset 8
+ 409              		.cfi_offset 3, -8
+ 410              		.cfi_offset 14, -4
+ 310:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.dev_endpoints = 6;
+ 411              		.loc 1 310 3 view .LVU123
+ 310:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.dev_endpoints = 6;
+ 412              		.loc 1 310 28 is_stmt 0 view .LVU124
+ 413 0002 0B48     		ldr	r0, .L23
+ 414 0004 4FF0A043 		mov	r3, #1342177280
+ 415 0008 0360     		str	r3, [r0]
+ 311:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
+ 416              		.loc 1 311 3 is_stmt 1 view .LVU125
+ 311:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
+ 417              		.loc 1 311 38 is_stmt 0 view .LVU126
+ 418 000a 0623     		movs	r3, #6
+ 419 000c 4360     		str	r3, [r0, #4]
+ 312:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.Sof_enable = ENABLE;
+ 420              		.loc 1 312 3 is_stmt 1 view .LVU127
+ 312:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.Sof_enable = ENABLE;
+ 421              		.loc 1 312 35 is_stmt 0 view .LVU128
+ARM GAS  /tmp/ccE4Rdf4.s 			page 33
+
+
+ 422 000e 0223     		movs	r3, #2
+ 423 0010 8361     		str	r3, [r0, #24]
+ 313:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
+ 424              		.loc 1 313 3 is_stmt 1 view .LVU129
+ 313:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
+ 425              		.loc 1 313 35 is_stmt 0 view .LVU130
+ 426 0012 0123     		movs	r3, #1
+ 427 0014 C361     		str	r3, [r0, #28]
+ 314:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
+ 428              		.loc 1 314 3 is_stmt 1 view .LVU131
+ 314:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
+ 429              		.loc 1 314 41 is_stmt 0 view .LVU132
+ 430 0016 0022     		movs	r2, #0
+ 431 0018 0262     		str	r2, [r0, #32]
+ 315:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.battery_charging_enable = ENABLE;
+ 432              		.loc 1 315 3 is_stmt 1 view .LVU133
+ 315:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.battery_charging_enable = ENABLE;
+ 433              		.loc 1 315 35 is_stmt 0 view .LVU134
+ 434 001a 4262     		str	r2, [r0, #36]
+ 316:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
+ 435              		.loc 1 316 3 is_stmt 1 view .LVU135
+ 316:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
+ 436              		.loc 1 316 48 is_stmt 0 view .LVU136
+ 437 001c 8362     		str	r3, [r0, #40]
+ 317:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
+ 438              		.loc 1 317 3 is_stmt 1 view .LVU137
+ 317:Core/Src/main.c ****   hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
+ 439              		.loc 1 317 42 is_stmt 0 view .LVU138
+ 440 001e 0263     		str	r2, [r0, #48]
+ 318:Core/Src/main.c ****   if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
+ 441              		.loc 1 318 3 is_stmt 1 view .LVU139
+ 318:Core/Src/main.c ****   if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
+ 442              		.loc 1 318 44 is_stmt 0 view .LVU140
+ 443 0020 C362     		str	r3, [r0, #44]
+ 319:Core/Src/main.c ****   {
+ 444              		.loc 1 319 3 is_stmt 1 view .LVU141
+ 319:Core/Src/main.c ****   {
+ 445              		.loc 1 319 7 is_stmt 0 view .LVU142
+ 446 0022 FFF7FEFF 		bl	HAL_PCD_Init
+ 447              	.LVL15:
+ 319:Core/Src/main.c ****   {
+ 448              		.loc 1 319 6 view .LVU143
+ 449 0026 00B9     		cbnz	r0, .L22
+ 327:Core/Src/main.c **** 
+ 450              		.loc 1 327 1 view .LVU144
+ 451 0028 08BD     		pop	{r3, pc}
+ 452              	.L22:
+ 321:Core/Src/main.c ****   }
+ 453              		.loc 1 321 5 is_stmt 1 view .LVU145
+ 454 002a FFF7FEFF 		bl	Error_Handler
+ 455              	.LVL16:
+ 456              	.L24:
+ 457 002e 00BF     		.align	2
+ 458              	.L23:
+ 459 0030 00000000 		.word	hpcd_USB_OTG_FS
+ 460              		.cfi_endproc
+ 461              	.LFE139:
+ARM GAS  /tmp/ccE4Rdf4.s 			page 34
+
+
+ 463              		.section	.text.MX_CRC_Init,"ax",%progbits
+ 464              		.align	1
+ 465              		.syntax unified
+ 466              		.thumb
+ 467              		.thumb_func
+ 468              		.fpu fpv4-sp-d16
+ 470              	MX_CRC_Init:
+ 471              	.LFB136:
+ 174:Core/Src/main.c **** 
+ 472              		.loc 1 174 1 view -0
+ 473              		.cfi_startproc
+ 474              		@ args = 0, pretend = 0, frame = 0
+ 475              		@ frame_needed = 0, uses_anonymous_args = 0
+ 476 0000 08B5     		push	{r3, lr}
+ 477              	.LCFI5:
+ 478              		.cfi_def_cfa_offset 8
+ 479              		.cfi_offset 3, -8
+ 480              		.cfi_offset 14, -4
+ 183:Core/Src/main.c ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+ 481              		.loc 1 183 3 view .LVU147
+ 183:Core/Src/main.c ****   hcrc.Init.DefaultPolynomialUse = DEFAULT_POLYNOMIAL_ENABLE;
+ 482              		.loc 1 183 17 is_stmt 0 view .LVU148
+ 483 0002 0848     		ldr	r0, .L29
+ 484 0004 084B     		ldr	r3, .L29+4
+ 485 0006 0360     		str	r3, [r0]
+ 184:Core/Src/main.c ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+ 486              		.loc 1 184 3 is_stmt 1 view .LVU149
+ 184:Core/Src/main.c ****   hcrc.Init.DefaultInitValueUse = DEFAULT_INIT_VALUE_ENABLE;
+ 487              		.loc 1 184 34 is_stmt 0 view .LVU150
+ 488 0008 0023     		movs	r3, #0
+ 489 000a 0371     		strb	r3, [r0, #4]
+ 185:Core/Src/main.c ****   hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+ 490              		.loc 1 185 3 is_stmt 1 view .LVU151
+ 185:Core/Src/main.c ****   hcrc.Init.InputDataInversionMode = CRC_INPUTDATA_INVERSION_NONE;
+ 491              		.loc 1 185 33 is_stmt 0 view .LVU152
+ 492 000c 4371     		strb	r3, [r0, #5]
+ 186:Core/Src/main.c ****   hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+ 493              		.loc 1 186 3 is_stmt 1 view .LVU153
+ 186:Core/Src/main.c ****   hcrc.Init.OutputDataInversionMode = CRC_OUTPUTDATA_INVERSION_DISABLE;
+ 494              		.loc 1 186 36 is_stmt 0 view .LVU154
+ 495 000e 4361     		str	r3, [r0, #20]
+ 187:Core/Src/main.c ****   hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+ 496              		.loc 1 187 3 is_stmt 1 view .LVU155
+ 187:Core/Src/main.c ****   hcrc.InputDataFormat = CRC_INPUTDATA_FORMAT_BYTES;
+ 497              		.loc 1 187 37 is_stmt 0 view .LVU156
+ 498 0010 8361     		str	r3, [r0, #24]
+ 188:Core/Src/main.c ****   if (HAL_CRC_Init(&hcrc) != HAL_OK)
+ 499              		.loc 1 188 3 is_stmt 1 view .LVU157
+ 188:Core/Src/main.c ****   if (HAL_CRC_Init(&hcrc) != HAL_OK)
+ 500              		.loc 1 188 24 is_stmt 0 view .LVU158
+ 501 0012 0123     		movs	r3, #1
+ 502 0014 0362     		str	r3, [r0, #32]
+ 189:Core/Src/main.c ****   {
+ 503              		.loc 1 189 3 is_stmt 1 view .LVU159
+ 189:Core/Src/main.c ****   {
+ 504              		.loc 1 189 7 is_stmt 0 view .LVU160
+ 505 0016 FFF7FEFF 		bl	HAL_CRC_Init
+ARM GAS  /tmp/ccE4Rdf4.s 			page 35
+
+
+ 506              	.LVL17:
+ 189:Core/Src/main.c ****   {
+ 507              		.loc 1 189 6 view .LVU161
+ 508 001a 00B9     		cbnz	r0, .L28
+ 197:Core/Src/main.c **** 
+ 509              		.loc 1 197 1 view .LVU162
+ 510 001c 08BD     		pop	{r3, pc}
+ 511              	.L28:
+ 191:Core/Src/main.c ****   }
+ 512              		.loc 1 191 5 is_stmt 1 view .LVU163
+ 513 001e FFF7FEFF 		bl	Error_Handler
+ 514              	.LVL18:
+ 515              	.L30:
+ 516 0022 00BF     		.align	2
+ 517              	.L29:
+ 518 0024 00000000 		.word	hcrc
+ 519 0028 00300240 		.word	1073885184
+ 520              		.cfi_endproc
+ 521              	.LFE136:
+ 523              		.section	.text.SystemClock_Config,"ax",%progbits
+ 524              		.align	1
+ 525              		.global	SystemClock_Config
+ 526              		.syntax unified
+ 527              		.thumb
+ 528              		.thumb_func
+ 529              		.fpu fpv4-sp-d16
+ 531              	SystemClock_Config:
+ 532              	.LFB135:
+ 123:Core/Src/main.c ****   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+ 533              		.loc 1 123 1 view -0
+ 534              		.cfi_startproc
+ 535              		@ args = 0, pretend = 0, frame = 88
+ 536              		@ frame_needed = 0, uses_anonymous_args = 0
+ 537 0000 00B5     		push	{lr}
+ 538              	.LCFI6:
+ 539              		.cfi_def_cfa_offset 4
+ 540              		.cfi_offset 14, -4
+ 541 0002 97B0     		sub	sp, sp, #92
+ 542              	.LCFI7:
+ 543              		.cfi_def_cfa_offset 96
+ 124:Core/Src/main.c ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ 544              		.loc 1 124 3 view .LVU165
+ 124:Core/Src/main.c ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+ 545              		.loc 1 124 22 is_stmt 0 view .LVU166
+ 546 0004 4422     		movs	r2, #68
+ 547 0006 0021     		movs	r1, #0
+ 548 0008 05A8     		add	r0, sp, #20
+ 549 000a FFF7FEFF 		bl	memset
+ 550              	.LVL19:
+ 125:Core/Src/main.c **** 
+ 551              		.loc 1 125 3 is_stmt 1 view .LVU167
+ 125:Core/Src/main.c **** 
+ 552              		.loc 1 125 22 is_stmt 0 view .LVU168
+ 553 000e 0020     		movs	r0, #0
+ 554 0010 0090     		str	r0, [sp]
+ 555 0012 0190     		str	r0, [sp, #4]
+ 556 0014 0290     		str	r0, [sp, #8]
+ARM GAS  /tmp/ccE4Rdf4.s 			page 36
+
+
+ 557 0016 0390     		str	r0, [sp, #12]
+ 558 0018 0490     		str	r0, [sp, #16]
+ 129:Core/Src/main.c ****   {
+ 559              		.loc 1 129 3 is_stmt 1 view .LVU169
+ 129:Core/Src/main.c ****   {
+ 560              		.loc 1 129 7 is_stmt 0 view .LVU170
+ 561 001a FFF7FEFF 		bl	HAL_PWREx_ControlVoltageScaling
+ 562              	.LVL20:
+ 129:Core/Src/main.c ****   {
+ 563              		.loc 1 129 6 view .LVU171
+ 564 001e 38BB     		cbnz	r0, .L36
+ 137:Core/Src/main.c ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 565              		.loc 1 137 3 is_stmt 1 view .LVU172
+ 137:Core/Src/main.c ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+ 566              		.loc 1 137 36 is_stmt 0 view .LVU173
+ 567 0020 2223     		movs	r3, #34
+ 568 0022 0593     		str	r3, [sp, #20]
+ 138:Core/Src/main.c ****   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
+ 569              		.loc 1 138 3 is_stmt 1 view .LVU174
+ 138:Core/Src/main.c ****   RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
+ 570              		.loc 1 138 30 is_stmt 0 view .LVU175
+ 571 0024 4FF48073 		mov	r3, #256
+ 572 0028 0893     		str	r3, [sp, #32]
+ 139:Core/Src/main.c ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+ 573              		.loc 1 139 3 is_stmt 1 view .LVU176
+ 139:Core/Src/main.c ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+ 574              		.loc 1 139 32 is_stmt 0 view .LVU177
+ 575 002a 0123     		movs	r3, #1
+ 576 002c 0E93     		str	r3, [sp, #56]
+ 140:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 577              		.loc 1 140 3 is_stmt 1 view .LVU178
+ 140:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+ 578              		.loc 1 140 41 is_stmt 0 view .LVU179
+ 579 002e 4023     		movs	r3, #64
+ 580 0030 0993     		str	r3, [sp, #36]
+ 141:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+ 581              		.loc 1 141 3 is_stmt 1 view .LVU180
+ 141:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+ 582              		.loc 1 141 34 is_stmt 0 view .LVU181
+ 583 0032 0223     		movs	r3, #2
+ 584 0034 0F93     		str	r3, [sp, #60]
+ 142:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLM = 2;
+ 585              		.loc 1 142 3 is_stmt 1 view .LVU182
+ 142:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLM = 2;
+ 586              		.loc 1 142 35 is_stmt 0 view .LVU183
+ 587 0036 1093     		str	r3, [sp, #64]
+ 143:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLN = 30;
+ 588              		.loc 1 143 3 is_stmt 1 view .LVU184
+ 143:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLN = 30;
+ 589              		.loc 1 143 30 is_stmt 0 view .LVU185
+ 590 0038 1193     		str	r3, [sp, #68]
+ 144:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 591              		.loc 1 144 3 is_stmt 1 view .LVU186
+ 144:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+ 592              		.loc 1 144 30 is_stmt 0 view .LVU187
+ 593 003a 1E22     		movs	r2, #30
+ 594 003c 1292     		str	r2, [sp, #72]
+ARM GAS  /tmp/ccE4Rdf4.s 			page 37
+
+
+ 145:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+ 595              		.loc 1 145 3 is_stmt 1 view .LVU188
+ 145:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+ 596              		.loc 1 145 30 is_stmt 0 view .LVU189
+ 597 003e 1393     		str	r3, [sp, #76]
+ 146:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+ 598              		.loc 1 146 3 is_stmt 1 view .LVU190
+ 146:Core/Src/main.c ****   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+ 599              		.loc 1 146 30 is_stmt 0 view .LVU191
+ 600 0040 1493     		str	r3, [sp, #80]
+ 147:Core/Src/main.c ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 601              		.loc 1 147 3 is_stmt 1 view .LVU192
+ 147:Core/Src/main.c ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+ 602              		.loc 1 147 30 is_stmt 0 view .LVU193
+ 603 0042 1593     		str	r3, [sp, #84]
+ 148:Core/Src/main.c ****   {
+ 604              		.loc 1 148 3 is_stmt 1 view .LVU194
+ 148:Core/Src/main.c ****   {
+ 605              		.loc 1 148 7 is_stmt 0 view .LVU195
+ 606 0044 05A8     		add	r0, sp, #20
+ 607 0046 FFF7FEFF 		bl	HAL_RCC_OscConfig
+ 608              	.LVL21:
+ 148:Core/Src/main.c ****   {
+ 609              		.loc 1 148 6 view .LVU196
+ 610 004a 98B9     		cbnz	r0, .L37
+ 155:Core/Src/main.c ****                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+ 611              		.loc 1 155 3 is_stmt 1 view .LVU197
+ 155:Core/Src/main.c ****                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+ 612              		.loc 1 155 31 is_stmt 0 view .LVU198
+ 613 004c 0F23     		movs	r3, #15
+ 614 004e 0093     		str	r3, [sp]
+ 157:Core/Src/main.c ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 615              		.loc 1 157 3 is_stmt 1 view .LVU199
+ 157:Core/Src/main.c ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+ 616              		.loc 1 157 34 is_stmt 0 view .LVU200
+ 617 0050 0323     		movs	r3, #3
+ 618 0052 0193     		str	r3, [sp, #4]
+ 158:Core/Src/main.c ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+ 619              		.loc 1 158 3 is_stmt 1 view .LVU201
+ 158:Core/Src/main.c ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+ 620              		.loc 1 158 35 is_stmt 0 view .LVU202
+ 621 0054 0023     		movs	r3, #0
+ 622 0056 0293     		str	r3, [sp, #8]
+ 159:Core/Src/main.c ****   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+ 623              		.loc 1 159 3 is_stmt 1 view .LVU203
+ 159:Core/Src/main.c ****   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+ 624              		.loc 1 159 36 is_stmt 0 view .LVU204
+ 625 0058 4FF48062 		mov	r2, #1024
+ 626 005c 0392     		str	r2, [sp, #12]
+ 160:Core/Src/main.c **** 
+ 627              		.loc 1 160 3 is_stmt 1 view .LVU205
+ 160:Core/Src/main.c **** 
+ 628              		.loc 1 160 36 is_stmt 0 view .LVU206
+ 629 005e 0493     		str	r3, [sp, #16]
+ 162:Core/Src/main.c ****   {
+ 630              		.loc 1 162 3 is_stmt 1 view .LVU207
+ 162:Core/Src/main.c ****   {
+ARM GAS  /tmp/ccE4Rdf4.s 			page 38
+
+
+ 631              		.loc 1 162 7 is_stmt 0 view .LVU208
+ 632 0060 0521     		movs	r1, #5
+ 633 0062 6846     		mov	r0, sp
+ 634 0064 FFF7FEFF 		bl	HAL_RCC_ClockConfig
+ 635              	.LVL22:
+ 162:Core/Src/main.c ****   {
+ 636              		.loc 1 162 6 view .LVU209
+ 637 0068 30B9     		cbnz	r0, .L38
+ 166:Core/Src/main.c **** 
+ 638              		.loc 1 166 1 view .LVU210
+ 639 006a 17B0     		add	sp, sp, #92
+ 640              	.LCFI8:
+ 641              		.cfi_remember_state
+ 642              		.cfi_def_cfa_offset 4
+ 643              		@ sp needed
+ 644 006c 5DF804FB 		ldr	pc, [sp], #4
+ 645              	.L36:
+ 646              	.LCFI9:
+ 647              		.cfi_restore_state
+ 131:Core/Src/main.c ****   }
+ 648              		.loc 1 131 5 is_stmt 1 view .LVU211
+ 649 0070 FFF7FEFF 		bl	Error_Handler
+ 650              	.LVL23:
+ 651              	.L37:
+ 150:Core/Src/main.c ****   }
+ 652              		.loc 1 150 5 view .LVU212
+ 653 0074 FFF7FEFF 		bl	Error_Handler
+ 654              	.LVL24:
+ 655              	.L38:
+ 164:Core/Src/main.c ****   }
+ 656              		.loc 1 164 5 view .LVU213
+ 657 0078 FFF7FEFF 		bl	Error_Handler
+ 658              	.LVL25:
+ 659              		.cfi_endproc
+ 660              	.LFE135:
+ 662              		.section	.text.main,"ax",%progbits
+ 663              		.align	1
+ 664              		.global	main
+ 665              		.syntax unified
+ 666              		.thumb
+ 667              		.thumb_func
+ 668              		.fpu fpv4-sp-d16
+ 670              	main:
+ 671              	.LFB134:
+  75:Core/Src/main.c ****   /* USER CODE BEGIN 1 */
+ 672              		.loc 1 75 1 view -0
+ 673              		.cfi_startproc
+ 674              		@ Volatile: function does not return.
+ 675              		@ args = 0, pretend = 0, frame = 0
+ 676              		@ frame_needed = 0, uses_anonymous_args = 0
+ 677 0000 08B5     		push	{r3, lr}
+ 678              	.LCFI10:
+ 679              		.cfi_def_cfa_offset 8
+ 680              		.cfi_offset 3, -8
+ 681              		.cfi_offset 14, -4
+  83:Core/Src/main.c **** 
+ 682              		.loc 1 83 3 view .LVU215
+ARM GAS  /tmp/ccE4Rdf4.s 			page 39
+
+
+ 683 0002 FFF7FEFF 		bl	HAL_Init
+ 684              	.LVL26:
+  90:Core/Src/main.c **** 
+ 685              		.loc 1 90 3 view .LVU216
+ 686 0006 FFF7FEFF 		bl	SystemClock_Config
+ 687              	.LVL27:
+  97:Core/Src/main.c ****   MX_USART3_UART_Init();
+ 688              		.loc 1 97 3 view .LVU217
+ 689 000a FFF7FEFF 		bl	MX_GPIO_Init
+ 690              	.LVL28:
+  98:Core/Src/main.c ****   MX_USB_OTG_FS_PCD_Init();
+ 691              		.loc 1 98 3 view .LVU218
+ 692 000e FFF7FEFF 		bl	MX_USART3_UART_Init
+ 693              	.LVL29:
+  99:Core/Src/main.c ****   MX_CRC_Init();
+ 694              		.loc 1 99 3 view .LVU219
+ 695 0012 FFF7FEFF 		bl	MX_USB_OTG_FS_PCD_Init
+ 696              	.LVL30:
+ 100:Core/Src/main.c ****   MX_X_CUBE_AI_Init();
+ 697              		.loc 1 100 3 view .LVU220
+ 698 0016 FFF7FEFF 		bl	MX_CRC_Init
+ 699              	.LVL31:
+ 101:Core/Src/main.c ****   /* USER CODE BEGIN 2 */
+ 700              		.loc 1 101 3 view .LVU221
+ 701 001a FFF7FEFF 		bl	MX_X_CUBE_AI_Init
+ 702              	.LVL32:
+ 703              	.L40:
+ 108:Core/Src/main.c ****   {
+ 704              		.loc 1 108 3 discriminator 1 view .LVU222
+ 112:Core/Src/main.c ****     /* USER CODE BEGIN 3 */
+ 705              		.loc 1 112 3 discriminator 1 view .LVU223
+ 706 001e FFF7FEFF 		bl	MX_X_CUBE_AI_Process
+ 707              	.LVL33:
+ 108:Core/Src/main.c ****   {
+ 708              		.loc 1 108 9 discriminator 1 view .LVU224
+ 709 0022 FCE7     		b	.L40
+ 710              		.cfi_endproc
+ 711              	.LFE134:
+ 713              		.section	.text.MX_LPUART1_UART_Init,"ax",%progbits
+ 714              		.align	1
+ 715              		.global	MX_LPUART1_UART_Init
+ 716              		.syntax unified
+ 717              		.thumb
+ 718              		.thumb_func
+ 719              		.fpu fpv4-sp-d16
+ 721              	MX_LPUART1_UART_Init:
+ 722              	.LFB137:
+ 205:Core/Src/main.c **** 
+ 723              		.loc 1 205 1 view -0
+ 724              		.cfi_startproc
+ 725              		@ args = 0, pretend = 0, frame = 0
+ 726              		@ frame_needed = 0, uses_anonymous_args = 0
+ 727 0000 08B5     		push	{r3, lr}
+ 728              	.LCFI11:
+ 729              		.cfi_def_cfa_offset 8
+ 730              		.cfi_offset 3, -8
+ 731              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccE4Rdf4.s 			page 40
+
+
+ 214:Core/Src/main.c ****   hlpuart1.Init.BaudRate = 115200;
+ 732              		.loc 1 214 3 view .LVU226
+ 214:Core/Src/main.c ****   hlpuart1.Init.BaudRate = 115200;
+ 733              		.loc 1 214 21 is_stmt 0 view .LVU227
+ 734 0002 1548     		ldr	r0, .L52
+ 735 0004 154B     		ldr	r3, .L52+4
+ 736 0006 0360     		str	r3, [r0]
+ 215:Core/Src/main.c ****   hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 737              		.loc 1 215 3 is_stmt 1 view .LVU228
+ 215:Core/Src/main.c ****   hlpuart1.Init.WordLength = UART_WORDLENGTH_8B;
+ 738              		.loc 1 215 26 is_stmt 0 view .LVU229
+ 739 0008 4FF4E133 		mov	r3, #115200
+ 740 000c 4360     		str	r3, [r0, #4]
+ 216:Core/Src/main.c ****   hlpuart1.Init.StopBits = UART_STOPBITS_1;
+ 741              		.loc 1 216 3 is_stmt 1 view .LVU230
+ 216:Core/Src/main.c ****   hlpuart1.Init.StopBits = UART_STOPBITS_1;
+ 742              		.loc 1 216 28 is_stmt 0 view .LVU231
+ 743 000e 0023     		movs	r3, #0
+ 744 0010 8360     		str	r3, [r0, #8]
+ 217:Core/Src/main.c ****   hlpuart1.Init.Parity = UART_PARITY_NONE;
+ 745              		.loc 1 217 3 is_stmt 1 view .LVU232
+ 217:Core/Src/main.c ****   hlpuart1.Init.Parity = UART_PARITY_NONE;
+ 746              		.loc 1 217 26 is_stmt 0 view .LVU233
+ 747 0012 C360     		str	r3, [r0, #12]
+ 218:Core/Src/main.c ****   hlpuart1.Init.Mode = UART_MODE_TX_RX;
+ 748              		.loc 1 218 3 is_stmt 1 view .LVU234
+ 218:Core/Src/main.c ****   hlpuart1.Init.Mode = UART_MODE_TX_RX;
+ 749              		.loc 1 218 24 is_stmt 0 view .LVU235
+ 750 0014 0361     		str	r3, [r0, #16]
+ 219:Core/Src/main.c ****   hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 751              		.loc 1 219 3 is_stmt 1 view .LVU236
+ 219:Core/Src/main.c ****   hlpuart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+ 752              		.loc 1 219 22 is_stmt 0 view .LVU237
+ 753 0016 0C22     		movs	r2, #12
+ 754 0018 4261     		str	r2, [r0, #20]
+ 220:Core/Src/main.c ****   hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 755              		.loc 1 220 3 is_stmt 1 view .LVU238
+ 220:Core/Src/main.c ****   hlpuart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+ 756              		.loc 1 220 27 is_stmt 0 view .LVU239
+ 757 001a 8361     		str	r3, [r0, #24]
+ 221:Core/Src/main.c ****   hlpuart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 758              		.loc 1 221 3 is_stmt 1 view .LVU240
+ 221:Core/Src/main.c ****   hlpuart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+ 759              		.loc 1 221 32 is_stmt 0 view .LVU241
+ 760 001c 0362     		str	r3, [r0, #32]
+ 222:Core/Src/main.c ****   hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 761              		.loc 1 222 3 is_stmt 1 view .LVU242
+ 222:Core/Src/main.c ****   hlpuart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 762              		.loc 1 222 32 is_stmt 0 view .LVU243
+ 763 001e 4362     		str	r3, [r0, #36]
+ 223:Core/Src/main.c ****   hlpuart1.FifoMode = UART_FIFOMODE_DISABLE;
+ 764              		.loc 1 223 3 is_stmt 1 view .LVU244
+ 223:Core/Src/main.c ****   hlpuart1.FifoMode = UART_FIFOMODE_DISABLE;
+ 765              		.loc 1 223 40 is_stmt 0 view .LVU245
+ 766 0020 8362     		str	r3, [r0, #40]
+ 224:Core/Src/main.c ****   if (HAL_UART_Init(&hlpuart1) != HAL_OK)
+ 767              		.loc 1 224 3 is_stmt 1 view .LVU246
+ARM GAS  /tmp/ccE4Rdf4.s 			page 41
+
+
+ 224:Core/Src/main.c ****   if (HAL_UART_Init(&hlpuart1) != HAL_OK)
+ 768              		.loc 1 224 21 is_stmt 0 view .LVU247
+ 769 0022 4366     		str	r3, [r0, #100]
+ 225:Core/Src/main.c ****   {
+ 770              		.loc 1 225 3 is_stmt 1 view .LVU248
+ 225:Core/Src/main.c ****   {
+ 771              		.loc 1 225 7 is_stmt 0 view .LVU249
+ 772 0024 FFF7FEFF 		bl	HAL_UART_Init
+ 773              	.LVL34:
+ 225:Core/Src/main.c ****   {
+ 774              		.loc 1 225 6 view .LVU250
+ 775 0028 70B9     		cbnz	r0, .L48
+ 229:Core/Src/main.c ****   {
+ 776              		.loc 1 229 3 is_stmt 1 view .LVU251
+ 229:Core/Src/main.c ****   {
+ 777              		.loc 1 229 7 is_stmt 0 view .LVU252
+ 778 002a 0021     		movs	r1, #0
+ 779 002c 0A48     		ldr	r0, .L52
+ 780 002e FFF7FEFF 		bl	HAL_UARTEx_SetTxFifoThreshold
+ 781              	.LVL35:
+ 229:Core/Src/main.c ****   {
+ 782              		.loc 1 229 6 view .LVU253
+ 783 0032 58B9     		cbnz	r0, .L49
+ 233:Core/Src/main.c ****   {
+ 784              		.loc 1 233 3 is_stmt 1 view .LVU254
+ 233:Core/Src/main.c ****   {
+ 785              		.loc 1 233 7 is_stmt 0 view .LVU255
+ 786 0034 0021     		movs	r1, #0
+ 787 0036 0848     		ldr	r0, .L52
+ 788 0038 FFF7FEFF 		bl	HAL_UARTEx_SetRxFifoThreshold
+ 789              	.LVL36:
+ 233:Core/Src/main.c ****   {
+ 790              		.loc 1 233 6 view .LVU256
+ 791 003c 40B9     		cbnz	r0, .L50
+ 237:Core/Src/main.c ****   {
+ 792              		.loc 1 237 3 is_stmt 1 view .LVU257
+ 237:Core/Src/main.c ****   {
+ 793              		.loc 1 237 7 is_stmt 0 view .LVU258
+ 794 003e 0648     		ldr	r0, .L52
+ 795 0040 FFF7FEFF 		bl	HAL_UARTEx_DisableFifoMode
+ 796              	.LVL37:
+ 237:Core/Src/main.c ****   {
+ 797              		.loc 1 237 6 view .LVU259
+ 798 0044 30B9     		cbnz	r0, .L51
+ 245:Core/Src/main.c **** 
+ 799              		.loc 1 245 1 view .LVU260
+ 800 0046 08BD     		pop	{r3, pc}
+ 801              	.L48:
+ 227:Core/Src/main.c ****   }
+ 802              		.loc 1 227 5 is_stmt 1 view .LVU261
+ 803 0048 FFF7FEFF 		bl	Error_Handler
+ 804              	.LVL38:
+ 805              	.L49:
+ 231:Core/Src/main.c ****   }
+ 806              		.loc 1 231 5 view .LVU262
+ 807 004c FFF7FEFF 		bl	Error_Handler
+ 808              	.LVL39:
+ARM GAS  /tmp/ccE4Rdf4.s 			page 42
+
+
+ 809              	.L50:
+ 235:Core/Src/main.c ****   }
+ 810              		.loc 1 235 5 view .LVU263
+ 811 0050 FFF7FEFF 		bl	Error_Handler
+ 812              	.LVL40:
+ 813              	.L51:
+ 239:Core/Src/main.c ****   }
+ 814              		.loc 1 239 5 view .LVU264
+ 815 0054 FFF7FEFF 		bl	Error_Handler
+ 816              	.LVL41:
+ 817              	.L53:
+ 818              		.align	2
+ 819              	.L52:
+ 820 0058 00000000 		.word	hlpuart1
+ 821 005c 00800040 		.word	1073774592
+ 822              		.cfi_endproc
+ 823              	.LFE137:
+ 825              		.comm	hpcd_USB_OTG_FS,1292,4
+ 826              		.comm	huart3,144,4
+ 827              		.comm	hlpuart1,144,4
+ 828              		.comm	hcrc,36,4
+ 829              		.text
+ 830              	.Letext0:
+ 831              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 832              		.file 4 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/core_cm4.h"
+ 833              		.file 5 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h"
+ 834              		.file 6 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4r5xx.h"
+ 835              		.file 7 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4xx.h"
+ 836              		.file 8 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h"
+ 837              		.file 9 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h"
+ 838              		.file 10 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio.h"
+ 839              		.file 11 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h"
+ 840              		.file 12 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_crc.h"
+ 841              		.file 13 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h"
+ 842              		.file 14 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usb.h"
+ 843              		.file 15 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd.h"
+ 844              		.file 16 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h"
+ 845              		.file 17 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h"
+ 846              		.file 18 "Middlewares/ST/AI/Inc/ai_platform.h"
+ 847              		.file 19 "X-CUBE-AI/App/app_x-cube-ai.h"
+ 848              		.file 20 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pwr_ex.h"
+ 849              		.file 21 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h"
+ 850              		.file 22 "<built-in>"
+ARM GAS  /tmp/ccE4Rdf4.s 			page 43
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccE4Rdf4.s:18     .text.MX_GPIO_Init:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:25     .text.MX_GPIO_Init:0000000000000000 MX_GPIO_Init
+     /tmp/ccE4Rdf4.s:236    .text.MX_GPIO_Init:00000000000000f0 $d
+     /tmp/ccE4Rdf4.s:244    .text.Error_Handler:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:251    .text.Error_Handler:0000000000000000 Error_Handler
+     /tmp/ccE4Rdf4.s:283    .text.MX_USART3_UART_Init:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:289    .text.MX_USART3_UART_Init:0000000000000000 MX_USART3_UART_Init
+     /tmp/ccE4Rdf4.s:388    .text.MX_USART3_UART_Init:0000000000000058 $d
+                            *COM*:0000000000000090 huart3
+     /tmp/ccE4Rdf4.s:394    .text.MX_USB_OTG_FS_PCD_Init:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:400    .text.MX_USB_OTG_FS_PCD_Init:0000000000000000 MX_USB_OTG_FS_PCD_Init
+     /tmp/ccE4Rdf4.s:459    .text.MX_USB_OTG_FS_PCD_Init:0000000000000030 $d
+                            *COM*:000000000000050c hpcd_USB_OTG_FS
+     /tmp/ccE4Rdf4.s:464    .text.MX_CRC_Init:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:470    .text.MX_CRC_Init:0000000000000000 MX_CRC_Init
+     /tmp/ccE4Rdf4.s:518    .text.MX_CRC_Init:0000000000000024 $d
+                            *COM*:0000000000000024 hcrc
+     /tmp/ccE4Rdf4.s:524    .text.SystemClock_Config:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:531    .text.SystemClock_Config:0000000000000000 SystemClock_Config
+     /tmp/ccE4Rdf4.s:663    .text.main:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:670    .text.main:0000000000000000 main
+     /tmp/ccE4Rdf4.s:714    .text.MX_LPUART1_UART_Init:0000000000000000 $t
+     /tmp/ccE4Rdf4.s:721    .text.MX_LPUART1_UART_Init:0000000000000000 MX_LPUART1_UART_Init
+     /tmp/ccE4Rdf4.s:820    .text.MX_LPUART1_UART_Init:0000000000000058 $d
+                            *COM*:0000000000000090 hlpuart1
+
+UNDEFINED SYMBOLS
+HAL_PWREx_EnableVddIO2
+HAL_GPIO_WritePin
+HAL_GPIO_Init
+HAL_UART_Init
+HAL_UARTEx_SetTxFifoThreshold
+HAL_UARTEx_SetRxFifoThreshold
+HAL_UARTEx_DisableFifoMode
+HAL_PCD_Init
+HAL_CRC_Init
+memset
+HAL_PWREx_ControlVoltageScaling
+HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
+HAL_Init
+MX_X_CUBE_AI_Init
+MX_X_CUBE_AI_Process

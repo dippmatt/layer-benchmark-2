@@ -1,0 +1,248 @@
+ARM GAS  /tmp/ccCJlaCx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_nn_depthwise_conv_nt_t_s8.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_nn_depthwise_conv_nt_t_s8,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_nn_depthwise_conv_nt_t_s8
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_nn_depthwise_conv_nt_t_s8:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_co
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * SPDX-FileCopyrightText: Copyright 2010-2020, 2022 Arm Limited and/or its affiliates <open-source
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Title:        arm_nn_depthwise_conv_nt_t_s8.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Description:  Depthwise convolution on matrices with no padding.
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * $Date:        26 October 2022
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * $Revision:    V.2.0.1
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Target Processor:  Cortex-M processors with MVE extension.
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * -------------------------------------------------------------------- */
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ARM GAS  /tmp/ccCJlaCx.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** #include "arm_nnsupportfunctions.h"
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** /**
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * @ingroup groupSupport
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  */
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** /**
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * @addtogroup supportConvolution
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * @{
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  */
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** /*
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Depthwise convolution of rhs matrix with 4 lhs matrices with no padding. Dimensions are the same
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  * Refer header file for details.
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  *
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****  */
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** arm_cmsis_nn_status arm_nn_depthwise_conv_nt_t_s8(const int8_t *lhs,
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int8_t *rhs,
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t input_offset,
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t active_ch,
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t total_ch,
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t *out_shift,
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t *out_mult,
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t out_offset,
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t activation_min,
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t activation_max,
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const uint16_t row_x_col,
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   const int32_t *const output_bias,
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****                                                   int8_t *out)
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** {
+  30              		.loc 1 60 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 36, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** #if defined(ARM_MATH_MVEI)
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     const int32_t *bias = output_bias;
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     int32_t loop_count = (active_ch + 3) / 4;
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     uint32_t num_ch_to_process = active_ch;
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     for (int i_loop_cnt = 0, offset = 0; i_loop_cnt < loop_count;
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****          num_ch_to_process -= 4, offset += 4, out += 4, i_loop_cnt++)
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     {
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         int32x4_t out_0 = vdupq_n_s32(0);
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         if (bias)
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         {
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             out_0 = vldrwq_s32(bias);
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             bias += 4;
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         }
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         int32x4_t out_1 = out_0;
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         int32x4_t out_2 = out_0;
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         int32x4_t out_3 = out_0;
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int8_t *rhs_0 = rhs + offset;
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int8_t *lhs_0 = lhs + offset;
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int8_t *lhs_1 = lhs + row_x_col * CH_IN_BLOCK_MVE + offset;
+ARM GAS  /tmp/ccCJlaCx.s 			page 3
+
+
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int8_t *lhs_2 = lhs + (row_x_col * CH_IN_BLOCK_MVE * 2) + offset;
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int8_t *lhs_3 = lhs + (row_x_col * CH_IN_BLOCK_MVE * 3) + offset;
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         int32x4_t ker_sum = vdupq_n_s32(0);
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         for (int i_row_x_col = 0; i_row_x_col < row_x_col; i_row_x_col++)
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         {
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             const int32x4_t ker_0 = vldrbq_s32(rhs_0);
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             ker_sum = vaddq_s32(ker_sum, ker_0);
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             int32x4_t ip_0 = vldrbq_s32(lhs_0);
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             out_0 += vmulq_s32(ip_0, ker_0);
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             int32x4_t ip_1 = vldrbq_s32(lhs_1);
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             out_1 += vmulq_s32(ip_1, ker_0);
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             int32x4_t ip_2 = vldrbq_s32(lhs_2);
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             out_2 += vmulq_s32(ip_2, ker_0);
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             int32x4_t ip_3 = vldrbq_s32(lhs_3);
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             out_3 += vmulq_s32(ip_3, ker_0);
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             lhs_0 += CH_IN_BLOCK_MVE;
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             lhs_1 += CH_IN_BLOCK_MVE;
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             lhs_2 += CH_IN_BLOCK_MVE;
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             lhs_3 += CH_IN_BLOCK_MVE;
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****             rhs_0 += total_ch;
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         }
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         ker_sum = vmulq_n_s32(ker_sum, input_offset);
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_0 = ker_sum + out_0;
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_1 = ker_sum + out_1;
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_2 = ker_sum + out_2;
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_3 = ker_sum + out_3;
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int32x4_t mult = vldrwq_s32(out_mult);
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         const int32x4_t shift = vldrwq_s32(out_shift);
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_mult += 4;
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_shift += 4;
+ 121:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         mve_pred16_t p = vctp32q(num_ch_to_process);
+ 122:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 123:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_0 = arm_requantize_mve_32x4(out_0, mult, shift);
+ 124:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_0 = vaddq_n_s32(out_0, out_offset);
+ 125:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_0 = vmaxq_s32(out_0, vdupq_n_s32(activation_min));
+ 126:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_0 = vminq_s32(out_0, vdupq_n_s32(activation_max));
+ 127:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         vstrbq_p_s32(out, out_0, p);
+ 128:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 129:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_1 = arm_requantize_mve_32x4(out_1, mult, shift);
+ 130:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_1 = vaddq_n_s32(out_1, out_offset);
+ 131:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_1 = vmaxq_s32(out_1, vdupq_n_s32(activation_min));
+ 132:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_1 = vminq_s32(out_1, vdupq_n_s32(activation_max));
+ 133:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         vstrbq_p_s32(out + total_ch, out_1, p);
+ 134:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 135:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_2 = arm_requantize_mve_32x4(out_2, mult, shift);
+ 136:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_2 = vaddq_n_s32(out_2, out_offset);
+ 137:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_2 = vmaxq_s32(out_2, vdupq_n_s32(activation_min));
+ 138:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_2 = vminq_s32(out_2, vdupq_n_s32(activation_max));
+ARM GAS  /tmp/ccCJlaCx.s 			page 4
+
+
+ 139:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         vstrbq_p_s32(out + 2 * total_ch, out_2, p);
+ 140:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 141:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_3 = arm_requantize_mve_32x4(out_3, mult, shift);
+ 142:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_3 = vaddq_n_s32(out_3, out_offset);
+ 143:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_3 = vmaxq_s32(out_3, vdupq_n_s32(activation_min));
+ 144:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         out_3 = vminq_s32(out_3, vdupq_n_s32(activation_max));
+ 145:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****         vstrbq_p_s32(out + 3 * total_ch, out_3, p);
+ 146:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     }
+ 147:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** 
+ 148:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     return ARM_CMSIS_NN_SUCCESS;
+ 149:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** #else
+ 150:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)lhs;
+  35              		.loc 1 150 5 view .LVU1
+ 151:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)rhs;
+  36              		.loc 1 151 5 view .LVU2
+ 152:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)input_offset;
+  37              		.loc 1 152 5 view .LVU3
+ 153:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)active_ch;
+  38              		.loc 1 153 5 view .LVU4
+ 154:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)total_ch;
+  39              		.loc 1 154 5 view .LVU5
+ 155:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)out_shift;
+  40              		.loc 1 155 5 view .LVU6
+ 156:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)out_mult;
+  41              		.loc 1 156 5 view .LVU7
+ 157:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)out_offset;
+  42              		.loc 1 157 5 view .LVU8
+ 158:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)activation_min;
+  43              		.loc 1 158 5 view .LVU9
+ 159:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)activation_max;
+  44              		.loc 1 159 5 view .LVU10
+ 160:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)row_x_col;
+  45              		.loc 1 160 5 view .LVU11
+ 161:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)output_bias;
+  46              		.loc 1 161 5 view .LVU12
+ 162:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     (void)out;
+  47              		.loc 1 162 5 view .LVU13
+ 163:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c ****     return ARM_CMSIS_NN_NO_IMPL_ERROR;
+  48              		.loc 1 163 5 view .LVU14
+ 164:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** #endif
+ 165:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_depthwise_conv_nt_t_s8.c **** }
+  49              		.loc 1 165 1 is_stmt 0 view .LVU15
+  50 0000 6FF00100 		mvn	r0, #1
+  51              	.LVL1:
+  52              		.loc 1 165 1 view .LVU16
+  53 0004 7047     		bx	lr
+  54              		.cfi_endproc
+  55              	.LFE47:
+  57              		.text
+  58              	.Letext0:
+  59              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+  60              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+  61              		.file 4 "/usr/include/newlib/sys/_types.h"
+  62              		.file 5 "/usr/include/newlib/sys/reent.h"
+  63              		.file 6 "/usr/include/newlib/sys/lock.h"
+  64              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ARM GAS  /tmp/ccCJlaCx.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_nn_depthwise_conv_nt_t_s8.c
+     /tmp/ccCJlaCx.s:18     .text.arm_nn_depthwise_conv_nt_t_s8:0000000000000000 $t
+     /tmp/ccCJlaCx.s:26     .text.arm_nn_depthwise_conv_nt_t_s8:0000000000000000 arm_nn_depthwise_conv_nt_t_s8
+
+NO UNDEFINED SYMBOLS

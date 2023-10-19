@@ -1,0 +1,228 @@
+ARM GAS  /tmp/cccn0Qv7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_nn_mat_mul_core_1x_s8.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_nn_mat_mul_core_1x_s8,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_nn_mat_mul_core_1x_s8
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_nn_mat_mul_core_1x_s8:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * SPDX-FileCopyrightText: Copyright 2010-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Title:        arm_nn_mat_mul_core_1x_s8.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Description:  General Matrix-multiplication function
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * $Date:        20 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * $Revision:    V.3.1.3
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * -------------------------------------------------------------------- */
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+ARM GAS  /tmp/cccn0Qv7.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** #include "arm_nnsupportfunctions.h"
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** /**
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * @ingroup groupSupport
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  */
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** /**
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * @addtogroup supportConvolution
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * @{
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  */
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** /*
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * s8 matrix multiplication to process 1 row
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  * Refer header file for details.
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  *
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****  */
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** arm_cmsis_nn_status arm_nn_mat_mul_core_1x_s8(int32_t row_elements,
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const int32_t skipped_row_elements,
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const int8_t *row_base_ref,
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const int8_t *col_base_ref,
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const int32_t out_ch,
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const cmsis_nn_conv_params *conv_params,
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const cmsis_nn_per_channel_quant_params *quant_params
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               const int32_t *bias,
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                                               int8_t *output)
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** {
+  30              		.loc 1 56 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 20, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** #if defined(ARM_MATH_MVEI)
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     const int8_t *col_base = col_base_ref;
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     int32_t *output_mult = quant_params->multiplier;
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     int32_t *output_shift = quant_params->shift;
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     const int32_t out_offset = conv_params->output_offset;
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     const int32_t out_activation_min = conv_params->activation.min;
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     const int32_t out_activation_max = conv_params->activation.max;
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     int32_t acc[4];
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     for (int i = 0; i < out_ch; i++)
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     {
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         int32_t acc_n0 = 0;
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         const int8_t *row_base = row_base_ref;
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         int32_t sum_tmp = 0;
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     #if defined(ARM_MATH_AUTOVECTORIZE)
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         for (int j = 0; j < row_elements; j++)
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         {
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             int32_t col = col_base[j];
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             sum_tmp += col;
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             acc_n0 += row_base[j] * col;
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         }
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     #else
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         __ASM volatile(" .p2align 2                             \n"
+ARM GAS  /tmp/cccn0Qv7.s 			page 3
+
+
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  vldrb.8         q0, [%[col]], #16     \n"
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  wlstp.8         lr, %[cnt], 1f       \n"
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "2:                                      \n"
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  vaddva.s8      %[sum], q0            \n"
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  vldrb.8         q1, [%[row0]], #16   \n"
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  vmladava.s8    %[out0], q0, q1       \n"
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  vldrb.8         q0, [%[col]], #16    \n"
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "  letp            lr, 2b               \n"
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        "1:                                      \n"
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        : [col] "+r"(col_base), [sum] "+Te"(sum_tmp), [row0] "+r"(row_base), [out0] 
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        : [cnt] "r"(row_elements)
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                        : "q0", "q1", "memory", "r14");
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     #endif
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         sum_tmp *= conv_params->input_offset;
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         acc_n0 += sum_tmp;
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         const int32_t index = i & 0x3;
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         acc[index] = acc_n0;
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         if (index == 3)
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         {
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             int32x4_t res = vldrwq_s32(acc);
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             if (bias)
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             {
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                 res = vaddq_s32(res, vldrwq_s32(bias));
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****                 bias += 4;
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             }
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             res = arm_requantize_mve_32x4(res, vldrwq_s32(output_mult), vldrwq_s32(output_shift));
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             output_mult += 4;
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             output_shift += 4;
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             res = vaddq_n_s32(res, out_offset);
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             res = vmaxq_s32(res, vdupq_n_s32(out_activation_min));
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             res = vminq_s32(res, vdupq_n_s32(out_activation_max));
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             vstrbq_s32(output, res);
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             output += 4;
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         }
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         col_base = col_base_ref + (i + 1) * (row_elements + skipped_row_elements);
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     }
+ 121:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     // Handle left over elements
+ 122:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     for (int i = 0; i < (out_ch & 0x3); i++)
+ 123:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     {
+ 124:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         int32_t acc_n0 = acc[i];
+ 125:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         if (bias)
+ 126:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         {
+ 127:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****             acc_n0 += bias[i];
+ 128:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         }
+ 129:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         acc_n0 = arm_nn_requantize(acc_n0, output_mult[i], output_shift[i]);
+ 130:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         acc_n0 += conv_params->output_offset;
+ 131:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         acc_n0 = MAX(acc_n0, conv_params->activation.min);
+ 132:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         acc_n0 = MIN(acc_n0, conv_params->activation.max);
+ 133:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****         *output++ = (int8_t)acc_n0;
+ 134:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     }
+ 135:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     return ARM_CMSIS_NN_SUCCESS;
+ 136:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** 
+ 137:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** #else
+ 138:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)row_elements;
+ARM GAS  /tmp/cccn0Qv7.s 			page 4
+
+
+  35              		.loc 1 138 5 view .LVU1
+ 139:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)skipped_row_elements;
+  36              		.loc 1 139 5 view .LVU2
+ 140:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)row_base_ref;
+  37              		.loc 1 140 5 view .LVU3
+ 141:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)col_base_ref;
+  38              		.loc 1 141 5 view .LVU4
+ 142:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)out_ch;
+  39              		.loc 1 142 5 view .LVU5
+ 143:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)conv_params;
+  40              		.loc 1 143 5 view .LVU6
+ 144:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)quant_params;
+  41              		.loc 1 144 5 view .LVU7
+ 145:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)bias;
+  42              		.loc 1 145 5 view .LVU8
+ 146:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     (void)output;
+  43              		.loc 1 146 5 view .LVU9
+ 147:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c ****     return ARM_CMSIS_NN_NO_IMPL_ERROR;
+  44              		.loc 1 147 5 view .LVU10
+ 148:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** #endif
+ 149:Middlewares/tensorflow/third_party/cmsis_nn/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c **** }
+  45              		.loc 1 149 1 is_stmt 0 view .LVU11
+  46 0000 6FF00100 		mvn	r0, #1
+  47              	.LVL1:
+  48              		.loc 1 149 1 view .LVU12
+  49 0004 7047     		bx	lr
+  50              		.cfi_endproc
+  51              	.LFE47:
+  53              		.text
+  54              	.Letext0:
+  55              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+  56              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+  57              		.file 4 "/usr/include/newlib/sys/_types.h"
+  58              		.file 5 "/usr/include/newlib/sys/reent.h"
+  59              		.file 6 "/usr/include/newlib/sys/lock.h"
+  60              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ARM GAS  /tmp/cccn0Qv7.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_nn_mat_mul_core_1x_s8.c
+     /tmp/cccn0Qv7.s:18     .text.arm_nn_mat_mul_core_1x_s8:0000000000000000 $t
+     /tmp/cccn0Qv7.s:26     .text.arm_nn_mat_mul_core_1x_s8:0000000000000000 arm_nn_mat_mul_core_1x_s8
+
+NO UNDEFINED SYMBOLS

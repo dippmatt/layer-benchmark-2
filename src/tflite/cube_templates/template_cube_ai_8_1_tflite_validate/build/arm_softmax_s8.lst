@@ -1,0 +1,305 @@
+ARM GAS  /tmp/ccwF5UYX.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_softmax_s8.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_softmax_s8,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_softmax_s8
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_softmax_s8:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c"
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * SPDX-FileCopyrightText: Copyright 2010-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * Title:        arm_softmax_s8.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * Description:  S8 softmax function
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * $Date:        5 January 2023
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * $Revision:    V.2.2.0
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * Target :  Arm(R) M-Profile Architecture
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccwF5UYX.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #define ACCUM_BITS 12
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #if defined(ARM_MATH_MVEI) && !defined(ARM_GCC_12_2_ICE)
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** static int32x4_t arm_exp_on_negative_values_mve_32x4(int32x4_t val)
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** {
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     #define SHIFT_START (24)
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     int32_t shift = SHIFT_START;
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     int32x4_t mask;
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32x4_t val_mod_minus_quarter =
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         vandq_s32(val, vdupq_n_s32((1 << SHIFT_START) - 1)) - vdupq_n_s32(1 << SHIFT_START);
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32x4_t remainder = vsubq_s32(val_mod_minus_quarter, val);
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32x4_t x = vaddq_n_s32(val_mod_minus_quarter << 5, 1 << 28);
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32x4_t x2 = MUL_SAT_MVE(x, x);
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32x4_t op_1 = DIV_POW2_MVE(MUL_SAT_MVE(x2, x2), 2) + MUL_SAT_MVE(x2, x);
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32x4_t op_2 = x + DIV_POW2_MVE(MUL_SAT_MVE(op_1, vdupq_n_s32(715827883)) + x2, 1);
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     int32x4_t result = vdupq_n_s32(1895147668) + MUL_SAT_MVE(vdupq_n_s32(1895147668), op_2);
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     #define SELECT_IF_NON_ZERO(x)                                                                  
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         {                                                                                          
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             mve_pred16_t p = vcmpneq_n_s32(remainder & vdupq_n_s32(1 << shift++), 0);              
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             mask = vmvnq_m_s32(vdupq_n_s32(0), vdupq_n_s32(0), p);                                 
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             result = SELECT_USING_MASK(mask, MUL_SAT_MVE(result, vdupq_n_s32(x)), result);         
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         }
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(1672461947)
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(1302514674)
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(790015084)
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(290630308)
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(39332535)
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(720401)
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     SELECT_IF_NON_ZERO(242)
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     #undef SELECT_IF_NON_ZERO
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     mve_pred16_t p = vcmpeqq_n_s32(val, 0);
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     mask = vmvnq_m_s32(vdupq_n_s32(0), vdupq_n_s32(0), p);
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     result = SELECT_USING_MASK(mask, vdupq_n_s32(NN_Q31_MAX), result);
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     return result;
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** }
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #endif
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** /**
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  *  @ingroup Public
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  */
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** /**
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * @addtogroup Softmax
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  * @{
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****  */
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** void arm_softmax_s8(const int8_t *input,
+ARM GAS  /tmp/ccwF5UYX.s 			page 3
+
+
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     const int32_t num_rows,
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     const int32_t row_size,
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     const int32_t mult,
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     const int32_t shift,
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     const int32_t diff_min,
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     int8_t *output)
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** {
+  30              		.loc 1 93 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 12, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 93 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 84B0     		sub	sp, sp, #16
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 24
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #if defined(ARM_MATH_MVEI) && !defined(ARM_GCC_12_2_ICE)
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     #define ACT_MIN ((int8_t)NN_Q7_MIN)
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     #define ACT_MAX ((int8_t)NN_Q7_MAX)
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     const int32_t mask = (1 << shift);
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     for (int i_num_rows = 0; i_num_rows < num_rows; ++i_num_rows)
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     {
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         int8_t max = ACT_MIN;
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         int32_t vec_count = (row_size + 15) / 16;
+ 106:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         uint32_t r_count = (uint32_t)row_size;
+ 107:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         for (int i = 0; i < vec_count; i++)
+ 108:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         {
+ 109:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             mve_pred16_t p = vctp8q(r_count);
+ 110:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             const int8x16_t ip = vldrbq_z_s8(&input[i * 16], p);
+ 111:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             max = vmaxvq_p_s8(max, ip, p);
+ 112:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             r_count -= 16;
+ 113:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         }
+ 114:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 115:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         vec_count = row_size / 4;
+ 116:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         int32_t idx = 0;
+ 117:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         int32_t sum = 0;
+ 118:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 119:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         while (vec_count)
+ 120:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         {
+ 121:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             int32x4_t ip = vldrbq_s32(&input[idx * 4]);
+ 122:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             ip = vsubq_n_s32(ip, max);
+ 123:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             mve_pred16_t p = vcmpgeq_n_s32(ip, diff_min);
+ 124:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             if (p != 0)
+ 125:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             {
+ 126:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 ip = vmulq_n_s32(ip, mask);
+ 127:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 128:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 int32x4_t res = MUL_SAT_MVE(ip, vdupq_n_s32(mult));
+ 129:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 130:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 res = arm_exp_on_negative_values_mve_32x4(res);
+ARM GAS  /tmp/ccwF5UYX.s 			page 4
+
+
+ 131:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 res = DIV_POW2_MVE(res, ACCUM_BITS);
+ 132:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 res = vpselq_s32(res, vdupq_n_s32(0), p);
+ 133:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 sum += vaddvq_s32(res);
+ 134:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             }
+ 135:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 136:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             vec_count--;
+ 137:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             idx++;
+ 138:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         }
+ 139:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 140:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         const int32_t tail_idx = row_size & ~3;
+ 141:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         for (int i = 0; i < (row_size & 3); i++)
+ 142:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         {
+ 143:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             const int32_t diff = input[tail_idx + i] - max;
+ 144:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             if (diff >= diff_min)
+ 145:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             {
+ 146:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 sum += DIV_POW2(EXP_ON_NEG(MUL_SAT(diff * mask, mult)), ACCUM_BITS);
+ 147:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             }
+ 148:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         }
+ 149:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 150:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         const int32_t headroom = CLZ((uint32_t)sum);
+ 151:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         const int32_t bits_over_unit = ACCUM_BITS - headroom + 23;
+ 152:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         const int32_t shifted_scale = ONE_OVER1((sum > 0 ? sum << headroom : 0) - (1 << 31));
+ 153:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 154:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         vec_count = row_size / 4;
+ 155:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         idx = 0;
+ 156:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 157:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         while (vec_count)
+ 158:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         {
+ 159:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             int32x4_t ip = vldrbq_s32(&input[idx]);
+ 160:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             ip = vsubq_n_s32(ip, max);
+ 161:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 162:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             mve_pred16_t p = vcmpgeq_n_s32(ip, diff_min);
+ 163:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 164:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             int32x4_t tmp_res;
+ 165:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 166:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             if (p != 0)
+ 167:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             {
+ 168:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 ip = vmulq_n_s32(ip, mask);
+ 169:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 170:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = MUL_SAT_MVE(ip, vdupq_n_s32(mult));
+ 171:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = arm_exp_on_negative_values_mve_32x4(tmp_res);
+ 172:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = MUL_SAT_MVE(vdupq_n_s32(shifted_scale), tmp_res);
+ 173:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = DIV_POW2_MVE(tmp_res, bits_over_unit);
+ 174:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res += vdupq_n_s32(ACT_MIN);
+ 175:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 176:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = vmaxq_s32(tmp_res, vdupq_n_s32(ACT_MIN));
+ 177:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = vminq_s32(tmp_res, vdupq_n_s32(ACT_MAX));
+ 178:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = vpselq_s32(tmp_res, vdupq_n_s32(ACT_MIN), p);
+ 179:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             }
+ 180:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             else
+ 181:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             {
+ 182:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 tmp_res = vdupq_n_s32(ACT_MIN);
+ 183:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             }
+ 184:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             vstrbq_s32(&output[idx], tmp_res);
+ 185:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             vec_count--;
+ 186:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             idx += 4;
+ 187:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         }
+ARM GAS  /tmp/ccwF5UYX.s 			page 5
+
+
+ 188:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 189:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         for (int i = 0; i < (row_size & 3); i++)
+ 190:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         {
+ 191:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             int32_t diff = input[tail_idx + i] - max;
+ 192:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             if (diff >= diff_min)
+ 193:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             {
+ 194:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 const int32_t res =
+ 195:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     DIV_POW2(MUL_SAT(shifted_scale, EXP_ON_NEG(MUL_SAT(diff * mask, mult))), bits_o
+ 196:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                     NN_Q7_MIN;
+ 197:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 output[tail_idx + i] = (int8_t)CLAMP(res, (int32_t)ACT_MAX, (int32_t)ACT_MIN);
+ 198:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             }
+ 199:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             else
+ 200:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             {
+ 201:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****                 output[tail_idx + i] = ACT_MIN;
+ 202:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****             }
+ 203:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         }
+ 204:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** 
+ 205:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         input += row_size;
+ 206:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****         output += row_size;
+ 207:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     }
+ 208:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #else
+ 209:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c ****     arm_nn_softmax_common_s8(input, num_rows, row_size, mult, shift, diff_min, false, (void *)outpu
+  43              		.loc 1 209 5 is_stmt 1 view .LVU2
+  44 0004 089C     		ldr	r4, [sp, #32]
+  45 0006 0394     		str	r4, [sp, #12]
+  46 0008 0024     		movs	r4, #0
+  47 000a 0294     		str	r4, [sp, #8]
+  48 000c 079C     		ldr	r4, [sp, #28]
+  49 000e 0194     		str	r4, [sp, #4]
+  50 0010 069C     		ldr	r4, [sp, #24]
+  51 0012 0094     		str	r4, [sp]
+  52 0014 FFF7FEFF 		bl	arm_nn_softmax_common_s8
+  53              	.LVL1:
+ 210:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** #endif
+ 211:Middlewares/tensorflow/third_party/cmsis_nn/Source/SoftmaxFunctions/arm_softmax_s8.c **** }
+  54              		.loc 1 211 1 is_stmt 0 view .LVU3
+  55 0018 04B0     		add	sp, sp, #16
+  56              	.LCFI2:
+  57              		.cfi_def_cfa_offset 8
+  58              		@ sp needed
+  59 001a 10BD     		pop	{r4, pc}
+  60              		.loc 1 211 1 view .LVU4
+  61              		.cfi_endproc
+  62              	.LFE47:
+  64              		.text
+  65              	.Letext0:
+  66              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+  67              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+  68              		.file 4 "/usr/include/newlib/sys/_types.h"
+  69              		.file 5 "/usr/include/newlib/sys/reent.h"
+  70              		.file 6 "/usr/include/newlib/sys/lock.h"
+  71              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnsupportfunctions.h"
+ARM GAS  /tmp/ccwF5UYX.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_softmax_s8.c
+     /tmp/ccwF5UYX.s:18     .text.arm_softmax_s8:0000000000000000 $t
+     /tmp/ccwF5UYX.s:26     .text.arm_softmax_s8:0000000000000000 arm_softmax_s8
+
+UNDEFINED SYMBOLS
+arm_nn_softmax_common_s8

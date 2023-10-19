@@ -1,0 +1,3500 @@
+ARM GAS  /tmp/ccCNKDF9.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"aiTestUtility.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.ioRawGetUint8,"ax",%progbits
+  18              		.align	1
+  19              		.global	ioRawGetUint8
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	ioRawGetUint8:
+  27              	.LVL0:
+  28              	.LFB146:
+  29              		.file 1 "X-CUBE-AI/App/aiTestUtility.c"
+   1:X-CUBE-AI/App/aiTestUtility.c **** /**
+   2:X-CUBE-AI/App/aiTestUtility.c ****  ******************************************************************************
+   3:X-CUBE-AI/App/aiTestUtility.c ****  * @file    aiTestUtility.c
+   4:X-CUBE-AI/App/aiTestUtility.c ****  * @author  MCD/AIS Team
+   5:X-CUBE-AI/App/aiTestUtility.c ****  * @brief   Utility functions for AI test application
+   6:X-CUBE-AI/App/aiTestUtility.c ****  ******************************************************************************
+   7:X-CUBE-AI/App/aiTestUtility.c ****  * @attention
+   8:X-CUBE-AI/App/aiTestUtility.c ****  *
+   9:X-CUBE-AI/App/aiTestUtility.c ****  * <h2><center>&copy; Copyright (c) 2019,2023 STMicroelectronics.
+  10:X-CUBE-AI/App/aiTestUtility.c ****  * All rights reserved.</center></h2>
+  11:X-CUBE-AI/App/aiTestUtility.c ****  *
+  12:X-CUBE-AI/App/aiTestUtility.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:X-CUBE-AI/App/aiTestUtility.c ****  * the root directory of this software component.
+  14:X-CUBE-AI/App/aiTestUtility.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:X-CUBE-AI/App/aiTestUtility.c ****  *
+  16:X-CUBE-AI/App/aiTestUtility.c ****  ******************************************************************************
+  17:X-CUBE-AI/App/aiTestUtility.c ****  */
+  18:X-CUBE-AI/App/aiTestUtility.c **** 
+  19:X-CUBE-AI/App/aiTestUtility.c **** /*
+  20:X-CUBE-AI/App/aiTestUtility.c ****  * Description:
+  21:X-CUBE-AI/App/aiTestUtility.c ****  *
+  22:X-CUBE-AI/App/aiTestUtility.c ****  * History:
+  23:X-CUBE-AI/App/aiTestUtility.c ****  *  - v1.0 - initial version (from initial aiSystemPerformance file - v5.1)
+  24:X-CUBE-AI/App/aiTestUtility.c ****  *  - v1.1 - add Arm Compiler 6 support (MDK)
+  25:X-CUBE-AI/App/aiTestUtility.c ****  *  - v1.2 - add io low level code to manage a COM through the STM32 USB CDC profile
+  26:X-CUBE-AI/App/aiTestUtility.c ****  *           enabled with the USE_USB_CDC_CLASS = 1 define.
+  27:X-CUBE-AI/App/aiTestUtility.c ****  *  - v1.3 - Fix compilation issue for H7 dual core
+  28:X-CUBE-AI/App/aiTestUtility.c ****  *  - v2.0 - add Cortex-m0/m0plus support
+  29:X-CUBE-AI/App/aiTestUtility.c ****  *  - v2.1 - add U575ZI id
+ARM GAS  /tmp/ccCNKDF9.s 			page 2
+
+
+  30:X-CUBE-AI/App/aiTestUtility.c ****  *  - v2.2 - clean the way to build/report the STM32 configuration
+  31:X-CUBE-AI/App/aiTestUtility.c ****  *  - v3.1 - use ai_device_adaptor.h
+  32:X-CUBE-AI/App/aiTestUtility.c ****  *
+  33:X-CUBE-AI/App/aiTestUtility.c ****  */
+  34:X-CUBE-AI/App/aiTestUtility.c **** 
+  35:X-CUBE-AI/App/aiTestUtility.c **** /*
+  36:X-CUBE-AI/App/aiTestUtility.c ****  *  NOTE about the USE_USB_CDC_CLASS support
+  37:X-CUBE-AI/App/aiTestUtility.c ****  *
+  38:X-CUBE-AI/App/aiTestUtility.c ****  *   When USE_USB_CDC_CLASS is set to 1 the code to manage the
+  39:X-CUBE-AI/App/aiTestUtility.c ****  *   STM32 USB_DEVICE and the CDC class should added in the project.
+  40:X-CUBE-AI/App/aiTestUtility.c ****  *
+  41:X-CUBE-AI/App/aiTestUtility.c ****  *   CDC_Receive_FS()/CDC_Control_FS() functions (file: "usb_cdc_if.c")
+  42:X-CUBE-AI/App/aiTestUtility.c ****  *   should be adapted/patched
+  43:X-CUBE-AI/App/aiTestUtility.c ****  *
+  44:X-CUBE-AI/App/aiTestUtility.c ****  *   o CDC_Receive_FS() to handle the received data
+  45:X-CUBE-AI/App/aiTestUtility.c ****  *    ...
+  46:X-CUBE-AI/App/aiTestUtility.c ****  *    static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len) {
+  47:X-CUBE-AI/App/aiTestUtility.c ****  *      extern void ioPushInUserUsb(uint8_t *pw, uint32_t *len);
+  48:X-CUBE-AI/App/aiTestUtility.c ****  *      ioPushInUserUsb(Buf, Len);
+  49:X-CUBE-AI/App/aiTestUtility.c ****  *      USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+  50:X-CUBE-AI/App/aiTestUtility.c ****  *      USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  51:X-CUBE-AI/App/aiTestUtility.c ****  *      return (USBD_OK);
+  52:X-CUBE-AI/App/aiTestUtility.c ****  *      }
+  53:X-CUBE-AI/App/aiTestUtility.c ****  *    ...
+  54:X-CUBE-AI/App/aiTestUtility.c ****  *
+  55:X-CUBE-AI/App/aiTestUtility.c ****  *   o CDC_Control_FS() to return the valid data for CDC_GET_LINE_CODING
+  56:X-CUBE-AI/App/aiTestUtility.c ****  *     request.This is requested by the Python module in charge of the
+  57:X-CUBE-AI/App/aiTestUtility.c ****  *     Serial COM with the validation process.
+  58:X-CUBE-AI/App/aiTestUtility.c ****  *
+  59:X-CUBE-AI/App/aiTestUtility.c ****  *      ...
+  60:X-CUBE-AI/App/aiTestUtility.c ****  *      case CDC_GET_LINE_CODING:
+  61:X-CUBE-AI/App/aiTestUtility.c ****  *
+  62:X-CUBE-AI/App/aiTestUtility.c ****  *        if (length == 7) {
+  63:X-CUBE-AI/App/aiTestUtility.c ****  *        *(uint32_t *)pbuf = 115200;
+  64:X-CUBE-AI/App/aiTestUtility.c ****  *        pbuf[4] = 0;
+  65:X-CUBE-AI/App/aiTestUtility.c ****  *        pbuf[5] = 0;
+  66:X-CUBE-AI/App/aiTestUtility.c ****  *        pbuf[6] = 8;
+  67:X-CUBE-AI/App/aiTestUtility.c ****  *        }
+  68:X-CUBE-AI/App/aiTestUtility.c ****  *
+  69:X-CUBE-AI/App/aiTestUtility.c ****  *      break;
+  70:X-CUBE-AI/App/aiTestUtility.c ****  *      ...
+  71:X-CUBE-AI/App/aiTestUtility.c ****  *
+  72:X-CUBE-AI/App/aiTestUtility.c ****  */
+  73:X-CUBE-AI/App/aiTestUtility.c **** 
+  74:X-CUBE-AI/App/aiTestUtility.c **** #include <stdio.h>
+  75:X-CUBE-AI/App/aiTestUtility.c **** #include <string.h>
+  76:X-CUBE-AI/App/aiTestUtility.c **** #include <stdarg.h>
+  77:X-CUBE-AI/App/aiTestUtility.c **** 
+  78:X-CUBE-AI/App/aiTestUtility.c **** #include "aiTestUtility.h"
+  79:X-CUBE-AI/App/aiTestUtility.c **** 
+  80:X-CUBE-AI/App/aiTestUtility.c **** #ifndef USE_USB_CDC_CLASS
+  81:X-CUBE-AI/App/aiTestUtility.c **** #define USE_USB_CDC_CLASS 0
+  82:X-CUBE-AI/App/aiTestUtility.c **** #endif
+  83:X-CUBE-AI/App/aiTestUtility.c **** 
+  84:X-CUBE-AI/App/aiTestUtility.c **** 
+  85:X-CUBE-AI/App/aiTestUtility.c **** /* -----------------------------------------------------------------------------
+  86:X-CUBE-AI/App/aiTestUtility.c ****  * Sanity check
+ARM GAS  /tmp/ccCNKDF9.s 			page 3
+
+
+  87:X-CUBE-AI/App/aiTestUtility.c ****  * -----------------------------------------------------------------------------
+  88:X-CUBE-AI/App/aiTestUtility.c ****  */
+  89:X-CUBE-AI/App/aiTestUtility.c **** 
+  90:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+  91:X-CUBE-AI/App/aiTestUtility.c **** #if defined(__ARMCC_VERSION)
+  92:X-CUBE-AI/App/aiTestUtility.c **** #error GCC tool-chain is used, __ARMCC_VERSION should be not defined
+  93:X-CUBE-AI/App/aiTestUtility.c **** #endif
+  94:X-CUBE-AI/App/aiTestUtility.c **** #endif
+  95:X-CUBE-AI/App/aiTestUtility.c **** 
+  96:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+  97:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(__ICCARM__)
+  98:X-CUBE-AI/App/aiTestUtility.c **** #error IAR tool-chain is used, __ICCARM__ should be defined
+  99:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 100:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 101:X-CUBE-AI/App/aiTestUtility.c **** 
+ 102:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GHS_COMPILER) && _IS_GHS_COMPILER
+ 103:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(__ghs__)
+ 104:X-CUBE-AI/App/aiTestUtility.c **** #error GHS tool-chain is used, __ghs__ should be defined
+ 105:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 106:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 107:X-CUBE-AI/App/aiTestUtility.c **** 
+ 108:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_HTC_COMPILER) && _IS_HTC_COMPILER
+ 109:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(__clang__)
+ 110:X-CUBE-AI/App/aiTestUtility.c **** #error HIGHTEC tool-chain is used, __clang__ should be defined
+ 111:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 112:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 113:X-CUBE-AI/App/aiTestUtility.c **** 
+ 114:X-CUBE-AI/App/aiTestUtility.c **** /* -----------------------------------------------------------------------------
+ 115:X-CUBE-AI/App/aiTestUtility.c ****  * IO re-target functions
+ 116:X-CUBE-AI/App/aiTestUtility.c ****  * -----------------------------------------------------------------------------
+ 117:X-CUBE-AI/App/aiTestUtility.c ****  */
+ 118:X-CUBE-AI/App/aiTestUtility.c **** 
+ 119:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 120:X-CUBE-AI/App/aiTestUtility.c **** #include <errno.h>
+ 121:X-CUBE-AI/App/aiTestUtility.c **** #include <sys/unistd.h> /* STDOUT_FILENO, STDERR_FILENO */
+ 122:X-CUBE-AI/App/aiTestUtility.c **** 
+ 123:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 124:X-CUBE-AI/App/aiTestUtility.c **** #if (__IAR_SYSTEMS_ICC__ <= 8)
+ 125:X-CUBE-AI/App/aiTestUtility.c **** /* Temporary workaround - LowLevelIOInterface.h seems not available
+ 126:X-CUBE-AI/App/aiTestUtility.c ****    with IAR 7.80.4 */
+ 127:X-CUBE-AI/App/aiTestUtility.c **** #define _LLIO_STDIN  0
+ 128:X-CUBE-AI/App/aiTestUtility.c **** #define _LLIO_STDOUT 1
+ 129:X-CUBE-AI/App/aiTestUtility.c **** #define _LLIO_STDERR 2
+ 130:X-CUBE-AI/App/aiTestUtility.c **** #define _LLIO_ERROR ((size_t)-1) /* For __read and __write. */
+ 131:X-CUBE-AI/App/aiTestUtility.c **** #else
+ 132:X-CUBE-AI/App/aiTestUtility.c **** #include <LowLevelIOInterface.h> /* _LLIO_STDOUT, _LLIO_STDERR */
+ 133:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 134:X-CUBE-AI/App/aiTestUtility.c **** 
+ 135:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_ACx_COMPILER) && _IS_ACx_COMPILER
+ 136:X-CUBE-AI/App/aiTestUtility.c **** 
+ 137:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 138:X-CUBE-AI/App/aiTestUtility.c **** 
+ 139:X-CUBE-AI/App/aiTestUtility.c **** 
+ 140:X-CUBE-AI/App/aiTestUtility.c **** static bool _ioWriteAllowed = true;
+ 141:X-CUBE-AI/App/aiTestUtility.c **** 
+ 142:X-CUBE-AI/App/aiTestUtility.c ****  int ioRawGetUint8(uint8_t *c, uint32_t timeout)
+ 143:X-CUBE-AI/App/aiTestUtility.c ****  {
+ARM GAS  /tmp/ccCNKDF9.s 			page 4
+
+
+  30              		.loc 1 143 2 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144:X-CUBE-AI/App/aiTestUtility.c ****    return port_io_get(c, timeout) == true?1:-1;
+  34              		.loc 1 144 4 view .LVU1
+  35              	.LBB18:
+  36              	.LBI18:
+  37              		.file 2 "X-CUBE-AI/App/ai_device_adaptor.h"
+   1:X-CUBE-AI/App/ai_device_adaptor.h **** /**
+   2:X-CUBE-AI/App/ai_device_adaptor.h ****  ******************************************************************************
+   3:X-CUBE-AI/App/ai_device_adaptor.h ****  * @file    ai_device_adaptor.h
+   4:X-CUBE-AI/App/ai_device_adaptor.h ****  * @author  MCD/AIS Team
+   5:X-CUBE-AI/App/ai_device_adaptor.h ****  * @brief   Device port functions for DEVICE AI test application
+   6:X-CUBE-AI/App/ai_device_adaptor.h ****  ******************************************************************************
+   7:X-CUBE-AI/App/ai_device_adaptor.h ****  * @attention
+   8:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+   9:X-CUBE-AI/App/ai_device_adaptor.h ****  * <h2><center>&copy; Copyright (c) 2019,2023 STMicroelectronics.
+  10:X-CUBE-AI/App/ai_device_adaptor.h ****  * All rights reserved.</center></h2>
+  11:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  12:X-CUBE-AI/App/ai_device_adaptor.h ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:X-CUBE-AI/App/ai_device_adaptor.h ****  * the root directory of this software component.
+  14:X-CUBE-AI/App/ai_device_adaptor.h ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  16:X-CUBE-AI/App/ai_device_adaptor.h ****  ******************************************************************************
+  17:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+  18:X-CUBE-AI/App/ai_device_adaptor.h **** 
+  19:X-CUBE-AI/App/ai_device_adaptor.h **** /*
+  20:X-CUBE-AI/App/ai_device_adaptor.h ****  * Simple header file with helper macro/function to adapt the ai test applications.
+  21:X-CUBE-AI/App/ai_device_adaptor.h ****  *  - before to include this file, _NO_DEVICE_PORT_FUNC can be defined to remove the
+  22:X-CUBE-AI/App/ai_device_adaptor.h ****  *    port functions. Only ARM tool-chain and CMSIS-M-CORE related macros will be defined.
+  23:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  24:X-CUBE-AI/App/ai_device_adaptor.h ****  * History:
+  25:X-CUBE-AI/App/ai_device_adaptor.h ****  *  - v1.0: initial version
+  26:X-CUBE-AI/App/ai_device_adaptor.h ****  *  - v1.1: rework/clean port functions
+  27:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  28:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  29:X-CUBE-AI/App/ai_device_adaptor.h ****  * ** Core functions/macros
+  30:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  31:X-CUBE-AI/App/ai_device_adaptor.h ****  *  cmsis_compiler.h              Compiler CMSIS Cortex-M file (implementation is Embedded ARM tool
+  32:X-CUBE-AI/App/ai_device_adaptor.h ****  *  _IS_XX_COMPILER               define the used Embedded ARM tool-chain (AC5/AC6, GCC, IAR)
+  33:X-CUBE-AI/App/ai_device_adaptor.h ****  *  MEM_ALIGNED(x)                indicate the expected memory alignment (1,2,4,8,16,32 or 64 bytes
+  34:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  35:X-CUBE-AI/App/ai_device_adaptor.h ****  * ** System/IO functions
+  36:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  37:X-CUBE-AI/App/ai_device_adaptor.h ****  *  _NO_DEVICE_PORT_FUNC          if defined only the core functions/macros are defined/exported.
+  38:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  39:X-CUBE-AI/App/ai_device_adaptor.h ****  *  HAS_CRC_IP                    =1 indicates that a CRC IP is available
+  40:X-CUBE-AI/App/ai_device_adaptor.h ****  *  HAS_DWT_CTRL                  =1 indicates that a DWT IP is available
+  41:X-CUBE-AI/App/ai_device_adaptor.h ****  *  HAS_PMU_CTRL                  =1 indicates that a PMU IP is available
+  42:X-CUBE-AI/App/ai_device_adaptor.h ****  *  HAS_SYS_TICK                  =1 indicates that a SYS_TICK is available
+  43:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  44:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_get_hal_version()    return HAL/OSAL version if used (else 0)
+  45:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_get_dev_id()         return device ID
+  46:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_get_rev_id()         return revision ID
+  47:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  48:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_crc_ip_init()        enable the CRC IP access if used by the library
+ARM GAS  /tmp/ccCNKDF9.s 			page 5
+
+
+  49:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  50:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_get_cpu_freq()       return main CPU/MCU frequency (Hz)
+  51:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_get_sys_freq()       return main sys-bus frequency (Hz)
+  52:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  53:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_delay(x)             wait x milliseconds
+  54:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_hal_get_tick()           return number of tick (1 tick = 1ms)
+  55:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  56:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_dwt_init()               initialize the DWT MCU clock counter
+  57:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_dwt_reset()              reset the DWT MCU clock counter
+  58:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_dwt_get_cycles()         return the current DWT MCU clock counter
+  59:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  60:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  61:X-CUBE-AI/App/ai_device_adaptor.h ****  *  HAS_DEDICATED_PRINT_PORT      if defined and equal to 1, indicate that a dedicated COM port is 
+  62:X-CUBE-AI/App/ai_device_adaptor.h ****  *                                for the log services.
+  63:X-CUBE-AI/App/ai_device_adaptor.h ****  *  USE_PRINTF_FROM_TOOL          if defined, indicate that the LC_PRINT(..) function is mapped on 
+  64:X-CUBE-AI/App/ai_device_adaptor.h ****  *                                printf(..) implementation from the SDK/tool-chain else low-cost i
+  65:X-CUBE-AI/App/ai_device_adaptor.h ****  *                                used (lc_print())
+  66:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  67:X-CUBE-AI/App/ai_device_adaptor.h ****  *  USE_RETARGET_IO_FROM_TOOL     if defined (and ==1) indicates that the retarget-io feature is na
+  68:X-CUBE-AI/App/ai_device_adaptor.h ****  *                                supported by the SDK/tool-chain (not provided by the aiValidation
+  69:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  70:X-CUBE-AI/App/ai_device_adaptor.h ****  *  Notes:
+  71:X-CUBE-AI/App/ai_device_adaptor.h ****  *    - aiTestUtility.c implements the Low-level character I/O (output only) function for the print
+  72:X-CUBE-AI/App/ai_device_adaptor.h ****  *      It is mapped on the serial port (port_io_write() fct). This serial port is also used to exc
+  73:X-CUBE-AI/App/ai_device_adaptor.h ****  *      the binary messages (nanopb format, aiValidation app) with the HOST. When the AI COM stack 
+  74:X-CUBE-AI/App/ai_device_adaptor.h ****  *      characters are no more forwarded on this serial port, they are skipped (_ioWriteAllowed=fal
+  75:X-CUBE-AI/App/ai_device_adaptor.h ****  *      support is always requested, a dedicated serial port can be defined (port_io_dedicated_writ
+  76:X-CUBE-AI/App/ai_device_adaptor.h ****  *    - setting of the serial ports should be done by the main application code.
+  77:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  78:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_io_dedicated_putc(b)     write a byte to the dedicated COM port (blocking mode)
+  79:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_io_dedicated_write(&b,n) write n byte(s) to the dedicated COM port (blocking mode)
+  80:X-CUBE-AI/App/ai_device_adaptor.h ****  *
+  81:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_io_get(&d, timeout)      wait byte from the default COM port
+  82:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_io_write(&b, n)          write n byte(s) to the default COM port (blocking mode)
+  83:X-CUBE-AI/App/ai_device_adaptor.h ****  *  port_io_read(&b, n)           read n byte(s) from the default COM port (blocking) mode
+  84:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+  85:X-CUBE-AI/App/ai_device_adaptor.h **** 
+  86:X-CUBE-AI/App/ai_device_adaptor.h **** #ifndef __AI_DEVICE_ADAPTOR_H__
+  87:X-CUBE-AI/App/ai_device_adaptor.h **** #define __AI_DEVICE_ADAPTOR_H__
+  88:X-CUBE-AI/App/ai_device_adaptor.h **** 
+  89:X-CUBE-AI/App/ai_device_adaptor.h **** #include "cmsis_compiler.h"
+  90:X-CUBE-AI/App/ai_device_adaptor.h **** 
+  91:X-CUBE-AI/App/ai_device_adaptor.h **** #ifdef __cplusplus
+  92:X-CUBE-AI/App/ai_device_adaptor.h **** extern "C" {
+  93:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+  94:X-CUBE-AI/App/ai_device_adaptor.h **** 
+  95:X-CUBE-AI/App/ai_device_adaptor.h **** 
+  96:X-CUBE-AI/App/ai_device_adaptor.h **** /* -----------------------------------------------------------------------------
+  97:X-CUBE-AI/App/ai_device_adaptor.h ****  * MACRO - ARM tool chain definition
+  98:X-CUBE-AI/App/ai_device_adaptor.h ****  * -----------------------------------------------------------------------------
+  99:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 100:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 101:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_AC5_COMPILER
+ 102:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_AC6_COMPILER
+ 103:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_GHS_COMPILER
+ 104:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_HTC_COMPILER
+ 105:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_GCC_COMPILER
+ARM GAS  /tmp/ccCNKDF9.s 			page 6
+
+
+ 106:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_IAR_COMPILER
+ 107:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 108:X-CUBE-AI/App/ai_device_adaptor.h **** /* ARM Compiler 5 tool-chain */
+ 109:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined ( __CC_ARM )
+ 110:X-CUBE-AI/App/ai_device_adaptor.h **** // #if ((__ARMCC_VERSION >= 5000000) && (__ARMCC_VERSION < 6000000))
+ 111:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_AC5_COMPILER    1
+ 112:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 113:X-CUBE-AI/App/ai_device_adaptor.h **** /* ARM Compiler 6 tool-chain */
+ 114:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+ 115:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_AC6_COMPILER    1
+ 116:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 117:X-CUBE-AI/App/ai_device_adaptor.h **** /* GHS tool-chain */
+ 118:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined(__ghs__)
+ 119:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_GHS_COMPILER    1
+ 120:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 121:X-CUBE-AI/App/ai_device_adaptor.h **** /* HIGHTEC tool-chain */
+ 122:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined(__clang__)
+ 123:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_HTC_COMPILER    1
+ 124:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 125:X-CUBE-AI/App/ai_device_adaptor.h **** /* GCC tool-chain */
+ 126:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined ( __GNUC__ )
+ 127:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_GCC_COMPILER    1
+ 128:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 129:X-CUBE-AI/App/ai_device_adaptor.h **** /* IAR tool-chain */
+ 130:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined ( __ICCARM__ )
+ 131:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_IAR_COMPILER    1
+ 132:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 133:X-CUBE-AI/App/ai_device_adaptor.h **** #else
+ 134:X-CUBE-AI/App/ai_device_adaptor.h **** #error ARM MCU tool chain is not detected/supported
+ 135:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 136:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 137:X-CUBE-AI/App/ai_device_adaptor.h **** #undef _IS_ACx_COMPILER
+ 138:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(_IS_AC5_COMPILER) && _IS_AC5_COMPILER   \
+ 139:X-CUBE-AI/App/ai_device_adaptor.h ****     || defined(_IS_AC6_COMPILER) && _IS_AC6_COMPILER
+ 140:X-CUBE-AI/App/ai_device_adaptor.h **** #define _IS_ACx_COMPILER    1
+ 141:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 142:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 143:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 144:X-CUBE-AI/App/ai_device_adaptor.h **** /* -----------------------------------------------------------------------------
+ 145:X-CUBE-AI/App/ai_device_adaptor.h ****  * MACRO - MEM align definition
+ 146:X-CUBE-AI/App/ai_device_adaptor.h ****  * -----------------------------------------------------------------------------
+ 147:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 148:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 149:X-CUBE-AI/App/ai_device_adaptor.h **** #define _CONCAT_ARG(a, b)     a ## b
+ 150:X-CUBE-AI/App/ai_device_adaptor.h **** #define _CONCAT(a, b)         _CONCAT_ARG(a, b)
+ 151:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 152:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 153:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED(x)         _CONCAT(MEM_ALIGNED_,x)
+ 154:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_1          _Pragma("data_alignment = 1")
+ 155:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_2          _Pragma("data_alignment = 2")
+ 156:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_4          _Pragma("data_alignment = 4")
+ 157:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_8          _Pragma("data_alignment = 8")
+ 158:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_16         _Pragma("data_alignment = 16")
+ 159:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_32         _Pragma("data_alignment = 32")
+ 160:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED_64         _Pragma("data_alignment = 64")
+ 161:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined(_IS_ACx_COMPILER) && _IS_ACx_COMPILER
+ 162:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED(x)         __attribute__((aligned (x)))
+ARM GAS  /tmp/ccCNKDF9.s 			page 7
+
+
+ 163:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 164:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED(x)         __attribute__((aligned(x)))
+ 165:X-CUBE-AI/App/ai_device_adaptor.h **** #else
+ 166:X-CUBE-AI/App/ai_device_adaptor.h ****   #define MEM_ALIGNED(x)
+ 167:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 168:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 169:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 170:X-CUBE-AI/App/ai_device_adaptor.h **** #if !defined(_NO_DEVICE_PORT_FUNC)
+ 171:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 172:X-CUBE-AI/App/ai_device_adaptor.h **** #include <stdint.h>
+ 173:X-CUBE-AI/App/ai_device_adaptor.h **** #include <stdbool.h>
+ 174:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 175:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(USE_PRINTF_FROM_TOOL)
+ 176:X-CUBE-AI/App/ai_device_adaptor.h **** // Legacy definition
+ 177:X-CUBE-AI/App/ai_device_adaptor.h **** #if USE_PRINTF_FROM_TOOL != 0
+ 178:X-CUBE-AI/App/ai_device_adaptor.h **** #undef USE_PRINTF_FROM_TOOL
+ 179:X-CUBE-AI/App/ai_device_adaptor.h **** #define USE_PRINTF_FROM_TOOL 1
+ 180:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 181:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 182:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 183:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 184:X-CUBE-AI/App/ai_device_adaptor.h **** /* -----------------------------------------------------------------------------
+ 185:X-CUBE-AI/App/ai_device_adaptor.h ****  * System/IO functions
+ 186:X-CUBE-AI/App/ai_device_adaptor.h ****  * -----------------------------------------------------------------------------
+ 187:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 188:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 189:X-CUBE-AI/App/ai_device_adaptor.h **** #if (defined(CORSTONE_300) || defined(ARMCM55)) && !defined(STM32N6)
+ 190:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 191:X-CUBE-AI/App/ai_device_adaptor.h **** #define DEVICE_FAMILY "CORSTONE_300"
+ 192:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 193:X-CUBE-AI/App/ai_device_adaptor.h **** /* --------------------------------------------
+ 194:X-CUBE-AI/App/ai_device_adaptor.h ****  * CORSTONE 300 / FVP environment
+ 195:X-CUBE-AI/App/ai_device_adaptor.h ****  * --------------------------------------------
+ 196:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 197:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 198:X-CUBE-AI/App/ai_device_adaptor.h **** // #include <bsp_ai.h>  /* generated STM32 platform file to import the HAL and the UART definition 
+ 199:X-CUBE-AI/App/ai_device_adaptor.h **** #include "uart.h"
+ 200:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 201:X-CUBE-AI/App/ai_device_adaptor.h **** #ifndef UNUSED
+ 202:X-CUBE-AI/App/ai_device_adaptor.h **** #define UNUSED(x) (void)(x)
+ 203:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 204:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 205:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_hal_version()        0
+ 206:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_dev_id()             0x155
+ 207:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_rev_id()             0
+ 208:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 209:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_cpu_freq()           25000000
+ 210:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_sys_freq()           25000000
+ 211:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 212:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_delay(delay_)
+ 213:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_tick()               1
+ 214:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 215:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_CRC_IP                        0
+ 216:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 217:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DWT_CTRL                      0
+ 218:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_PMU_CTRL                      1
+ 219:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_SYS_TICK                      0
+ARM GAS  /tmp/ccCNKDF9.s 			page 8
+
+
+ 220:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 221:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_init()                   port_dwt_init_imp()
+ 222:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_reset()                  ARM_PMU_CYCCNT_Reset()
+ 223:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_get_cycles()             ARM_PMU_Get_CCNTR()
+ 224:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 225:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DEDICATED_PRINT_PORT          1
+ 226:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 227:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE void port_io_dedicated_putc(unsigned char ch)
+ 228:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 229:X-CUBE-AI/App/ai_device_adaptor.h ****   uart1_putc(ch);
+ 230:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 231:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 232:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_dedicated_write(uint8_t *buff, int count)
+ 233:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 234:X-CUBE-AI/App/ai_device_adaptor.h ****   for (int i=0; i<count; i++)
+ 235:X-CUBE-AI/App/ai_device_adaptor.h ****     uart1_putc(*buff++);
+ 236:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 237:X-CUBE-AI/App/ai_device_adaptor.h ****   return true;
+ 238:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 239:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 240:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_get(uint8_t *c, uint32_t timeout)
+ 241:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 242:X-CUBE-AI/App/ai_device_adaptor.h ****   *c = uart_getc();
+ 243:X-CUBE-AI/App/ai_device_adaptor.h **** 	return 1;
+ 244:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 245:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 246:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_write(uint8_t *buff, int count)
+ 247:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 248:X-CUBE-AI/App/ai_device_adaptor.h ****   for (int i=0; i<count; i++)
+ 249:X-CUBE-AI/App/ai_device_adaptor.h ****     uart_putc(*buff++);
+ 250:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 251:X-CUBE-AI/App/ai_device_adaptor.h ****   return true;
+ 252:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 253:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 254:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_read(uint8_t *buff, int count)
+ 255:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 256:X-CUBE-AI/App/ai_device_adaptor.h ****   for (int i=0; i<count; i++)
+ 257:X-CUBE-AI/App/ai_device_adaptor.h ****     *buff++ = uart_getc();
+ 258:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 259:X-CUBE-AI/App/ai_device_adaptor.h ****   return true;
+ 260:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 261:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 262:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined(STM32N657xx) || defined(STM32N6)
+ 263:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 264:X-CUBE-AI/App/ai_device_adaptor.h **** #define DEVICE_FAMILY "STM32"
+ 265:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 266:X-CUBE-AI/App/ai_device_adaptor.h **** /* --------------------------------------------
+ 267:X-CUBE-AI/App/ai_device_adaptor.h ****  * STM32N6xx series
+ 268:X-CUBE-AI/App/ai_device_adaptor.h ****  * --------------------------------------------
+ 269:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 270:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 271:X-CUBE-AI/App/ai_device_adaptor.h **** #include <bsp_ai.h>  /* generated STM32 platform file to import the HAL and the UART definition */
+ 272:X-CUBE-AI/App/ai_device_adaptor.h ****    
+ 273:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_hal_version()        HAL_GetHalVersion()
+ 274:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_dev_id()             0x486
+ 275:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_rev_id()             0
+ 276:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ARM GAS  /tmp/ccCNKDF9.s 			page 9
+
+
+ 277:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_cpu_freq()           HAL_RCC_GetCpuClockFreq()
+ 278:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_sys_freq()           HAL_RCC_GetSysClockFreq()
+ 279:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 280:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_delay(delay_)            HAL_Delay(delay_)
+ 281:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_tick()               HAL_GetTick()
+ 282:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 283:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_EXTRA_CONF                    4
+ 284:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 285:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_CRC_IP                        0
+ 286:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 287:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DWT_CTRL                      0
+ 288:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_PMU_CTRL                      1
+ 289:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_SYS_TICK                      1
+ 290:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 291:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_init()                   port_dwt_init_imp()
+ 292:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_reset()                  ARM_PMU_CYCCNT_Reset()
+ 293:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_get_cycles()             ARM_PMU_Get_CCNTR()
+ 294:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 295:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 296:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_get(uint8_t *c, uint32_t timeout)
+ 297:X-CUBE-AI/App/ai_device_adaptor.h **** { 
+ 298:X-CUBE-AI/App/ai_device_adaptor.h ****   return (uart_read(c, 1, timeout) == 1);
+ 299:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 300:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 301:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_write(uint8_t *buff, int count)
+ 302:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 303:X-CUBE-AI/App/ai_device_adaptor.h ****   int res = uart_write(buff, count);
+ 304:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 305:X-CUBE-AI/App/ai_device_adaptor.h ****   return (res == count);
+ 306:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 307:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 308:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_read(uint8_t *buff, int count)
+ 309:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 310:X-CUBE-AI/App/ai_device_adaptor.h ****   int res = uart_read(buff, count, 0);
+ 311:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 312:X-CUBE-AI/App/ai_device_adaptor.h ****   return (res == count);
+ 313:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 314:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 315:X-CUBE-AI/App/ai_device_adaptor.h **** #elif defined(SR5E1)
+ 316:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 317:X-CUBE-AI/App/ai_device_adaptor.h **** /* --------------------------------------------
+ 318:X-CUBE-AI/App/ai_device_adaptor.h ****  * STELLAR-E device
+ 319:X-CUBE-AI/App/ai_device_adaptor.h ****  * --------------------------------------------
+ 320:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 321:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 322:X-CUBE-AI/App/ai_device_adaptor.h **** #define DEVICE_FAMILY "STELLAR-E"
+ 323:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 324:X-CUBE-AI/App/ai_device_adaptor.h **** #include "sr5e1_ai_validate.h"
+ 325:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 326:X-CUBE-AI/App/ai_device_adaptor.h **** #ifndef UNUSED
+ 327:X-CUBE-AI/App/ai_device_adaptor.h **** #define UNUSED(x)                         ((void)(x))
+ 328:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 329:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 330:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_hal_version()        0
+ 331:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_dev_id()             SR5E1_GetDEVID()
+ 332:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_rev_id()             SR5E1_GetREVID()
+ 333:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ARM GAS  /tmp/ccCNKDF9.s 			page 10
+
+
+ 334:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_cpu_freq()           SR5E1_GetSysClockDivFreq()
+ 335:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_sys_freq()           SR5E1_GetSysClockFreq()
+ 336:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 337:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_delay(delay_)            osal_delay_millisec(delay_)
+ 338:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_tick()               osal_get_tick()
+ 339:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 340:X-CUBE-AI/App/ai_device_adaptor.h **** #define USE_RETARGET_IO_FROM_TOOL         1
+ 341:X-CUBE-AI/App/ai_device_adaptor.h **** #define USE_PRINTF_FROM_TOOL              1
+ 342:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DEDICATED_PRINT_PORT          1
+ 343:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 344:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 345:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_CRC_IP                        0
+ 346:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DWT_CTRL                      1
+ 347:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_SYS_TICK                      1
+ 348:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 349:X-CUBE-AI/App/ai_device_adaptor.h **** #define NO_PORT_DWT_INIT_IMP              1  /* specific function is used, provided by the OSAL */
+ 350:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_init()                   dwt_init()
+ 351:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_reset()                  dwt_reset()
+ 352:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_get_cycles()             dwt_get_ticks()
+ 353:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 354:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 355:X-CUBE-AI/App/ai_device_adaptor.h **** #define _MAX_DELAY                        10000UL
+ 356:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 357:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_get(uint8_t *c, uint32_t timeout)
+ 358:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 359:X-CUBE-AI/App/ai_device_adaptor.h ****   if (!c)
+ 360:X-CUBE-AI/App/ai_device_adaptor.h ****     return false;
+ 361:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 362:X-CUBE-AI/App/ai_device_adaptor.h ****   int status = SR5E1_UART_Receive(c, 1, timeout);
+ 363:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 364:X-CUBE-AI/App/ai_device_adaptor.h ****   if (status == 2U) /* TIMEOUT */
+ 365:X-CUBE-AI/App/ai_device_adaptor.h ****     return false;
+ 366:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 367:X-CUBE-AI/App/ai_device_adaptor.h ****   return (status == SR5E1_UART_OK);
+ 368:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 369:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 370:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_write(uint8_t *buff, int count)
+ 371:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 372:X-CUBE-AI/App/ai_device_adaptor.h ****   return (SR5E1_UART_Transmit(buff, count, _MAX_DELAY) == SR5E1_UART_OK);
+ 373:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 374:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 375:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_read(uint8_t *buff, int count)
+ 376:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 377:X-CUBE-AI/App/ai_device_adaptor.h ****   return (SR5E1_UART_Receive(buff, count, _MAX_DELAY) == SR5E1_UART_OK);
+ 378:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 379:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 380:X-CUBE-AI/App/ai_device_adaptor.h **** #else
+ 381:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 382:X-CUBE-AI/App/ai_device_adaptor.h **** #define DEVICE_FAMILY "STM32"
+ 383:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 384:X-CUBE-AI/App/ai_device_adaptor.h **** /* --------------------------------------------
+ 385:X-CUBE-AI/App/ai_device_adaptor.h ****  * Default STM32 series implementation.
+ 386:X-CUBE-AI/App/ai_device_adaptor.h ****  *  All requested HAL functions are available.
+ 387:X-CUBE-AI/App/ai_device_adaptor.h ****  * --------------------------------------------
+ 388:X-CUBE-AI/App/ai_device_adaptor.h ****  */
+ 389:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 390:X-CUBE-AI/App/ai_device_adaptor.h **** #include <bsp_ai.h>  /* generated STM32 platform file to import the HAL and the UART definition */
+ARM GAS  /tmp/ccCNKDF9.s 			page 11
+
+
+ 391:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 392:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(CHECK_STM32_FAMILY)
+ 393:X-CUBE-AI/App/ai_device_adaptor.h **** #if !defined(STM32F7) && !defined(STM32L4) && !defined(STM32L5) && !defined(STM32F4) && !defined(ST
+ 394:X-CUBE-AI/App/ai_device_adaptor.h **** #error Only STM32H7, STM32F7, STM32F4, STM32L4, STM32L5, STM32U5, STM32H5, STM32G0, STM32F0, STM32C
+ 395:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 396:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 397:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 398:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_hal_version()        HAL_GetHalVersion()      
+ 399:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_dev_id()             HAL_GetDEVID() 
+ 400:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_rev_id()             HAL_GetREVID() 
+ 401:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 402:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(STM32MP1)
+ 403:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_cpu_freq()           HAL_RCC_GetSystemCoreClockFreq()
+ 404:X-CUBE-AI/App/ai_device_adaptor.h **** #elif !defined(STM32H7)
+ 405:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_cpu_freq()           HAL_RCC_GetHCLKFreq()
+ 406:X-CUBE-AI/App/ai_device_adaptor.h **** #else
+ 407:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_cpu_freq()           HAL_RCC_GetSysClockFreq()
+ 408:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 409:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 410:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(STM32MP1)
+ 411:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_sys_freq()           HAL_RCC_GetSystemCoreClockFreq()
+ 412:X-CUBE-AI/App/ai_device_adaptor.h **** #else
+ 413:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_sys_freq()           HAL_RCC_GetHCLKFreq()
+ 414:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 415:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 416:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_delay(delay_)            HAL_Delay(delay_)
+ 417:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_hal_get_tick()               HAL_GetTick()
+ 418:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 419:X-CUBE-AI/App/ai_device_adaptor.h **** #define USE_RETARGET_IO_FROM_TOOL         0
+ 420:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 421:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_CRC_IP                        1
+ 422:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 423:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_PMU_CTRL                      0
+ 424:X-CUBE-AI/App/ai_device_adaptor.h **** #if defined(STM32G0) || defined(STM32F0) || defined(STM32L0) || defined(STM32C0)
+ 425:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DWT_CTRL                      0
+ 426:X-CUBE-AI/App/ai_device_adaptor.h **** #else
+ 427:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_DWT_CTRL                      1
+ 428:X-CUBE-AI/App/ai_device_adaptor.h **** #endif
+ 429:X-CUBE-AI/App/ai_device_adaptor.h **** #define HAS_SYS_TICK                      1
+ 430:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 431:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_init()                   port_dwt_init_imp()
+ 432:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_reset()                  DWT->CYCCNT = 0
+ 433:X-CUBE-AI/App/ai_device_adaptor.h **** #define port_dwt_get_cycles()             DWT->CYCCNT
+ 434:X-CUBE-AI/App/ai_device_adaptor.h ****     
+ 435:X-CUBE-AI/App/ai_device_adaptor.h **** extern UART_HandleTypeDef UartHandle;
+ 436:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 437:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_get(uint8_t *c, uint32_t timeout)
+  38              		.loc 2 437 22 view .LVU2
+  39              	.LBB19:
+ 438:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 439:X-CUBE-AI/App/ai_device_adaptor.h ****   HAL_StatusTypeDef status;
+  40              		.loc 2 439 3 view .LVU3
+ 440:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 441:X-CUBE-AI/App/ai_device_adaptor.h ****   if (!c)
+  41              		.loc 2 441 3 view .LVU4
+  42              		.loc 2 441 6 is_stmt 0 view .LVU5
+  43 0000 58B1     		cbz	r0, .L3
+ARM GAS  /tmp/ccCNKDF9.s 			page 12
+
+
+  44              	.LBE19:
+  45              	.LBE18:
+ 143:X-CUBE-AI/App/aiTestUtility.c ****    return port_io_get(c, timeout) == true?1:-1;
+  46              		.loc 1 143 2 view .LVU6
+  47 0002 08B5     		push	{r3, lr}
+  48              	.LCFI0:
+  49              		.cfi_def_cfa_offset 8
+  50              		.cfi_offset 3, -8
+  51              		.cfi_offset 14, -4
+  52 0004 0B46     		mov	r3, r1
+  53 0006 0146     		mov	r1, r0
+  54              	.LVL1:
+  55              	.LBB21:
+  56              	.LBB20:
+ 442:X-CUBE-AI/App/ai_device_adaptor.h ****     return false;
+ 443:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 444:X-CUBE-AI/App/ai_device_adaptor.h ****   status = HAL_UART_Receive(&UartHandle, (uint8_t *)c, 1, timeout);
+  57              		.loc 2 444 3 is_stmt 1 view .LVU7
+  58              		.loc 2 444 12 is_stmt 0 view .LVU8
+  59 0008 0122     		movs	r2, #1
+  60 000a 0848     		ldr	r0, .L10
+  61              	.LVL2:
+  62              		.loc 2 444 12 view .LVU9
+  63 000c FFF7FEFF 		bl	HAL_UART_Receive
+  64              	.LVL3:
+ 445:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 446:X-CUBE-AI/App/ai_device_adaptor.h ****   if (status == HAL_TIMEOUT)
+  65              		.loc 2 446 3 is_stmt 1 view .LVU10
+  66              		.loc 2 446 6 is_stmt 0 view .LVU11
+  67 0010 0328     		cmp	r0, #3
+  68 0012 05D0     		beq	.L4
+ 447:X-CUBE-AI/App/ai_device_adaptor.h ****     return false;
+ 448:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 449:X-CUBE-AI/App/ai_device_adaptor.h ****   return (status == HAL_OK);
+  69              		.loc 2 449 3 is_stmt 1 view .LVU12
+  70              	.LVL4:
+  71              		.loc 2 449 3 is_stmt 0 view .LVU13
+  72              	.LBE20:
+  73              	.LBE21:
+  74              		.loc 1 144 44 view .LVU14
+  75 0014 38B9     		cbnz	r0, .L5
+  76 0016 0120     		movs	r0, #1
+  77              	.L1:
+ 145:X-CUBE-AI/App/aiTestUtility.c ****  }
+  78              		.loc 1 145 2 view .LVU15
+  79 0018 08BD     		pop	{r3, pc}
+  80              	.LVL5:
+  81              	.L3:
+  82              	.LCFI1:
+  83              		.cfi_def_cfa_offset 0
+  84              		.cfi_restore 3
+  85              		.cfi_restore 14
+ 144:X-CUBE-AI/App/aiTestUtility.c ****  }
+  86              		.loc 1 144 44 view .LVU16
+  87 001a 4FF0FF30 		mov	r0, #-1
+  88              	.LVL6:
+  89              		.loc 1 145 2 view .LVU17
+ARM GAS  /tmp/ccCNKDF9.s 			page 13
+
+
+  90 001e 7047     		bx	lr
+  91              	.LVL7:
+  92              	.L4:
+  93              	.LCFI2:
+  94              		.cfi_def_cfa_offset 8
+  95              		.cfi_offset 3, -8
+  96              		.cfi_offset 14, -4
+ 144:X-CUBE-AI/App/aiTestUtility.c ****  }
+  97              		.loc 1 144 44 view .LVU18
+  98 0020 4FF0FF30 		mov	r0, #-1
+  99              	.LVL8:
+ 144:X-CUBE-AI/App/aiTestUtility.c ****  }
+ 100              		.loc 1 144 44 view .LVU19
+ 101 0024 F8E7     		b	.L1
+ 102              	.LVL9:
+ 103              	.L5:
+ 144:X-CUBE-AI/App/aiTestUtility.c ****  }
+ 104              		.loc 1 144 44 view .LVU20
+ 105 0026 4FF0FF30 		mov	r0, #-1
+ 106 002a F5E7     		b	.L1
+ 107              	.L11:
+ 108              		.align	2
+ 109              	.L10:
+ 110 002c 00000000 		.word	hlpuart1
+ 111              		.cfi_endproc
+ 112              	.LFE146:
+ 114              		.section	.text.ioRawWriteBuffer,"ax",%progbits
+ 115              		.align	1
+ 116              		.global	ioRawWriteBuffer
+ 117              		.syntax unified
+ 118              		.thumb
+ 119              		.thumb_func
+ 120              		.fpu fpv4-sp-d16
+ 122              	ioRawWriteBuffer:
+ 123              	.LVL10:
+ 124              	.LFB147:
+ 146:X-CUBE-AI/App/aiTestUtility.c **** 
+ 147:X-CUBE-AI/App/aiTestUtility.c **** #if defined(USE_USB_CDC_CLASS) && USE_USB_CDC_CLASS == 1
+ 148:X-CUBE-AI/App/aiTestUtility.c **** 
+ 149:X-CUBE-AI/App/aiTestUtility.c **** #include "usbd_cdc_if.h"
+ 150:X-CUBE-AI/App/aiTestUtility.c **** 
+ 151:X-CUBE-AI/App/aiTestUtility.c **** #define _MAX_USB_USER_ELEM (128)
+ 152:X-CUBE-AI/App/aiTestUtility.c **** 
+ 153:X-CUBE-AI/App/aiTestUtility.c **** uint8_t _usb_fifo[_MAX_USB_USER_ELEM];
+ 154:X-CUBE-AI/App/aiTestUtility.c **** volatile uint32_t _usb_nb_w_item = 0;
+ 155:X-CUBE-AI/App/aiTestUtility.c **** volatile uint32_t _usb_nb_r_item = 0;
+ 156:X-CUBE-AI/App/aiTestUtility.c **** uint8_t *_usb_p_read = &_usb_fifo[0];
+ 157:X-CUBE-AI/App/aiTestUtility.c **** uint8_t *_usb_p_write = &_usb_fifo[0];
+ 158:X-CUBE-AI/App/aiTestUtility.c **** 
+ 159:X-CUBE-AI/App/aiTestUtility.c **** void ioPushInUserUsb(uint8_t *pw, uint32_t *len)
+ 160:X-CUBE-AI/App/aiTestUtility.c **** {
+ 161:X-CUBE-AI/App/aiTestUtility.c ****   uint8_t *pr = pw;
+ 162:X-CUBE-AI/App/aiTestUtility.c ****   for (int i=0; i < *len; i++) {
+ 163:X-CUBE-AI/App/aiTestUtility.c ****     *_usb_p_write++ = *pr++;
+ 164:X-CUBE-AI/App/aiTestUtility.c ****     if (_usb_p_write == &_usb_fifo[_MAX_USB_USER_ELEM])
+ 165:X-CUBE-AI/App/aiTestUtility.c ****       _usb_p_write = &_usb_fifo[0];
+ 166:X-CUBE-AI/App/aiTestUtility.c ****     _usb_nb_w_item++;
+ARM GAS  /tmp/ccCNKDF9.s 			page 14
+
+
+ 167:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 168:X-CUBE-AI/App/aiTestUtility.c **** }
+ 169:X-CUBE-AI/App/aiTestUtility.c **** 
+ 170:X-CUBE-AI/App/aiTestUtility.c **** bool ioRawWriteBuffer(uint8_t *buff, int count)
+ 171:X-CUBE-AI/App/aiTestUtility.c **** {
+ 172:X-CUBE-AI/App/aiTestUtility.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 173:X-CUBE-AI/App/aiTestUtility.c ****   while (USBD_BUSY == CDC_Transmit_FS(buff, count));
+ 174:X-CUBE-AI/App/aiTestUtility.c ****   // CDC_Transmit_FS(buff, count);
+ 175:X-CUBE-AI/App/aiTestUtility.c ****   return (status == HAL_OK);
+ 176:X-CUBE-AI/App/aiTestUtility.c **** }
+ 177:X-CUBE-AI/App/aiTestUtility.c **** 
+ 178:X-CUBE-AI/App/aiTestUtility.c **** bool ioRawReadBuffer(uint8_t *buff, int count)
+ 179:X-CUBE-AI/App/aiTestUtility.c **** {
+ 180:X-CUBE-AI/App/aiTestUtility.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 181:X-CUBE-AI/App/aiTestUtility.c ****   while ((_usb_nb_w_item - _usb_nb_r_item) < count) {};
+ 182:X-CUBE-AI/App/aiTestUtility.c **** 
+ 183:X-CUBE-AI/App/aiTestUtility.c ****   uint8_t *pw = buff;
+ 184:X-CUBE-AI/App/aiTestUtility.c ****   for (int i=0; i < count; i++) {
+ 185:X-CUBE-AI/App/aiTestUtility.c ****     *pw++ = *_usb_p_read++;
+ 186:X-CUBE-AI/App/aiTestUtility.c ****     if (_usb_p_read == &_usb_fifo[_MAX_USB_USER_ELEM])
+ 187:X-CUBE-AI/App/aiTestUtility.c ****       _usb_p_read = &_usb_fifo[0];
+ 188:X-CUBE-AI/App/aiTestUtility.c ****     _usb_nb_r_item++;
+ 189:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 190:X-CUBE-AI/App/aiTestUtility.c ****   return (status == HAL_OK);
+ 191:X-CUBE-AI/App/aiTestUtility.c **** }
+ 192:X-CUBE-AI/App/aiTestUtility.c **** 
+ 193:X-CUBE-AI/App/aiTestUtility.c **** void ioRawDisableLLWrite(void)
+ 194:X-CUBE-AI/App/aiTestUtility.c **** {
+ 195:X-CUBE-AI/App/aiTestUtility.c **** }
+ 196:X-CUBE-AI/App/aiTestUtility.c **** 
+ 197:X-CUBE-AI/App/aiTestUtility.c **** #else /* defined(USE_USB_CDC_CLASS) */
+ 198:X-CUBE-AI/App/aiTestUtility.c **** 
+ 199:X-CUBE-AI/App/aiTestUtility.c **** bool ioRawWriteBuffer(uint8_t *buff, int count)
+ 200:X-CUBE-AI/App/aiTestUtility.c **** {
+ 125              		.loc 1 200 1 is_stmt 1 view -0
+ 126              		.cfi_startproc
+ 127              		@ args = 0, pretend = 0, frame = 0
+ 128              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129              		.loc 1 200 1 is_stmt 0 view .LVU22
+ 130 0000 08B5     		push	{r3, lr}
+ 131              	.LCFI3:
+ 132              		.cfi_def_cfa_offset 8
+ 133              		.cfi_offset 3, -8
+ 134              		.cfi_offset 14, -4
+ 201:X-CUBE-AI/App/aiTestUtility.c ****   return port_io_write(buff, count);
+ 135              		.loc 1 201 3 is_stmt 1 view .LVU23
+ 136              	.LVL11:
+ 137              	.LBB22:
+ 138              	.LBI22:
+ 450:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 451:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 452:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_write(uint8_t *buff, int count)
+ 139              		.loc 2 452 22 view .LVU24
+ 140              	.LBB23:
+ 453:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 454:X-CUBE-AI/App/ai_device_adaptor.h ****   HAL_StatusTypeDef status;
+ 141              		.loc 2 454 3 view .LVU25
+ARM GAS  /tmp/ccCNKDF9.s 			page 15
+
+
+ 455:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 456:X-CUBE-AI/App/ai_device_adaptor.h ****   status = HAL_UART_Transmit(&UartHandle, buff, count, HAL_MAX_DELAY);
+ 142              		.loc 2 456 3 view .LVU26
+ 143              		.loc 2 456 12 is_stmt 0 view .LVU27
+ 144 0002 4FF0FF33 		mov	r3, #-1
+ 145 0006 8AB2     		uxth	r2, r1
+ 146 0008 0146     		mov	r1, r0
+ 147              	.LVL12:
+ 148              		.loc 2 456 12 view .LVU28
+ 149 000a 0348     		ldr	r0, .L14
+ 150              	.LVL13:
+ 151              		.loc 2 456 12 view .LVU29
+ 152 000c FFF7FEFF 		bl	HAL_UART_Transmit
+ 153              	.LVL14:
+ 457:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 458:X-CUBE-AI/App/ai_device_adaptor.h ****   return (status == HAL_OK);
+ 154              		.loc 2 458 3 is_stmt 1 view .LVU30
+ 155              		.loc 2 458 3 is_stmt 0 view .LVU31
+ 156              	.LBE23:
+ 157              	.LBE22:
+ 202:X-CUBE-AI/App/aiTestUtility.c **** }
+ 158              		.loc 1 202 1 view .LVU32
+ 159 0010 B0FA80F0 		clz	r0, r0
+ 160 0014 4009     		lsrs	r0, r0, #5
+ 161 0016 08BD     		pop	{r3, pc}
+ 162              	.L15:
+ 163              		.align	2
+ 164              	.L14:
+ 165 0018 00000000 		.word	hlpuart1
+ 166              		.cfi_endproc
+ 167              	.LFE147:
+ 169              		.section	.text.ioRawReadBuffer,"ax",%progbits
+ 170              		.align	1
+ 171              		.global	ioRawReadBuffer
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 175              		.fpu fpv4-sp-d16
+ 177              	ioRawReadBuffer:
+ 178              	.LVL15:
+ 179              	.LFB148:
+ 203:X-CUBE-AI/App/aiTestUtility.c **** 
+ 204:X-CUBE-AI/App/aiTestUtility.c **** bool ioRawReadBuffer(uint8_t *buff, int count)
+ 205:X-CUBE-AI/App/aiTestUtility.c **** {
+ 180              		.loc 1 205 1 is_stmt 1 view -0
+ 181              		.cfi_startproc
+ 182              		@ args = 0, pretend = 0, frame = 0
+ 183              		@ frame_needed = 0, uses_anonymous_args = 0
+ 184              		.loc 1 205 1 is_stmt 0 view .LVU34
+ 185 0000 08B5     		push	{r3, lr}
+ 186              	.LCFI4:
+ 187              		.cfi_def_cfa_offset 8
+ 188              		.cfi_offset 3, -8
+ 189              		.cfi_offset 14, -4
+ 206:X-CUBE-AI/App/aiTestUtility.c ****   return port_io_read(buff, count);
+ 190              		.loc 1 206 3 is_stmt 1 view .LVU35
+ 191              	.LVL16:
+ARM GAS  /tmp/ccCNKDF9.s 			page 16
+
+
+ 192              	.LBB24:
+ 193              	.LBI24:
+ 459:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 460:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 461:X-CUBE-AI/App/ai_device_adaptor.h **** __STATIC_INLINE bool port_io_read(uint8_t *buff, int count)
+ 194              		.loc 2 461 22 view .LVU36
+ 195              	.LBB25:
+ 462:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 463:X-CUBE-AI/App/ai_device_adaptor.h ****   HAL_StatusTypeDef status;
+ 196              		.loc 2 463 3 view .LVU37
+ 464:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 465:X-CUBE-AI/App/ai_device_adaptor.h ****   status = HAL_UART_Receive(&UartHandle, buff, count, HAL_MAX_DELAY);
+ 197              		.loc 2 465 3 view .LVU38
+ 198              		.loc 2 465 12 is_stmt 0 view .LVU39
+ 199 0002 4FF0FF33 		mov	r3, #-1
+ 200 0006 8AB2     		uxth	r2, r1
+ 201 0008 0146     		mov	r1, r0
+ 202              	.LVL17:
+ 203              		.loc 2 465 12 view .LVU40
+ 204 000a 0348     		ldr	r0, .L18
+ 205              	.LVL18:
+ 206              		.loc 2 465 12 view .LVU41
+ 207 000c FFF7FEFF 		bl	HAL_UART_Receive
+ 208              	.LVL19:
+ 466:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 467:X-CUBE-AI/App/ai_device_adaptor.h ****   return (status == HAL_OK);
+ 209              		.loc 2 467 3 is_stmt 1 view .LVU42
+ 210              		.loc 2 467 3 is_stmt 0 view .LVU43
+ 211              	.LBE25:
+ 212              	.LBE24:
+ 207:X-CUBE-AI/App/aiTestUtility.c **** }
+ 213              		.loc 1 207 1 view .LVU44
+ 214 0010 B0FA80F0 		clz	r0, r0
+ 215 0014 4009     		lsrs	r0, r0, #5
+ 216 0016 08BD     		pop	{r3, pc}
+ 217              	.L19:
+ 218              		.align	2
+ 219              	.L18:
+ 220 0018 00000000 		.word	hlpuart1
+ 221              		.cfi_endproc
+ 222              	.LFE148:
+ 224              		.section	.text.ioRawDisableLLWrite,"ax",%progbits
+ 225              		.align	1
+ 226              		.global	ioRawDisableLLWrite
+ 227              		.syntax unified
+ 228              		.thumb
+ 229              		.thumb_func
+ 230              		.fpu fpv4-sp-d16
+ 232              	ioRawDisableLLWrite:
+ 233              	.LFB149:
+ 208:X-CUBE-AI/App/aiTestUtility.c **** 
+ 209:X-CUBE-AI/App/aiTestUtility.c **** void ioRawDisableLLWrite(void)
+ 210:X-CUBE-AI/App/aiTestUtility.c **** {
+ 234              		.loc 1 210 1 is_stmt 1 view -0
+ 235              		.cfi_startproc
+ 236              		@ args = 0, pretend = 0, frame = 0
+ 237              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/ccCNKDF9.s 			page 17
+
+
+ 238              		@ link register save eliminated.
+ 211:X-CUBE-AI/App/aiTestUtility.c ****   _ioWriteAllowed = false;
+ 239              		.loc 1 211 3 view .LVU46
+ 240              		.loc 1 211 19 is_stmt 0 view .LVU47
+ 241 0000 014B     		ldr	r3, .L21
+ 242 0002 0022     		movs	r2, #0
+ 243 0004 1A70     		strb	r2, [r3]
+ 212:X-CUBE-AI/App/aiTestUtility.c **** }
+ 244              		.loc 1 212 1 view .LVU48
+ 245 0006 7047     		bx	lr
+ 246              	.L22:
+ 247              		.align	2
+ 248              	.L21:
+ 249 0008 00000000 		.word	.LANCHOR0
+ 250              		.cfi_endproc
+ 251              	.LFE149:
+ 253              		.section	.text._write,"ax",%progbits
+ 254              		.align	1
+ 255              		.global	_write
+ 256              		.syntax unified
+ 257              		.thumb
+ 258              		.thumb_func
+ 259              		.fpu fpv4-sp-d16
+ 261              	_write:
+ 262              	.LVL20:
+ 263              	.LFB150:
+ 213:X-CUBE-AI/App/aiTestUtility.c **** 
+ 214:X-CUBE-AI/App/aiTestUtility.c **** #endif /* !defined(USE_USB_CDC_CLASS) */
+ 215:X-CUBE-AI/App/aiTestUtility.c **** 
+ 216:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(USE_RETARGET_IO_FROM_TOOL) || USE_RETARGET_IO_FROM_TOOL != 1
+ 217:X-CUBE-AI/App/aiTestUtility.c **** 
+ 218:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 219:X-CUBE-AI/App/aiTestUtility.c **** 
+ 220:X-CUBE-AI/App/aiTestUtility.c **** int _write(int fd, const void *buff, int count);
+ 221:X-CUBE-AI/App/aiTestUtility.c **** 
+ 222:X-CUBE-AI/App/aiTestUtility.c **** int _write(int fd, const void *buff, int count)
+ 223:X-CUBE-AI/App/aiTestUtility.c **** {
+ 264              		.loc 1 223 1 is_stmt 1 view -0
+ 265              		.cfi_startproc
+ 266              		@ args = 0, pretend = 0, frame = 0
+ 267              		@ frame_needed = 0, uses_anonymous_args = 0
+ 268              		.loc 1 223 1 is_stmt 0 view .LVU50
+ 269 0000 10B5     		push	{r4, lr}
+ 270              	.LCFI5:
+ 271              		.cfi_def_cfa_offset 8
+ 272              		.cfi_offset 4, -8
+ 273              		.cfi_offset 14, -4
+ 224:X-CUBE-AI/App/aiTestUtility.c ****   bool status = true;
+ 274              		.loc 1 224 3 is_stmt 1 view .LVU51
+ 275              	.LVL21:
+ 225:X-CUBE-AI/App/aiTestUtility.c **** 
+ 226:X-CUBE-AI/App/aiTestUtility.c ****   if ((count < 0) && (fd != STDOUT_FILENO) && (fd != STDERR_FILENO)) {
+ 276              		.loc 1 226 3 view .LVU52
+ 277              		.loc 1 226 6 is_stmt 0 view .LVU53
+ 278 0002 141E     		subs	r4, r2, #0
+ 279 0004 04DB     		blt	.L28
+ 280              	.L24:
+ARM GAS  /tmp/ccCNKDF9.s 			page 18
+
+
+ 227:X-CUBE-AI/App/aiTestUtility.c ****     errno = EBADF;
+ 228:X-CUBE-AI/App/aiTestUtility.c ****     return -1;
+ 229:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 230:X-CUBE-AI/App/aiTestUtility.c **** 
+ 231:X-CUBE-AI/App/aiTestUtility.c **** #if defined(HAS_DEDICATED_PRINT_PORT) && HAS_DEDICATED_PRINT_PORT == 1
+ 232:X-CUBE-AI/App/aiTestUtility.c ****   status = port_io_dedicated_write((uint8_t *)buff, count);
+ 233:X-CUBE-AI/App/aiTestUtility.c **** #else /* HAS_DEDICATED_PRINT_PORT */
+ 234:X-CUBE-AI/App/aiTestUtility.c ****   if (_ioWriteAllowed)
+ 281              		.loc 1 234 3 is_stmt 1 view .LVU54
+ 282              		.loc 1 234 7 is_stmt 0 view .LVU55
+ 283 0006 0D4B     		ldr	r3, .L30
+ 284 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 285              		.loc 1 234 6 view .LVU56
+ 286 000a 63B9     		cbnz	r3, .L29
+ 287              	.LVL22:
+ 288              	.L25:
+ 235:X-CUBE-AI/App/aiTestUtility.c **** #ifdef SWO_OUTPUT
+ 236:X-CUBE-AI/App/aiTestUtility.c ****   {
+ 237:X-CUBE-AI/App/aiTestUtility.c ****     const uint8_t *p8_buff = (uint8_t *) buff;
+ 238:X-CUBE-AI/App/aiTestUtility.c ****     for(int i_c = 0; i_c < count; i_c++)
+ 239:X-CUBE-AI/App/aiTestUtility.c ****     {
+ 240:X-CUBE-AI/App/aiTestUtility.c ****       const uint8_t ui8_char = *p8_buff++;
+ 241:X-CUBE-AI/App/aiTestUtility.c ****       /* Filter out Escape sequences (No color on Debug terminal */
+ 242:X-CUBE-AI/App/aiTestUtility.c ****       if (ui8_char != 27)
+ 243:X-CUBE-AI/App/aiTestUtility.c ****       {
+ 244:X-CUBE-AI/App/aiTestUtility.c ****         ITM_SendChar(ui8_char);
+ 245:X-CUBE-AI/App/aiTestUtility.c ****       }
+ 246:X-CUBE-AI/App/aiTestUtility.c ****       else
+ 247:X-CUBE-AI/App/aiTestUtility.c ****       {
+ 248:X-CUBE-AI/App/aiTestUtility.c ****         p8_buff+=4;
+ 249:X-CUBE-AI/App/aiTestUtility.c ****         i_c +=4;
+ 250:X-CUBE-AI/App/aiTestUtility.c ****       }
+ 251:X-CUBE-AI/App/aiTestUtility.c ****     }
+ 252:X-CUBE-AI/App/aiTestUtility.c ****     status = count;
+ 253:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 254:X-CUBE-AI/App/aiTestUtility.c **** #endif /* SWO_OUTPUT */
+ 255:X-CUBE-AI/App/aiTestUtility.c ****   status = port_io_write((uint8_t *)buff, count);
+ 256:X-CUBE-AI/App/aiTestUtility.c **** #endif /* !HAS_DEDICATED_PRINT_PORT */
+ 257:X-CUBE-AI/App/aiTestUtility.c **** 
+ 258:X-CUBE-AI/App/aiTestUtility.c ****   return (status ? count : 0);
+ 259:X-CUBE-AI/App/aiTestUtility.c **** }
+ 289              		.loc 1 259 1 view .LVU57
+ 290 000c 2046     		mov	r0, r4
+ 291 000e 10BD     		pop	{r4, pc}
+ 292              	.LVL23:
+ 293              	.L28:
+ 226:X-CUBE-AI/App/aiTestUtility.c ****     errno = EBADF;
+ 294              		.loc 1 226 19 discriminator 1 view .LVU58
+ 295 0010 0128     		cmp	r0, #1
+ 296 0012 F8D0     		beq	.L24
+ 226:X-CUBE-AI/App/aiTestUtility.c ****     errno = EBADF;
+ 297              		.loc 1 226 44 discriminator 2 view .LVU59
+ 298 0014 0228     		cmp	r0, #2
+ 299 0016 F6D0     		beq	.L24
+ 227:X-CUBE-AI/App/aiTestUtility.c ****     errno = EBADF;
+ 300              		.loc 1 227 5 is_stmt 1 view .LVU60
+ 301 0018 FFF7FEFF 		bl	__errno
+ARM GAS  /tmp/ccCNKDF9.s 			page 19
+
+
+ 302              	.LVL24:
+ 227:X-CUBE-AI/App/aiTestUtility.c ****     errno = EBADF;
+ 303              		.loc 1 227 11 is_stmt 0 view .LVU61
+ 304 001c 0923     		movs	r3, #9
+ 305 001e 0360     		str	r3, [r0]
+ 228:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 306              		.loc 1 228 5 is_stmt 1 view .LVU62
+ 228:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 307              		.loc 1 228 12 is_stmt 0 view .LVU63
+ 308 0020 4FF0FF34 		mov	r4, #-1
+ 309              	.LVL25:
+ 228:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 310              		.loc 1 228 12 view .LVU64
+ 311 0024 F2E7     		b	.L25
+ 312              	.LVL26:
+ 313              	.L29:
+ 255:X-CUBE-AI/App/aiTestUtility.c **** #endif /* !HAS_DEDICATED_PRINT_PORT */
+ 314              		.loc 1 255 3 is_stmt 1 view .LVU65
+ 315              	.LBB26:
+ 316              	.LBI26:
+ 452:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 317              		.loc 2 452 22 view .LVU66
+ 318              	.LBB27:
+ 454:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 319              		.loc 2 454 3 view .LVU67
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 320              		.loc 2 456 3 view .LVU68
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 321              		.loc 2 456 12 is_stmt 0 view .LVU69
+ 322 0026 4FF0FF33 		mov	r3, #-1
+ 323 002a A2B2     		uxth	r2, r4
+ 324              	.LVL27:
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 325              		.loc 2 456 12 view .LVU70
+ 326 002c 0448     		ldr	r0, .L30+4
+ 327              	.LVL28:
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 328              		.loc 2 456 12 view .LVU71
+ 329 002e FFF7FEFF 		bl	HAL_UART_Transmit
+ 330              	.LVL29:
+ 458:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 331              		.loc 2 458 3 is_stmt 1 view .LVU72
+ 458:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 332              		.loc 2 458 3 is_stmt 0 view .LVU73
+ 333              	.LBE27:
+ 334              	.LBE26:
+ 258:X-CUBE-AI/App/aiTestUtility.c **** }
+ 335              		.loc 1 258 3 is_stmt 1 view .LVU74
+ 258:X-CUBE-AI/App/aiTestUtility.c **** }
+ 336              		.loc 1 258 26 is_stmt 0 view .LVU75
+ 337 0032 0028     		cmp	r0, #0
+ 338 0034 EAD0     		beq	.L25
+ 339 0036 0024     		movs	r4, #0
+ 340              	.LVL30:
+ 258:X-CUBE-AI/App/aiTestUtility.c **** }
+ 341              		.loc 1 258 26 view .LVU76
+ 342 0038 E8E7     		b	.L25
+ARM GAS  /tmp/ccCNKDF9.s 			page 20
+
+
+ 343              	.L31:
+ 344 003a 00BF     		.align	2
+ 345              	.L30:
+ 346 003c 00000000 		.word	.LANCHOR0
+ 347 0040 00000000 		.word	hlpuart1
+ 348              		.cfi_endproc
+ 349              	.LFE150:
+ 351              		.section	.text._put_c_driver,"ax",%progbits
+ 352              		.align	1
+ 353              		.syntax unified
+ 354              		.thumb
+ 355              		.thumb_func
+ 356              		.fpu fpv4-sp-d16
+ 358              	_put_c_driver:
+ 359              	.LVL31:
+ 360              	.LFB151:
+ 260:X-CUBE-AI/App/aiTestUtility.c **** 
+ 261:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 262:X-CUBE-AI/App/aiTestUtility.c **** 
+ 263:X-CUBE-AI/App/aiTestUtility.c **** __ATTRIBUTES  size_t __write(int handle, const unsigned char *buffer,
+ 264:X-CUBE-AI/App/aiTestUtility.c ****     size_t size);
+ 265:X-CUBE-AI/App/aiTestUtility.c **** 
+ 266:X-CUBE-AI/App/aiTestUtility.c **** __ATTRIBUTES  size_t __write(int handle, const unsigned char *buffer,
+ 267:X-CUBE-AI/App/aiTestUtility.c ****     size_t size)
+ 268:X-CUBE-AI/App/aiTestUtility.c **** {
+ 269:X-CUBE-AI/App/aiTestUtility.c ****   bool status = true;
+ 270:X-CUBE-AI/App/aiTestUtility.c **** 
+ 271:X-CUBE-AI/App/aiTestUtility.c ****   /*
+ 272:X-CUBE-AI/App/aiTestUtility.c ****    * This means that we should flush internal buffers.  Since we
+ 273:X-CUBE-AI/App/aiTestUtility.c ****    * don't we just return.  (Remember, "handle" == -1 means that all
+ 274:X-CUBE-AI/App/aiTestUtility.c ****    * handles should be flushed.)
+ 275:X-CUBE-AI/App/aiTestUtility.c ****    */
+ 276:X-CUBE-AI/App/aiTestUtility.c ****   if (buffer == 0)
+ 277:X-CUBE-AI/App/aiTestUtility.c ****     return 0;
+ 278:X-CUBE-AI/App/aiTestUtility.c **** 
+ 279:X-CUBE-AI/App/aiTestUtility.c ****   /* This template only writes to "standard out" and "standard err",
+ 280:X-CUBE-AI/App/aiTestUtility.c ****    * for all other file handles it returns failure.
+ 281:X-CUBE-AI/App/aiTestUtility.c ****    */
+ 282:X-CUBE-AI/App/aiTestUtility.c ****   if ((handle != _LLIO_STDOUT) && (handle != _LLIO_STDERR))
+ 283:X-CUBE-AI/App/aiTestUtility.c ****     return _LLIO_ERROR;
+ 284:X-CUBE-AI/App/aiTestUtility.c **** 
+ 285:X-CUBE-AI/App/aiTestUtility.c **** #if defined(HAS_DEDICATED_PRINT_PORT) && HAS_DEDICATED_PRINT_PORT == 1
+ 286:X-CUBE-AI/App/aiTestUtility.c ****   status = port_io_dedicated_write((uint8_t *)buffer, size);
+ 287:X-CUBE-AI/App/aiTestUtility.c **** #else
+ 288:X-CUBE-AI/App/aiTestUtility.c ****   if (_ioWriteAllowed)
+ 289:X-CUBE-AI/App/aiTestUtility.c ****     status = port_io_write((uint8_t *)buffer, size);
+ 290:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 291:X-CUBE-AI/App/aiTestUtility.c ****   return (status ? size : _LLIO_ERROR);
+ 292:X-CUBE-AI/App/aiTestUtility.c **** }
+ 293:X-CUBE-AI/App/aiTestUtility.c **** 
+ 294:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_ACx_COMPILER) && _IS_ACx_COMPILER
+ 295:X-CUBE-AI/App/aiTestUtility.c **** 
+ 296:X-CUBE-AI/App/aiTestUtility.c **** int fputc(int ch, FILE *f)
+ 297:X-CUBE-AI/App/aiTestUtility.c **** {
+ 298:X-CUBE-AI/App/aiTestUtility.c **** #if defined(HAS_DEDICATED_PRINT_PORT) && HAS_DEDICATED_PRINT_PORT == 1
+ 299:X-CUBE-AI/App/aiTestUtility.c ****   port_io_dedicated_putc(ch);
+ 300:X-CUBE-AI/App/aiTestUtility.c **** #else
+ARM GAS  /tmp/ccCNKDF9.s 			page 21
+
+
+ 301:X-CUBE-AI/App/aiTestUtility.c ****   if (_ioWriteAllowed)
+ 302:X-CUBE-AI/App/aiTestUtility.c ****     port_io_write((uint8_t *)&ch, 1);
+ 303:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 304:X-CUBE-AI/App/aiTestUtility.c ****   return ch;
+ 305:X-CUBE-AI/App/aiTestUtility.c **** }
+ 306:X-CUBE-AI/App/aiTestUtility.c **** 
+ 307:X-CUBE-AI/App/aiTestUtility.c **** #else
+ 308:X-CUBE-AI/App/aiTestUtility.c **** #error ARM MCU tool-chain is not supported.
+ 309:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 310:X-CUBE-AI/App/aiTestUtility.c **** 
+ 311:X-CUBE-AI/App/aiTestUtility.c **** #endif /* !USE_RETARGET_IO_FROM_TOOL */
+ 312:X-CUBE-AI/App/aiTestUtility.c **** 
+ 313:X-CUBE-AI/App/aiTestUtility.c **** /* -----------------------------------------------------------------------------
+ 314:X-CUBE-AI/App/aiTestUtility.c ****  * Log functions
+ 315:X-CUBE-AI/App/aiTestUtility.c ****  * -----------------------------------------------------------------------------
+ 316:X-CUBE-AI/App/aiTestUtility.c ****  */
+ 317:X-CUBE-AI/App/aiTestUtility.c **** 
+ 318:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(USE_PRINTF_FROM_TOOL) || USE_PRINTF_FROM_TOOL != 1
+ 319:X-CUBE-AI/App/aiTestUtility.c **** 
+ 320:X-CUBE-AI/App/aiTestUtility.c **** #include "lc_print.h"
+ 321:X-CUBE-AI/App/aiTestUtility.c **** 
+ 322:X-CUBE-AI/App/aiTestUtility.c **** static void _put_c_driver(void *user, const char c)
+ 323:X-CUBE-AI/App/aiTestUtility.c **** {
+ 361              		.loc 1 323 1 is_stmt 1 view -0
+ 362              		.cfi_startproc
+ 363              		@ args = 0, pretend = 0, frame = 8
+ 364              		@ frame_needed = 0, uses_anonymous_args = 0
+ 365              		.loc 1 323 1 is_stmt 0 view .LVU78
+ 366 0000 00B5     		push	{lr}
+ 367              	.LCFI6:
+ 368              		.cfi_def_cfa_offset 4
+ 369              		.cfi_offset 14, -4
+ 370 0002 83B0     		sub	sp, sp, #12
+ 371              	.LCFI7:
+ 372              		.cfi_def_cfa_offset 16
+ 373 0004 8DF80710 		strb	r1, [sp, #7]
+ 324:X-CUBE-AI/App/aiTestUtility.c **** #if defined(HAS_DEDICATED_PRINT_PORT) && HAS_DEDICATED_PRINT_PORT == 1
+ 325:X-CUBE-AI/App/aiTestUtility.c ****   port_io_dedicated_putc(c);
+ 326:X-CUBE-AI/App/aiTestUtility.c **** #else
+ 327:X-CUBE-AI/App/aiTestUtility.c ****   if (_ioWriteAllowed)
+ 374              		.loc 1 327 3 is_stmt 1 view .LVU79
+ 375              		.loc 1 327 7 is_stmt 0 view .LVU80
+ 376 0008 074B     		ldr	r3, .L36
+ 377 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 378              		.loc 1 327 6 view .LVU81
+ 379 000c 13B9     		cbnz	r3, .L35
+ 380              	.LVL32:
+ 381              	.L32:
+ 328:X-CUBE-AI/App/aiTestUtility.c ****   {
+ 329:X-CUBE-AI/App/aiTestUtility.c ****     port_io_write((uint8_t *)&c, 1);
+ 330:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 331:X-CUBE-AI/App/aiTestUtility.c **** #ifdef SWO_OUTPUT
+ 332:X-CUBE-AI/App/aiTestUtility.c ****   ITM_SendChar(c);
+ 333:X-CUBE-AI/App/aiTestUtility.c **** #endif 
+ 334:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 335:X-CUBE-AI/App/aiTestUtility.c **** }
+ 382              		.loc 1 335 1 view .LVU82
+ARM GAS  /tmp/ccCNKDF9.s 			page 22
+
+
+ 383 000e 03B0     		add	sp, sp, #12
+ 384              	.LCFI8:
+ 385              		.cfi_remember_state
+ 386              		.cfi_def_cfa_offset 4
+ 387              		@ sp needed
+ 388 0010 5DF804FB 		ldr	pc, [sp], #4
+ 389              	.LVL33:
+ 390              	.L35:
+ 391              	.LCFI9:
+ 392              		.cfi_restore_state
+ 329:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 393              		.loc 1 329 5 is_stmt 1 view .LVU83
+ 394              	.LBB28:
+ 395              	.LBI28:
+ 452:X-CUBE-AI/App/ai_device_adaptor.h **** {
+ 396              		.loc 2 452 22 view .LVU84
+ 397              	.LBB29:
+ 454:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 398              		.loc 2 454 3 view .LVU85
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 399              		.loc 2 456 3 view .LVU86
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 400              		.loc 2 456 12 is_stmt 0 view .LVU87
+ 401 0014 4FF0FF33 		mov	r3, #-1
+ 402 0018 0122     		movs	r2, #1
+ 403 001a 0DF10701 		add	r1, sp, #7
+ 404              	.LVL34:
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 405              		.loc 2 456 12 view .LVU88
+ 406 001e 0348     		ldr	r0, .L36+4
+ 407              	.LVL35:
+ 456:X-CUBE-AI/App/ai_device_adaptor.h **** 
+ 408              		.loc 2 456 12 view .LVU89
+ 409 0020 FFF7FEFF 		bl	HAL_UART_Transmit
+ 410              	.LVL36:
+ 458:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 411              		.loc 2 458 3 is_stmt 1 view .LVU90
+ 458:X-CUBE-AI/App/ai_device_adaptor.h **** }
+ 412              		.loc 2 458 3 is_stmt 0 view .LVU91
+ 413              	.LBE29:
+ 414              	.LBE28:
+ 415              		.loc 1 335 1 view .LVU92
+ 416 0024 F3E7     		b	.L32
+ 417              	.L37:
+ 418 0026 00BF     		.align	2
+ 419              	.L36:
+ 420 0028 00000000 		.word	.LANCHOR0
+ 421 002c 00000000 		.word	hlpuart1
+ 422              		.cfi_endproc
+ 423              	.LFE151:
+ 425              		.section	.text.lc_print,"ax",%progbits
+ 426              		.align	1
+ 427              		.global	lc_print
+ 428              		.syntax unified
+ 429              		.thumb
+ 430              		.thumb_func
+ 431              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccCNKDF9.s 			page 23
+
+
+ 433              	lc_print:
+ 434              	.LVL37:
+ 435              	.LFB152:
+ 336:X-CUBE-AI/App/aiTestUtility.c **** 
+ 337:X-CUBE-AI/App/aiTestUtility.c **** void lc_print(const char* fmt, ... )
+ 338:X-CUBE-AI/App/aiTestUtility.c **** {
+ 436              		.loc 1 338 1 is_stmt 1 view -0
+ 437              		.cfi_startproc
+ 438              		@ args = 4, pretend = 16, frame = 8
+ 439              		@ frame_needed = 0, uses_anonymous_args = 1
+ 440              		.loc 1 338 1 is_stmt 0 view .LVU94
+ 441 0000 0FB4     		push	{r0, r1, r2, r3}
+ 442              	.LCFI10:
+ 443              		.cfi_def_cfa_offset 16
+ 444              		.cfi_offset 0, -16
+ 445              		.cfi_offset 1, -12
+ 446              		.cfi_offset 2, -8
+ 447              		.cfi_offset 3, -4
+ 448 0002 00B5     		push	{lr}
+ 449              	.LCFI11:
+ 450              		.cfi_def_cfa_offset 20
+ 451              		.cfi_offset 14, -20
+ 452 0004 83B0     		sub	sp, sp, #12
+ 453              	.LCFI12:
+ 454              		.cfi_def_cfa_offset 32
+ 455 0006 04AB     		add	r3, sp, #16
+ 456 0008 53F8042B 		ldr	r2, [r3], #4
+ 339:X-CUBE-AI/App/aiTestUtility.c ****   va_list ap;
+ 457              		.loc 1 339 3 is_stmt 1 view .LVU95
+ 340:X-CUBE-AI/App/aiTestUtility.c ****   va_start(ap, fmt);
+ 458              		.loc 1 340 3 view .LVU96
+ 459 000c 0193     		str	r3, [sp, #4]
+ 341:X-CUBE-AI/App/aiTestUtility.c ****   vlc_print(&_put_c_driver, NULL, fmt, ap);
+ 460              		.loc 1 341 3 view .LVU97
+ 461 000e 0021     		movs	r1, #0
+ 462 0010 0348     		ldr	r0, .L40
+ 463 0012 FFF7FEFF 		bl	vlc_print
+ 464              	.LVL38:
+ 342:X-CUBE-AI/App/aiTestUtility.c ****   va_end(ap);
+ 465              		.loc 1 342 3 view .LVU98
+ 343:X-CUBE-AI/App/aiTestUtility.c **** }
+ 466              		.loc 1 343 1 is_stmt 0 view .LVU99
+ 467 0016 03B0     		add	sp, sp, #12
+ 468              	.LCFI13:
+ 469              		.cfi_def_cfa_offset 20
+ 470              		@ sp needed
+ 471 0018 5DF804EB 		ldr	lr, [sp], #4
+ 472              	.LCFI14:
+ 473              		.cfi_restore 14
+ 474              		.cfi_def_cfa_offset 16
+ 475 001c 04B0     		add	sp, sp, #16
+ 476              	.LCFI15:
+ 477              		.cfi_restore 3
+ 478              		.cfi_restore 2
+ 479              		.cfi_restore 1
+ 480              		.cfi_restore 0
+ 481              		.cfi_def_cfa_offset 0
+ARM GAS  /tmp/ccCNKDF9.s 			page 24
+
+
+ 482 001e 7047     		bx	lr
+ 483              	.L41:
+ 484              		.align	2
+ 485              	.L40:
+ 486 0020 00000000 		.word	_put_c_driver
+ 487              		.cfi_endproc
+ 488              	.LFE152:
+ 490              		.section	.text._put_c_buffer_cb,"ax",%progbits
+ 491              		.align	1
+ 492              		.syntax unified
+ 493              		.thumb
+ 494              		.thumb_func
+ 495              		.fpu fpv4-sp-d16
+ 497              	_put_c_buffer_cb:
+ 498              	.LVL39:
+ 499              	.LFB153:
+ 344:X-CUBE-AI/App/aiTestUtility.c **** 
+ 345:X-CUBE-AI/App/aiTestUtility.c **** struct _buffer {
+ 346:X-CUBE-AI/App/aiTestUtility.c ****   char *buffer;
+ 347:X-CUBE-AI/App/aiTestUtility.c ****   size_t size;
+ 348:X-CUBE-AI/App/aiTestUtility.c ****   size_t pos;
+ 349:X-CUBE-AI/App/aiTestUtility.c **** };
+ 350:X-CUBE-AI/App/aiTestUtility.c **** 
+ 351:X-CUBE-AI/App/aiTestUtility.c **** static void _put_c_buffer_cb(void *user, const char c)
+ 352:X-CUBE-AI/App/aiTestUtility.c **** {
+ 500              		.loc 1 352 1 is_stmt 1 view -0
+ 501              		.cfi_startproc
+ 502              		@ args = 0, pretend = 0, frame = 0
+ 503              		@ frame_needed = 0, uses_anonymous_args = 0
+ 504              		@ link register save eliminated.
+ 353:X-CUBE-AI/App/aiTestUtility.c ****   struct _buffer *buffer = (struct _buffer *)user;
+ 505              		.loc 1 353 3 view .LVU101
+ 354:X-CUBE-AI/App/aiTestUtility.c ****   if (buffer->pos < (buffer->size - 1)) {
+ 506              		.loc 1 354 3 view .LVU102
+ 507              		.loc 1 354 13 is_stmt 0 view .LVU103
+ 508 0000 8268     		ldr	r2, [r0, #8]
+ 509              		.loc 1 354 28 view .LVU104
+ 510 0002 4368     		ldr	r3, [r0, #4]
+ 511              		.loc 1 354 35 view .LVU105
+ 512 0004 013B     		subs	r3, r3, #1
+ 513              		.loc 1 354 6 view .LVU106
+ 514 0006 9A42     		cmp	r2, r3
+ 515 0008 07D2     		bcs	.L42
+ 355:X-CUBE-AI/App/aiTestUtility.c ****     buffer->buffer[buffer->pos] = c;
+ 516              		.loc 1 355 5 is_stmt 1 view .LVU107
+ 517              		.loc 1 355 11 is_stmt 0 view .LVU108
+ 518 000a 0368     		ldr	r3, [r0]
+ 519              		.loc 1 355 33 view .LVU109
+ 520 000c 9954     		strb	r1, [r3, r2]
+ 356:X-CUBE-AI/App/aiTestUtility.c ****     buffer->pos++;
+ 521              		.loc 1 356 5 is_stmt 1 view .LVU110
+ 522              		.loc 1 356 11 is_stmt 0 view .LVU111
+ 523 000e 8368     		ldr	r3, [r0, #8]
+ 524              		.loc 1 356 16 view .LVU112
+ 525 0010 0133     		adds	r3, r3, #1
+ 526 0012 8360     		str	r3, [r0, #8]
+ 357:X-CUBE-AI/App/aiTestUtility.c ****     buffer->buffer[buffer->pos] = 0;
+ARM GAS  /tmp/ccCNKDF9.s 			page 25
+
+
+ 527              		.loc 1 357 5 is_stmt 1 view .LVU113
+ 528              		.loc 1 357 11 is_stmt 0 view .LVU114
+ 529 0014 0268     		ldr	r2, [r0]
+ 530              		.loc 1 357 33 view .LVU115
+ 531 0016 0021     		movs	r1, #0
+ 532              	.LVL40:
+ 533              		.loc 1 357 33 view .LVU116
+ 534 0018 D154     		strb	r1, [r2, r3]
+ 535              	.L42:
+ 358:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 359:X-CUBE-AI/App/aiTestUtility.c **** }
+ 536              		.loc 1 359 1 view .LVU117
+ 537 001a 7047     		bx	lr
+ 538              		.cfi_endproc
+ 539              	.LFE153:
+ 541              		.section	.text.lc_vsnprint,"ax",%progbits
+ 542              		.align	1
+ 543              		.global	lc_vsnprint
+ 544              		.syntax unified
+ 545              		.thumb
+ 546              		.thumb_func
+ 547              		.fpu fpv4-sp-d16
+ 549              	lc_vsnprint:
+ 550              	.LVL41:
+ 551              	.LFB154:
+ 360:X-CUBE-AI/App/aiTestUtility.c **** 
+ 361:X-CUBE-AI/App/aiTestUtility.c **** size_t lc_vsnprint(char *buff, size_t size, const char* fmt, va_list vlist)
+ 362:X-CUBE-AI/App/aiTestUtility.c **** {
+ 552              		.loc 1 362 1 is_stmt 1 view -0
+ 553              		.cfi_startproc
+ 554              		@ args = 0, pretend = 0, frame = 16
+ 555              		@ frame_needed = 0, uses_anonymous_args = 0
+ 556              		.loc 1 362 1 is_stmt 0 view .LVU119
+ 557 0000 00B5     		push	{lr}
+ 558              	.LCFI16:
+ 559              		.cfi_def_cfa_offset 4
+ 560              		.cfi_offset 14, -4
+ 561 0002 85B0     		sub	sp, sp, #20
+ 562              	.LCFI17:
+ 563              		.cfi_def_cfa_offset 24
+ 363:X-CUBE-AI/App/aiTestUtility.c ****   struct _buffer buffer = {buff, size, 0};
+ 564              		.loc 1 363 3 is_stmt 1 view .LVU120
+ 565              		.loc 1 363 18 is_stmt 0 view .LVU121
+ 566 0004 0190     		str	r0, [sp, #4]
+ 567 0006 0291     		str	r1, [sp, #8]
+ 568 0008 0021     		movs	r1, #0
+ 569              	.LVL42:
+ 570              		.loc 1 363 18 view .LVU122
+ 571 000a 0391     		str	r1, [sp, #12]
+ 364:X-CUBE-AI/App/aiTestUtility.c ****   vlc_print(&_put_c_buffer_cb, &buffer, fmt, vlist);
+ 572              		.loc 1 364 3 is_stmt 1 view .LVU123
+ 573 000c 01A9     		add	r1, sp, #4
+ 574 000e 0448     		ldr	r0, .L46
+ 575              	.LVL43:
+ 576              		.loc 1 364 3 is_stmt 0 view .LVU124
+ 577 0010 FFF7FEFF 		bl	vlc_print
+ 578              	.LVL44:
+ARM GAS  /tmp/ccCNKDF9.s 			page 26
+
+
+ 365:X-CUBE-AI/App/aiTestUtility.c ****   return buffer.pos - 1;
+ 579              		.loc 1 365 3 is_stmt 1 view .LVU125
+ 366:X-CUBE-AI/App/aiTestUtility.c **** }
+ 580              		.loc 1 366 1 is_stmt 0 view .LVU126
+ 581 0014 0398     		ldr	r0, [sp, #12]
+ 582 0016 0138     		subs	r0, r0, #1
+ 583 0018 05B0     		add	sp, sp, #20
+ 584              	.LCFI18:
+ 585              		.cfi_def_cfa_offset 4
+ 586              		@ sp needed
+ 587 001a 5DF804FB 		ldr	pc, [sp], #4
+ 588              	.L47:
+ 589 001e 00BF     		.align	2
+ 590              	.L46:
+ 591 0020 00000000 		.word	_put_c_buffer_cb
+ 592              		.cfi_endproc
+ 593              	.LFE154:
+ 595              		.comm	io_malloc,28,4
+ 596              		.section	.text.__wrap_malloc,"ax",%progbits
+ 597              		.align	1
+ 598              		.global	__wrap_malloc
+ 599              		.syntax unified
+ 600              		.thumb
+ 601              		.thumb_func
+ 602              		.fpu fpv4-sp-d16
+ 604              	__wrap_malloc:
+ 605              	.LVL45:
+ 606              	.LFB155:
+ 367:X-CUBE-AI/App/aiTestUtility.c **** 
+ 368:X-CUBE-AI/App/aiTestUtility.c **** #endif /* !USE_PRINTF_FROM_TOOL */
+ 369:X-CUBE-AI/App/aiTestUtility.c **** 
+ 370:X-CUBE-AI/App/aiTestUtility.c **** 
+ 371:X-CUBE-AI/App/aiTestUtility.c **** /* -----------------------------------------------------------------------------
+ 372:X-CUBE-AI/App/aiTestUtility.c ****  * HEAP Monitor functions
+ 373:X-CUBE-AI/App/aiTestUtility.c ****  * -----------------------------------------------------------------------------
+ 374:X-CUBE-AI/App/aiTestUtility.c ****  */
+ 375:X-CUBE-AI/App/aiTestUtility.c **** 
+ 376:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 377:X-CUBE-AI/App/aiTestUtility.c **** 
+ 378:X-CUBE-AI/App/aiTestUtility.c **** #define MAGIC_MALLOC_NUMBER 0xefdcba98
+ 379:X-CUBE-AI/App/aiTestUtility.c **** 
+ 380:X-CUBE-AI/App/aiTestUtility.c **** struct io_malloc io_malloc;
+ 381:X-CUBE-AI/App/aiTestUtility.c **** 
+ 382:X-CUBE-AI/App/aiTestUtility.c **** void* __real_malloc(size_t bytes);
+ 383:X-CUBE-AI/App/aiTestUtility.c **** void __real_free(void *ptr);
+ 384:X-CUBE-AI/App/aiTestUtility.c **** 
+ 385:X-CUBE-AI/App/aiTestUtility.c **** void* __wrap_malloc(size_t bytes)
+ 386:X-CUBE-AI/App/aiTestUtility.c **** {
+ 607              		.loc 1 386 1 is_stmt 1 view -0
+ 608              		.cfi_startproc
+ 609              		@ args = 0, pretend = 0, frame = 0
+ 610              		@ frame_needed = 0, uses_anonymous_args = 0
+ 611              		.loc 1 386 1 is_stmt 0 view .LVU128
+ 612 0000 10B5     		push	{r4, lr}
+ 613              	.LCFI19:
+ 614              		.cfi_def_cfa_offset 8
+ 615              		.cfi_offset 4, -8
+ARM GAS  /tmp/ccCNKDF9.s 			page 27
+
+
+ 616              		.cfi_offset 14, -4
+ 387:X-CUBE-AI/App/aiTestUtility.c ****   uint8_t *ptr;
+ 617              		.loc 1 387 3 is_stmt 1 view .LVU129
+ 388:X-CUBE-AI/App/aiTestUtility.c **** 
+ 389:X-CUBE-AI/App/aiTestUtility.c ****   io_malloc.cfg |= 1 << 1;
+ 618              		.loc 1 389 3 view .LVU130
+ 619              		.loc 1 389 17 is_stmt 0 view .LVU131
+ 620 0002 154A     		ldr	r2, .L53
+ 621 0004 1368     		ldr	r3, [r2]
+ 622 0006 43F00203 		orr	r3, r3, #2
+ 623 000a 1360     		str	r3, [r2]
+ 390:X-CUBE-AI/App/aiTestUtility.c **** 
+ 391:X-CUBE-AI/App/aiTestUtility.c ****   /* ensure alignment for magic number */
+ 392:X-CUBE-AI/App/aiTestUtility.c ****   bytes = (bytes + 3) & ~3;
+ 624              		.loc 1 392 3 is_stmt 1 view .LVU132
+ 625              		.loc 1 392 18 is_stmt 0 view .LVU133
+ 626 000c C41C     		adds	r4, r0, #3
+ 627              		.loc 1 392 9 view .LVU134
+ 628 000e 24F00304 		bic	r4, r4, #3
+ 629              	.LVL46:
+ 393:X-CUBE-AI/App/aiTestUtility.c **** 
+ 394:X-CUBE-AI/App/aiTestUtility.c ****   /* add 2x32-bit for size and magic  number */
+ 395:X-CUBE-AI/App/aiTestUtility.c ****   ptr = (uint8_t*)__real_malloc(bytes + 8);
+ 630              		.loc 1 395 3 is_stmt 1 view .LVU135
+ 631              		.loc 1 395 19 is_stmt 0 view .LVU136
+ 632 0012 04F10800 		add	r0, r4, #8
+ 633 0016 FFF7FEFF 		bl	__real_malloc
+ 634              	.LVL47:
+ 396:X-CUBE-AI/App/aiTestUtility.c **** 
+ 397:X-CUBE-AI/App/aiTestUtility.c ****   /* remember size */
+ 398:X-CUBE-AI/App/aiTestUtility.c ****   if (ptr) {
+ 635              		.loc 1 398 3 is_stmt 1 view .LVU137
+ 636              		.loc 1 398 6 is_stmt 0 view .LVU138
+ 637 001a 0346     		mov	r3, r0
+ 638 001c 18B1     		cbz	r0, .L49
+ 399:X-CUBE-AI/App/aiTestUtility.c ****     *((uint32_t*)ptr) = bytes;
+ 639              		.loc 1 399 5 is_stmt 1 view .LVU139
+ 640              		.loc 1 399 23 is_stmt 0 view .LVU140
+ 641 001e 0460     		str	r4, [r0]
+ 400:X-CUBE-AI/App/aiTestUtility.c ****     *((uint32_t*)(ptr + 4 + bytes)) = MAGIC_MALLOC_NUMBER;
+ 642              		.loc 1 400 5 is_stmt 1 view .LVU141
+ 643              		.loc 1 400 27 is_stmt 0 view .LVU142
+ 644 0020 221D     		adds	r2, r4, #4
+ 645              		.loc 1 400 37 view .LVU143
+ 646 0022 0E49     		ldr	r1, .L53+4
+ 647 0024 8150     		str	r1, [r0, r2]
+ 648              	.L49:
+ 401:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 402:X-CUBE-AI/App/aiTestUtility.c **** 
+ 403:X-CUBE-AI/App/aiTestUtility.c ****   if ((ptr) && (io_malloc.cfg & 1UL)) {
+ 649              		.loc 1 403 3 is_stmt 1 view .LVU144
+ 650              		.loc 1 403 6 is_stmt 0 view .LVU145
+ 651 0026 9BB1     		cbz	r3, .L50
+ 652              		.loc 1 403 26 discriminator 1 view .LVU146
+ 653 0028 0B4A     		ldr	r2, .L53
+ 654 002a 1268     		ldr	r2, [r2]
+ 655              		.loc 1 403 13 discriminator 1 view .LVU147
+ARM GAS  /tmp/ccCNKDF9.s 			page 28
+
+
+ 656 002c 12F0010F 		tst	r2, #1
+ 657 0030 0ED0     		beq	.L50
+ 404:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.alloc_req++;
+ 658              		.loc 1 404 5 is_stmt 1 view .LVU148
+ 659              		.loc 1 404 14 is_stmt 0 view .LVU149
+ 660 0032 094A     		ldr	r2, .L53
+ 661 0034 D168     		ldr	r1, [r2, #12]
+ 662              		.loc 1 404 24 view .LVU150
+ 663 0036 0131     		adds	r1, r1, #1
+ 664 0038 D160     		str	r1, [r2, #12]
+ 405:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.alloc += bytes;
+ 665              		.loc 1 405 5 is_stmt 1 view .LVU151
+ 666              		.loc 1 405 21 is_stmt 0 view .LVU152
+ 667 003a 5168     		ldr	r1, [r2, #4]
+ 668 003c 2144     		add	r1, r1, r4
+ 669 003e 5160     		str	r1, [r2, #4]
+ 406:X-CUBE-AI/App/aiTestUtility.c **** 
+ 407:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.used += bytes;
+ 670              		.loc 1 407 5 is_stmt 1 view .LVU153
+ 671              		.loc 1 407 20 is_stmt 0 view .LVU154
+ 672 0040 9069     		ldr	r0, [r2, #24]
+ 673              	.LVL48:
+ 674              		.loc 1 407 20 view .LVU155
+ 675 0042 0444     		add	r4, r4, r0
+ 676              	.LVL49:
+ 677              		.loc 1 407 20 view .LVU156
+ 678 0044 9461     		str	r4, [r2, #24]
+ 408:X-CUBE-AI/App/aiTestUtility.c **** 
+ 409:X-CUBE-AI/App/aiTestUtility.c ****     if (io_malloc.used > io_malloc.max) {
+ 679              		.loc 1 409 5 is_stmt 1 view .LVU157
+ 680              		.loc 1 409 35 is_stmt 0 view .LVU158
+ 681 0046 5269     		ldr	r2, [r2, #20]
+ 682              		.loc 1 409 8 view .LVU159
+ 683 0048 9442     		cmp	r4, r2
+ 684 004a 01D9     		bls	.L50
+ 410:X-CUBE-AI/App/aiTestUtility.c ****       io_malloc.max = io_malloc.used;
+ 685              		.loc 1 410 7 is_stmt 1 view .LVU160
+ 686              		.loc 1 410 21 is_stmt 0 view .LVU161
+ 687 004c 024A     		ldr	r2, .L53
+ 688 004e 5461     		str	r4, [r2, #20]
+ 689              	.L50:
+ 411:X-CUBE-AI/App/aiTestUtility.c ****     }
+ 412:X-CUBE-AI/App/aiTestUtility.c **** 
+ 413:X-CUBE-AI/App/aiTestUtility.c **** #if _IO_MALLOC_TRACK_MODE == 1
+ 414:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.a_ptr[io_malloc.a_idx] = (ptr + 4);
+ 415:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.a_s[io_malloc.a_idx] = bytes;
+ 416:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.a_idx++;
+ 417:X-CUBE-AI/App/aiTestUtility.c **** 
+ 418:X-CUBE-AI/App/aiTestUtility.c ****     if (io_malloc.a_idx >= _IO_MALLOC_TRACK_MODE)
+ 419:X-CUBE-AI/App/aiTestUtility.c ****       io_malloc.a_idx = 0;
+ 420:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 421:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 422:X-CUBE-AI/App/aiTestUtility.c ****   return ptr?(ptr + 4):NULL;
+ 690              		.loc 1 422 3 is_stmt 1 view .LVU162
+ 691              		.loc 1 422 23 is_stmt 0 view .LVU163
+ 692 0050 03B1     		cbz	r3, .L48
+ 693              		.loc 1 422 23 discriminator 1 view .LVU164
+ARM GAS  /tmp/ccCNKDF9.s 			page 29
+
+
+ 694 0052 0433     		adds	r3, r3, #4
+ 695              	.LVL50:
+ 696              	.L48:
+ 423:X-CUBE-AI/App/aiTestUtility.c **** }
+ 697              		.loc 1 423 1 view .LVU165
+ 698 0054 1846     		mov	r0, r3
+ 699 0056 10BD     		pop	{r4, pc}
+ 700              	.L54:
+ 701              		.align	2
+ 702              	.L53:
+ 703 0058 00000000 		.word	io_malloc
+ 704 005c 98BADCEF 		.word	-270746984
+ 705              		.cfi_endproc
+ 706              	.LFE155:
+ 708              		.section	.text.__wrap_free,"ax",%progbits
+ 709              		.align	1
+ 710              		.global	__wrap_free
+ 711              		.syntax unified
+ 712              		.thumb
+ 713              		.thumb_func
+ 714              		.fpu fpv4-sp-d16
+ 716              	__wrap_free:
+ 717              	.LVL51:
+ 718              	.LFB156:
+ 424:X-CUBE-AI/App/aiTestUtility.c **** 
+ 425:X-CUBE-AI/App/aiTestUtility.c **** void __wrap_free(void *ptr)
+ 426:X-CUBE-AI/App/aiTestUtility.c **** {
+ 719              		.loc 1 426 1 is_stmt 1 view -0
+ 720              		.cfi_startproc
+ 721              		@ args = 0, pretend = 0, frame = 0
+ 722              		@ frame_needed = 0, uses_anonymous_args = 0
+ 427:X-CUBE-AI/App/aiTestUtility.c ****   uint8_t* p;
+ 723              		.loc 1 427 3 view .LVU167
+ 428:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t bytes;
+ 724              		.loc 1 428 3 view .LVU168
+ 429:X-CUBE-AI/App/aiTestUtility.c **** 
+ 430:X-CUBE-AI/App/aiTestUtility.c ****   io_malloc.cfg |= 1 << 2;
+ 725              		.loc 1 430 3 view .LVU169
+ 726              		.loc 1 430 17 is_stmt 0 view .LVU170
+ 727 0000 124A     		ldr	r2, .L64
+ 728 0002 1368     		ldr	r3, [r2]
+ 729 0004 43F00403 		orr	r3, r3, #4
+ 730 0008 1360     		str	r3, [r2]
+ 431:X-CUBE-AI/App/aiTestUtility.c **** 
+ 432:X-CUBE-AI/App/aiTestUtility.c ****   if (!ptr)
+ 731              		.loc 1 432 3 is_stmt 1 view .LVU171
+ 732              		.loc 1 432 6 is_stmt 0 view .LVU172
+ 733 000a E8B1     		cbz	r0, .L60
+ 426:X-CUBE-AI/App/aiTestUtility.c ****   uint8_t* p;
+ 734              		.loc 1 426 1 view .LVU173
+ 735 000c 10B5     		push	{r4, lr}
+ 736              	.LCFI20:
+ 737              		.cfi_def_cfa_offset 8
+ 738              		.cfi_offset 4, -8
+ 739              		.cfi_offset 14, -4
+ 740 000e 0346     		mov	r3, r0
+ 433:X-CUBE-AI/App/aiTestUtility.c ****     return;
+ARM GAS  /tmp/ccCNKDF9.s 			page 30
+
+
+ 434:X-CUBE-AI/App/aiTestUtility.c **** 
+ 435:X-CUBE-AI/App/aiTestUtility.c ****   p = (uint8_t*)ptr - 4;
+ 741              		.loc 1 435 3 is_stmt 1 view .LVU174
+ 742              		.loc 1 435 5 is_stmt 0 view .LVU175
+ 743 0010 0438     		subs	r0, r0, #4
+ 744              	.LVL52:
+ 436:X-CUBE-AI/App/aiTestUtility.c ****   bytes = *((uint32_t*)p);
+ 745              		.loc 1 436 3 is_stmt 1 view .LVU176
+ 746              		.loc 1 436 9 is_stmt 0 view .LVU177
+ 747 0012 53F8042C 		ldr	r2, [r3, #-4]
+ 748              	.LVL53:
+ 437:X-CUBE-AI/App/aiTestUtility.c **** 
+ 438:X-CUBE-AI/App/aiTestUtility.c ****   if (*((uint32_t*)(p + 4 + bytes)) == MAGIC_MALLOC_NUMBER) {
+ 749              		.loc 1 438 3 is_stmt 1 view .LVU178
+ 750              		.loc 1 438 7 is_stmt 0 view .LVU179
+ 751 0016 9C58     		ldr	r4, [r3, r2]
+ 752              		.loc 1 438 6 view .LVU180
+ 753 0018 0D49     		ldr	r1, .L64+4
+ 754 001a 8C42     		cmp	r4, r1
+ 755 001c 11D0     		beq	.L63
+ 756              	.L57:
+ 439:X-CUBE-AI/App/aiTestUtility.c ****     *((uint32_t*)(p + 4 + bytes)) = 0;
+ 440:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 441:X-CUBE-AI/App/aiTestUtility.c **** 
+ 442:X-CUBE-AI/App/aiTestUtility.c ****   if (io_malloc.cfg & 1UL) {
+ 757              		.loc 1 442 3 is_stmt 1 view .LVU181
+ 758              		.loc 1 442 16 is_stmt 0 view .LVU182
+ 759 001e 0B4B     		ldr	r3, .L64
+ 760              	.LVL54:
+ 761              		.loc 1 442 16 view .LVU183
+ 762 0020 1B68     		ldr	r3, [r3]
+ 763              		.loc 1 442 6 view .LVU184
+ 764 0022 13F0010F 		tst	r3, #1
+ 765 0026 09D0     		beq	.L58
+ 443:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.free_req++;
+ 766              		.loc 1 443 5 is_stmt 1 view .LVU185
+ 767              		.loc 1 443 14 is_stmt 0 view .LVU186
+ 768 0028 084B     		ldr	r3, .L64
+ 769 002a 1969     		ldr	r1, [r3, #16]
+ 770              		.loc 1 443 23 view .LVU187
+ 771 002c 0131     		adds	r1, r1, #1
+ 772 002e 1961     		str	r1, [r3, #16]
+ 444:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.free += bytes;
+ 773              		.loc 1 444 5 is_stmt 1 view .LVU188
+ 774              		.loc 1 444 20 is_stmt 0 view .LVU189
+ 775 0030 9968     		ldr	r1, [r3, #8]
+ 776 0032 1144     		add	r1, r1, r2
+ 777 0034 9960     		str	r1, [r3, #8]
+ 445:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.used -= bytes;
+ 778              		.loc 1 445 5 is_stmt 1 view .LVU190
+ 779              		.loc 1 445 20 is_stmt 0 view .LVU191
+ 780 0036 9969     		ldr	r1, [r3, #24]
+ 781 0038 8A1A     		subs	r2, r1, r2
+ 782              	.LVL55:
+ 783              		.loc 1 445 20 view .LVU192
+ 784 003a 9A61     		str	r2, [r3, #24]
+ 785              	.L58:
+ARM GAS  /tmp/ccCNKDF9.s 			page 31
+
+
+ 446:X-CUBE-AI/App/aiTestUtility.c **** 
+ 447:X-CUBE-AI/App/aiTestUtility.c **** #if _IO_MALLOC_TRACK_MODE == 1
+ 448:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.f_ptr[io_malloc.f_idx] = ptr;
+ 449:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.f_s[io_malloc.f_idx] = bytes;
+ 450:X-CUBE-AI/App/aiTestUtility.c ****     io_malloc.f_idx++;
+ 451:X-CUBE-AI/App/aiTestUtility.c **** 
+ 452:X-CUBE-AI/App/aiTestUtility.c ****     if (io_malloc.f_idx >= _IO_MALLOC_TRACK_MODE)
+ 453:X-CUBE-AI/App/aiTestUtility.c ****       io_malloc.f_idx = 0;
+ 454:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 455:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 456:X-CUBE-AI/App/aiTestUtility.c ****   __real_free(p);
+ 786              		.loc 1 456 3 is_stmt 1 view .LVU193
+ 787 003c FFF7FEFF 		bl	__real_free
+ 788              	.LVL56:
+ 457:X-CUBE-AI/App/aiTestUtility.c **** }
+ 789              		.loc 1 457 1 is_stmt 0 view .LVU194
+ 790 0040 10BD     		pop	{r4, pc}
+ 791              	.LVL57:
+ 792              	.L63:
+ 439:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 793              		.loc 1 439 5 is_stmt 1 view .LVU195
+ 439:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 794              		.loc 1 439 35 is_stmt 0 view .LVU196
+ 795 0042 0021     		movs	r1, #0
+ 796 0044 9950     		str	r1, [r3, r2]
+ 797 0046 EAE7     		b	.L57
+ 798              	.LVL58:
+ 799              	.L60:
+ 800              	.LCFI21:
+ 801              		.cfi_def_cfa_offset 0
+ 802              		.cfi_restore 4
+ 803              		.cfi_restore 14
+ 439:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 804              		.loc 1 439 35 view .LVU197
+ 805 0048 7047     		bx	lr
+ 806              	.L65:
+ 807 004a 00BF     		.align	2
+ 808              	.L64:
+ 809 004c 00000000 		.word	io_malloc
+ 810 0050 98BADCEF 		.word	-270746984
+ 811              		.cfi_endproc
+ 812              	.LFE156:
+ 814              		.comm	io_stack,32,4
+ 815              		.section	.text.stackMonInit,"ax",%progbits
+ 816              		.align	1
+ 817              		.global	stackMonInit
+ 818              		.syntax unified
+ 819              		.thumb
+ 820              		.thumb_func
+ 821              		.fpu fpv4-sp-d16
+ 823              	stackMonInit:
+ 824              	.LVL59:
+ 825              	.LFB157:
+ 458:X-CUBE-AI/App/aiTestUtility.c **** 
+ 459:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 460:X-CUBE-AI/App/aiTestUtility.c **** 
+ 461:X-CUBE-AI/App/aiTestUtility.c **** 
+ARM GAS  /tmp/ccCNKDF9.s 			page 32
+
+
+ 462:X-CUBE-AI/App/aiTestUtility.c **** /* -----------------------------------------------------------------------------
+ 463:X-CUBE-AI/App/aiTestUtility.c ****  * STACK Monitor functions
+ 464:X-CUBE-AI/App/aiTestUtility.c ****  * -----------------------------------------------------------------------------
+ 465:X-CUBE-AI/App/aiTestUtility.c ****  */
+ 466:X-CUBE-AI/App/aiTestUtility.c **** 
+ 467:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 468:X-CUBE-AI/App/aiTestUtility.c **** extern uint32_t _estack[];
+ 469:X-CUBE-AI/App/aiTestUtility.c **** 
+ 470:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 471:X-CUBE-AI/App/aiTestUtility.c **** extern int CSTACK$$Limit;
+ 472:X-CUBE-AI/App/aiTestUtility.c **** extern int CSTACK$$Base;
+ 473:X-CUBE-AI/App/aiTestUtility.c **** 
+ 474:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 475:X-CUBE-AI/App/aiTestUtility.c **** 
+ 476:X-CUBE-AI/App/aiTestUtility.c **** struct io_stack io_stack;
+ 477:X-CUBE-AI/App/aiTestUtility.c **** 
+ 478:X-CUBE-AI/App/aiTestUtility.c **** void stackMonInit(uint32_t ctrl, uint32_t cstack, uint32_t msize)
+ 479:X-CUBE-AI/App/aiTestUtility.c **** {
+ 826              		.loc 1 479 1 is_stmt 1 view -0
+ 827              		.cfi_startproc
+ 828              		@ args = 0, pretend = 0, frame = 0
+ 829              		@ frame_needed = 0, uses_anonymous_args = 0
+ 830              		.loc 1 479 1 is_stmt 0 view .LVU199
+ 831 0000 10B5     		push	{r4, lr}
+ 832              	.LCFI22:
+ 833              		.cfi_def_cfa_offset 8
+ 834              		.cfi_offset 4, -8
+ 835              		.cfi_offset 14, -4
+ 480:X-CUBE-AI/App/aiTestUtility.c ****   memset(&io_stack, 0, sizeof(struct io_stack));
+ 836              		.loc 1 480 3 is_stmt 1 view .LVU200
+ 837 0002 164B     		ldr	r3, .L73
+ 838 0004 0024     		movs	r4, #0
+ 839 0006 1C60     		str	r4, [r3]
+ 840 0008 5C60     		str	r4, [r3, #4]
+ 841 000a 9C60     		str	r4, [r3, #8]
+ 481:X-CUBE-AI/App/aiTestUtility.c **** 
+ 482:X-CUBE-AI/App/aiTestUtility.c ****   /* Reading ARM Core registers */
+ 483:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.ctrl = ctrl;
+ 842              		.loc 1 483 3 view .LVU201
+ 843              		.loc 1 483 17 is_stmt 0 view .LVU202
+ 844 000c 1C1F     		subs	r4, r3, #4
+ 845 000e 43F8040C 		str	r0, [r3, #-4]
+ 484:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.cstack = cstack;
+ 846              		.loc 1 484 3 is_stmt 1 view .LVU203
+ 847              		.loc 1 484 19 is_stmt 0 view .LVU204
+ 848 0012 5961     		str	r1, [r3, #20]
+ 485:X-CUBE-AI/App/aiTestUtility.c **** 
+ 486:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 487:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.estack = (uint32_t)_estack;
+ 849              		.loc 1 487 3 is_stmt 1 view .LVU205
+ 850              		.loc 1 487 21 is_stmt 0 view .LVU206
+ 851 0014 124B     		ldr	r3, .L73+4
+ 852              		.loc 1 487 19 view .LVU207
+ 853 0016 2361     		str	r3, [r4, #16]
+ 488:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.bstack = io_stack.estack - msize;
+ 854              		.loc 1 488 3 is_stmt 1 view .LVU208
+ 855              		.loc 1 488 37 is_stmt 0 view .LVU209
+ARM GAS  /tmp/ccCNKDF9.s 			page 33
+
+
+ 856 0018 9B1A     		subs	r3, r3, r2
+ 857              		.loc 1 488 19 view .LVU210
+ 858 001a E361     		str	r3, [r4, #28]
+ 489:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.mstack_size = msize;
+ 859              		.loc 1 489 3 is_stmt 1 view .LVU211
+ 860              		.loc 1 489 24 is_stmt 0 view .LVU212
+ 861 001c 6261     		str	r2, [r4, #20]
+ 490:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 491:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.estack = (uint32_t)&CSTACK$$Limit;
+ 492:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.bstack = (uint32_t)&CSTACK$$Base;
+ 493:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.mstack_size = (uint32_t)&CSTACK$$Limit - (uint32_t)&CSTACK$$Base;
+ 494:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 495:X-CUBE-AI/App/aiTestUtility.c **** 
+ 496:X-CUBE-AI/App/aiTestUtility.c ****   /* Check that MSP is the active stack */
+ 497:X-CUBE-AI/App/aiTestUtility.c ****   if (io_stack.ctrl & CONTROL_SPSEL_Msk) {
+ 862              		.loc 1 497 3 is_stmt 1 view .LVU213
+ 863              		.loc 1 497 6 is_stmt 0 view .LVU214
+ 864 001e 10F0020F 		tst	r0, #2
+ 865 0022 0ED1     		bne	.L71
+ 498:X-CUBE-AI/App/aiTestUtility.c ****     LC_PRINT("E: MSP is not the active stack (stack monitoring is disabled)\r\n");
+ 499:X-CUBE-AI/App/aiTestUtility.c ****     io_stack.stack_mon = false;
+ 500:X-CUBE-AI/App/aiTestUtility.c ****   } else
+ 501:X-CUBE-AI/App/aiTestUtility.c ****     io_stack.stack_mon = true;
+ 866              		.loc 1 501 5 is_stmt 1 view .LVU215
+ 867              		.loc 1 501 24 is_stmt 0 view .LVU216
+ 868 0024 0F4B     		ldr	r3, .L73+8
+ 869 0026 0122     		movs	r2, #1
+ 870              	.LVL60:
+ 871              		.loc 1 501 24 view .LVU217
+ 872 0028 1A71     		strb	r2, [r3, #4]
+ 873              	.LVL61:
+ 874              	.L68:
+ 502:X-CUBE-AI/App/aiTestUtility.c **** 
+ 503:X-CUBE-AI/App/aiTestUtility.c ****   /* Calculating used stack before test */
+ 504:X-CUBE-AI/App/aiTestUtility.c ****   io_stack.ustack_size = io_stack.estack - io_stack.cstack;
+ 875              		.loc 1 504 3 is_stmt 1 view .LVU218
+ 876              		.loc 1 504 34 is_stmt 0 view .LVU219
+ 877 002a 0E4B     		ldr	r3, .L73+8
+ 878 002c 1969     		ldr	r1, [r3, #16]
+ 879              		.loc 1 504 52 view .LVU220
+ 880 002e 9A69     		ldr	r2, [r3, #24]
+ 881              		.loc 1 504 42 view .LVU221
+ 882 0030 891A     		subs	r1, r1, r2
+ 883              		.loc 1 504 24 view .LVU222
+ 884 0032 D960     		str	r1, [r3, #12]
+ 505:X-CUBE-AI/App/aiTestUtility.c **** 
+ 506:X-CUBE-AI/App/aiTestUtility.c ****   if ((io_stack.stack_mon) && (io_stack.ustack_size > io_stack.mstack_size)) {
+ 885              		.loc 1 506 3 is_stmt 1 view .LVU223
+ 886              		.loc 1 506 16 is_stmt 0 view .LVU224
+ 887 0034 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 888              		.loc 1 506 6 view .LVU225
+ 889 0036 1BB1     		cbz	r3, .L66
+ 890              		.loc 1 506 63 discriminator 1 view .LVU226
+ 891 0038 0A4B     		ldr	r3, .L73+8
+ 892 003a 5A69     		ldr	r2, [r3, #20]
+ 893              		.loc 1 506 28 discriminator 1 view .LVU227
+ 894 003c 9142     		cmp	r1, r2
+ARM GAS  /tmp/ccCNKDF9.s 			page 34
+
+
+ 895 003e 06D8     		bhi	.L72
+ 896              	.L66:
+ 507:X-CUBE-AI/App/aiTestUtility.c ****     LC_PRINT("E: !stack overflow detected %d > %d\r\n", (int)io_stack.ustack_size,
+ 508:X-CUBE-AI/App/aiTestUtility.c ****         (int)io_stack.mstack_size);
+ 509:X-CUBE-AI/App/aiTestUtility.c ****     io_stack.stack_mon = false;
+ 510:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 511:X-CUBE-AI/App/aiTestUtility.c **** }
+ 897              		.loc 1 511 1 view .LVU228
+ 898 0040 10BD     		pop	{r4, pc}
+ 899              	.LVL62:
+ 900              	.L71:
+ 498:X-CUBE-AI/App/aiTestUtility.c ****     io_stack.stack_mon = false;
+ 901              		.loc 1 498 5 is_stmt 1 view .LVU229
+ 902 0042 0948     		ldr	r0, .L73+12
+ 903              	.LVL63:
+ 498:X-CUBE-AI/App/aiTestUtility.c ****     io_stack.stack_mon = false;
+ 904              		.loc 1 498 5 is_stmt 0 view .LVU230
+ 905 0044 FFF7FEFF 		bl	lc_print
+ 906              	.LVL64:
+ 499:X-CUBE-AI/App/aiTestUtility.c ****   } else
+ 907              		.loc 1 499 5 is_stmt 1 view .LVU231
+ 499:X-CUBE-AI/App/aiTestUtility.c ****   } else
+ 908              		.loc 1 499 24 is_stmt 0 view .LVU232
+ 909 0048 0022     		movs	r2, #0
+ 910 004a 2271     		strb	r2, [r4, #4]
+ 911 004c EDE7     		b	.L68
+ 912              	.L72:
+ 507:X-CUBE-AI/App/aiTestUtility.c ****     LC_PRINT("E: !stack overflow detected %d > %d\r\n", (int)io_stack.ustack_size,
+ 913              		.loc 1 507 5 is_stmt 1 view .LVU233
+ 914 004e 0748     		ldr	r0, .L73+16
+ 915 0050 FFF7FEFF 		bl	lc_print
+ 916              	.LVL65:
+ 509:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 917              		.loc 1 509 5 view .LVU234
+ 509:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 918              		.loc 1 509 24 is_stmt 0 view .LVU235
+ 919 0054 034B     		ldr	r3, .L73+8
+ 920 0056 0022     		movs	r2, #0
+ 921 0058 1A71     		strb	r2, [r3, #4]
+ 922              		.loc 1 511 1 view .LVU236
+ 923 005a F1E7     		b	.L66
+ 924              	.L74:
+ 925              		.align	2
+ 926              	.L73:
+ 927 005c 04000000 		.word	io_stack+4
+ 928 0060 00000000 		.word	_estack
+ 929 0064 00000000 		.word	io_stack
+ 930 0068 00000000 		.word	.LANCHOR1
+ 931 006c 40000000 		.word	.LANCHOR1+64
+ 932              		.cfi_endproc
+ 933              	.LFE157:
+ 935              		.comm	cyclesCount,12,4
+ 936              		.global	__aeabi_uldivmod
+ 937              		.section	.text.dwtCyclesToTime,"ax",%progbits
+ 938              		.align	1
+ 939              		.global	dwtCyclesToTime
+ 940              		.syntax unified
+ARM GAS  /tmp/ccCNKDF9.s 			page 35
+
+
+ 941              		.thumb
+ 942              		.thumb_func
+ 943              		.fpu fpv4-sp-d16
+ 945              	dwtCyclesToTime:
+ 946              	.LVL66:
+ 947              	.LFB158:
+ 512:X-CUBE-AI/App/aiTestUtility.c **** 
+ 513:X-CUBE-AI/App/aiTestUtility.c **** 
+ 514:X-CUBE-AI/App/aiTestUtility.c **** /* -----------------------------------------------------------------------------
+ 515:X-CUBE-AI/App/aiTestUtility.c ****  * Device HW-setting functions
+ 516:X-CUBE-AI/App/aiTestUtility.c ****  * -----------------------------------------------------------------------------
+ 517:X-CUBE-AI/App/aiTestUtility.c ****  */
+ 518:X-CUBE-AI/App/aiTestUtility.c **** 
+ 519:X-CUBE-AI/App/aiTestUtility.c **** struct cyclesCount cyclesCount;
+ 520:X-CUBE-AI/App/aiTestUtility.c **** 
+ 521:X-CUBE-AI/App/aiTestUtility.c **** int dwtCyclesToTime(uint64_t clks, struct dwtTime *t)
+ 522:X-CUBE-AI/App/aiTestUtility.c **** {
+ 948              		.loc 1 522 1 is_stmt 1 view -0
+ 949              		.cfi_startproc
+ 950              		@ args = 0, pretend = 0, frame = 8
+ 951              		@ frame_needed = 0, uses_anonymous_args = 0
+ 523:X-CUBE-AI/App/aiTestUtility.c ****   if (!t)
+ 952              		.loc 1 523 3 view .LVU238
+ 953              		.loc 1 523 6 is_stmt 0 view .LVU239
+ 954 0000 002A     		cmp	r2, #0
+ 955 0002 6DD0     		beq	.L77
+ 522:X-CUBE-AI/App/aiTestUtility.c ****   if (!t)
+ 956              		.loc 1 522 1 view .LVU240
+ 957 0004 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 958              	.LCFI23:
+ 959              		.cfi_def_cfa_offset 36
+ 960              		.cfi_offset 4, -36
+ 961              		.cfi_offset 5, -32
+ 962              		.cfi_offset 6, -28
+ 963              		.cfi_offset 7, -24
+ 964              		.cfi_offset 8, -20
+ 965              		.cfi_offset 9, -16
+ 966              		.cfi_offset 10, -12
+ 967              		.cfi_offset 11, -8
+ 968              		.cfi_offset 14, -4
+ 969 0008 83B0     		sub	sp, sp, #12
+ 970              	.LCFI24:
+ 971              		.cfi_def_cfa_offset 48
+ 972 000a 0446     		mov	r4, r0
+ 973 000c 0E46     		mov	r6, r1
+ 974 000e 9246     		mov	r10, r2
+ 524:X-CUBE-AI/App/aiTestUtility.c ****     return -1;
+ 525:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t fcpu = port_hal_get_cpu_freq();
+ 975              		.loc 1 525 3 is_stmt 1 view .LVU241
+ 976              		.loc 1 525 19 is_stmt 0 view .LVU242
+ 977 0010 FFF7FEFF 		bl	HAL_RCC_GetHCLKFreq
+ 978              	.LVL67:
+ 979              		.loc 1 525 19 view .LVU243
+ 980 0014 8146     		mov	r9, r0
+ 981              	.LVL68:
+ 526:X-CUBE-AI/App/aiTestUtility.c ****   uint64_t s  = clks / fcpu;
+ 982              		.loc 1 526 3 is_stmt 1 view .LVU244
+ARM GAS  /tmp/ccCNKDF9.s 			page 36
+
+
+ 983              		.loc 1 526 22 is_stmt 0 view .LVU245
+ 984 0016 4FF00008 		mov	r8, #0
+ 985              		.loc 1 526 12 view .LVU246
+ 986 001a 0246     		mov	r2, r0
+ 987 001c 4346     		mov	r3, r8
+ 988 001e 2046     		mov	r0, r4
+ 989              	.LVL69:
+ 990              		.loc 1 526 12 view .LVU247
+ 991 0020 3146     		mov	r1, r6
+ 992 0022 FFF7FEFF 		bl	__aeabi_uldivmod
+ 993              	.LVL70:
+ 994              		.loc 1 526 12 view .LVU248
+ 995 0026 0546     		mov	r5, r0
+ 996              	.LVL71:
+ 527:X-CUBE-AI/App/aiTestUtility.c ****   uint64_t ms = (clks * 1000) / fcpu;
+ 997              		.loc 1 527 3 is_stmt 1 view .LVU249
+ 998              		.loc 1 527 23 is_stmt 0 view .LVU250
+ 999 0028 7301     		lsls	r3, r6, #5
+ 1000 002a 4FEA441B 		lsl	fp, r4, #5
+ 1001 002e 43EAD461 		orr	r1, r3, r4, lsr #27
+ 1002              	.LVL72:
+ 1003              		.loc 1 527 23 view .LVU251
+ 1004 0032 BBEB0400 		subs	r0, fp, r4
+ 1005              		.loc 1 527 23 view .LVU252
+ 1006 0036 61EB0601 		sbc	r1, r1, r6
+ 1007 003a 8B00     		lsls	r3, r1, #2
+ 1008 003c 43EA9073 		orr	r3, r3, r0, lsr #30
+ 1009 0040 8200     		lsls	r2, r0, #2
+ 1010 0042 1946     		mov	r1, r3
+ 1011 0044 1019     		adds	r0, r2, r4
+ 1012 0046 46EB0101 		adc	r1, r6, r1
+ 1013 004a CB00     		lsls	r3, r1, #3
+ 1014 004c 43EA5073 		orr	r3, r3, r0, lsr #29
+ 1015 0050 C200     		lsls	r2, r0, #3
+ 1016 0052 1046     		mov	r0, r2
+ 1017 0054 1946     		mov	r1, r3
+ 1018              		.loc 1 527 12 view .LVU253
+ 1019 0056 4A46     		mov	r2, r9
+ 1020 0058 4346     		mov	r3, r8
+ 1021 005a FFF7FEFF 		bl	__aeabi_uldivmod
+ 1022              	.LVL73:
+ 1023 005e 0190     		str	r0, [sp, #4]
+ 1024              	.LVL74:
+ 528:X-CUBE-AI/App/aiTestUtility.c ****   uint64_t us = (clks * 1000 * 1000) / fcpu;
+ 1025              		.loc 1 528 3 is_stmt 1 view .LVU254
+ 1026              		.loc 1 528 30 is_stmt 0 view .LVU255
+ 1027 0060 7301     		lsls	r3, r6, #5
+ 1028 0062 43EAD461 		orr	r1, r3, r4, lsr #27
+ 1029              	.LVL75:
+ 1030              		.loc 1 528 30 view .LVU256
+ 1031 0066 BBEB0400 		subs	r0, fp, r4
+ 1032              		.loc 1 528 30 view .LVU257
+ 1033 006a 61EB0601 		sbc	r1, r1, r6
+ 1034 006e 4B02     		lsls	r3, r1, #9
+ 1035 0070 43EAD053 		orr	r3, r3, r0, lsr #23
+ 1036 0074 4202     		lsls	r2, r0, #9
+ 1037 0076 1946     		mov	r1, r3
+ARM GAS  /tmp/ccCNKDF9.s 			page 37
+
+
+ 1038 0078 1019     		adds	r0, r2, r4
+ 1039 007a 46EB0101 		adc	r1, r6, r1
+ 1040 007e 8A01     		lsls	r2, r1, #6
+ 1041 0080 42EA9062 		orr	r2, r2, r0, lsr #26
+ 1042 0084 8301     		lsls	r3, r0, #6
+ 1043 0086 181A     		subs	r0, r3, r0
+ 1044 0088 62EB0101 		sbc	r1, r2, r1
+ 1045              		.loc 1 528 12 view .LVU258
+ 1046 008c 4A46     		mov	r2, r9
+ 1047 008e 4346     		mov	r3, r8
+ 1048 0090 0019     		adds	r0, r0, r4
+ 1049 0092 46EB0101 		adc	r1, r6, r1
+ 1050 0096 FFF7FEFF 		bl	__aeabi_uldivmod
+ 1051              	.LVL76:
+ 529:X-CUBE-AI/App/aiTestUtility.c ****   ms -= (s * 1000);
+ 1052              		.loc 1 529 3 is_stmt 1 view .LVU259
+ 1053              		.loc 1 529 12 is_stmt 0 view .LVU260
+ 1054 009a 6C01     		lsls	r4, r5, #5
+ 1055 009c 631B     		subs	r3, r4, r5
+ 1056 009e 9E00     		lsls	r6, r3, #2
+ 1057 00a0 7319     		adds	r3, r6, r5
+ 1058 00a2 DE00     		lsls	r6, r3, #3
+ 1059              		.loc 1 529 6 view .LVU261
+ 1060 00a4 019A     		ldr	r2, [sp, #4]
+ 1061 00a6 931B     		subs	r3, r2, r6
+ 530:X-CUBE-AI/App/aiTestUtility.c ****   us -= (ms * 1000 + s * 1000000);
+ 1062              		.loc 1 530 3 is_stmt 1 view .LVU262
+ 1063              		.loc 1 530 13 is_stmt 0 view .LVU263
+ 1064 00a8 5A01     		lsls	r2, r3, #5
+ 1065 00aa D21A     		subs	r2, r2, r3
+ 1066 00ac 4FEA820C 		lsl	ip, r2, #2
+ 1067 00b0 1CEB0306 		adds	r6, ip, r3
+ 1068 00b4 F200     		lsls	r2, r6, #3
+ 1069 00b6 1646     		mov	r6, r2
+ 1070              		.loc 1 530 24 view .LVU264
+ 1071 00b8 621B     		subs	r2, r4, r5
+ 1072 00ba 5402     		lsls	r4, r2, #9
+ 1073 00bc 6219     		adds	r2, r4, r5
+ 1074 00be 9101     		lsls	r1, r2, #6
+ 1075              	.LVL77:
+ 1076              		.loc 1 530 24 view .LVU265
+ 1077 00c0 8A1A     		subs	r2, r1, r2
+ 1078 00c2 5219     		adds	r2, r2, r5
+ 1079              		.loc 1 530 20 view .LVU266
+ 1080 00c4 B218     		adds	r2, r6, r2
+ 1081              		.loc 1 530 6 view .LVU267
+ 1082 00c6 821A     		subs	r2, r0, r2
+ 531:X-CUBE-AI/App/aiTestUtility.c ****   t->fcpu = fcpu;
+ 1083              		.loc 1 531 3 is_stmt 1 view .LVU268
+ 1084              		.loc 1 531 11 is_stmt 0 view .LVU269
+ 1085 00c8 CAF80090 		str	r9, [r10]
+ 532:X-CUBE-AI/App/aiTestUtility.c ****   t->s = s;
+ 1086              		.loc 1 532 3 is_stmt 1 view .LVU270
+ 1087              		.loc 1 532 8 is_stmt 0 view .LVU271
+ 1088 00cc CAF80450 		str	r5, [r10, #4]
+ 533:X-CUBE-AI/App/aiTestUtility.c ****   t->ms = ms;
+ 1089              		.loc 1 533 3 is_stmt 1 view .LVU272
+ARM GAS  /tmp/ccCNKDF9.s 			page 38
+
+
+ 1090              		.loc 1 533 9 is_stmt 0 view .LVU273
+ 1091 00d0 CAF80830 		str	r3, [r10, #8]
+ 534:X-CUBE-AI/App/aiTestUtility.c ****   t->us = us;
+ 1092              		.loc 1 534 3 is_stmt 1 view .LVU274
+ 1093              		.loc 1 534 9 is_stmt 0 view .LVU275
+ 1094 00d4 CAF80C20 		str	r2, [r10, #12]
+ 535:X-CUBE-AI/App/aiTestUtility.c ****   return 0;
+ 1095              		.loc 1 535 3 is_stmt 1 view .LVU276
+ 1096              		.loc 1 535 10 is_stmt 0 view .LVU277
+ 1097 00d8 4046     		mov	r0, r8
+ 536:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1098              		.loc 1 536 1 view .LVU278
+ 1099 00da 03B0     		add	sp, sp, #12
+ 1100              	.LCFI25:
+ 1101              		.cfi_def_cfa_offset 36
+ 1102              		@ sp needed
+ 1103 00dc BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1104              	.LVL78:
+ 1105              	.L77:
+ 1106              	.LCFI26:
+ 1107              		.cfi_def_cfa_offset 0
+ 1108              		.cfi_restore 4
+ 1109              		.cfi_restore 5
+ 1110              		.cfi_restore 6
+ 1111              		.cfi_restore 7
+ 1112              		.cfi_restore 8
+ 1113              		.cfi_restore 9
+ 1114              		.cfi_restore 10
+ 1115              		.cfi_restore 11
+ 1116              		.cfi_restore 14
+ 524:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t fcpu = port_hal_get_cpu_freq();
+ 1117              		.loc 1 524 12 view .LVU279
+ 1118 00e0 4FF0FF30 		mov	r0, #-1
+ 1119              	.LVL79:
+ 1120              		.loc 1 536 1 view .LVU280
+ 1121 00e4 7047     		bx	lr
+ 1122              		.cfi_endproc
+ 1123              	.LFE158:
+ 1125              		.global	__aeabi_ul2f
+ 1126              		.section	.text.dwtCyclesToFloatMs,"ax",%progbits
+ 1127              		.align	1
+ 1128              		.global	dwtCyclesToFloatMs
+ 1129              		.syntax unified
+ 1130              		.thumb
+ 1131              		.thumb_func
+ 1132              		.fpu fpv4-sp-d16
+ 1134              	dwtCyclesToFloatMs:
+ 1135              	.LVL80:
+ 1136              	.LFB159:
+ 537:X-CUBE-AI/App/aiTestUtility.c **** 
+ 538:X-CUBE-AI/App/aiTestUtility.c **** float dwtCyclesToFloatMs(uint64_t clks)
+ 539:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1137              		.loc 1 539 1 is_stmt 1 view -0
+ 1138              		.cfi_startproc
+ 1139              		@ args = 0, pretend = 0, frame = 0
+ 1140              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1141              		.loc 1 539 1 is_stmt 0 view .LVU282
+ARM GAS  /tmp/ccCNKDF9.s 			page 39
+
+
+ 1142 0000 38B5     		push	{r3, r4, r5, lr}
+ 1143              	.LCFI27:
+ 1144              		.cfi_def_cfa_offset 16
+ 1145              		.cfi_offset 3, -16
+ 1146              		.cfi_offset 4, -12
+ 1147              		.cfi_offset 5, -8
+ 1148              		.cfi_offset 14, -4
+ 1149 0002 2DED028B 		vpush.64	{d8}
+ 1150              	.LCFI28:
+ 1151              		.cfi_def_cfa_offset 24
+ 1152              		.cfi_offset 80, -24
+ 1153              		.cfi_offset 81, -20
+ 1154 0006 0546     		mov	r5, r0
+ 1155 0008 0C46     		mov	r4, r1
+ 540:X-CUBE-AI/App/aiTestUtility.c ****   float res;
+ 1156              		.loc 1 540 3 is_stmt 1 view .LVU283
+ 541:X-CUBE-AI/App/aiTestUtility.c ****   float fcpu = (float)port_hal_get_cpu_freq();
+ 1157              		.loc 1 541 3 view .LVU284
+ 1158              		.loc 1 541 23 is_stmt 0 view .LVU285
+ 1159 000a FFF7FEFF 		bl	HAL_RCC_GetHCLKFreq
+ 1160              	.LVL81:
+ 1161              		.loc 1 541 23 view .LVU286
+ 1162 000e 08EE100A 		vmov	s16, r0	@ int
+ 1163              		.loc 1 541 9 view .LVU287
+ 1164 0012 B8EE488A 		vcvt.f32.u32	s16, s16
+ 1165              	.LVL82:
+ 542:X-CUBE-AI/App/aiTestUtility.c ****   res = ((float)clks * (float)1000.0) / fcpu;
+ 1166              		.loc 1 542 3 is_stmt 1 view .LVU288
+ 1167              		.loc 1 542 10 is_stmt 0 view .LVU289
+ 1168 0016 2846     		mov	r0, r5
+ 1169 0018 2146     		mov	r1, r4
+ 1170 001a FFF7FEFF 		bl	__aeabi_ul2f
+ 1171              	.LVL83:
+ 1172 001e 00EE100A 		vmov	s0, r0
+ 1173              		.loc 1 542 22 view .LVU290
+ 1174 0022 DFED047A 		vldr.32	s15, .L84
+ 1175 0026 20EE270A 		vmul.f32	s0, s0, s15
+ 1176              	.LVL84:
+ 543:X-CUBE-AI/App/aiTestUtility.c ****   return res;
+ 1177              		.loc 1 543 3 is_stmt 1 view .LVU291
+ 544:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1178              		.loc 1 544 1 is_stmt 0 view .LVU292
+ 1179 002a 80EE080A 		vdiv.f32	s0, s0, s16
+ 1180              	.LVL85:
+ 1181              		.loc 1 544 1 view .LVU293
+ 1182 002e BDEC028B 		vldm	sp!, {d8}
+ 1183              	.LCFI29:
+ 1184              		.cfi_restore 80
+ 1185              		.cfi_restore 81
+ 1186              		.cfi_def_cfa_offset 16
+ 1187              	.LVL86:
+ 1188              		.loc 1 544 1 view .LVU294
+ 1189 0032 38BD     		pop	{r3, r4, r5, pc}
+ 1190              	.L85:
+ 1191              		.align	2
+ 1192              	.L84:
+ 1193 0034 00007A44 		.word	1148846080
+ARM GAS  /tmp/ccCNKDF9.s 			page 40
+
+
+ 1194              		.cfi_endproc
+ 1195              	.LFE159:
+ 1197              		.section	.text.devIdToStr,"ax",%progbits
+ 1198              		.align	1
+ 1199              		.syntax unified
+ 1200              		.thumb
+ 1201              		.thumb_func
+ 1202              		.fpu fpv4-sp-d16
+ 1204              	devIdToStr:
+ 1205              	.LVL87:
+ 1206              	.LFB160:
+ 545:X-CUBE-AI/App/aiTestUtility.c **** 
+ 546:X-CUBE-AI/App/aiTestUtility.c **** static const char *devIdToStr(uint16_t dev_id)
+ 547:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1207              		.loc 1 547 1 is_stmt 1 view -0
+ 1208              		.cfi_startproc
+ 1209              		@ args = 0, pretend = 0, frame = 0
+ 1210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1211              		@ link register save eliminated.
+ 548:X-CUBE-AI/App/aiTestUtility.c ****   /* DEV_ID field from DBGMCU register (see BZ119679)*/
+ 549:X-CUBE-AI/App/aiTestUtility.c ****   const char *str;
+ 1212              		.loc 1 549 3 view .LVU296
+ 550:X-CUBE-AI/App/aiTestUtility.c ****   switch (dev_id) {
+ 1213              		.loc 1 550 3 view .LVU297
+ 1214 0000 40F27143 		movw	r3, #1137
+ 1215 0004 9842     		cmp	r0, r3
+ 1216 0006 25D8     		bhi	.L95
+ 1217 0008 B0F58C6F 		cmp	r0, #1120
+ 1218 000c 0ED9     		bls	.L99
+ 1219 000e A0F26140 		subw	r0, r0, #1121
+ 1220              	.LVL88:
+ 1221              		.loc 1 550 3 is_stmt 0 view .LVU298
+ 1222 0012 1028     		cmp	r0, #16
+ 1223 0014 16D8     		bhi	.L89
+ 1224 0016 DFE800F0 		tbb	[pc, r0]
+ 1225              	.L91:
+ 1226 001a 13       		.byte	(.L94-.L91)/2
+ 1227 001b 23       		.byte	(.L98-.L91)/2
+ 1228 001c 15       		.byte	(.L89-.L91)/2
+ 1229 001d 17       		.byte	(.L93-.L91)/2
+ 1230 001e 15       		.byte	(.L89-.L91)/2
+ 1231 001f 15       		.byte	(.L89-.L91)/2
+ 1232 0020 15       		.byte	(.L89-.L91)/2
+ 1233 0021 15       		.byte	(.L89-.L91)/2
+ 1234 0022 15       		.byte	(.L89-.L91)/2
+ 1235 0023 15       		.byte	(.L89-.L91)/2
+ 1236 0024 15       		.byte	(.L89-.L91)/2
+ 1237 0025 15       		.byte	(.L89-.L91)/2
+ 1238 0026 15       		.byte	(.L89-.L91)/2
+ 1239 0027 15       		.byte	(.L89-.L91)/2
+ 1240 0028 15       		.byte	(.L89-.L91)/2
+ 1241 0029 1B       		.byte	(.L92-.L91)/2
+ 1242 002a 19       		.byte	(.L90-.L91)/2
+ 1243              	.LVL89:
+ 1244 002b 00       		.p2align 1
+ 1245              	.L99:
+ 1246              		.loc 1 550 3 view .LVU299
+ARM GAS  /tmp/ccCNKDF9.s 			page 41
+
+
+ 1247 002c 40F21543 		movw	r3, #1045
+ 1248 0030 9842     		cmp	r0, r3
+ 1249 0032 11D0     		beq	.L96
+ 1250 0034 40F23543 		movw	r3, #1077
+ 1251 0038 9842     		cmp	r0, r3
+ 1252 003a 0FD1     		bne	.L97
+ 551:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32F3)
+ 552:X-CUBE-AI/App/aiTestUtility.c ****   case 0x439: str = "STM32F301"; break;       /* Fugu */
+ 553:X-CUBE-AI/App/aiTestUtility.c ****   case 0x432: str = "STM32F37x"; break;       /* GoldFish */
+ 554:X-CUBE-AI/App/aiTestUtility.c ****   case 0x422: str = "STM32F303xB/C"; break;   /* MantaEdge */
+ 555:X-CUBE-AI/App/aiTestUtility.c ****   case 0x438: str = "STM32F30x/F33x"; break;  /* Piccolo */
+ 556:X-CUBE-AI/App/aiTestUtility.c ****   case 0x446: str = "STM32F303D/E"; break;    /* Sunfish512k */
+ 557:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32F4)
+ 558:X-CUBE-AI/App/aiTestUtility.c ****   case 0x419: str = "STM32F4x7"; break;     /* BigManta */
+ 559:X-CUBE-AI/App/aiTestUtility.c ****   case 0x434: str = "STM32F469"; break;     /* MantaDragon */
+ 560:X-CUBE-AI/App/aiTestUtility.c ****   case 0x423: str = "STM32F401xB/C"; break; /* TinyManta */
+ 561:X-CUBE-AI/App/aiTestUtility.c ****   case 0x431: str = "STM32F411xC/E"; break; /* TinyMantaLP */
+ 562:X-CUBE-AI/App/aiTestUtility.c ****   case 0x441: str = "STM32F412"; break;     /* TinyMantaLP1M */
+ 563:X-CUBE-AI/App/aiTestUtility.c ****   case 0x421: str = "STM32F446"; break;     /* LittleManta512K */
+ 564:X-CUBE-AI/App/aiTestUtility.c ****   case 0x413: str = "STM32F4x"; break;      /* MantaF405 */
+ 565:X-CUBE-AI/App/aiTestUtility.c ****   case 0x458: str = "STM32F410"; break;     /* TinyManta128KLP */
+ 566:X-CUBE-AI/App/aiTestUtility.c ****   case 0x463: str = "STM32F413"; break;     /* TinyMantaLP1.5M */
+ 567:X-CUBE-AI/App/aiTestUtility.c ****   case 0x433: str = "STM32F401xD/E"; break;
+ 568:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L0)
+ 569:X-CUBE-AI/App/aiTestUtility.c ****   case 0x447: str = "STM32L0x5"; break;  /* BigNemo192K */
+ 570:X-CUBE-AI/App/aiTestUtility.c ****   case 0x425: str = "STM32L0x2"; break;  /* LittleNemo32K */
+ 571:X-CUBE-AI/App/aiTestUtility.c ****   case 0x417: str = "STM32L0x3"; break;  /* NemoL051 */
+ 572:X-CUBE-AI/App/aiTestUtility.c ****   case 0x457: str = "STM32L0x5"; break;  /* TinyNemo16K */
+ 573:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32F0)
+ 574:X-CUBE-AI/App/aiTestUtility.c ****   case 0x448: str = "STM32F07x"; break;  /* Stingray128k */
+ 575:X-CUBE-AI/App/aiTestUtility.c ****   case 0x442: str = "STM32F091"; break;  /* Stingray256k see RM0091 */
+ 576:X-CUBE-AI/App/aiTestUtility.c ****   case 0x445: str = "STM32F042"; break;  /* Stingray32k */
+ 577:X-CUBE-AI/App/aiTestUtility.c ****   case 0x440: str = "STM32F03x/F05x"; break;  /* Stingray64k */
+ 578:X-CUBE-AI/App/aiTestUtility.c ****   case 0x444: str = "STM32F03x"; break;  /* Stingray32k-F03x */
+ 579:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L4)
+ 580:X-CUBE-AI/App/aiTestUtility.c ****   case 0x461: str = "STM32L49xxx"; break;  /* BigOrca_1M */
+ 581:X-CUBE-AI/App/aiTestUtility.c ****   case 0x462: str = "STM32L45xxx"; break;  /* Orca_512K */
+ 582:X-CUBE-AI/App/aiTestUtility.c ****   case 0x464: str = "STM32L4x2"; break;    /* Orca_128K */
+ 583:X-CUBE-AI/App/aiTestUtility.c ****   case 0x435: str = "STM32L43xxx"; break;  /* Little_Orca_256K */
+ 1253              		.loc 1 583 19 view .LVU300
+ 1254 003c 0948     		ldr	r0, .L100
+ 1255              	.LVL90:
+ 1256              		.loc 1 583 19 view .LVU301
+ 1257 003e 7047     		bx	lr
+ 1258              	.L94:
+ 550:X-CUBE-AI/App/aiTestUtility.c ****   switch (dev_id) {
+ 1259              		.loc 1 550 3 view .LVU302
+ 1260 0040 0948     		ldr	r0, .L100+4
+ 1261 0042 7047     		bx	lr
+ 1262              	.L89:
+ 584:X-CUBE-AI/App/aiTestUtility.c ****   case 0x415: str = "STM32L4x6xx"; break;  /* Orca_1M */
+ 585:X-CUBE-AI/App/aiTestUtility.c ****   case 0x471: str = "STM32L4P/Q"; break;   /* Orca_plus_1MB */
+ 586:X-CUBE-AI/App/aiTestUtility.c ****   case 0x470: str = "STM32L4R/S"; break;   /* Orca_plus_2MB */
+ 587:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L5)
+ 588:X-CUBE-AI/App/aiTestUtility.c ****   case 0x472: str = "STM32L5[5,6]2xx"; break;  /* Beluga */
+ 589:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32U5)
+ 590:X-CUBE-AI/App/aiTestUtility.c ****   case 0x482: str = "STM32U575/585"; break;  /* Cobra2M */
+ARM GAS  /tmp/ccCNKDF9.s 			page 42
+
+
+ 591:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32F7)
+ 592:X-CUBE-AI/App/aiTestUtility.c ****   case 0x451: str = "STM32F76x/F77x"; break; /* BigBirdie */
+ 593:X-CUBE-AI/App/aiTestUtility.c ****   case 0x449: str = "STM32F746"; break;      /* Birdie */
+ 594:X-CUBE-AI/App/aiTestUtility.c ****   case 0x452: str = "STM32F72x/F73x"; break; /* LittleBirdie */
+ 595:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32H7)
+ 596:X-CUBE-AI/App/aiTestUtility.c ****   case 0x450: str = "STM32H743/53/50xx and STM32H745/55/47/57xx"; break; /* Shark2M - see RM0433 & 
+ 597:X-CUBE-AI/App/aiTestUtility.c ****   case 0x480: str = "STM32H7A/7B"; break;  /* TinyShark2M */
+ 598:X-CUBE-AI/App/aiTestUtility.c ****   case 0x483: str = "STM32H7[2,3]x"; break;  /* LittleShark1M */
+ 599:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32G4)
+ 600:X-CUBE-AI/App/aiTestUtility.c ****   case 0x469: str = "STM32G474"; break;  /* Rockfish_512K */
+ 601:X-CUBE-AI/App/aiTestUtility.c ****   case 0x468: str = "STM32G454"; break;  /* Tiny_Rockfish_128K */
+ 602:X-CUBE-AI/App/aiTestUtility.c ****   case 0x479: str = "STM32G491"; break;  /* Tiny_Rockfish_512K */
+ 603:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32G0)
+ 604:X-CUBE-AI/App/aiTestUtility.c ****   case 0x460: str = "STM32G07x/8x"; break;  /* OrcaZero128k */
+ 605:X-CUBE-AI/App/aiTestUtility.c ****   case 0x467: str = "STM32G0B1/C1"; break;  /* OrcaZero512k see RM0444 */
+ 606:X-CUBE-AI/App/aiTestUtility.c ****   case 0x466: str = "STM32G03x/4x"; break;  /* OrcaZero64k */
+ 607:X-CUBE-AI/App/aiTestUtility.c ****   case 0x456: str = "STM32G051/61"; break;  /* OrcaZeroMax64k */
+ 608:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32WB)
+ 609:X-CUBE-AI/App/aiTestUtility.c ****   case 0x494: str = "STM32WB1"; break;    /* TinyDory320k */
+ 610:X-CUBE-AI/App/aiTestUtility.c ****   case 0x495: str = "STM32WB5/3"; break;  /* Dory1M-STM32WB5 LIttleDory512K */
+ 611:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32WL)
+ 612:X-CUBE-AI/App/aiTestUtility.c ****   case 0x497: str = "Bee-WLx"; break;     /* Bee-WLx */
+ 613:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32MP1)
+ 614:X-CUBE-AI/App/aiTestUtility.c ****   case 0x500: str = "STM32MP1"; break;  /* */
+ 615:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32H5)
+ 616:X-CUBE-AI/App/aiTestUtility.c ****   case 0x484: str = "STM32H5x"; break;  /* */
+ 617:X-CUBE-AI/App/aiTestUtility.c ****   case 0x474: str = "STM32H503"; break;  /* */
+ 618:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32N6)
+ 619:X-CUBE-AI/App/aiTestUtility.c ****   case 0x486: str = "STM32N6"; break;  /* */
+ 620:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(CORSTONE_300)
+ 621:X-CUBE-AI/App/aiTestUtility.c ****   case 0x155: str = "Corstone SSE-300 FVP"; break;  /* */
+ 622:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(SR5E1) /* STELLAR-E device */
+ 623:X-CUBE-AI/App/aiTestUtility.c ****   case 0x2511: str = "SR5E1x"; break;  /* see RM0483 */
+ 624:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 625:X-CUBE-AI/App/aiTestUtility.c ****   default:    str = "UNKNOWN";
+ 1263              		.loc 1 625 19 view .LVU303
+ 1264 0044 0948     		ldr	r0, .L100+8
+ 1265 0046 7047     		bx	lr
+ 1266              	.L93:
+ 582:X-CUBE-AI/App/aiTestUtility.c ****   case 0x435: str = "STM32L43xxx"; break;  /* Little_Orca_256K */
+ 1267              		.loc 1 582 15 is_stmt 1 view .LVU304
+ 1268              	.LVL91:
+ 582:X-CUBE-AI/App/aiTestUtility.c ****   case 0x435: str = "STM32L43xxx"; break;  /* Little_Orca_256K */
+ 1269              		.loc 1 582 34 view .LVU305
+ 582:X-CUBE-AI/App/aiTestUtility.c ****   case 0x435: str = "STM32L43xxx"; break;  /* Little_Orca_256K */
+ 1270              		.loc 1 582 19 is_stmt 0 view .LVU306
+ 1271 0048 0948     		ldr	r0, .L100+12
+ 582:X-CUBE-AI/App/aiTestUtility.c ****   case 0x435: str = "STM32L43xxx"; break;  /* Little_Orca_256K */
+ 1272              		.loc 1 582 3 view .LVU307
+ 1273 004a 7047     		bx	lr
+ 1274              	.LVL92:
+ 1275              	.L90:
+ 585:X-CUBE-AI/App/aiTestUtility.c ****   case 0x470: str = "STM32L4R/S"; break;   /* Orca_plus_2MB */
+ 1276              		.loc 1 585 15 is_stmt 1 view .LVU308
+ 585:X-CUBE-AI/App/aiTestUtility.c ****   case 0x470: str = "STM32L4R/S"; break;   /* Orca_plus_2MB */
+ 1277              		.loc 1 585 35 view .LVU309
+ 585:X-CUBE-AI/App/aiTestUtility.c ****   case 0x470: str = "STM32L4R/S"; break;   /* Orca_plus_2MB */
+ARM GAS  /tmp/ccCNKDF9.s 			page 43
+
+
+ 1278              		.loc 1 585 19 is_stmt 0 view .LVU310
+ 1279 004c 0948     		ldr	r0, .L100+16
+ 585:X-CUBE-AI/App/aiTestUtility.c ****   case 0x470: str = "STM32L4R/S"; break;   /* Orca_plus_2MB */
+ 1280              		.loc 1 585 3 view .LVU311
+ 1281 004e 7047     		bx	lr
+ 1282              	.LVL93:
+ 1283              	.L92:
+ 586:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L5)
+ 1284              		.loc 1 586 15 is_stmt 1 view .LVU312
+ 586:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L5)
+ 1285              		.loc 1 586 35 view .LVU313
+ 586:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L5)
+ 1286              		.loc 1 586 19 is_stmt 0 view .LVU314
+ 1287 0050 0948     		ldr	r0, .L100+20
+ 586:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(STM32L5)
+ 1288              		.loc 1 586 3 view .LVU315
+ 1289 0052 7047     		bx	lr
+ 1290              	.LVL94:
+ 1291              	.L95:
+ 1292              		.loc 1 625 19 view .LVU316
+ 1293 0054 0548     		ldr	r0, .L100+8
+ 1294              	.LVL95:
+ 1295              		.loc 1 625 19 view .LVU317
+ 1296 0056 7047     		bx	lr
+ 1297              	.LVL96:
+ 1298              	.L96:
+ 584:X-CUBE-AI/App/aiTestUtility.c ****   case 0x471: str = "STM32L4P/Q"; break;   /* Orca_plus_1MB */
+ 1299              		.loc 1 584 19 view .LVU318
+ 1300 0058 0848     		ldr	r0, .L100+24
+ 1301              	.LVL97:
+ 584:X-CUBE-AI/App/aiTestUtility.c ****   case 0x471: str = "STM32L4P/Q"; break;   /* Orca_plus_1MB */
+ 1302              		.loc 1 584 19 view .LVU319
+ 1303 005a 7047     		bx	lr
+ 1304              	.LVL98:
+ 1305              	.L97:
+ 1306              		.loc 1 625 19 view .LVU320
+ 1307 005c 0348     		ldr	r0, .L100+8
+ 1308              	.LVL99:
+ 1309              		.loc 1 625 19 view .LVU321
+ 1310 005e 7047     		bx	lr
+ 1311              	.L98:
+ 581:X-CUBE-AI/App/aiTestUtility.c ****   case 0x464: str = "STM32L4x2"; break;    /* Orca_128K */
+ 1312              		.loc 1 581 19 view .LVU322
+ 1313 0060 0748     		ldr	r0, .L100+28
+ 1314              	.LVL100:
+ 626:X-CUBE-AI/App/aiTestUtility.c ****   }
+ 627:X-CUBE-AI/App/aiTestUtility.c ****   return str;
+ 1315              		.loc 1 627 3 is_stmt 1 view .LVU323
+ 628:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1316              		.loc 1 628 1 is_stmt 0 view .LVU324
+ 1317 0062 7047     		bx	lr
+ 1318              	.L101:
+ 1319              		.align	2
+ 1320              	.L100:
+ 1321 0064 94000000 		.word	.LANCHOR1+148
+ 1322 0068 B8000000 		.word	.LANCHOR1+184
+ 1323 006c 68000000 		.word	.LANCHOR1+104
+ARM GAS  /tmp/ccCNKDF9.s 			page 44
+
+
+ 1324 0070 7C000000 		.word	.LANCHOR1+124
+ 1325 0074 A0000000 		.word	.LANCHOR1+160
+ 1326 0078 AC000000 		.word	.LANCHOR1+172
+ 1327 007c 88000000 		.word	.LANCHOR1+136
+ 1328 0080 70000000 		.word	.LANCHOR1+112
+ 1329              		.cfi_endproc
+ 1330              	.LFE160:
+ 1332              		.section	.text.getSysConf,"ax",%progbits
+ 1333              		.align	1
+ 1334              		.global	getSysConf
+ 1335              		.syntax unified
+ 1336              		.thumb
+ 1337              		.thumb_func
+ 1338              		.fpu fpv4-sp-d16
+ 1340              	getSysConf:
+ 1341              	.LVL101:
+ 1342              	.LFB162:
+ 629:X-CUBE-AI/App/aiTestUtility.c **** 
+ 630:X-CUBE-AI/App/aiTestUtility.c **** #if defined(DUAL_CORE) && defined(STM32H7) && defined(CORE_CM4)
+ 631:X-CUBE-AI/App/aiTestUtility.c **** #define _STM32H7_DUAL_CORE_CM4
+ 632:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 633:X-CUBE-AI/App/aiTestUtility.c **** 
+ 634:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(STM32F0) && !defined(STM32L0) && !defined(STM32G0) && !defined(STM32C0) && !defined(ST
+ 635:X-CUBE-AI/App/aiTestUtility.c **** __STATIC_INLINE const char* bitToStr(uint32_t val)
+ 636:X-CUBE-AI/App/aiTestUtility.c **** {
+ 637:X-CUBE-AI/App/aiTestUtility.c ****   if (val)
+ 638:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 639:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 640:X-CUBE-AI/App/aiTestUtility.c ****     return "False";
+ 641:X-CUBE-AI/App/aiTestUtility.c **** }
+ 642:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 643:X-CUBE-AI/App/aiTestUtility.c **** 
+ 644:X-CUBE-AI/App/aiTestUtility.c **** 
+ 645:X-CUBE-AI/App/aiTestUtility.c **** void getSysConf(struct mcu_conf *conf)
+ 646:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1343              		.loc 1 646 1 is_stmt 1 view -0
+ 1344              		.cfi_startproc
+ 1345              		@ args = 0, pretend = 0, frame = 0
+ 1346              		@ frame_needed = 0, uses_anonymous_args = 0
+ 647:X-CUBE-AI/App/aiTestUtility.c ****   if (!conf)
+ 1347              		.loc 1 647 3 view .LVU326
+ 1348              		.loc 1 647 6 is_stmt 0 view .LVU327
+ 1349 0000 88B1     		cbz	r0, .L105
+ 646:X-CUBE-AI/App/aiTestUtility.c ****   if (!conf)
+ 1350              		.loc 1 646 1 view .LVU328
+ 1351 0002 10B5     		push	{r4, lr}
+ 1352              	.LCFI30:
+ 1353              		.cfi_def_cfa_offset 8
+ 1354              		.cfi_offset 4, -8
+ 1355              		.cfi_offset 14, -4
+ 1356 0004 0446     		mov	r4, r0
+ 648:X-CUBE-AI/App/aiTestUtility.c ****     return;
+ 649:X-CUBE-AI/App/aiTestUtility.c **** 
+ 650:X-CUBE-AI/App/aiTestUtility.c ****   conf->sclk = port_hal_get_cpu_freq();
+ 1357              		.loc 1 650 3 is_stmt 1 view .LVU329
+ 1358              		.loc 1 650 16 is_stmt 0 view .LVU330
+ 1359 0006 FFF7FEFF 		bl	HAL_RCC_GetHCLKFreq
+ARM GAS  /tmp/ccCNKDF9.s 			page 45
+
+
+ 1360              	.LVL102:
+ 1361              		.loc 1 650 14 view .LVU331
+ 1362 000a 2060     		str	r0, [r4]
+ 651:X-CUBE-AI/App/aiTestUtility.c ****   conf->hclk = port_hal_get_sys_freq();
+ 1363              		.loc 1 651 3 is_stmt 1 view .LVU332
+ 1364              		.loc 1 651 16 is_stmt 0 view .LVU333
+ 1365 000c FFF7FEFF 		bl	HAL_RCC_GetHCLKFreq
+ 1366              	.LVL103:
+ 1367              		.loc 1 651 14 view .LVU334
+ 1368 0010 6060     		str	r0, [r4, #4]
+ 652:X-CUBE-AI/App/aiTestUtility.c ****   conf->conf = getFlashCacheConf();
+ 1369              		.loc 1 652 3 is_stmt 1 view .LVU335
+ 1370              		.loc 1 652 16 is_stmt 0 view .LVU336
+ 1371 0012 FFF7FEFF 		bl	getFlashCacheConf
+ 1372              	.LVL104:
+ 1373              		.loc 1 652 14 view .LVU337
+ 1374 0016 A060     		str	r0, [r4, #8]
+ 653:X-CUBE-AI/App/aiTestUtility.c ****   conf->devid = port_hal_get_dev_id();
+ 1375              		.loc 1 653 3 is_stmt 1 view .LVU338
+ 1376              		.loc 1 653 17 is_stmt 0 view .LVU339
+ 1377 0018 FFF7FEFF 		bl	HAL_GetDEVID
+ 1378              	.LVL105:
+ 1379              		.loc 1 653 15 view .LVU340
+ 1380 001c E060     		str	r0, [r4, #12]
+ 654:X-CUBE-AI/App/aiTestUtility.c ****   conf->revid = port_hal_get_rev_id();
+ 1381              		.loc 1 654 3 is_stmt 1 view .LVU341
+ 1382              		.loc 1 654 17 is_stmt 0 view .LVU342
+ 1383 001e FFF7FEFF 		bl	HAL_GetREVID
+ 1384              	.LVL106:
+ 1385              		.loc 1 654 15 view .LVU343
+ 1386 0022 2061     		str	r0, [r4, #16]
+ 655:X-CUBE-AI/App/aiTestUtility.c **** 
+ 656:X-CUBE-AI/App/aiTestUtility.c **** #if defined(HAS_EXTRA_CONF) && HAS_EXTRA_CONF > 0
+ 657:X-CUBE-AI/App/aiTestUtility.c ****   port_hal_set_extra_conf(&conf->extra[0]);
+ 658:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 659:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1387              		.loc 1 659 1 view .LVU344
+ 1388 0024 10BD     		pop	{r4, pc}
+ 1389              	.LVL107:
+ 1390              	.L105:
+ 1391              	.LCFI31:
+ 1392              		.cfi_def_cfa_offset 0
+ 1393              		.cfi_restore 4
+ 1394              		.cfi_restore 14
+ 1395              		.loc 1 659 1 view .LVU345
+ 1396 0026 7047     		bx	lr
+ 1397              		.cfi_endproc
+ 1398              	.LFE162:
+ 1400              		.section	.text.getFlashCacheConf,"ax",%progbits
+ 1401              		.align	1
+ 1402              		.global	getFlashCacheConf
+ 1403              		.syntax unified
+ 1404              		.thumb
+ 1405              		.thumb_func
+ 1406              		.fpu fpv4-sp-d16
+ 1408              	getFlashCacheConf:
+ 1409              	.LFB163:
+ARM GAS  /tmp/ccCNKDF9.s 			page 46
+
+
+ 660:X-CUBE-AI/App/aiTestUtility.c **** 
+ 661:X-CUBE-AI/App/aiTestUtility.c **** /*
+ 662:X-CUBE-AI/App/aiTestUtility.c ****  -- conf 32b --
+ 663:X-CUBE-AI/App/aiTestUtility.c **** 
+ 664:X-CUBE-AI/App/aiTestUtility.c ****     b31..b24               (8b) series     L4/F4:1, F7:2, H7:3, U5/L5:4, N6:5
+ 665:X-CUBE-AI/App/aiTestUtility.c ****     b16                    (1b) fpu
+ 666:X-CUBE-AI/App/aiTestUtility.c **** 
+ 667:X-CUBE-AI/App/aiTestUtility.c ****     F7/H7/N6 b11 b10       (2b) D$, I$
+ 668:X-CUBE-AI/App/aiTestUtility.c ****     F7       b9 b8         (2b) art_en, art_prefetch
+ 669:X-CUBE-AI/App/aiTestUtility.c **** 
+ 670:X-CUBE-AI/App/aiTestUtility.c ****     F4       b10 b9 b8     (3b) art_prefetch, art_icache, art_dcache
+ 671:X-CUBE-AI/App/aiTestUtility.c ****              b7..b0        (8b) lat cycles
+ 672:X-CUBE-AI/App/aiTestUtility.c **** 
+ 673:X-CUBE-AI/App/aiTestUtility.c ****     L5       b9            (1b) icache
+ 674:X-CUBE-AI/App/aiTestUtility.c ****     N6       b7..b0        (8b) misc/extra
+ 675:X-CUBE-AI/App/aiTestUtility.c **** 
+ 676:X-CUBE-AI/App/aiTestUtility.c ****  */
+ 677:X-CUBE-AI/App/aiTestUtility.c **** 
+ 678:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_L4_F4     (1 << 24)
+ 679:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_F7        (2 << 24)
+ 680:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_H7        (3 << 24)  /* Used for SR5E1 device - Cortex-m7 based */
+ 681:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_U5_L5     (4 << 24)
+ 682:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_N6        (5 << 24)
+ 683:X-CUBE-AI/App/aiTestUtility.c **** 
+ 684:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_SR5E1     (3 << 24)
+ 685:X-CUBE-AI/App/aiTestUtility.c **** 
+ 686:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_FPU       (1 << 16)
+ 687:X-CUBE-AI/App/aiTestUtility.c **** 
+ 688:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_ART_DCACHE    (1 << 8)
+ 689:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_ART_ICACHE    (1 << 9)
+ 690:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_ART_PREFETCH  (1 << 10)
+ 691:X-CUBE-AI/App/aiTestUtility.c **** 
+ 692:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_CORE_ICACHE    (1 << 10)
+ 693:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_CORE_DCACHE    (1 << 11)
+ 694:X-CUBE-AI/App/aiTestUtility.c **** 
+ 695:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_ART_EN        (1 << 9)
+ 696:X-CUBE-AI/App/aiTestUtility.c **** #define MCONF_ART_PREF      (1 << 8)
+ 697:X-CUBE-AI/App/aiTestUtility.c **** 
+ 698:X-CUBE-AI/App/aiTestUtility.c **** 
+ 699:X-CUBE-AI/App/aiTestUtility.c **** uint32_t getFlashCacheConf(void)
+ 700:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1410              		.loc 1 700 1 is_stmt 1 view -0
+ 1411              		.cfi_startproc
+ 1412              		@ args = 0, pretend = 0, frame = 8
+ 1413              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1414              		@ link register save eliminated.
+ 1415 0000 82B0     		sub	sp, sp, #8
+ 1416              	.LCFI32:
+ 1417              		.cfi_def_cfa_offset 8
+ 701:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t mconf = 0;
+ 1418              		.loc 1 701 3 view .LVU347
+ 1419              	.LVL108:
+ 702:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32F0) || defined(STM32L0) || defined(STM32G0) || defined(STM32C0) || defined(STM32F3
+ 703:X-CUBE-AI/App/aiTestUtility.c **** 
+ 704:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 705:X-CUBE-AI/App/aiTestUtility.c **** 
+ 706:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32L4) || defined(STM32F4)
+ARM GAS  /tmp/ccCNKDF9.s 			page 47
+
+
+ 707:X-CUBE-AI/App/aiTestUtility.c **** 
+ 708:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_L4_F4;
+ 1420              		.loc 1 708 3 view .LVU348
+ 709:X-CUBE-AI/App/aiTestUtility.c **** 
+ 710:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t acr = FLASH->ACR ;
+ 1421              		.loc 1 710 3 view .LVU349
+ 1422              		.loc 1 710 27 is_stmt 0 view .LVU350
+ 1423 0002 0F4B     		ldr	r3, .L113
+ 1424 0004 1B68     		ldr	r3, [r3]
+ 1425              		.loc 1 710 16 view .LVU351
+ 1426 0006 0193     		str	r3, [sp, #4]
+ 711:X-CUBE-AI/App/aiTestUtility.c **** 
+ 712:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= ((acr & FLASH_ACR_LATENCY_Msk) >> FLASH_ACR_LATENCY_Pos);
+ 1427              		.loc 1 712 3 is_stmt 1 view .LVU352
+ 1428              		.loc 1 712 43 is_stmt 0 view .LVU353
+ 1429 0008 019B     		ldr	r3, [sp, #4]
+ 1430 000a 03F00F03 		and	r3, r3, #15
+ 1431              		.loc 1 712 9 view .LVU354
+ 1432 000e 43F08070 		orr	r0, r3, #16777216
+ 1433              	.LVL109:
+ 713:X-CUBE-AI/App/aiTestUtility.c **** 
+ 714:X-CUBE-AI/App/aiTestUtility.c ****   if ((acr & FLASH_ACR_PRFTEN_Msk) >> FLASH_ACR_PRFTEN_Pos)
+ 1434              		.loc 1 714 3 is_stmt 1 view .LVU355
+ 1435              		.loc 1 714 7 is_stmt 0 view .LVU356
+ 1436 0012 019A     		ldr	r2, [sp, #4]
+ 1437              		.loc 1 714 6 view .LVU357
+ 1438 0014 12F4807F 		tst	r2, #256
+ 1439 0018 01D0     		beq	.L109
+ 715:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_ART_DCACHE;
+ 1440              		.loc 1 715 5 is_stmt 1 view .LVU358
+ 1441              		.loc 1 715 11 is_stmt 0 view .LVU359
+ 1442 001a 43F00120 		orr	r0, r3, #16777472
+ 1443              	.LVL110:
+ 1444              	.L109:
+ 716:X-CUBE-AI/App/aiTestUtility.c ****   if ((acr & FLASH_ACR_ICEN_Msk) >> FLASH_ACR_ICEN_Pos)
+ 1445              		.loc 1 716 3 is_stmt 1 view .LVU360
+ 1446              		.loc 1 716 7 is_stmt 0 view .LVU361
+ 1447 001e 019B     		ldr	r3, [sp, #4]
+ 1448              		.loc 1 716 6 view .LVU362
+ 1449 0020 13F4007F 		tst	r3, #512
+ 1450 0024 01D0     		beq	.L110
+ 717:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_ART_ICACHE;
+ 1451              		.loc 1 717 5 is_stmt 1 view .LVU363
+ 1452              		.loc 1 717 11 is_stmt 0 view .LVU364
+ 1453 0026 40F40070 		orr	r0, r0, #512
+ 1454              	.LVL111:
+ 1455              	.L110:
+ 718:X-CUBE-AI/App/aiTestUtility.c ****   if ((acr & FLASH_ACR_DCEN_Msk) >> FLASH_ACR_DCEN_Pos)
+ 1456              		.loc 1 718 3 is_stmt 1 view .LVU365
+ 1457              		.loc 1 718 7 is_stmt 0 view .LVU366
+ 1458 002a 019B     		ldr	r3, [sp, #4]
+ 1459              		.loc 1 718 6 view .LVU367
+ 1460 002c 13F4806F 		tst	r3, #1024
+ 1461 0030 01D0     		beq	.L111
+ 719:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_ART_PREFETCH;
+ 1462              		.loc 1 719 5 is_stmt 1 view .LVU368
+ 1463              		.loc 1 719 11 is_stmt 0 view .LVU369
+ARM GAS  /tmp/ccCNKDF9.s 			page 48
+
+
+ 1464 0032 40F48060 		orr	r0, r0, #1024
+ 1465              	.LVL112:
+ 1466              	.L111:
+ 720:X-CUBE-AI/App/aiTestUtility.c **** 
+ 721:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 722:X-CUBE-AI/App/aiTestUtility.c **** 
+ 723:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32F7)
+ 724:X-CUBE-AI/App/aiTestUtility.c **** 
+ 725:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_F7;
+ 726:X-CUBE-AI/App/aiTestUtility.c **** 
+ 727:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t acr = FLASH->ACR;
+ 728:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t ccr = SCB->CCR;
+ 729:X-CUBE-AI/App/aiTestUtility.c **** 
+ 730:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= ((acr & FLASH_ACR_LATENCY_Msk) >> FLASH_ACR_LATENCY_Pos);
+ 731:X-CUBE-AI/App/aiTestUtility.c ****   if ((acr & FLASH_ACR_PRFTEN_Msk) >> FLASH_ACR_PRFTEN_Pos)
+ 732:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_ART_PREF;
+ 733:X-CUBE-AI/App/aiTestUtility.c ****   if ((acr & FLASH_ACR_ARTEN_Msk) >> FLASH_ACR_ARTEN_Pos)
+ 734:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_ART_EN;
+ 735:X-CUBE-AI/App/aiTestUtility.c **** 
+ 736:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_IC_Msk)
+ 737:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_ICACHE;
+ 738:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_DC_Msk)
+ 739:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_DCACHE;
+ 740:X-CUBE-AI/App/aiTestUtility.c **** 
+ 741:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 742:X-CUBE-AI/App/aiTestUtility.c **** 
+ 743:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32H7)
+ 744:X-CUBE-AI/App/aiTestUtility.c **** 
+ 745:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_H7;
+ 746:X-CUBE-AI/App/aiTestUtility.c **** 
+ 747:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t acr = FLASH->ACR;
+ 748:X-CUBE-AI/App/aiTestUtility.c **** 
+ 749:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= (acr & FLASH_ACR_LATENCY_Msk) >> FLASH_ACR_LATENCY_Pos;
+ 750:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(CORE_CM4)
+ 751:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t ccr = SCB->CCR;
+ 752:X-CUBE-AI/App/aiTestUtility.c **** 
+ 753:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_IC_Msk)
+ 754:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_ICACHE;
+ 755:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_DC_Msk)
+ 756:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_DCACHE;
+ 757:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 758:X-CUBE-AI/App/aiTestUtility.c **** 
+ 759:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 760:X-CUBE-AI/App/aiTestUtility.c **** 
+ 761:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32L5) || defined(STM32U5) || defined(STM32H5)
+ 762:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_U5_L5;
+ 763:X-CUBE-AI/App/aiTestUtility.c ****   if (READ_BIT(ICACHE->CR, ICACHE_CR_EN))
+ 764:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_ART_ICACHE;
+ 765:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 766:X-CUBE-AI/App/aiTestUtility.c **** 
+ 767:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32N6)
+ 768:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_N6;
+ 769:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 770:X-CUBE-AI/App/aiTestUtility.c **** 
+ 771:X-CUBE-AI/App/aiTestUtility.c **** #if (__FPU_PRESENT == 1) && __FPU_USED
+ 772:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_FPU;  /* FPU present and used */
+ 1467              		.loc 1 772 3 is_stmt 1 view .LVU370
+ARM GAS  /tmp/ccCNKDF9.s 			page 49
+
+
+ 773:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 774:X-CUBE-AI/App/aiTestUtility.c **** 
+ 775:X-CUBE-AI/App/aiTestUtility.c **** #if defined(CORSTONE_300) || defined(ARMCM55) || defined(STM32N6)
+ 776:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_N6;
+ 777:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t ccr = SCB->CCR;
+ 778:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_DC_Msk)
+ 779:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_DCACHE;
+ 780:X-CUBE-AI/App/aiTestUtility.c **** 
+ 781:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_IC_Msk)
+ 782:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_ICACHE;
+ 783:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 784:X-CUBE-AI/App/aiTestUtility.c **** 
+ 785:X-CUBE-AI/App/aiTestUtility.c **** #if defined(SR5E1)
+ 786:X-CUBE-AI/App/aiTestUtility.c **** 
+ 787:X-CUBE-AI/App/aiTestUtility.c ****   mconf |= MCONF_SR5E1;
+ 788:X-CUBE-AI/App/aiTestUtility.c **** 
+ 789:X-CUBE-AI/App/aiTestUtility.c ****   __I uint32_t ccr = SCB->CCR;
+ 790:X-CUBE-AI/App/aiTestUtility.c **** 
+ 791:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_IC_Msk)
+ 792:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_ICACHE;
+ 793:X-CUBE-AI/App/aiTestUtility.c ****   if (ccr & SCB_CCR_DC_Msk)
+ 794:X-CUBE-AI/App/aiTestUtility.c ****     mconf |= MCONF_CORE_DCACHE;
+ 795:X-CUBE-AI/App/aiTestUtility.c **** 
+ 796:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 797:X-CUBE-AI/App/aiTestUtility.c **** 
+ 798:X-CUBE-AI/App/aiTestUtility.c ****   return mconf;
+ 1468              		.loc 1 798 3 view .LVU371
+ 799:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1469              		.loc 1 799 1 is_stmt 0 view .LVU372
+ 1470 0036 40F48030 		orr	r0, r0, #65536
+ 1471              	.LVL113:
+ 1472              		.loc 1 799 1 view .LVU373
+ 1473 003a 02B0     		add	sp, sp, #8
+ 1474              	.LCFI33:
+ 1475              		.cfi_def_cfa_offset 0
+ 1476              		@ sp needed
+ 1477 003c 7047     		bx	lr
+ 1478              	.L114:
+ 1479 003e 00BF     		.align	2
+ 1480              	.L113:
+ 1481 0040 00200240 		.word	1073881088
+ 1482              		.cfi_endproc
+ 1483              	.LFE163:
+ 1485              		.section	.text.systemSettingLog,"ax",%progbits
+ 1486              		.align	1
+ 1487              		.global	systemSettingLog
+ 1488              		.syntax unified
+ 1489              		.thumb
+ 1490              		.thumb_func
+ 1491              		.fpu fpv4-sp-d16
+ 1493              	systemSettingLog:
+ 1494              	.LFB164:
+ 800:X-CUBE-AI/App/aiTestUtility.c **** 
+ 801:X-CUBE-AI/App/aiTestUtility.c **** void systemSettingLog(void)
+ 802:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1495              		.loc 1 802 1 is_stmt 1 view -0
+ 1496              		.cfi_startproc
+ARM GAS  /tmp/ccCNKDF9.s 			page 50
+
+
+ 1497              		@ args = 0, pretend = 0, frame = 24
+ 1498              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1499 0000 30B5     		push	{r4, r5, lr}
+ 1500              	.LCFI34:
+ 1501              		.cfi_def_cfa_offset 12
+ 1502              		.cfi_offset 4, -12
+ 1503              		.cfi_offset 5, -8
+ 1504              		.cfi_offset 14, -4
+ 1505 0002 89B0     		sub	sp, sp, #36
+ 1506              	.LCFI35:
+ 1507              		.cfi_def_cfa_offset 48
+ 803:X-CUBE-AI/App/aiTestUtility.c ****   struct mcu_conf sys_conf;
+ 1508              		.loc 1 803 3 view .LVU375
+ 804:X-CUBE-AI/App/aiTestUtility.c **** 
+ 805:X-CUBE-AI/App/aiTestUtility.c ****   /* Display ARM Complier version */
+ 806:X-CUBE-AI/App/aiTestUtility.c **** 
+ 807:X-CUBE-AI/App/aiTestUtility.c **** #if defined(_IS_AC6_COMPILER) && _IS_AC6_COMPILER
+ 808:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT("Compiled with MDK-ARM Keil (Arm Compiler 6) %d\r\n", __ARMCC_VERSION);
+ 809:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_GHS_COMPILER) && _IS_GHS_COMPILER
+ 810:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT("Compiled with GHS-ARM Compiler %d\r\n", __GHS_VERSION_NUMBER);
+ 811:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_HTC_COMPILER) && _IS_HTC_COMPILER
+ 812:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT("Compiled with HIGHTEC Clang %d.%d.%d\r\n", __clang_major__, __clang_minor__,
+ 813:X-CUBE-AI/App/aiTestUtility.c ****       __clang_patchlevel__);
+ 814:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 815:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT("Compiled with GCC %d.%d.%d\r\n", __GNUC__, __GNUC_MINOR__,
+ 1509              		.loc 1 815 3 view .LVU376
+ 1510 0004 2E4C     		ldr	r4, .L123
+ 1511 0006 0123     		movs	r3, #1
+ 1512 0008 0222     		movs	r2, #2
+ 1513 000a 0921     		movs	r1, #9
+ 1514 000c 04F1D400 		add	r0, r4, #212
+ 1515 0010 FFF7FEFF 		bl	lc_print
+ 1516              	.LVL114:
+ 816:X-CUBE-AI/App/aiTestUtility.c ****       __GNUC_PATCHLEVEL__);
+ 817:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 818:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT("Compiled with IAR %d (build %d)\r\n", __IAR_SYSTEMS_ICC__,
+ 819:X-CUBE-AI/App/aiTestUtility.c ****       __BUILD_NUMBER__
+ 820:X-CUBE-AI/App/aiTestUtility.c ****   );
+ 821:X-CUBE-AI/App/aiTestUtility.c **** #elif defined(_IS_AC5_COMPILER) && _IS_AC5_COMPILER
+ 822:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT("Compiled with MDK-ARM Keil %d\r\n", __ARMCC_VERSION);
+ 823:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 824:X-CUBE-AI/App/aiTestUtility.c **** 
+ 825:X-CUBE-AI/App/aiTestUtility.c **** 
+ 826:X-CUBE-AI/App/aiTestUtility.c ****   /* Display Device configuration */
+ 827:X-CUBE-AI/App/aiTestUtility.c ****   getSysConf(&sys_conf);
+ 1517              		.loc 1 827 3 view .LVU377
+ 1518 0014 03A8     		add	r0, sp, #12
+ 1519 0016 FFF7FEFF 		bl	getSysConf
+ 1520              	.LVL115:
+ 828:X-CUBE-AI/App/aiTestUtility.c **** 
+ 829:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(DEVICE_FAMILY " device configuration...\r\n");
+ 1521              		.loc 1 829 3 view .LVU378
+ 1522 001a 04F1F400 		add	r0, r4, #244
+ 1523 001e FFF7FEFF 		bl	lc_print
+ 1524              	.LVL116:
+ 830:X-CUBE-AI/App/aiTestUtility.c **** 
+ 831:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" Device       : DevID:0x%04x (%s) RevID:0x%04x\r\n",
+ARM GAS  /tmp/ccCNKDF9.s 			page 51
+
+
+ 1525              		.loc 1 831 3 view .LVU379
+ 1526 0022 069D     		ldr	r5, [sp, #24]
+ 1527 0024 A8B2     		uxth	r0, r5
+ 1528 0026 FFF7FEFF 		bl	devIdToStr
+ 1529              	.LVL117:
+ 1530 002a 0246     		mov	r2, r0
+ 1531 002c 079B     		ldr	r3, [sp, #28]
+ 1532 002e 2946     		mov	r1, r5
+ 1533 0030 04F58A70 		add	r0, r4, #276
+ 1534 0034 FFF7FEFF 		bl	lc_print
+ 1535              	.LVL118:
+ 832:X-CUBE-AI/App/aiTestUtility.c ****       (int)sys_conf.devid,
+ 833:X-CUBE-AI/App/aiTestUtility.c ****       devIdToStr(sys_conf.devid),
+ 834:X-CUBE-AI/App/aiTestUtility.c ****       (int)sys_conf.revid
+ 835:X-CUBE-AI/App/aiTestUtility.c ****   );
+ 836:X-CUBE-AI/App/aiTestUtility.c **** 
+ 837:X-CUBE-AI/App/aiTestUtility.c **** #if (__FPU_PRESENT == 1)
+ 838:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" Core Arch.   : M%d - %s %s\r\n", __CORTEX_M, "FPU ", ((__FPU_USED) ? "used" : "not use
+ 1536              		.loc 1 838 3 view .LVU380
+ 1537 0038 04F5A473 		add	r3, r4, #328
+ 1538 003c 04F5A872 		add	r2, r4, #336
+ 1539 0040 0421     		movs	r1, #4
+ 1540 0042 04F5AC70 		add	r0, r4, #344
+ 1541 0046 FFF7FEFF 		bl	lc_print
+ 1542              	.LVL119:
+ 839:X-CUBE-AI/App/aiTestUtility.c **** #else
+ 840:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" Core Arch.   : M%d - %s\r\n", __CORTEX_M, "no FPU");
+ 841:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 842:X-CUBE-AI/App/aiTestUtility.c **** 
+ 843:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" HAL version  : 0x%08x\r\n", (int)port_hal_get_hal_version());
+ 1543              		.loc 1 843 3 view .LVU381
+ 1544 004a FFF7FEFF 		bl	HAL_GetHalVersion
+ 1545              	.LVL120:
+ 1546 004e 0146     		mov	r1, r0
+ 1547 0050 04F5BC70 		add	r0, r4, #376
+ 1548 0054 FFF7FEFF 		bl	lc_print
+ 1549              	.LVL121:
+ 844:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" SYSCLK clock : %u MHz\r\n", (int)sys_conf.sclk/1000000);
+ 1550              		.loc 1 844 3 view .LVU382
+ 1551 0058 039B     		ldr	r3, [sp, #12]
+ 1552 005a 1A4D     		ldr	r5, .L123+4
+ 1553 005c 85FB0321 		smull	r2, r1, r5, r3
+ 1554 0060 DB17     		asrs	r3, r3, #31
+ 1555 0062 C3EBA141 		rsb	r1, r3, r1, asr #18
+ 1556 0066 04F5CA70 		add	r0, r4, #404
+ 1557 006a FFF7FEFF 		bl	lc_print
+ 1558              	.LVL122:
+ 845:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" HCLK clock   : %u MHz\r\n", (int)sys_conf.hclk/1000000);
+ 1559              		.loc 1 845 3 view .LVU383
+ 1560 006e 049B     		ldr	r3, [sp, #16]
+ 1561 0070 85FB0321 		smull	r2, r1, r5, r3
+ 1562 0074 DB17     		asrs	r3, r3, #31
+ 1563 0076 C3EBA141 		rsb	r1, r3, r1, asr #18
+ 1564 007a 04F5D870 		add	r0, r4, #432
+ 1565 007e FFF7FEFF 		bl	lc_print
+ 1566              	.LVL123:
+ 846:X-CUBE-AI/App/aiTestUtility.c **** 
+ARM GAS  /tmp/ccCNKDF9.s 			page 52
+
+
+ 847:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32F7)
+ 848:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t acr = FLASH->ACR;
+ 849:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t ccr = SCB->CCR;
+ 850:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" FLASH conf.  : ACR=0x%08x - Prefetch=%s ART=%s latency=%d\r\n",
+ 851:X-CUBE-AI/App/aiTestUtility.c ****       (int)acr,
+ 852:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr((acr & FLASH_ACR_PRFTEN_Msk) >> FLASH_ACR_PRFTEN_Pos),
+ 853:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr((acr & FLASH_ACR_ARTEN_Msk) >> FLASH_ACR_ARTEN_Pos),
+ 854:X-CUBE-AI/App/aiTestUtility.c ****       (int)((acr & FLASH_ACR_LATENCY_Msk) >> FLASH_ACR_LATENCY_Pos));
+ 855:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" CACHE conf.  : $I/$D=(%s,%s)\r\n",
+ 856:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_IC_Msk),
+ 857:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_DC_Msk));
+ 858:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 859:X-CUBE-AI/App/aiTestUtility.c **** 
+ 860:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32H7)
+ 861:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t acr = FLASH->ACR;
+ 862:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" FLASH conf.  : ACR=0x%08x - latency=%d\r\n",
+ 863:X-CUBE-AI/App/aiTestUtility.c ****       (int)acr,
+ 864:X-CUBE-AI/App/aiTestUtility.c ****       (int)((acr & FLASH_ACR_LATENCY_Msk) >> FLASH_ACR_LATENCY_Pos));
+ 865:X-CUBE-AI/App/aiTestUtility.c **** #if !defined(CORE_CM4)
+ 866:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t ccr = SCB->CCR;
+ 867:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" CACHE conf.  : $I/$D=(%s,%s)\r\n",
+ 868:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_IC_Msk),
+ 869:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_DC_Msk));
+ 870:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 871:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 872:X-CUBE-AI/App/aiTestUtility.c **** 
+ 873:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32F4) || defined(STM32L4)
+ 874:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t acr = FLASH->ACR;
+ 1567              		.loc 1 874 3 view .LVU384
+ 1568              		.loc 1 874 12 is_stmt 0 view .LVU385
+ 1569 0082 114B     		ldr	r3, .L123+8
+ 1570 0084 1968     		ldr	r1, [r3]
+ 1571              	.LVL124:
+ 875:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" FLASH conf.  : ACR=0x%08x - Prefetch=%s $I/$D=(%s,%s) latency=%d\r\n",
+ 1572              		.loc 1 875 3 is_stmt 1 view .LVU386
+ 1573              	.LBB30:
+ 1574              	.LBI30:
+ 635:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1575              		.loc 1 635 29 view .LVU387
+ 1576              	.LBB31:
+ 637:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 1577              		.loc 1 637 3 view .LVU388
+ 637:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 1578              		.loc 1 637 6 is_stmt 0 view .LVU389
+ 1579 0086 11F4807F 		tst	r1, #256
+ 1580 008a 12D0     		beq	.L119
+ 638:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 1581              		.loc 1 638 12 view .LVU390
+ 1582 008c 04F1CC02 		add	r2, r4, #204
+ 1583              	.L116:
+ 1584              	.LVL125:
+ 638:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 1585              		.loc 1 638 12 view .LVU391
+ 1586              	.LBE31:
+ 1587              	.LBE30:
+ 1588              	.LBB33:
+ 1589              	.LBI33:
+ARM GAS  /tmp/ccCNKDF9.s 			page 53
+
+
+ 635:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1590              		.loc 1 635 29 is_stmt 1 view .LVU392
+ 1591              	.LBB34:
+ 637:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 1592              		.loc 1 637 3 view .LVU393
+ 637:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 1593              		.loc 1 637 6 is_stmt 0 view .LVU394
+ 1594 0090 11F4007F 		tst	r1, #512
+ 1595 0094 0FD0     		beq	.L120
+ 638:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 1596              		.loc 1 638 12 view .LVU395
+ 1597 0096 0D4B     		ldr	r3, .L123+12
+ 1598              	.L117:
+ 1599              	.LVL126:
+ 638:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 1600              		.loc 1 638 12 view .LVU396
+ 1601              	.LBE34:
+ 1602              	.LBE33:
+ 1603              	.LBB36:
+ 1604              	.LBI36:
+ 635:X-CUBE-AI/App/aiTestUtility.c **** {
+ 1605              		.loc 1 635 29 is_stmt 1 view .LVU397
+ 1606              	.LBB37:
+ 637:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 1607              		.loc 1 637 3 view .LVU398
+ 637:X-CUBE-AI/App/aiTestUtility.c ****     return "True";
+ 1608              		.loc 1 637 6 is_stmt 0 view .LVU399
+ 1609 0098 11F4806F 		tst	r1, #1024
+ 1610 009c 0DD0     		beq	.L121
+ 638:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 1611              		.loc 1 638 12 view .LVU400
+ 1612 009e 0B48     		ldr	r0, .L123+12
+ 1613              	.L118:
+ 1614              	.LVL127:
+ 638:X-CUBE-AI/App/aiTestUtility.c ****   else
+ 1615              		.loc 1 638 12 view .LVU401
+ 1616              	.LBE37:
+ 1617              	.LBE36:
+ 1618              		.loc 1 875 3 view .LVU402
+ 1619 00a0 01F00F04 		and	r4, r1, #15
+ 1620 00a4 0194     		str	r4, [sp, #4]
+ 1621 00a6 0090     		str	r0, [sp]
+ 1622 00a8 0948     		ldr	r0, .L123+16
+ 1623 00aa FFF7FEFF 		bl	lc_print
+ 1624              	.LVL128:
+ 876:X-CUBE-AI/App/aiTestUtility.c ****       (int)acr,
+ 877:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr((acr & FLASH_ACR_PRFTEN_Msk) >> FLASH_ACR_PRFTEN_Pos),
+ 878:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr((acr & FLASH_ACR_ICEN_Msk) >> FLASH_ACR_ICEN_Pos),
+ 879:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr((acr & FLASH_ACR_DCEN_Msk) >> FLASH_ACR_DCEN_Pos),
+ 880:X-CUBE-AI/App/aiTestUtility.c ****       (int)((acr & FLASH_ACR_LATENCY_Msk) >> FLASH_ACR_LATENCY_Pos));
+ 881:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 882:X-CUBE-AI/App/aiTestUtility.c **** 
+ 883:X-CUBE-AI/App/aiTestUtility.c **** #if defined(STM32L5) || defined(STM32U5) || defined(STM32H5)
+ 884:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" ICACHE       : %s\r\n", bitToStr(READ_BIT(ICACHE->CR, ICACHE_CR_EN)));
+ 885:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 886:X-CUBE-AI/App/aiTestUtility.c **** 
+ 887:X-CUBE-AI/App/aiTestUtility.c **** #if defined(ARMCM55) || defined(STM32N6)
+ARM GAS  /tmp/ccCNKDF9.s 			page 54
+
+
+ 888:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t ccr = SCB->CCR;
+ 889:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" CACHE conf.  : $I/$D=(%s,%s)\r\n",
+ 890:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_IC_Msk),
+ 891:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_DC_Msk));
+ 892:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 893:X-CUBE-AI/App/aiTestUtility.c **** 
+ 894:X-CUBE-AI/App/aiTestUtility.c **** #if defined(SR5E1)
+ 895:X-CUBE-AI/App/aiTestUtility.c ****   uint32_t ccr = SCB->CCR;
+ 896:X-CUBE-AI/App/aiTestUtility.c ****   LC_PRINT(" CACHE conf.  : $I/$D=(%s,%s)\r\n",
+ 897:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_IC_Msk),
+ 898:X-CUBE-AI/App/aiTestUtility.c ****       bitToStr(ccr & SCB_CCR_DC_Msk));
+ 899:X-CUBE-AI/App/aiTestUtility.c **** #endif
+ 900:X-CUBE-AI/App/aiTestUtility.c **** 
+ 901:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1625              		.loc 1 901 1 view .LVU403
+ 1626 00ae 09B0     		add	sp, sp, #36
+ 1627              	.LCFI36:
+ 1628              		.cfi_remember_state
+ 1629              		.cfi_def_cfa_offset 12
+ 1630              		@ sp needed
+ 1631 00b0 30BD     		pop	{r4, r5, pc}
+ 1632              	.LVL129:
+ 1633              	.L119:
+ 1634              	.LCFI37:
+ 1635              		.cfi_restore_state
+ 1636              	.LBB39:
+ 1637              	.LBB32:
+ 640:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1638              		.loc 1 640 12 view .LVU404
+ 1639 00b2 084A     		ldr	r2, .L123+20
+ 1640 00b4 ECE7     		b	.L116
+ 1641              	.LVL130:
+ 1642              	.L120:
+ 640:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1643              		.loc 1 640 12 view .LVU405
+ 1644              	.LBE32:
+ 1645              	.LBE39:
+ 1646              	.LBB40:
+ 1647              	.LBB35:
+ 1648 00b6 074B     		ldr	r3, .L123+20
+ 1649 00b8 EEE7     		b	.L117
+ 1650              	.LVL131:
+ 1651              	.L121:
+ 640:X-CUBE-AI/App/aiTestUtility.c **** }
+ 1652              		.loc 1 640 12 view .LVU406
+ 1653              	.LBE35:
+ 1654              	.LBE40:
+ 1655              	.LBB41:
+ 1656              	.LBB38:
+ 1657 00ba 0648     		ldr	r0, .L123+20
+ 1658 00bc F0E7     		b	.L118
+ 1659              	.L124:
+ 1660 00be 00BF     		.align	2
+ 1661              	.L123:
+ 1662 00c0 00000000 		.word	.LANCHOR1
+ 1663 00c4 83DE1B43 		.word	1125899907
+ 1664 00c8 00200240 		.word	1073881088
+ARM GAS  /tmp/ccCNKDF9.s 			page 55
+
+
+ 1665 00cc CC000000 		.word	.LANCHOR1+204
+ 1666 00d0 CC010000 		.word	.LANCHOR1+460
+ 1667 00d4 C4000000 		.word	.LANCHOR1+196
+ 1668              	.LBE38:
+ 1669              	.LBE41:
+ 1670              		.cfi_endproc
+ 1671              	.LFE164:
+ 1673              		.section	.rodata
+ 1674              		.align	2
+ 1675              		.set	.LANCHOR1,. + 0
+ 1676              	.LC0:
+ 1677 0000 453A204D 		.ascii	"E: MSP is not the active stack (stack monitoring is"
+ 1677      53502069 
+ 1677      73206E6F 
+ 1677      74207468 
+ 1677      65206163 
+ 1678 0033 20646973 		.ascii	" disabled)\015\012\000"
+ 1678      61626C65 
+ 1678      64290D0A 
+ 1678      00
+ 1679              	.LC1:
+ 1680 0040 453A2021 		.ascii	"E: !stack overflow detected %d > %d\015\012\000"
+ 1680      73746163 
+ 1680      6B206F76 
+ 1680      6572666C 
+ 1680      6F772064 
+ 1681 0066 0000     		.space	2
+ 1682              	.LC2:
+ 1683 0068 554E4B4E 		.ascii	"UNKNOWN\000"
+ 1683      4F574E00 
+ 1684              	.LC3:
+ 1685 0070 53544D33 		.ascii	"STM32L45xxx\000"
+ 1685      324C3435 
+ 1685      78787800 
+ 1686              	.LC4:
+ 1687 007c 53544D33 		.ascii	"STM32L4x2\000"
+ 1687      324C3478 
+ 1687      3200
+ 1688 0086 0000     		.space	2
+ 1689              	.LC5:
+ 1690 0088 53544D33 		.ascii	"STM32L4x6xx\000"
+ 1690      324C3478 
+ 1690      36787800 
+ 1691              	.LC6:
+ 1692 0094 53544D33 		.ascii	"STM32L43xxx\000"
+ 1692      324C3433 
+ 1692      78787800 
+ 1693              	.LC7:
+ 1694 00a0 53544D33 		.ascii	"STM32L4P/Q\000"
+ 1694      324C3450 
+ 1694      2F5100
+ 1695 00ab 00       		.space	1
+ 1696              	.LC8:
+ 1697 00ac 53544D33 		.ascii	"STM32L4R/S\000"
+ 1697      324C3452 
+ 1697      2F5300
+ 1698 00b7 00       		.space	1
+ARM GAS  /tmp/ccCNKDF9.s 			page 56
+
+
+ 1699              	.LC9:
+ 1700 00b8 53544D33 		.ascii	"STM32L49xxx\000"
+ 1700      324C3439 
+ 1700      78787800 
+ 1701              	.LC10:
+ 1702 00c4 46616C73 		.ascii	"False\000"
+ 1702      6500
+ 1703 00ca 0000     		.space	2
+ 1704              	.LC11:
+ 1705 00cc 54727565 		.ascii	"True\000"
+ 1705      00
+ 1706 00d1 000000   		.space	3
+ 1707              	.LC12:
+ 1708 00d4 436F6D70 		.ascii	"Compiled with GCC %d.%d.%d\015\012\000"
+ 1708      696C6564 
+ 1708      20776974 
+ 1708      68204743 
+ 1708      43202564 
+ 1709 00f1 000000   		.space	3
+ 1710              	.LC13:
+ 1711 00f4 53544D33 		.ascii	"STM32 device configuration...\015\012\000"
+ 1711      32206465 
+ 1711      76696365 
+ 1711      20636F6E 
+ 1711      66696775 
+ 1712              	.LC14:
+ 1713 0114 20446576 		.ascii	" Device       : DevID:0x%04x (%s) RevID:0x%04x\015\012"
+ 1713      69636520 
+ 1713      20202020 
+ 1713      20203A20 
+ 1713      44657649 
+ 1714 0144 00       		.ascii	"\000"
+ 1715 0145 000000   		.space	3
+ 1716              	.LC15:
+ 1717 0148 75736564 		.ascii	"used\000"
+ 1717      00
+ 1718 014d 000000   		.space	3
+ 1719              	.LC16:
+ 1720 0150 46505520 		.ascii	"FPU \000"
+ 1720      00
+ 1721 0155 000000   		.space	3
+ 1722              	.LC17:
+ 1723 0158 20436F72 		.ascii	" Core Arch.   : M%d - %s %s\015\012\000"
+ 1723      65204172 
+ 1723      63682E20 
+ 1723      20203A20 
+ 1723      4D256420 
+ 1724 0176 0000     		.space	2
+ 1725              	.LC18:
+ 1726 0178 2048414C 		.ascii	" HAL version  : 0x%08x\015\012\000"
+ 1726      20766572 
+ 1726      73696F6E 
+ 1726      20203A20 
+ 1726      30782530 
+ 1727 0191 000000   		.space	3
+ 1728              	.LC19:
+ 1729 0194 20535953 		.ascii	" SYSCLK clock : %u MHz\015\012\000"
+ARM GAS  /tmp/ccCNKDF9.s 			page 57
+
+
+ 1729      434C4B20 
+ 1729      636C6F63 
+ 1729      6B203A20 
+ 1729      2575204D 
+ 1730 01ad 000000   		.space	3
+ 1731              	.LC20:
+ 1732 01b0 2048434C 		.ascii	" HCLK clock   : %u MHz\015\012\000"
+ 1732      4B20636C 
+ 1732      6F636B20 
+ 1732      20203A20 
+ 1732      2575204D 
+ 1733 01c9 000000   		.space	3
+ 1734              	.LC21:
+ 1735 01cc 20464C41 		.ascii	" FLASH conf.  : ACR=0x%08x - Prefetch=%s $I/$D=(%s,"
+ 1735      53482063 
+ 1735      6F6E662E 
+ 1735      20203A20 
+ 1735      4143523D 
+ 1736 01ff 25732920 		.ascii	"%s) latency=%d\015\012\000"
+ 1736      6C617465 
+ 1736      6E63793D 
+ 1736      25640D0A 
+ 1736      00
+ 1737              		.section	.data._ioWriteAllowed,"aw"
+ 1738              		.set	.LANCHOR0,. + 0
+ 1741              	_ioWriteAllowed:
+ 1742 0000 01       		.byte	1
+ 1743              		.text
+ 1744              	.Letext0:
+ 1745              		.file 3 "/usr/include/newlib/machine/_default_types.h"
+ 1746              		.file 4 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 1747              		.file 5 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdarg.h"
+ 1748              		.file 6 "/usr/include/newlib/stdio.h"
+ 1749              		.file 7 "/usr/include/newlib/sys/_types.h"
+ 1750              		.file 8 "/usr/include/newlib/sys/reent.h"
+ 1751              		.file 9 "/usr/include/newlib/sys/lock.h"
+ 1752              		.file 10 "/usr/include/newlib/sys/_stdint.h"
+ 1753              		.file 11 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/core_cm4.h"
+ 1754              		.file 12 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h"
+ 1755              		.file 13 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4r5xx.h"
+ 1756              		.file 14 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h"
+ 1757              		.file 15 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h"
+ 1758              		.file 16 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h"
+ 1759              		.file 17 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h"
+ 1760              		.file 18 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h"
+ 1761              		.file 19 "Middlewares/ST/AI/Inc/ai_platform.h"
+ 1762              		.file 20 "X-CUBE-AI/App/app_x-cube-ai.h"
+ 1763              		.file 21 "X-CUBE-AI/App/aiTestUtility.h"
+ 1764              		.file 22 "/usr/include/newlib/stdlib.h"
+ 1765              		.file 23 "/usr/include/newlib/sys/errno.h"
+ 1766              		.file 24 "/usr/include/newlib/sys/unistd.h"
+ 1767              		.file 25 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h"
+ 1768              		.file 26 "X-CUBE-AI/App/lc_print.h"
+ 1769              		.file 27 "<built-in>"
+ARM GAS  /tmp/ccCNKDF9.s 			page 58
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 aiTestUtility.c
+     /tmp/ccCNKDF9.s:18     .text.ioRawGetUint8:0000000000000000 $t
+     /tmp/ccCNKDF9.s:26     .text.ioRawGetUint8:0000000000000000 ioRawGetUint8
+     /tmp/ccCNKDF9.s:110    .text.ioRawGetUint8:000000000000002c $d
+     /tmp/ccCNKDF9.s:115    .text.ioRawWriteBuffer:0000000000000000 $t
+     /tmp/ccCNKDF9.s:122    .text.ioRawWriteBuffer:0000000000000000 ioRawWriteBuffer
+     /tmp/ccCNKDF9.s:165    .text.ioRawWriteBuffer:0000000000000018 $d
+     /tmp/ccCNKDF9.s:170    .text.ioRawReadBuffer:0000000000000000 $t
+     /tmp/ccCNKDF9.s:177    .text.ioRawReadBuffer:0000000000000000 ioRawReadBuffer
+     /tmp/ccCNKDF9.s:220    .text.ioRawReadBuffer:0000000000000018 $d
+     /tmp/ccCNKDF9.s:225    .text.ioRawDisableLLWrite:0000000000000000 $t
+     /tmp/ccCNKDF9.s:232    .text.ioRawDisableLLWrite:0000000000000000 ioRawDisableLLWrite
+     /tmp/ccCNKDF9.s:249    .text.ioRawDisableLLWrite:0000000000000008 $d
+     /tmp/ccCNKDF9.s:254    .text._write:0000000000000000 $t
+     /tmp/ccCNKDF9.s:261    .text._write:0000000000000000 _write
+     /tmp/ccCNKDF9.s:346    .text._write:000000000000003c $d
+     /tmp/ccCNKDF9.s:352    .text._put_c_driver:0000000000000000 $t
+     /tmp/ccCNKDF9.s:358    .text._put_c_driver:0000000000000000 _put_c_driver
+     /tmp/ccCNKDF9.s:420    .text._put_c_driver:0000000000000028 $d
+     /tmp/ccCNKDF9.s:426    .text.lc_print:0000000000000000 $t
+     /tmp/ccCNKDF9.s:433    .text.lc_print:0000000000000000 lc_print
+     /tmp/ccCNKDF9.s:486    .text.lc_print:0000000000000020 $d
+     /tmp/ccCNKDF9.s:491    .text._put_c_buffer_cb:0000000000000000 $t
+     /tmp/ccCNKDF9.s:497    .text._put_c_buffer_cb:0000000000000000 _put_c_buffer_cb
+     /tmp/ccCNKDF9.s:542    .text.lc_vsnprint:0000000000000000 $t
+     /tmp/ccCNKDF9.s:549    .text.lc_vsnprint:0000000000000000 lc_vsnprint
+     /tmp/ccCNKDF9.s:591    .text.lc_vsnprint:0000000000000020 $d
+                            *COM*:000000000000001c io_malloc
+     /tmp/ccCNKDF9.s:597    .text.__wrap_malloc:0000000000000000 $t
+     /tmp/ccCNKDF9.s:604    .text.__wrap_malloc:0000000000000000 __wrap_malloc
+     /tmp/ccCNKDF9.s:703    .text.__wrap_malloc:0000000000000058 $d
+     /tmp/ccCNKDF9.s:709    .text.__wrap_free:0000000000000000 $t
+     /tmp/ccCNKDF9.s:716    .text.__wrap_free:0000000000000000 __wrap_free
+     /tmp/ccCNKDF9.s:809    .text.__wrap_free:000000000000004c $d
+                            *COM*:0000000000000020 io_stack
+     /tmp/ccCNKDF9.s:816    .text.stackMonInit:0000000000000000 $t
+     /tmp/ccCNKDF9.s:823    .text.stackMonInit:0000000000000000 stackMonInit
+     /tmp/ccCNKDF9.s:927    .text.stackMonInit:000000000000005c $d
+                            *COM*:000000000000000c cyclesCount
+     /tmp/ccCNKDF9.s:938    .text.dwtCyclesToTime:0000000000000000 $t
+     /tmp/ccCNKDF9.s:945    .text.dwtCyclesToTime:0000000000000000 dwtCyclesToTime
+     /tmp/ccCNKDF9.s:1127   .text.dwtCyclesToFloatMs:0000000000000000 $t
+     /tmp/ccCNKDF9.s:1134   .text.dwtCyclesToFloatMs:0000000000000000 dwtCyclesToFloatMs
+     /tmp/ccCNKDF9.s:1193   .text.dwtCyclesToFloatMs:0000000000000034 $d
+     /tmp/ccCNKDF9.s:1198   .text.devIdToStr:0000000000000000 $t
+     /tmp/ccCNKDF9.s:1204   .text.devIdToStr:0000000000000000 devIdToStr
+     /tmp/ccCNKDF9.s:1226   .text.devIdToStr:000000000000001a $d
+     /tmp/ccCNKDF9.s:1321   .text.devIdToStr:0000000000000064 $d
+     /tmp/ccCNKDF9.s:1333   .text.getSysConf:0000000000000000 $t
+     /tmp/ccCNKDF9.s:1340   .text.getSysConf:0000000000000000 getSysConf
+     /tmp/ccCNKDF9.s:1408   .text.getFlashCacheConf:0000000000000000 getFlashCacheConf
+     /tmp/ccCNKDF9.s:1401   .text.getFlashCacheConf:0000000000000000 $t
+     /tmp/ccCNKDF9.s:1481   .text.getFlashCacheConf:0000000000000040 $d
+     /tmp/ccCNKDF9.s:1486   .text.systemSettingLog:0000000000000000 $t
+     /tmp/ccCNKDF9.s:1493   .text.systemSettingLog:0000000000000000 systemSettingLog
+     /tmp/ccCNKDF9.s:1662   .text.systemSettingLog:00000000000000c0 $d
+ARM GAS  /tmp/ccCNKDF9.s 			page 59
+
+
+     /tmp/ccCNKDF9.s:1674   .rodata:0000000000000000 $d
+     /tmp/ccCNKDF9.s:1741   .data._ioWriteAllowed:0000000000000000 _ioWriteAllowed
+     /tmp/ccCNKDF9.s:1244   .text.devIdToStr:000000000000002b $d
+     /tmp/ccCNKDF9.s:1244   .text.devIdToStr:000000000000002c $t
+
+UNDEFINED SYMBOLS
+HAL_UART_Receive
+hlpuart1
+HAL_UART_Transmit
+__errno
+vlc_print
+__real_malloc
+__real_free
+_estack
+__aeabi_uldivmod
+HAL_RCC_GetHCLKFreq
+__aeabi_ul2f
+HAL_GetDEVID
+HAL_GetREVID
+HAL_GetHalVersion

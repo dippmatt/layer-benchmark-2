@@ -1,0 +1,10 @@
+1)
+ST generates calculated RAM and FLASH using the following metrics:
+
+RAM = bss + data
+FLASH = text + rodata + data
+
+correct this in the .elf calculation for glow and tiny_engine
+
+2)
+

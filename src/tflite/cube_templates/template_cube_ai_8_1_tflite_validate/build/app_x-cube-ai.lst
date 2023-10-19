@@ -1,0 +1,173 @@
+ARM GAS  /tmp/cc0ItzPK.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"app_x-cube-ai.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.MX_X_CUBE_AI_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	MX_X_CUBE_AI_Init
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	MX_X_CUBE_AI_Init:
+  27              	.LFB137:
+  28              		.file 1 "X-CUBE-AI/App/app_x-cube-ai.c"
+   1:X-CUBE-AI/App/app_x-cube-ai.c **** 
+   2:X-CUBE-AI/App/app_x-cube-ai.c **** /**
+   3:X-CUBE-AI/App/app_x-cube-ai.c ****   ******************************************************************************
+   4:X-CUBE-AI/App/app_x-cube-ai.c ****   * @file    app_x-cube-ai.c
+   5:X-CUBE-AI/App/app_x-cube-ai.c ****   * @author  X-CUBE-AI C code generator
+   6:X-CUBE-AI/App/app_x-cube-ai.c ****   * @brief   AI program body
+   7:X-CUBE-AI/App/app_x-cube-ai.c ****   ******************************************************************************
+   8:X-CUBE-AI/App/app_x-cube-ai.c ****   * @attention
+   9:X-CUBE-AI/App/app_x-cube-ai.c ****   *
+  10:X-CUBE-AI/App/app_x-cube-ai.c ****   * Copyright (c) 2023 STMicroelectronics.
+  11:X-CUBE-AI/App/app_x-cube-ai.c ****   * All rights reserved.
+  12:X-CUBE-AI/App/app_x-cube-ai.c ****   *
+  13:X-CUBE-AI/App/app_x-cube-ai.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:X-CUBE-AI/App/app_x-cube-ai.c ****   * in the root directory of this software component.
+  15:X-CUBE-AI/App/app_x-cube-ai.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:X-CUBE-AI/App/app_x-cube-ai.c ****   *
+  17:X-CUBE-AI/App/app_x-cube-ai.c ****   ******************************************************************************
+  18:X-CUBE-AI/App/app_x-cube-ai.c ****   */
+  19:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  20:X-CUBE-AI/App/app_x-cube-ai.c ****  /*
+  21:X-CUBE-AI/App/app_x-cube-ai.c ****   * Description
+  22:X-CUBE-AI/App/app_x-cube-ai.c ****   *   v1.0 - Basic template to show how to use the TensorFlow lite micro API
+  23:X-CUBE-AI/App/app_x-cube-ai.c ****   *
+  24:X-CUBE-AI/App/app_x-cube-ai.c ****   */
+  25:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  26:X-CUBE-AI/App/app_x-cube-ai.c **** #ifdef __cplusplus
+  27:X-CUBE-AI/App/app_x-cube-ai.c ****  extern "C" {
+  28:X-CUBE-AI/App/app_x-cube-ai.c **** #endif
+  29:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  30:X-CUBE-AI/App/app_x-cube-ai.c **** /* Includes ------------------------------------------------------------------*/
+ARM GAS  /tmp/cc0ItzPK.s 			page 2
+
+
+  31:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  32:X-CUBE-AI/App/app_x-cube-ai.c **** /* System headers */
+  33:X-CUBE-AI/App/app_x-cube-ai.c **** #include <stdint.h>
+  34:X-CUBE-AI/App/app_x-cube-ai.c **** #include <stdlib.h>
+  35:X-CUBE-AI/App/app_x-cube-ai.c **** #include <stdio.h>
+  36:X-CUBE-AI/App/app_x-cube-ai.c **** #include <inttypes.h>
+  37:X-CUBE-AI/App/app_x-cube-ai.c **** #include <string.h>
+  38:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  39:X-CUBE-AI/App/app_x-cube-ai.c **** #include "app_x-cube-ai.h"
+  40:X-CUBE-AI/App/app_x-cube-ai.c **** #include "bsp_ai.h"
+  41:X-CUBE-AI/App/app_x-cube-ai.c **** #include "aiValidation.h"
+  42:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  43:X-CUBE-AI/App/app_x-cube-ai.c **** /* USER CODE BEGIN includes */
+  44:X-CUBE-AI/App/app_x-cube-ai.c **** /* USER CODE END includes */
+  45:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  46:X-CUBE-AI/App/app_x-cube-ai.c **** /* Entry points --------------------------------------------------------------*/
+  47:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  48:X-CUBE-AI/App/app_x-cube-ai.c **** void MX_X_CUBE_AI_Init(void)
+  49:X-CUBE-AI/App/app_x-cube-ai.c **** {
+  29              		.loc 1 49 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  50:X-CUBE-AI/App/app_x-cube-ai.c ****     MX_UARTx_Init();
+  38              		.loc 1 50 5 view .LVU1
+  39 0002 FFF7FEFF 		bl	MX_LPUART1_UART_Init
+  40              	.LVL0:
+  51:X-CUBE-AI/App/app_x-cube-ai.c ****     aiValidationInit();
+  41              		.loc 1 51 5 view .LVU2
+  42 0006 FFF7FEFF 		bl	aiValidationInit
+  43              	.LVL1:
+  52:X-CUBE-AI/App/app_x-cube-ai.c ****     /* USER CODE BEGIN 5 */
+  53:X-CUBE-AI/App/app_x-cube-ai.c ****     /* USER CODE END 5 */
+  54:X-CUBE-AI/App/app_x-cube-ai.c **** }
+  44              		.loc 1 54 1 is_stmt 0 view .LVU3
+  45 000a 08BD     		pop	{r3, pc}
+  46              		.cfi_endproc
+  47              	.LFE137:
+  49              		.section	.text.MX_X_CUBE_AI_Process,"ax",%progbits
+  50              		.align	1
+  51              		.global	MX_X_CUBE_AI_Process
+  52              		.syntax unified
+  53              		.thumb
+  54              		.thumb_func
+  55              		.fpu fpv4-sp-d16
+  57              	MX_X_CUBE_AI_Process:
+  58              	.LFB138:
+  55:X-CUBE-AI/App/app_x-cube-ai.c **** 
+  56:X-CUBE-AI/App/app_x-cube-ai.c **** void MX_X_CUBE_AI_Process(void)
+  57:X-CUBE-AI/App/app_x-cube-ai.c **** {
+  59              		.loc 1 57 1 is_stmt 1 view -0
+  60              		.cfi_startproc
+ARM GAS  /tmp/cc0ItzPK.s 			page 3
+
+
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+  63 0000 08B5     		push	{r3, lr}
+  64              	.LCFI1:
+  65              		.cfi_def_cfa_offset 8
+  66              		.cfi_offset 3, -8
+  67              		.cfi_offset 14, -4
+  58:X-CUBE-AI/App/app_x-cube-ai.c ****     aiValidationProcess();
+  68              		.loc 1 58 5 view .LVU5
+  69 0002 FFF7FEFF 		bl	aiValidationProcess
+  70              	.LVL2:
+  59:X-CUBE-AI/App/app_x-cube-ai.c ****     /* USER CODE BEGIN 6 */
+  60:X-CUBE-AI/App/app_x-cube-ai.c ****     /* USER CODE END 6 */
+  61:X-CUBE-AI/App/app_x-cube-ai.c **** }
+  71              		.loc 1 61 1 is_stmt 0 view .LVU6
+  72 0006 08BD     		pop	{r3, pc}
+  73              		.cfi_endproc
+  74              	.LFE138:
+  76              		.text
+  77              	.Letext0:
+  78              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+  79              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+  80              		.file 4 "/usr/include/newlib/sys/_types.h"
+  81              		.file 5 "/usr/include/newlib/sys/reent.h"
+  82              		.file 6 "/usr/include/newlib/sys/lock.h"
+  83              		.file 7 "/usr/include/newlib/stdlib.h"
+  84              		.file 8 "Middlewares/ST/AI/Inc/ai_platform.h"
+  85              		.file 9 "X-CUBE-AI/App/app_x-cube-ai.h"
+  86              		.file 10 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/core_cm4.h"
+  87              		.file 11 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h"
+  88              		.file 12 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h"
+  89              		.file 13 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h"
+  90              		.file 14 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h"
+  91              		.file 15 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h"
+  92              		.file 16 "X-CUBE-AI/App/aiValidation.h"
+  93              		.file 17 "X-CUBE-AI/Target/bsp_ai.h"
+ARM GAS  /tmp/cc0ItzPK.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 app_x-cube-ai.c
+     /tmp/cc0ItzPK.s:18     .text.MX_X_CUBE_AI_Init:0000000000000000 $t
+     /tmp/cc0ItzPK.s:26     .text.MX_X_CUBE_AI_Init:0000000000000000 MX_X_CUBE_AI_Init
+     /tmp/cc0ItzPK.s:50     .text.MX_X_CUBE_AI_Process:0000000000000000 $t
+     /tmp/cc0ItzPK.s:57     .text.MX_X_CUBE_AI_Process:0000000000000000 MX_X_CUBE_AI_Process
+
+UNDEFINED SYMBOLS
+MX_LPUART1_UART_Init
+aiValidationInit
+aiValidationProcess

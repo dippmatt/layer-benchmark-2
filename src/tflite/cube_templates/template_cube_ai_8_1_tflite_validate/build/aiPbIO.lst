@@ -1,0 +1,817 @@
+ARM GAS  /tmp/ccvuqh8r.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"aiPbIO.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.write_packet,"ax",%progbits
+  18              		.align	1
+  19              		.arch armv7e-m
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	write_packet:
+  26              	.LFB146:
+  27              		.file 1 "X-CUBE-AI/App/aiPbIO.c"
+   1:X-CUBE-AI/App/aiPbIO.c **** /**
+   2:X-CUBE-AI/App/aiPbIO.c ****  ******************************************************************************
+   3:X-CUBE-AI/App/aiPbIO.c ****  * @file    aiPbIO.c
+   4:X-CUBE-AI/App/aiPbIO.c ****  * @author  MCD/AIS Team
+   5:X-CUBE-AI/App/aiPbIO.c ****  * @brief   Low Level ProtoBuffer IO functions for COM stack
+   6:X-CUBE-AI/App/aiPbIO.c ****  ******************************************************************************
+   7:X-CUBE-AI/App/aiPbIO.c ****  * @attention
+   8:X-CUBE-AI/App/aiPbIO.c ****  *
+   9:X-CUBE-AI/App/aiPbIO.c ****  * <h2><center>&copy; Copyright (c) 2019,2021 STMicroelectronics.
+  10:X-CUBE-AI/App/aiPbIO.c ****  * All rights reserved.</center></h2>
+  11:X-CUBE-AI/App/aiPbIO.c ****  *
+  12:X-CUBE-AI/App/aiPbIO.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:X-CUBE-AI/App/aiPbIO.c ****  * the root directory of this software component.
+  14:X-CUBE-AI/App/aiPbIO.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:X-CUBE-AI/App/aiPbIO.c ****  *
+  16:X-CUBE-AI/App/aiPbIO.c ****  ******************************************************************************
+  17:X-CUBE-AI/App/aiPbIO.c ****  */
+  18:X-CUBE-AI/App/aiPbIO.c **** 
+  19:X-CUBE-AI/App/aiPbIO.c **** /*
+  20:X-CUBE-AI/App/aiPbIO.c ****  * Description:
+  21:X-CUBE-AI/App/aiPbIO.c ****  *
+  22:X-CUBE-AI/App/aiPbIO.c ****  * Low-Level IO functions to port the nano PB stack
+  23:X-CUBE-AI/App/aiPbIO.c ****  *
+  24:X-CUBE-AI/App/aiPbIO.c ****  * History:
+  25:X-CUBE-AI/App/aiPbIO.c ****  *  - v1.0 - initial version. Based on a split of the original aiTestUtility.c
+  26:X-CUBE-AI/App/aiPbIO.c ****  *           (v1.4) file previous (aiValidation v3.2)
+  27:X-CUBE-AI/App/aiPbIO.c ****  */
+  28:X-CUBE-AI/App/aiPbIO.c **** 
+  29:X-CUBE-AI/App/aiPbIO.c **** /* System headers */
+  30:X-CUBE-AI/App/aiPbIO.c **** #include <stdint.h>
+  31:X-CUBE-AI/App/aiPbIO.c **** #include <stdlib.h>
+ARM GAS  /tmp/ccvuqh8r.s 			page 2
+
+
+  32:X-CUBE-AI/App/aiPbIO.c **** #include <stdio.h>
+  33:X-CUBE-AI/App/aiPbIO.c **** #include <inttypes.h>
+  34:X-CUBE-AI/App/aiPbIO.c **** #include <string.h>
+  35:X-CUBE-AI/App/aiPbIO.c **** 
+  36:X-CUBE-AI/App/aiPbIO.c **** #include <aiPbIO.h>
+  37:X-CUBE-AI/App/aiPbIO.c **** 
+  38:X-CUBE-AI/App/aiPbIO.c **** #include <aiTestUtility.h>
+  39:X-CUBE-AI/App/aiPbIO.c **** 
+  40:X-CUBE-AI/App/aiPbIO.c **** #include <pb.h>
+  41:X-CUBE-AI/App/aiPbIO.c **** #include <pb_encode.h>
+  42:X-CUBE-AI/App/aiPbIO.c **** #include <pb_decode.h>
+  43:X-CUBE-AI/App/aiPbIO.c **** #include <stm32msg.pb.h>
+  44:X-CUBE-AI/App/aiPbIO.c **** 
+  45:X-CUBE-AI/App/aiPbIO.c **** 
+  46:X-CUBE-AI/App/aiPbIO.c **** #define _PACKET_PAYLOAD_IN_SIZE (EnumLowLevelIO_IO_IN_PACKET_SIZE)
+  47:X-CUBE-AI/App/aiPbIO.c **** 
+  48:X-CUBE-AI/App/aiPbIO.c **** static struct o_packet {
+  49:X-CUBE-AI/App/aiPbIO.c ****   uint8_t pw;
+  50:X-CUBE-AI/App/aiPbIO.c ****   uint8_t payload[_PACKET_PAYLOAD_IN_SIZE];
+  51:X-CUBE-AI/App/aiPbIO.c **** } o_packet;
+  52:X-CUBE-AI/App/aiPbIO.c **** 
+  53:X-CUBE-AI/App/aiPbIO.c **** static bool write_packet(void) {
+  28              		.loc 1 53 32 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  54:X-CUBE-AI/App/aiPbIO.c ****   return ioRawWriteBuffer((uint8_t *)&o_packet, _PACKET_PAYLOAD_IN_SIZE + 1);
+  37              		.loc 1 54 3 view .LVU1
+  38              		.loc 1 54 10 is_stmt 0 view .LVU2
+  39 0002 2121     		movs	r1, #33
+  40 0004 0148     		ldr	r0, .L3
+  41 0006 FFF7FEFF 		bl	ioRawWriteBuffer
+  42              	.LVL0:
+  55:X-CUBE-AI/App/aiPbIO.c **** }
+  43              		.loc 1 55 1 view .LVU3
+  44 000a 08BD     		pop	{r3, pc}
+  45              	.L4:
+  46              		.align	2
+  47              	.L3:
+  48 000c 00000000 		.word	.LANCHOR0
+  49              		.cfi_endproc
+  50              	.LFE146:
+  52              		.section	.text.pb_io_flush_ostream,"ax",%progbits
+  53              		.align	1
+  54              		.global	pb_io_flush_ostream
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  58              		.fpu fpv4-sp-d16
+  60              	pb_io_flush_ostream:
+  61              	.LFB147:
+  56:X-CUBE-AI/App/aiPbIO.c **** 
+ARM GAS  /tmp/ccvuqh8r.s 			page 3
+
+
+  57:X-CUBE-AI/App/aiPbIO.c **** void pb_io_flush_ostream(void)
+  58:X-CUBE-AI/App/aiPbIO.c **** {
+  62              		.loc 1 58 1 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66 0000 10B5     		push	{r4, lr}
+  67              	.LCFI1:
+  68              		.cfi_def_cfa_offset 8
+  69              		.cfi_offset 4, -8
+  70              		.cfi_offset 14, -4
+  59:X-CUBE-AI/App/aiPbIO.c ****   o_packet.pw |= (1 << 7); /* Indicate last packet */
+  71              		.loc 1 59 3 view .LVU5
+  72              		.loc 1 59 15 is_stmt 0 view .LVU6
+  73 0002 054C     		ldr	r4, .L7
+  74 0004 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+  75 0006 63F07F03 		orn	r3, r3, #127
+  76 000a 2370     		strb	r3, [r4]
+  60:X-CUBE-AI/App/aiPbIO.c ****   write_packet();
+  77              		.loc 1 60 3 is_stmt 1 view .LVU7
+  78 000c FFF7FEFF 		bl	write_packet
+  79              	.LVL1:
+  61:X-CUBE-AI/App/aiPbIO.c ****   o_packet.pw = 0;
+  80              		.loc 1 61 3 view .LVU8
+  81              		.loc 1 61 15 is_stmt 0 view .LVU9
+  82 0010 0023     		movs	r3, #0
+  83 0012 2370     		strb	r3, [r4]
+  62:X-CUBE-AI/App/aiPbIO.c **** }
+  84              		.loc 1 62 1 view .LVU10
+  85 0014 10BD     		pop	{r4, pc}
+  86              	.L8:
+  87 0016 00BF     		.align	2
+  88              	.L7:
+  89 0018 00000000 		.word	.LANCHOR0
+  90              		.cfi_endproc
+  91              	.LFE147:
+  93              		.section	.text.write_callback,"ax",%progbits
+  94              		.align	1
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  98              		.fpu fpv4-sp-d16
+ 100              	write_callback:
+ 101              	.LVL2:
+ 102              	.LFB148:
+  63:X-CUBE-AI/App/aiPbIO.c **** 
+  64:X-CUBE-AI/App/aiPbIO.c **** static bool write_callback(pb_ostream_t *stream, const uint8_t *buf,
+  65:X-CUBE-AI/App/aiPbIO.c ****     size_t count)
+  66:X-CUBE-AI/App/aiPbIO.c **** {
+ 103              		.loc 1 66 1 is_stmt 1 view -0
+ 104              		.cfi_startproc
+ 105              		@ args = 0, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107              		.loc 1 66 1 is_stmt 0 view .LVU12
+ 108 0000 70B5     		push	{r4, r5, r6, lr}
+ 109              	.LCFI2:
+ 110              		.cfi_def_cfa_offset 16
+ARM GAS  /tmp/ccvuqh8r.s 			page 4
+
+
+ 111              		.cfi_offset 4, -16
+ 112              		.cfi_offset 5, -12
+ 113              		.cfi_offset 6, -8
+ 114              		.cfi_offset 14, -4
+ 115 0002 0D46     		mov	r5, r1
+ 116 0004 1446     		mov	r4, r2
+  67:X-CUBE-AI/App/aiPbIO.c ****   bool res = true;
+ 117              		.loc 1 67 3 is_stmt 1 view .LVU13
+ 118              	.LVL3:
+  68:X-CUBE-AI/App/aiPbIO.c ****   uint8_t *pr = (uint8_t *)buf;
+ 119              		.loc 1 68 3 view .LVU14
+  69:X-CUBE-AI/App/aiPbIO.c **** 
+  70:X-CUBE-AI/App/aiPbIO.c ****   UNUSED(stream);
+ 120              		.loc 1 70 3 view .LVU15
+  71:X-CUBE-AI/App/aiPbIO.c **** 
+  72:X-CUBE-AI/App/aiPbIO.c ****   while (count) {
+ 121              		.loc 1 72 3 view .LVU16
+  67:X-CUBE-AI/App/aiPbIO.c ****   uint8_t *pr = (uint8_t *)buf;
+ 122              		.loc 1 67 8 is_stmt 0 view .LVU17
+ 123 0006 0120     		movs	r0, #1
+ 124              	.LVL4:
+ 125              		.loc 1 72 9 view .LVU18
+ 126 0008 01E0     		b	.L10
+ 127              	.LVL5:
+ 128              	.L11:
+  73:X-CUBE-AI/App/aiPbIO.c ****     for (; o_packet.pw < _PACKET_PAYLOAD_IN_SIZE && count; o_packet.pw++) {
+  74:X-CUBE-AI/App/aiPbIO.c ****       o_packet.payload[o_packet.pw] = *pr;
+  75:X-CUBE-AI/App/aiPbIO.c ****       pr++;
+  76:X-CUBE-AI/App/aiPbIO.c ****       count--;
+  77:X-CUBE-AI/App/aiPbIO.c ****     }
+  78:X-CUBE-AI/App/aiPbIO.c ****     if (o_packet.pw == _PACKET_PAYLOAD_IN_SIZE) {
+ 129              		.loc 1 78 5 is_stmt 1 view .LVU19
+ 130              		.loc 1 78 8 is_stmt 0 view .LVU20
+ 131 000a 202B     		cmp	r3, #32
+ 132 000c 0FD0     		beq	.L16
+ 133              	.LVL6:
+ 134              	.L10:
+  72:X-CUBE-AI/App/aiPbIO.c ****     for (; o_packet.pw < _PACKET_PAYLOAD_IN_SIZE && count; o_packet.pw++) {
+ 135              		.loc 1 72 9 is_stmt 1 view .LVU21
+ 136 000e A4B1     		cbz	r4, .L17
+ 137              	.L14:
+  73:X-CUBE-AI/App/aiPbIO.c ****     for (; o_packet.pw < _PACKET_PAYLOAD_IN_SIZE && count; o_packet.pw++) {
+ 138              		.loc 1 73 12 discriminator 1 view .LVU22
+  73:X-CUBE-AI/App/aiPbIO.c ****     for (; o_packet.pw < _PACKET_PAYLOAD_IN_SIZE && count; o_packet.pw++) {
+ 139              		.loc 1 73 20 is_stmt 0 discriminator 1 view .LVU23
+ 140 0010 0A4B     		ldr	r3, .L18
+ 141 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  73:X-CUBE-AI/App/aiPbIO.c ****     for (; o_packet.pw < _PACKET_PAYLOAD_IN_SIZE && count; o_packet.pw++) {
+ 142              		.loc 1 73 5 discriminator 1 view .LVU24
+ 143 0014 1F2B     		cmp	r3, #31
+ 144 0016 F8D8     		bhi	.L11
+  73:X-CUBE-AI/App/aiPbIO.c ****     for (; o_packet.pw < _PACKET_PAYLOAD_IN_SIZE && count; o_packet.pw++) {
+ 145              		.loc 1 73 50 discriminator 2 view .LVU25
+ 146 0018 002C     		cmp	r4, #0
+ 147 001a F6D0     		beq	.L11
+  74:X-CUBE-AI/App/aiPbIO.c ****       pr++;
+ 148              		.loc 1 74 7 is_stmt 1 discriminator 3 view .LVU26
+ARM GAS  /tmp/ccvuqh8r.s 			page 5
+
+
+  74:X-CUBE-AI/App/aiPbIO.c ****       pr++;
+ 149              		.loc 1 74 39 is_stmt 0 discriminator 3 view .LVU27
+ 150 001c 15F8016B 		ldrb	r6, [r5], #1	@ zero_extendqisi2
+ 151              	.LVL7:
+  74:X-CUBE-AI/App/aiPbIO.c ****       pr++;
+ 152              		.loc 1 74 37 discriminator 3 view .LVU28
+ 153 0020 064A     		ldr	r2, .L18
+ 154 0022 D118     		adds	r1, r2, r3
+ 155 0024 4E70     		strb	r6, [r1, #1]
+  75:X-CUBE-AI/App/aiPbIO.c ****       count--;
+ 156              		.loc 1 75 7 is_stmt 1 discriminator 3 view .LVU29
+ 157              	.LVL8:
+  76:X-CUBE-AI/App/aiPbIO.c ****     }
+ 158              		.loc 1 76 7 discriminator 3 view .LVU30
+  76:X-CUBE-AI/App/aiPbIO.c ****     }
+ 159              		.loc 1 76 12 is_stmt 0 discriminator 3 view .LVU31
+ 160 0026 013C     		subs	r4, r4, #1
+ 161              	.LVL9:
+  73:X-CUBE-AI/App/aiPbIO.c ****       o_packet.payload[o_packet.pw] = *pr;
+ 162              		.loc 1 73 60 is_stmt 1 discriminator 3 view .LVU32
+  73:X-CUBE-AI/App/aiPbIO.c ****       o_packet.payload[o_packet.pw] = *pr;
+ 163              		.loc 1 73 71 is_stmt 0 discriminator 3 view .LVU33
+ 164 0028 0133     		adds	r3, r3, #1
+ 165 002a 1370     		strb	r3, [r2]
+ 166 002c F0E7     		b	.L14
+ 167              	.L16:
+  79:X-CUBE-AI/App/aiPbIO.c ****       res = write_packet();
+ 168              		.loc 1 79 7 is_stmt 1 view .LVU34
+ 169              		.loc 1 79 13 is_stmt 0 view .LVU35
+ 170 002e FFF7FEFF 		bl	write_packet
+ 171              	.LVL10:
+  80:X-CUBE-AI/App/aiPbIO.c ****       o_packet.pw = 0;
+ 172              		.loc 1 80 7 is_stmt 1 view .LVU36
+ 173              		.loc 1 80 19 is_stmt 0 view .LVU37
+ 174 0032 024B     		ldr	r3, .L18
+ 175 0034 0022     		movs	r2, #0
+ 176 0036 1A70     		strb	r2, [r3]
+ 177 0038 E9E7     		b	.L10
+ 178              	.L17:
+  81:X-CUBE-AI/App/aiPbIO.c ****     }
+  82:X-CUBE-AI/App/aiPbIO.c ****   }
+  83:X-CUBE-AI/App/aiPbIO.c ****   return res;
+  84:X-CUBE-AI/App/aiPbIO.c **** }
+ 179              		.loc 1 84 1 view .LVU38
+ 180 003a 70BD     		pop	{r4, r5, r6, pc}
+ 181              	.LVL11:
+ 182              	.L19:
+ 183              		.loc 1 84 1 view .LVU39
+ 184              		.align	2
+ 185              	.L18:
+ 186 003c 00000000 		.word	.LANCHOR0
+ 187              		.cfi_endproc
+ 188              	.LFE148:
+ 190              		.section	.text.read_packet,"ax",%progbits
+ 191              		.align	1
+ 192              		.syntax unified
+ 193              		.thumb
+ARM GAS  /tmp/ccvuqh8r.s 			page 6
+
+
+ 194              		.thumb_func
+ 195              		.fpu fpv4-sp-d16
+ 197              	read_packet:
+ 198              	.LFB149:
+  85:X-CUBE-AI/App/aiPbIO.c **** 
+  86:X-CUBE-AI/App/aiPbIO.c **** 
+  87:X-CUBE-AI/App/aiPbIO.c **** #define _PACKET_PAYLOAD_OUT_SIZE (EnumLowLevelIO_IO_OUT_PACKET_SIZE)
+  88:X-CUBE-AI/App/aiPbIO.c **** 
+  89:X-CUBE-AI/App/aiPbIO.c **** static struct i_packet {
+  90:X-CUBE-AI/App/aiPbIO.c ****   uint8_t pr;
+  91:X-CUBE-AI/App/aiPbIO.c ****   uint8_t payload[_PACKET_PAYLOAD_OUT_SIZE];
+  92:X-CUBE-AI/App/aiPbIO.c **** } i_packet;
+  93:X-CUBE-AI/App/aiPbIO.c **** 
+  94:X-CUBE-AI/App/aiPbIO.c **** static int i_ridx = 0;
+  95:X-CUBE-AI/App/aiPbIO.c **** 
+  96:X-CUBE-AI/App/aiPbIO.c **** static bool read_packet(void) {
+ 199              		.loc 1 96 31 is_stmt 1 view -0
+ 200              		.cfi_startproc
+ 201              		@ args = 0, pretend = 0, frame = 0
+ 202              		@ frame_needed = 0, uses_anonymous_args = 0
+ 203 0000 08B5     		push	{r3, lr}
+ 204              	.LCFI3:
+ 205              		.cfi_def_cfa_offset 8
+ 206              		.cfi_offset 3, -8
+ 207              		.cfi_offset 14, -4
+  97:X-CUBE-AI/App/aiPbIO.c ****   bool res = ioRawReadBuffer((uint8_t *)&i_packet,
+ 208              		.loc 1 97 3 view .LVU41
+ 209              		.loc 1 97 14 is_stmt 0 view .LVU42
+ 210 0002 2121     		movs	r1, #33
+ 211 0004 0348     		ldr	r0, .L22
+ 212 0006 FFF7FEFF 		bl	ioRawReadBuffer
+ 213              	.LVL12:
+  98:X-CUBE-AI/App/aiPbIO.c ****       _PACKET_PAYLOAD_OUT_SIZE + 1);
+  99:X-CUBE-AI/App/aiPbIO.c ****   i_ridx = 0;
+ 214              		.loc 1 99 3 is_stmt 1 view .LVU43
+ 215              		.loc 1 99 10 is_stmt 0 view .LVU44
+ 216 000a 034B     		ldr	r3, .L22+4
+ 217 000c 0022     		movs	r2, #0
+ 218 000e 1A60     		str	r2, [r3]
+ 100:X-CUBE-AI/App/aiPbIO.c ****   return res;
+ 219              		.loc 1 100 3 is_stmt 1 view .LVU45
+ 101:X-CUBE-AI/App/aiPbIO.c **** }
+ 220              		.loc 1 101 1 is_stmt 0 view .LVU46
+ 221 0010 08BD     		pop	{r3, pc}
+ 222              	.L23:
+ 223 0012 00BF     		.align	2
+ 224              	.L22:
+ 225 0014 00000000 		.word	.LANCHOR1
+ 226 0018 00000000 		.word	.LANCHOR2
+ 227              		.cfi_endproc
+ 228              	.LFE149:
+ 230              		.section	.text.pb_io_flush_istream,"ax",%progbits
+ 231              		.align	1
+ 232              		.global	pb_io_flush_istream
+ 233              		.syntax unified
+ 234              		.thumb
+ 235              		.thumb_func
+ARM GAS  /tmp/ccvuqh8r.s 			page 7
+
+
+ 236              		.fpu fpv4-sp-d16
+ 238              	pb_io_flush_istream:
+ 239              	.LFB150:
+ 102:X-CUBE-AI/App/aiPbIO.c **** 
+ 103:X-CUBE-AI/App/aiPbIO.c **** void pb_io_flush_istream(void)
+ 104:X-CUBE-AI/App/aiPbIO.c **** {
+ 240              		.loc 1 104 1 is_stmt 1 view -0
+ 241              		.cfi_startproc
+ 242              		@ args = 0, pretend = 0, frame = 0
+ 243              		@ frame_needed = 0, uses_anonymous_args = 0
+ 244              		@ link register save eliminated.
+ 105:X-CUBE-AI/App/aiPbIO.c ****   i_packet.pr = 0xFF;
+ 245              		.loc 1 105 3 view .LVU48
+ 246              		.loc 1 105 15 is_stmt 0 view .LVU49
+ 247 0000 034B     		ldr	r3, .L25
+ 248 0002 FF22     		movs	r2, #255
+ 249 0004 1A70     		strb	r2, [r3]
+ 106:X-CUBE-AI/App/aiPbIO.c ****   i_ridx = 0;
+ 250              		.loc 1 106 3 is_stmt 1 view .LVU50
+ 251              		.loc 1 106 10 is_stmt 0 view .LVU51
+ 252 0006 034B     		ldr	r3, .L25+4
+ 253 0008 0022     		movs	r2, #0
+ 254 000a 1A60     		str	r2, [r3]
+ 107:X-CUBE-AI/App/aiPbIO.c **** }
+ 255              		.loc 1 107 1 view .LVU52
+ 256 000c 7047     		bx	lr
+ 257              	.L26:
+ 258 000e 00BF     		.align	2
+ 259              	.L25:
+ 260 0010 00000000 		.word	.LANCHOR1
+ 261 0014 00000000 		.word	.LANCHOR2
+ 262              		.cfi_endproc
+ 263              	.LFE150:
+ 265              		.section	.text.read_callback,"ax",%progbits
+ 266              		.align	1
+ 267              		.syntax unified
+ 268              		.thumb
+ 269              		.thumb_func
+ 270              		.fpu fpv4-sp-d16
+ 272              	read_callback:
+ 273              	.LVL13:
+ 274              	.LFB151:
+ 108:X-CUBE-AI/App/aiPbIO.c **** 
+ 109:X-CUBE-AI/App/aiPbIO.c **** static bool read_callback(pb_istream_t *stream, uint8_t *buf, size_t count)
+ 110:X-CUBE-AI/App/aiPbIO.c **** {
+ 275              		.loc 1 110 1 is_stmt 1 view -0
+ 276              		.cfi_startproc
+ 277              		@ args = 0, pretend = 0, frame = 8
+ 278              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279              		.loc 1 110 1 is_stmt 0 view .LVU54
+ 280 0000 70B5     		push	{r4, r5, r6, lr}
+ 281              	.LCFI4:
+ 282              		.cfi_def_cfa_offset 16
+ 283              		.cfi_offset 4, -16
+ 284              		.cfi_offset 5, -12
+ 285              		.cfi_offset 6, -8
+ 286              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccvuqh8r.s 			page 8
+
+
+ 287 0002 82B0     		sub	sp, sp, #8
+ 288              	.LCFI5:
+ 289              		.cfi_def_cfa_offset 24
+ 111:X-CUBE-AI/App/aiPbIO.c ****   bool res = true;
+ 290              		.loc 1 111 3 is_stmt 1 view .LVU55
+ 291              	.LVL14:
+ 112:X-CUBE-AI/App/aiPbIO.c ****   uint8_t *pw = (uint8_t *)buf;
+ 292              		.loc 1 112 3 view .LVU56
+ 113:X-CUBE-AI/App/aiPbIO.c **** 
+ 114:X-CUBE-AI/App/aiPbIO.c ****   UNUSED(stream);
+ 293              		.loc 1 114 3 view .LVU57
+ 115:X-CUBE-AI/App/aiPbIO.c **** 
+ 116:X-CUBE-AI/App/aiPbIO.c ****   if (count == 0)
+ 294              		.loc 1 116 3 view .LVU58
+ 295              		.loc 1 116 6 is_stmt 0 view .LVU59
+ 296 0004 72B3     		cbz	r2, .L35
+ 297 0006 0D46     		mov	r5, r1
+ 298 0008 1446     		mov	r4, r2
+ 117:X-CUBE-AI/App/aiPbIO.c ****     return true;
+ 118:X-CUBE-AI/App/aiPbIO.c **** 
+ 119:X-CUBE-AI/App/aiPbIO.c ****   if (i_packet.pr == 0xFF)
+ 299              		.loc 1 119 3 is_stmt 1 view .LVU60
+ 300              		.loc 1 119 15 is_stmt 0 view .LVU61
+ 301 000a 184B     		ldr	r3, .L40
+ 302 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 303              		.loc 1 119 6 view .LVU62
+ 304 000e FF2B     		cmp	r3, #255
+ 305 0010 01D0     		beq	.L38
+ 111:X-CUBE-AI/App/aiPbIO.c ****   uint8_t *pw = (uint8_t *)buf;
+ 306              		.loc 1 111 8 view .LVU63
+ 307 0012 0126     		movs	r6, #1
+ 308              	.LVL15:
+ 111:X-CUBE-AI/App/aiPbIO.c ****   uint8_t *pw = (uint8_t *)buf;
+ 309              		.loc 1 111 8 view .LVU64
+ 310 0014 06E0     		b	.L33
+ 311              	.LVL16:
+ 312              	.L38:
+ 120:X-CUBE-AI/App/aiPbIO.c ****     res = read_packet();
+ 313              		.loc 1 120 5 is_stmt 1 view .LVU65
+ 314              		.loc 1 120 11 is_stmt 0 view .LVU66
+ 315 0016 FFF7FEFF 		bl	read_packet
+ 316              	.LVL17:
+ 121:X-CUBE-AI/App/aiPbIO.c **** 
+ 122:X-CUBE-AI/App/aiPbIO.c ****   if (res == false)
+ 317              		.loc 1 122 3 is_stmt 1 view .LVU67
+ 318              		.loc 1 122 6 is_stmt 0 view .LVU68
+ 319 001a 0646     		mov	r6, r0
+ 320 001c 10B9     		cbnz	r0, .L33
+ 321 001e 22E0     		b	.L28
+ 322              	.LVL18:
+ 323              	.L30:
+ 123:X-CUBE-AI/App/aiPbIO.c ****     return res;
+ 124:X-CUBE-AI/App/aiPbIO.c **** 
+ 125:X-CUBE-AI/App/aiPbIO.c ****   while (count) {
+ 126:X-CUBE-AI/App/aiPbIO.c ****     for (; i_packet.pr > 0 && count; i_packet.pr--) {
+ 127:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 128:X-CUBE-AI/App/aiPbIO.c ****       pw++;
+ARM GAS  /tmp/ccvuqh8r.s 			page 9
+
+
+ 129:X-CUBE-AI/App/aiPbIO.c ****       count--;
+ 130:X-CUBE-AI/App/aiPbIO.c ****       i_ridx++;
+ 131:X-CUBE-AI/App/aiPbIO.c ****     }
+ 132:X-CUBE-AI/App/aiPbIO.c ****     if (count && i_packet.pr == 0) {
+ 324              		.loc 1 132 5 is_stmt 1 view .LVU69
+ 325              		.loc 1 132 8 is_stmt 0 view .LVU70
+ 326 0020 04B1     		cbz	r4, .L33
+ 327              		.loc 1 132 15 discriminator 1 view .LVU71
+ 328 0022 A3B1     		cbz	r3, .L39
+ 329              	.LVL19:
+ 330              	.L33:
+ 125:X-CUBE-AI/App/aiPbIO.c ****     for (; i_packet.pr > 0 && count; i_packet.pr--) {
+ 331              		.loc 1 125 9 is_stmt 1 view .LVU72
+ 332 0024 FCB1     		cbz	r4, .L28
+ 333              	.L34:
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 334              		.loc 1 126 12 discriminator 1 view .LVU73
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 335              		.loc 1 126 20 is_stmt 0 discriminator 1 view .LVU74
+ 336 0026 114B     		ldr	r3, .L40
+ 337 0028 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 338              		.loc 1 126 5 discriminator 1 view .LVU75
+ 339 002a 002B     		cmp	r3, #0
+ 340 002c F8D0     		beq	.L30
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 341              		.loc 1 126 28 discriminator 2 view .LVU76
+ 342 002e 002C     		cmp	r4, #0
+ 343 0030 F6D0     		beq	.L30
+ 127:X-CUBE-AI/App/aiPbIO.c ****       pw++;
+ 344              		.loc 1 127 7 is_stmt 1 discriminator 3 view .LVU77
+ 127:X-CUBE-AI/App/aiPbIO.c ****       pw++;
+ 345              		.loc 1 127 29 is_stmt 0 discriminator 3 view .LVU78
+ 346 0032 0F49     		ldr	r1, .L40+4
+ 347 0034 0B68     		ldr	r3, [r1]
+ 348 0036 0D4A     		ldr	r2, .L40
+ 349 0038 D018     		adds	r0, r2, r3
+ 350 003a 4078     		ldrb	r0, [r0, #1]	@ zero_extendqisi2
+ 127:X-CUBE-AI/App/aiPbIO.c ****       pw++;
+ 351              		.loc 1 127 11 discriminator 3 view .LVU79
+ 352 003c 05F8010B 		strb	r0, [r5], #1
+ 353              	.LVL20:
+ 128:X-CUBE-AI/App/aiPbIO.c ****       count--;
+ 354              		.loc 1 128 7 is_stmt 1 discriminator 3 view .LVU80
+ 129:X-CUBE-AI/App/aiPbIO.c ****       i_ridx++;
+ 355              		.loc 1 129 7 discriminator 3 view .LVU81
+ 129:X-CUBE-AI/App/aiPbIO.c ****       i_ridx++;
+ 356              		.loc 1 129 12 is_stmt 0 discriminator 3 view .LVU82
+ 357 0040 013C     		subs	r4, r4, #1
+ 358              	.LVL21:
+ 130:X-CUBE-AI/App/aiPbIO.c ****     }
+ 359              		.loc 1 130 7 is_stmt 1 discriminator 3 view .LVU83
+ 130:X-CUBE-AI/App/aiPbIO.c ****     }
+ 360              		.loc 1 130 13 is_stmt 0 discriminator 3 view .LVU84
+ 361 0042 0133     		adds	r3, r3, #1
+ 362 0044 0B60     		str	r3, [r1]
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ARM GAS  /tmp/ccvuqh8r.s 			page 10
+
+
+ 363              		.loc 1 126 38 is_stmt 1 discriminator 3 view .LVU85
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 364              		.loc 1 126 46 is_stmt 0 discriminator 3 view .LVU86
+ 365 0046 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 126:X-CUBE-AI/App/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 366              		.loc 1 126 49 discriminator 3 view .LVU87
+ 367 0048 013B     		subs	r3, r3, #1
+ 368 004a 1370     		strb	r3, [r2]
+ 369 004c EBE7     		b	.L34
+ 370              	.L39:
+ 371              	.LBB2:
+ 133:X-CUBE-AI/App/aiPbIO.c ****       uint8_t sync = 0xAA;
+ 372              		.loc 1 133 7 is_stmt 1 view .LVU88
+ 373              		.loc 1 133 15 is_stmt 0 view .LVU89
+ 374 004e AA23     		movs	r3, #170
+ 375 0050 8DF80730 		strb	r3, [sp, #7]
+ 134:X-CUBE-AI/App/aiPbIO.c ****       ioRawWriteBuffer(&sync, 1);
+ 376              		.loc 1 134 7 is_stmt 1 view .LVU90
+ 377 0054 0121     		movs	r1, #1
+ 378 0056 0DF10700 		add	r0, sp, #7
+ 379 005a FFF7FEFF 		bl	ioRawWriteBuffer
+ 380              	.LVL22:
+ 135:X-CUBE-AI/App/aiPbIO.c ****       read_packet();
+ 381              		.loc 1 135 7 view .LVU91
+ 382 005e FFF7FEFF 		bl	read_packet
+ 383              	.LVL23:
+ 384 0062 DFE7     		b	.L33
+ 385              	.LVL24:
+ 386              	.L35:
+ 387              		.loc 1 135 7 is_stmt 0 view .LVU92
+ 388              	.LBE2:
+ 117:X-CUBE-AI/App/aiPbIO.c **** 
+ 389              		.loc 1 117 12 view .LVU93
+ 390 0064 0126     		movs	r6, #1
+ 391              	.LVL25:
+ 392              	.L28:
+ 136:X-CUBE-AI/App/aiPbIO.c ****     }
+ 137:X-CUBE-AI/App/aiPbIO.c ****   }
+ 138:X-CUBE-AI/App/aiPbIO.c **** 
+ 139:X-CUBE-AI/App/aiPbIO.c ****   return res;
+ 140:X-CUBE-AI/App/aiPbIO.c **** }
+ 393              		.loc 1 140 1 view .LVU94
+ 394 0066 3046     		mov	r0, r6
+ 395 0068 02B0     		add	sp, sp, #8
+ 396              	.LCFI6:
+ 397              		.cfi_def_cfa_offset 16
+ 398              		@ sp needed
+ 399 006a 70BD     		pop	{r4, r5, r6, pc}
+ 400              	.L41:
+ 401              		.align	2
+ 402              	.L40:
+ 403 006c 00000000 		.word	.LANCHOR1
+ 404 0070 00000000 		.word	.LANCHOR2
+ 405              		.cfi_endproc
+ 406              	.LFE151:
+ 408              		.section	.text.pb_io_ostream,"ax",%progbits
+ 409              		.align	1
+ARM GAS  /tmp/ccvuqh8r.s 			page 11
+
+
+ 410              		.global	pb_io_ostream
+ 411              		.syntax unified
+ 412              		.thumb
+ 413              		.thumb_func
+ 414              		.fpu fpv4-sp-d16
+ 416              	pb_io_ostream:
+ 417              	.LVL26:
+ 418              	.LFB152:
+ 141:X-CUBE-AI/App/aiPbIO.c **** 
+ 142:X-CUBE-AI/App/aiPbIO.c **** pb_ostream_t pb_io_ostream(int fd)
+ 143:X-CUBE-AI/App/aiPbIO.c **** {
+ 419              		.loc 1 143 1 is_stmt 1 view -0
+ 420              		.cfi_startproc
+ 421              		@ args = 0, pretend = 0, frame = 0
+ 422              		@ frame_needed = 0, uses_anonymous_args = 0
+ 423              		@ link register save eliminated.
+ 424              		.loc 1 143 1 is_stmt 0 view .LVU96
+ 425 0000 10B4     		push	{r4}
+ 426              	.LCFI7:
+ 427              		.cfi_def_cfa_offset 4
+ 428              		.cfi_offset 4, -4
+ 144:X-CUBE-AI/App/aiPbIO.c ****   pb_ostream_t stream = {&write_callback, (void*)(intptr_t)fd, SIZE_MAX, 0};
+ 429              		.loc 1 144 3 is_stmt 1 view .LVU97
+ 430              		.loc 1 144 16 is_stmt 0 view .LVU98
+ 431 0002 0022     		movs	r2, #0
+ 432 0004 C260     		str	r2, [r0, #12]
+ 433 0006 0261     		str	r2, [r0, #16]
+ 434 0008 044A     		ldr	r2, .L44
+ 435 000a 0260     		str	r2, [r0]
+ 436 000c 4160     		str	r1, [r0, #4]
+ 437 000e 4FF0FF32 		mov	r2, #-1
+ 438 0012 8260     		str	r2, [r0, #8]
+ 145:X-CUBE-AI/App/aiPbIO.c ****   return stream;
+ 439              		.loc 1 145 3 is_stmt 1 view .LVU99
+ 146:X-CUBE-AI/App/aiPbIO.c **** }
+ 440              		.loc 1 146 1 is_stmt 0 view .LVU100
+ 441 0014 5DF8044B 		ldr	r4, [sp], #4
+ 442              	.LCFI8:
+ 443              		.cfi_restore 4
+ 444              		.cfi_def_cfa_offset 0
+ 445 0018 7047     		bx	lr
+ 446              	.L45:
+ 447 001a 00BF     		.align	2
+ 448              	.L44:
+ 449 001c 00000000 		.word	write_callback
+ 450              		.cfi_endproc
+ 451              	.LFE152:
+ 453              		.section	.text.pb_io_istream,"ax",%progbits
+ 454              		.align	1
+ 455              		.global	pb_io_istream
+ 456              		.syntax unified
+ 457              		.thumb
+ 458              		.thumb_func
+ 459              		.fpu fpv4-sp-d16
+ 461              	pb_io_istream:
+ 462              	.LVL27:
+ 463              	.LFB153:
+ARM GAS  /tmp/ccvuqh8r.s 			page 12
+
+
+ 147:X-CUBE-AI/App/aiPbIO.c **** 
+ 148:X-CUBE-AI/App/aiPbIO.c **** pb_istream_t pb_io_istream(int fd)
+ 149:X-CUBE-AI/App/aiPbIO.c **** {
+ 464              		.loc 1 149 1 is_stmt 1 view -0
+ 465              		.cfi_startproc
+ 466              		@ args = 0, pretend = 0, frame = 0
+ 467              		@ frame_needed = 0, uses_anonymous_args = 0
+ 468              		@ link register save eliminated.
+ 150:X-CUBE-AI/App/aiPbIO.c ****   pb_istream_t stream = {&read_callback, (void*)(intptr_t)fd, SIZE_MAX};
+ 469              		.loc 1 150 3 view .LVU102
+ 470              		.loc 1 150 16 is_stmt 0 view .LVU103
+ 471 0000 0022     		movs	r2, #0
+ 472 0002 C260     		str	r2, [r0, #12]
+ 473 0004 034A     		ldr	r2, .L47
+ 474 0006 0260     		str	r2, [r0]
+ 475 0008 4160     		str	r1, [r0, #4]
+ 476 000a 4FF0FF32 		mov	r2, #-1
+ 477 000e 8260     		str	r2, [r0, #8]
+ 151:X-CUBE-AI/App/aiPbIO.c ****   return stream;
+ 478              		.loc 1 151 3 is_stmt 1 view .LVU104
+ 152:X-CUBE-AI/App/aiPbIO.c **** }
+ 479              		.loc 1 152 1 is_stmt 0 view .LVU105
+ 480 0010 7047     		bx	lr
+ 481              	.L48:
+ 482 0012 00BF     		.align	2
+ 483              	.L47:
+ 484 0014 00000000 		.word	read_callback
+ 485              		.cfi_endproc
+ 486              	.LFE153:
+ 488              		.section	.text.pb_io_stream_init,"ax",%progbits
+ 489              		.align	1
+ 490              		.global	pb_io_stream_init
+ 491              		.syntax unified
+ 492              		.thumb
+ 493              		.thumb_func
+ 494              		.fpu fpv4-sp-d16
+ 496              	pb_io_stream_init:
+ 497              	.LFB154:
+ 153:X-CUBE-AI/App/aiPbIO.c **** 
+ 154:X-CUBE-AI/App/aiPbIO.c **** int pb_io_stream_init(void)
+ 155:X-CUBE-AI/App/aiPbIO.c **** {
+ 498              		.loc 1 155 1 is_stmt 1 view -0
+ 499              		.cfi_startproc
+ 500              		@ args = 0, pretend = 0, frame = 0
+ 501              		@ frame_needed = 0, uses_anonymous_args = 0
+ 502 0000 08B5     		push	{r3, lr}
+ 503              	.LCFI9:
+ 504              		.cfi_def_cfa_offset 8
+ 505              		.cfi_offset 3, -8
+ 506              		.cfi_offset 14, -4
+ 156:X-CUBE-AI/App/aiPbIO.c ****   ioRawDisableLLWrite();
+ 507              		.loc 1 156 3 view .LVU107
+ 508 0002 FFF7FEFF 		bl	ioRawDisableLLWrite
+ 509              	.LVL28:
+ 157:X-CUBE-AI/App/aiPbIO.c ****   return 0;
+ 510              		.loc 1 157 3 view .LVU108
+ 158:X-CUBE-AI/App/aiPbIO.c **** }
+ARM GAS  /tmp/ccvuqh8r.s 			page 13
+
+
+ 511              		.loc 1 158 1 is_stmt 0 view .LVU109
+ 512 0006 0020     		movs	r0, #0
+ 513 0008 08BD     		pop	{r3, pc}
+ 514              		.cfi_endproc
+ 515              	.LFE154:
+ 517              		.section	.bss.i_packet,"aw",%nobits
+ 518              		.align	2
+ 519              		.set	.LANCHOR1,. + 0
+ 522              	i_packet:
+ 523 0000 00000000 		.space	33
+ 523      00000000 
+ 523      00000000 
+ 523      00000000 
+ 523      00000000 
+ 524              		.section	.bss.i_ridx,"aw",%nobits
+ 525              		.align	2
+ 526              		.set	.LANCHOR2,. + 0
+ 529              	i_ridx:
+ 530 0000 00000000 		.space	4
+ 531              		.section	.bss.o_packet,"aw",%nobits
+ 532              		.align	2
+ 533              		.set	.LANCHOR0,. + 0
+ 536              	o_packet:
+ 537 0000 00000000 		.space	33
+ 537      00000000 
+ 537      00000000 
+ 537      00000000 
+ 537      00000000 
+ 538              		.text
+ 539              	.Letext0:
+ 540              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 541              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 542              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 543              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 544              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 545              		.file 7 "/usr/include/newlib/stdlib.h"
+ 546              		.file 8 "X-CUBE-AI/App/pb.h"
+ 547              		.file 9 "X-CUBE-AI/App/pb_decode.h"
+ 548              		.file 10 "X-CUBE-AI/App/pb_encode.h"
+ 549              		.file 11 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/core_cm4.h"
+ 550              		.file 12 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h"
+ 551              		.file 13 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4r5xx.h"
+ 552              		.file 14 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h"
+ 553              		.file 15 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h"
+ 554              		.file 16 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h"
+ 555              		.file 17 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h"
+ 556              		.file 18 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h"
+ 557              		.file 19 "Middlewares/ST/AI/Inc/ai_platform.h"
+ 558              		.file 20 "X-CUBE-AI/App/app_x-cube-ai.h"
+ 559              		.file 21 "X-CUBE-AI/App/ai_device_adaptor.h"
+ 560              		.file 22 "X-CUBE-AI/App/aiTestUtility.h"
+ 561              		.file 23 "X-CUBE-AI/App/stm32msg.pb.h"
+ARM GAS  /tmp/ccvuqh8r.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 aiPbIO.c
+     /tmp/ccvuqh8r.s:18     .text.write_packet:0000000000000000 $t
+     /tmp/ccvuqh8r.s:25     .text.write_packet:0000000000000000 write_packet
+     /tmp/ccvuqh8r.s:48     .text.write_packet:000000000000000c $d
+     /tmp/ccvuqh8r.s:53     .text.pb_io_flush_ostream:0000000000000000 $t
+     /tmp/ccvuqh8r.s:60     .text.pb_io_flush_ostream:0000000000000000 pb_io_flush_ostream
+     /tmp/ccvuqh8r.s:89     .text.pb_io_flush_ostream:0000000000000018 $d
+     /tmp/ccvuqh8r.s:94     .text.write_callback:0000000000000000 $t
+     /tmp/ccvuqh8r.s:100    .text.write_callback:0000000000000000 write_callback
+     /tmp/ccvuqh8r.s:186    .text.write_callback:000000000000003c $d
+     /tmp/ccvuqh8r.s:191    .text.read_packet:0000000000000000 $t
+     /tmp/ccvuqh8r.s:197    .text.read_packet:0000000000000000 read_packet
+     /tmp/ccvuqh8r.s:225    .text.read_packet:0000000000000014 $d
+     /tmp/ccvuqh8r.s:231    .text.pb_io_flush_istream:0000000000000000 $t
+     /tmp/ccvuqh8r.s:238    .text.pb_io_flush_istream:0000000000000000 pb_io_flush_istream
+     /tmp/ccvuqh8r.s:260    .text.pb_io_flush_istream:0000000000000010 $d
+     /tmp/ccvuqh8r.s:266    .text.read_callback:0000000000000000 $t
+     /tmp/ccvuqh8r.s:272    .text.read_callback:0000000000000000 read_callback
+     /tmp/ccvuqh8r.s:403    .text.read_callback:000000000000006c $d
+     /tmp/ccvuqh8r.s:409    .text.pb_io_ostream:0000000000000000 $t
+     /tmp/ccvuqh8r.s:416    .text.pb_io_ostream:0000000000000000 pb_io_ostream
+     /tmp/ccvuqh8r.s:449    .text.pb_io_ostream:000000000000001c $d
+     /tmp/ccvuqh8r.s:454    .text.pb_io_istream:0000000000000000 $t
+     /tmp/ccvuqh8r.s:461    .text.pb_io_istream:0000000000000000 pb_io_istream
+     /tmp/ccvuqh8r.s:484    .text.pb_io_istream:0000000000000014 $d
+     /tmp/ccvuqh8r.s:489    .text.pb_io_stream_init:0000000000000000 $t
+     /tmp/ccvuqh8r.s:496    .text.pb_io_stream_init:0000000000000000 pb_io_stream_init
+     /tmp/ccvuqh8r.s:518    .bss.i_packet:0000000000000000 $d
+     /tmp/ccvuqh8r.s:522    .bss.i_packet:0000000000000000 i_packet
+     /tmp/ccvuqh8r.s:525    .bss.i_ridx:0000000000000000 $d
+     /tmp/ccvuqh8r.s:529    .bss.i_ridx:0000000000000000 i_ridx
+     /tmp/ccvuqh8r.s:532    .bss.o_packet:0000000000000000 $d
+     /tmp/ccvuqh8r.s:536    .bss.o_packet:0000000000000000 o_packet
+
+UNDEFINED SYMBOLS
+ioRawWriteBuffer
+ioRawReadBuffer
+ioRawDisableLLWrite

@@ -1,0 +1,2521 @@
+ARM GAS  /tmp/ccjDkIVL.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"aiPbMgr.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.encode_uint32,"ax",%progbits
+  18              		.align	1
+  19              		.global	encode_uint32
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	encode_uint32:
+  27              	.LVL0:
+  28              	.LFB110:
+  29              		.file 1 "X-CUBE-AI/App/aiPbMgr.c"
+   1:X-CUBE-AI/App/aiPbMgr.c **** /**
+   2:X-CUBE-AI/App/aiPbMgr.c ****  ******************************************************************************
+   3:X-CUBE-AI/App/aiPbMgr.c ****  * @file    aiPbMgr.c
+   4:X-CUBE-AI/App/aiPbMgr.c ****  * @author  MCD/AIS Team
+   5:X-CUBE-AI/App/aiPbMgr.c ****  * @brief   Helper function for AI ProtoBuffer support
+   6:X-CUBE-AI/App/aiPbMgr.c ****  ******************************************************************************
+   7:X-CUBE-AI/App/aiPbMgr.c ****  * @attention
+   8:X-CUBE-AI/App/aiPbMgr.c ****  *
+   9:X-CUBE-AI/App/aiPbMgr.c ****  * <h2><center>&copy; Copyright (c) 2019,2021 STMicroelectronics.
+  10:X-CUBE-AI/App/aiPbMgr.c ****  * All rights reserved.</center></h2>
+  11:X-CUBE-AI/App/aiPbMgr.c ****  *
+  12:X-CUBE-AI/App/aiPbMgr.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:X-CUBE-AI/App/aiPbMgr.c ****  * the root directory of this software component.
+  14:X-CUBE-AI/App/aiPbMgr.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:X-CUBE-AI/App/aiPbMgr.c ****  *
+  16:X-CUBE-AI/App/aiPbMgr.c ****  ******************************************************************************
+  17:X-CUBE-AI/App/aiPbMgr.c ****  */
+  18:X-CUBE-AI/App/aiPbMgr.c **** 
+  19:X-CUBE-AI/App/aiPbMgr.c **** /*
+  20:X-CUBE-AI/App/aiPbMgr.c ****  *
+  21:X-CUBE-AI/App/aiPbMgr.c ****  * History:
+  22:X-CUBE-AI/App/aiPbMgr.c ****  *  - v3.0: ProtoBuffer MSG definition 3.0
+  23:X-CUBE-AI/App/aiPbMgr.c ****  */
+  24:X-CUBE-AI/App/aiPbMgr.c **** 
+  25:X-CUBE-AI/App/aiPbMgr.c **** #include <aiPbMgr.h>
+  26:X-CUBE-AI/App/aiPbMgr.c **** #include <aiPbIO.h>
+  27:X-CUBE-AI/App/aiPbMgr.c **** 
+  28:X-CUBE-AI/App/aiPbMgr.c **** #include <pb_encode.h>
+  29:X-CUBE-AI/App/aiPbMgr.c **** #include <pb_decode.h>
+ARM GAS  /tmp/ccjDkIVL.s 			page 2
+
+
+  30:X-CUBE-AI/App/aiPbMgr.c **** 
+  31:X-CUBE-AI/App/aiPbMgr.c **** #define _NO_DEVICE_PORT_FUNC         /* to import only the specific TOOLS macros, no device port fu
+  32:X-CUBE-AI/App/aiPbMgr.c **** #include <ai_device_adaptor.h>
+  33:X-CUBE-AI/App/aiPbMgr.c **** 
+  34:X-CUBE-AI/App/aiPbMgr.c **** #ifndef UNUSED
+  35:X-CUBE-AI/App/aiPbMgr.c **** #define UNUSED(x) ((void)(x))
+  36:X-CUBE-AI/App/aiPbMgr.c **** #endif
+  37:X-CUBE-AI/App/aiPbMgr.c **** 
+  38:X-CUBE-AI/App/aiPbMgr.c **** /*---------------------------------------------------------------------------*/
+  39:X-CUBE-AI/App/aiPbMgr.c **** /* Nanopb stack initialization & manager                                     */
+  40:X-CUBE-AI/App/aiPbMgr.c **** /*---------------------------------------------------------------------------*/
+  41:X-CUBE-AI/App/aiPbMgr.c **** 
+  42:X-CUBE-AI/App/aiPbMgr.c **** typedef enum _pbMmgState {
+  43:X-CUBE-AI/App/aiPbMgr.c ****   PB_MGR_NOT_INITIALIZED = 0,
+  44:X-CUBE-AI/App/aiPbMgr.c ****   PB_MGR_READY = 1,
+  45:X-CUBE-AI/App/aiPbMgr.c ****   PB_MGR_ON_GOING = 2,
+  46:X-CUBE-AI/App/aiPbMgr.c **** } pbMgrState;
+  47:X-CUBE-AI/App/aiPbMgr.c **** 
+  48:X-CUBE-AI/App/aiPbMgr.c **** static struct pbContextMgr {
+  49:X-CUBE-AI/App/aiPbMgr.c ****   pb_istream_t input;
+  50:X-CUBE-AI/App/aiPbMgr.c ****   pb_ostream_t output;
+  51:X-CUBE-AI/App/aiPbMgr.c ****   const aiPbCmdFunc *funcs;
+  52:X-CUBE-AI/App/aiPbMgr.c ****   uint32_t  n_func;
+  53:X-CUBE-AI/App/aiPbMgr.c ****   reqMsg  req;
+  54:X-CUBE-AI/App/aiPbMgr.c ****   respMsg resp;
+  55:X-CUBE-AI/App/aiPbMgr.c ****   pbMgrState state;
+  56:X-CUBE-AI/App/aiPbMgr.c **** } pbContextMgr;
+  57:X-CUBE-AI/App/aiPbMgr.c **** 
+  58:X-CUBE-AI/App/aiPbMgr.c **** void aiPbMgrInit(const aiPbCmdFunc *funcs)
+  59:X-CUBE-AI/App/aiPbMgr.c **** {
+  60:X-CUBE-AI/App/aiPbMgr.c ****   const aiPbCmdFunc *cfunc;
+  61:X-CUBE-AI/App/aiPbMgr.c **** 
+  62:X-CUBE-AI/App/aiPbMgr.c ****   memset(&pbContextMgr, 0, sizeof(struct pbContextMgr));
+  63:X-CUBE-AI/App/aiPbMgr.c **** 
+  64:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_stream_init();
+  65:X-CUBE-AI/App/aiPbMgr.c **** 
+  66:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.input = pb_io_istream(0);
+  67:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.output = pb_io_ostream(0);
+  68:X-CUBE-AI/App/aiPbMgr.c **** 
+  69:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.n_func = 0;
+  70:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.funcs = NULL;
+  71:X-CUBE-AI/App/aiPbMgr.c **** 
+  72:X-CUBE-AI/App/aiPbMgr.c ****   if (funcs) {
+  73:X-CUBE-AI/App/aiPbMgr.c ****     cfunc = funcs;
+  74:X-CUBE-AI/App/aiPbMgr.c ****     while (cfunc->process) {
+  75:X-CUBE-AI/App/aiPbMgr.c ****       pbContextMgr.n_func++;
+  76:X-CUBE-AI/App/aiPbMgr.c ****       cfunc++;
+  77:X-CUBE-AI/App/aiPbMgr.c ****     }
+  78:X-CUBE-AI/App/aiPbMgr.c ****     pbContextMgr.funcs = funcs;
+  79:X-CUBE-AI/App/aiPbMgr.c ****   }
+  80:X-CUBE-AI/App/aiPbMgr.c **** 
+  81:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.state = PB_MGR_READY;
+  82:X-CUBE-AI/App/aiPbMgr.c **** }
+  83:X-CUBE-AI/App/aiPbMgr.c **** 
+  84:X-CUBE-AI/App/aiPbMgr.c **** int aiPbMgrWaitAndProcess(void)
+  85:X-CUBE-AI/App/aiPbMgr.c **** {
+  86:X-CUBE-AI/App/aiPbMgr.c ****   uint32_t idx;
+ARM GAS  /tmp/ccjDkIVL.s 			page 3
+
+
+  87:X-CUBE-AI/App/aiPbMgr.c ****   const aiPbCmdFunc *cfunc;
+  88:X-CUBE-AI/App/aiPbMgr.c **** 
+  89:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_istream();
+  90:X-CUBE-AI/App/aiPbMgr.c ****   if (pb_decode_delimited(&pbContextMgr.input, reqMsg_fields, &(pbContextMgr.req))) {
+  91:X-CUBE-AI/App/aiPbMgr.c ****     pb_io_flush_istream();
+  92:X-CUBE-AI/App/aiPbMgr.c ****     pbContextMgr.state = PB_MGR_ON_GOING;
+  93:X-CUBE-AI/App/aiPbMgr.c ****     for (idx = 0; idx < pbContextMgr.n_func; idx++) {
+  94:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+  95:X-CUBE-AI/App/aiPbMgr.c ****       if (cfunc->cmd == pbContextMgr.req.cmd) {
+  96:X-CUBE-AI/App/aiPbMgr.c ****         cfunc->process(&(pbContextMgr.req), &(pbContextMgr.resp), cfunc->param);
+  97:X-CUBE-AI/App/aiPbMgr.c ****         break;
+  98:X-CUBE-AI/App/aiPbMgr.c ****       }
+  99:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 100:X-CUBE-AI/App/aiPbMgr.c ****     if (idx == pbContextMgr.n_func) {
+ 101:X-CUBE-AI/App/aiPbMgr.c ****       aiPbMgrSendAck(&(pbContextMgr.req), &(pbContextMgr.resp), EnumState_S_ERROR,
+ 102:X-CUBE-AI/App/aiPbMgr.c ****           EnumError_E_INVALID_PARAM, EnumError_E_INVALID_PARAM);
+ 103:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 104:X-CUBE-AI/App/aiPbMgr.c ****     pbContextMgr.state = PB_MGR_READY;
+ 105:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 106:X-CUBE-AI/App/aiPbMgr.c **** 
+ 107:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_istream();
+ 108:X-CUBE-AI/App/aiPbMgr.c **** 
+ 109:X-CUBE-AI/App/aiPbMgr.c ****   return 0;
+ 110:X-CUBE-AI/App/aiPbMgr.c **** }
+ 111:X-CUBE-AI/App/aiPbMgr.c **** 
+ 112:X-CUBE-AI/App/aiPbMgr.c **** /*---------------------------------------------------------------------------*/
+ 113:X-CUBE-AI/App/aiPbMgr.c **** /* Nanopb Services                                                           */
+ 114:X-CUBE-AI/App/aiPbMgr.c **** /*---------------------------------------------------------------------------*/
+ 115:X-CUBE-AI/App/aiPbMgr.c **** 
+ 116:X-CUBE-AI/App/aiPbMgr.c **** 
+ 117:X-CUBE-AI/App/aiPbMgr.c **** uint32_t aiPbTensorFormat(EnumDataFmtType data_fmt_type, bool sign_bit, int bits, int fbits)
+ 118:X-CUBE-AI/App/aiPbMgr.c **** {
+ 119:X-CUBE-AI/App/aiPbMgr.c **** /* format is aligned with the ai_platform.h definition */
+ 120:X-CUBE-AI/App/aiPbMgr.c **** 
+ 121:X-CUBE-AI/App/aiPbMgr.c **** #define _AI_PB_BUFFER_FMT_PACK(value_, mask_, bits_) \
+ 122:X-CUBE-AI/App/aiPbMgr.c **** 	  ( ((value_) & (mask_)) << (bits_) )
+ 123:X-CUBE-AI/App/aiPbMgr.c **** 
+ 124:X-CUBE-AI/App/aiPbMgr.c **** #define _AI_PB_BUFFER_FMT_SET_BITS(bits_) \
+ 125:X-CUBE-AI/App/aiPbMgr.c **** 		_AI_PB_BUFFER_FMT_PACK((bits_), 0x7F, 7)
+ 126:X-CUBE-AI/App/aiPbMgr.c **** 
+ 127:X-CUBE-AI/App/aiPbMgr.c **** #define _AI_PB_BUFFER_FMT_SET_FBITS(fbits_) \
+ 128:X-CUBE-AI/App/aiPbMgr.c ****   _AI_PB_BUFFER_FMT_PACK((fbits_)+64, 0x7F, 0)
+ 129:X-CUBE-AI/App/aiPbMgr.c **** 
+ 130:X-CUBE-AI/App/aiPbMgr.c **** #define _AI_PB_BUFFER_FMT_SET(type_id_, sign_bit_, float_bit_, bits_, fbits_) \
+ 131:X-CUBE-AI/App/aiPbMgr.c **** 		_AI_PB_BUFFER_FMT_PACK(float_bit_, 0x1, 24) | \
+ 132:X-CUBE-AI/App/aiPbMgr.c **** 		_AI_PB_BUFFER_FMT_PACK(sign_bit_, 0x1, 23) | \
+ 133:X-CUBE-AI/App/aiPbMgr.c **** 		_AI_PB_BUFFER_FMT_PACK(0, 0x3, 21) | \
+ 134:X-CUBE-AI/App/aiPbMgr.c **** 		_AI_PB_BUFFER_FMT_PACK(type_id_, 0xF, 17) | \
+ 135:X-CUBE-AI/App/aiPbMgr.c **** 		_AI_PB_BUFFER_FMT_PACK(0, 0x7, 14) | \
+ 136:X-CUBE-AI/App/aiPbMgr.c ****     _AI_PB_BUFFER_FMT_SET_BITS(bits_) | \
+ 137:X-CUBE-AI/App/aiPbMgr.c ****     _AI_PB_BUFFER_FMT_SET_FBITS(fbits_)
+ 138:X-CUBE-AI/App/aiPbMgr.c **** 
+ 139:X-CUBE-AI/App/aiPbMgr.c ****   uint32_t fmt = 0;
+ 140:X-CUBE-AI/App/aiPbMgr.c ****   switch (data_fmt_type) {
+ 141:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_NONE:
+ 142:X-CUBE-AI/App/aiPbMgr.c ****       fmt = _AI_PB_BUFFER_FMT_SET(EnumDataFmtType_DATA_FMT_TYPE_NONE, 0, 0, 0, 0);
+ 143:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ARM GAS  /tmp/ccjDkIVL.s 			page 4
+
+
+ 144:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_FLOAT:
+ 145:X-CUBE-AI/App/aiPbMgr.c ****       fmt = _AI_PB_BUFFER_FMT_SET(EnumDataFmtType_DATA_FMT_TYPE_FLOAT, 1, 1, 32, 0);
+ 146:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 147:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_INTEGER:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       fmt = _AI_PB_BUFFER_FMT_SET(EnumDataFmtType_DATA_FMT_TYPE_INTEGER, sign_bit, 0, bits, fbits);
+ 149:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 150:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_BOOL:
+ 151:X-CUBE-AI/App/aiPbMgr.c ****       fmt = _AI_PB_BUFFER_FMT_SET(EnumDataFmtType_DATA_FMT_TYPE_BOOL, 0, 0, 8, 0);
+ 152:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 153:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 154:X-CUBE-AI/App/aiPbMgr.c ****   return fmt;
+ 155:X-CUBE-AI/App/aiPbMgr.c **** }
+ 156:X-CUBE-AI/App/aiPbMgr.c **** 
+ 157:X-CUBE-AI/App/aiPbMgr.c **** void aiPbStrCopy(const char *src, char *dst, uint32_t max)
+ 158:X-CUBE-AI/App/aiPbMgr.c **** {
+ 159:X-CUBE-AI/App/aiPbMgr.c ****   const char undef[] = "UNDEFINED";
+ 160:X-CUBE-AI/App/aiPbMgr.c ****   size_t l = strlen(src);
+ 161:X-CUBE-AI/App/aiPbMgr.c **** 
+ 162:X-CUBE-AI/App/aiPbMgr.c ****   if (l > max)
+ 163:X-CUBE-AI/App/aiPbMgr.c ****     l = max-1;
+ 164:X-CUBE-AI/App/aiPbMgr.c **** 
+ 165:X-CUBE-AI/App/aiPbMgr.c ****   if (!dst)
+ 166:X-CUBE-AI/App/aiPbMgr.c ****     return;
+ 167:X-CUBE-AI/App/aiPbMgr.c **** 
+ 168:X-CUBE-AI/App/aiPbMgr.c ****   if (src && l)
+ 169:X-CUBE-AI/App/aiPbMgr.c ****     memcpy(dst, src, l+1);
+ 170:X-CUBE-AI/App/aiPbMgr.c ****   else
+ 171:X-CUBE-AI/App/aiPbMgr.c ****     memcpy(dst, undef, strlen(undef)+1);
+ 172:X-CUBE-AI/App/aiPbMgr.c **** }
+ 173:X-CUBE-AI/App/aiPbMgr.c **** 
+ 174:X-CUBE-AI/App/aiPbMgr.c **** /*
+ 175:X-CUBE-AI/App/aiPbMgr.c ****  * Callback function to encode array of uint32
+ 176:X-CUBE-AI/App/aiPbMgr.c ****  */
+ 177:X-CUBE-AI/App/aiPbMgr.c **** bool encode_uint32(pb_ostream_t *stream, const pb_field_t *field,
+ 178:X-CUBE-AI/App/aiPbMgr.c ****                    void * const *arg)
+ 179:X-CUBE-AI/App/aiPbMgr.c **** {
+  30              		.loc 1 179 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 179 1 is_stmt 0 view .LVU1
+  35 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 24
+  38              		.cfi_offset 4, -24
+  39              		.cfi_offset 5, -20
+  40              		.cfi_offset 6, -16
+  41              		.cfi_offset 7, -12
+  42              		.cfi_offset 8, -8
+  43              		.cfi_offset 14, -4
+  44 0004 0646     		mov	r6, r0
+  45 0006 8846     		mov	r8, r1
+ 180:X-CUBE-AI/App/aiPbMgr.c ****   struct _encode_uint32* array = (struct _encode_uint32 *)*arg;
+  46              		.loc 1 180 3 is_stmt 1 view .LVU2
+  47              		.loc 1 180 26 is_stmt 0 view .LVU3
+  48 0008 1768     		ldr	r7, [r2]
+  49              	.LVL1:
+ARM GAS  /tmp/ccjDkIVL.s 			page 5
+
+
+ 181:X-CUBE-AI/App/aiPbMgr.c ****   int offset = (array->offset == 0)?4:array->offset;
+  50              		.loc 1 181 3 is_stmt 1 view .LVU4
+  51              		.loc 1 181 22 is_stmt 0 view .LVU5
+  52 000a BD68     		ldr	r5, [r7, #8]
+  53              		.loc 1 181 38 view .LVU6
+  54 000c 05B9     		cbnz	r5, .L2
+  55 000e 0425     		movs	r5, #4
+  56              	.L2:
+  57              	.LVL2:
+ 182:X-CUBE-AI/App/aiPbMgr.c ****   for (int i = 0; i < array->size; i++)
+  58              		.loc 1 182 3 is_stmt 1 discriminator 4 view .LVU7
+  59              	.LBB2:
+  60              		.loc 1 182 8 discriminator 4 view .LVU8
+  61              		.loc 1 182 12 is_stmt 0 discriminator 4 view .LVU9
+  62 0010 0024     		movs	r4, #0
+  63              		.loc 1 182 3 discriminator 4 view .LVU10
+  64 0012 0AE0     		b	.L3
+  65              	.LVL3:
+  66              	.L5:
+  67              	.LBB3:
+ 183:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 184:X-CUBE-AI/App/aiPbMgr.c ****     if (!pb_encode_tag_for_field(stream, field))
+ 185:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 186:X-CUBE-AI/App/aiPbMgr.c ****     uint32_t c_val = 0;
+ 187:X-CUBE-AI/App/aiPbMgr.c ****     if (offset == 2)
+ 188:X-CUBE-AI/App/aiPbMgr.c ****       c_val = *(uint16_t*)((uint8_t *)array->data + i * offset);
+ 189:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 190:X-CUBE-AI/App/aiPbMgr.c ****       c_val = *(uint32_t*)((uint8_t *)array->data + i * offset);
+  68              		.loc 1 190 7 is_stmt 1 view .LVU11
+  69              		.loc 1 190 44 is_stmt 0 view .LVU12
+  70 0014 7A68     		ldr	r2, [r7, #4]
+  71              		.loc 1 190 55 view .LVU13
+  72 0016 05FB04F3 		mul	r3, r5, r4
+  73              		.loc 1 190 13 view .LVU14
+  74 001a D258     		ldr	r2, [r2, r3]
+  75              	.LVL4:
+  76              	.L6:
+ 191:X-CUBE-AI/App/aiPbMgr.c ****     if (!pb_encode_varint(stream, (intptr_t)(c_val)))
+  77              		.loc 1 191 5 is_stmt 1 view .LVU15
+  78              		.loc 1 191 10 is_stmt 0 view .LVU16
+  79 001c D317     		asrs	r3, r2, #31
+  80 001e 3046     		mov	r0, r6
+  81 0020 FFF7FEFF 		bl	pb_encode_varint
+  82              	.LVL5:
+  83              		.loc 1 191 8 view .LVU17
+  84 0024 0346     		mov	r3, r0
+  85 0026 88B1     		cbz	r0, .L4
+  86              	.LBE3:
+ 182:X-CUBE-AI/App/aiPbMgr.c ****   for (int i = 0; i < array->size; i++)
+  87              		.loc 1 182 36 is_stmt 1 discriminator 2 view .LVU18
+ 182:X-CUBE-AI/App/aiPbMgr.c ****   for (int i = 0; i < array->size; i++)
+  88              		.loc 1 182 37 is_stmt 0 discriminator 2 view .LVU19
+  89 0028 0134     		adds	r4, r4, #1
+  90              	.LVL6:
+  91              	.L3:
+ 182:X-CUBE-AI/App/aiPbMgr.c ****   for (int i = 0; i < array->size; i++)
+  92              		.loc 1 182 19 is_stmt 1 discriminator 1 view .LVU20
+ARM GAS  /tmp/ccjDkIVL.s 			page 6
+
+
+ 182:X-CUBE-AI/App/aiPbMgr.c ****   for (int i = 0; i < array->size; i++)
+  93              		.loc 1 182 28 is_stmt 0 discriminator 1 view .LVU21
+  94 002a 3B68     		ldr	r3, [r7]
+ 182:X-CUBE-AI/App/aiPbMgr.c ****   for (int i = 0; i < array->size; i++)
+  95              		.loc 1 182 3 discriminator 1 view .LVU22
+  96 002c A342     		cmp	r3, r4
+  97 002e 0CD9     		bls	.L10
+  98              	.LBB4:
+ 184:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+  99              		.loc 1 184 5 is_stmt 1 view .LVU23
+ 184:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 100              		.loc 1 184 10 is_stmt 0 view .LVU24
+ 101 0030 4146     		mov	r1, r8
+ 102 0032 3046     		mov	r0, r6
+ 103 0034 FFF7FEFF 		bl	pb_encode_tag_for_field
+ 104              	.LVL7:
+ 184:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 105              		.loc 1 184 8 view .LVU25
+ 106 0038 0346     		mov	r3, r0
+ 107 003a 38B1     		cbz	r0, .L4
+ 186:X-CUBE-AI/App/aiPbMgr.c ****     if (offset == 2)
+ 108              		.loc 1 186 5 is_stmt 1 view .LVU26
+ 109              	.LVL8:
+ 187:X-CUBE-AI/App/aiPbMgr.c ****       c_val = *(uint16_t*)((uint8_t *)array->data + i * offset);
+ 110              		.loc 1 187 5 view .LVU27
+ 187:X-CUBE-AI/App/aiPbMgr.c ****       c_val = *(uint16_t*)((uint8_t *)array->data + i * offset);
+ 111              		.loc 1 187 8 is_stmt 0 view .LVU28
+ 112 003c 022D     		cmp	r5, #2
+ 113 003e E9D1     		bne	.L5
+ 188:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 114              		.loc 1 188 7 is_stmt 1 view .LVU29
+ 188:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 115              		.loc 1 188 44 is_stmt 0 view .LVU30
+ 116 0040 7A68     		ldr	r2, [r7, #4]
+ 188:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 117              		.loc 1 188 55 view .LVU31
+ 118 0042 05FB04F3 		mul	r3, r5, r4
+ 188:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 119              		.loc 1 188 15 view .LVU32
+ 120 0046 D25A     		ldrh	r2, [r2, r3]
+ 121              	.LVL9:
+ 188:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 122              		.loc 1 188 15 view .LVU33
+ 123 0048 E8E7     		b	.L6
+ 124              	.LVL10:
+ 125              	.L10:
+ 188:X-CUBE-AI/App/aiPbMgr.c ****     else
+ 126              		.loc 1 188 15 view .LVU34
+ 127              	.LBE4:
+ 128              	.LBE2:
+ 192:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 193:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 194:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 129              		.loc 1 194 10 view .LVU35
+ 130 004a 0123     		movs	r3, #1
+ 131              	.L4:
+ 195:X-CUBE-AI/App/aiPbMgr.c **** }
+ARM GAS  /tmp/ccjDkIVL.s 			page 7
+
+
+ 132              		.loc 1 195 1 view .LVU36
+ 133 004c 1846     		mov	r0, r3
+ 134 004e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 135              		.loc 1 195 1 view .LVU37
+ 136              		.cfi_endproc
+ 137              	.LFE110:
+ 139              		.section	.text.encode_data_cb,"ax",%progbits
+ 140              		.align	1
+ 141              		.global	encode_data_cb
+ 142              		.syntax unified
+ 143              		.thumb
+ 144              		.thumb_func
+ 145              		.fpu fpv4-sp-d16
+ 147              	encode_data_cb:
+ 148              	.LVL11:
+ 149              	.LFB113:
+ 196:X-CUBE-AI/App/aiPbMgr.c **** 
+ 197:X-CUBE-AI/App/aiPbMgr.c **** /*
+ 198:X-CUBE-AI/App/aiPbMgr.c ****  * Callback function to encode multiple aiTensorDescMsg
+ 199:X-CUBE-AI/App/aiPbMgr.c ****  */
+ 200:X-CUBE-AI/App/aiPbMgr.c **** bool encode_tensor_desc(pb_ostream_t *stream, const pb_field_t *field,
+ 201:X-CUBE-AI/App/aiPbMgr.c ****                         void * const *arg)
+ 202:X-CUBE-AI/App/aiPbMgr.c **** {
+ 203:X-CUBE-AI/App/aiPbMgr.c ****   struct _encode_tensor_desc* tensors = (struct _encode_tensor_desc *)*arg;
+ 204:X-CUBE-AI/App/aiPbMgr.c **** 
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   for (size_t i = 0; i < tensors->size; i++)
+ 206:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 207:X-CUBE-AI/App/aiPbMgr.c ****     aiTensorDescMsg msg = aiTensorDescMsg_init_zero;
+ 208:X-CUBE-AI/App/aiPbMgr.c ****     struct _encode_uint32 array_u32;
+ 209:X-CUBE-AI/App/aiPbMgr.c ****     tensors->cb(i, tensors->data, &msg, &array_u32);
+ 210:X-CUBE-AI/App/aiPbMgr.c **** 
+ 211:X-CUBE-AI/App/aiPbMgr.c ****     msg.dims.funcs.encode = encode_uint32;
+ 212:X-CUBE-AI/App/aiPbMgr.c ****     msg.dims.arg = &array_u32;
+ 213:X-CUBE-AI/App/aiPbMgr.c **** 
+ 214:X-CUBE-AI/App/aiPbMgr.c ****     if (!pb_encode_tag_for_field(stream, field))
+ 215:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 216:X-CUBE-AI/App/aiPbMgr.c **** 
+ 217:X-CUBE-AI/App/aiPbMgr.c ****     if (!pb_encode_submessage(stream, aiTensorDescMsg_fields, &msg))
+ 218:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 219:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 220:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 221:X-CUBE-AI/App/aiPbMgr.c **** }
+ 222:X-CUBE-AI/App/aiPbMgr.c **** 
+ 223:X-CUBE-AI/App/aiPbMgr.c **** /*---------------------------------------------------------------------------*/
+ 224:X-CUBE-AI/App/aiPbMgr.c **** 
+ 225:X-CUBE-AI/App/aiPbMgr.c **** /*
+ 226:X-CUBE-AI/App/aiPbMgr.c ****  * Local callback function to decode datas field from aiDataMsg msg
+ 227:X-CUBE-AI/App/aiPbMgr.c ****  */
+ 228:X-CUBE-AI/App/aiPbMgr.c **** static bool decode_data_cb(pb_istream_t *stream, const pb_field_t *field,
+ 229:X-CUBE-AI/App/aiPbMgr.c ****     void **arg)
+ 230:X-CUBE-AI/App/aiPbMgr.c **** {
+ 231:X-CUBE-AI/App/aiPbMgr.c ****   UNUSED(field);
+ 232:X-CUBE-AI/App/aiPbMgr.c ****   aiPbData *data = (aiPbData *)*arg;
+ 233:X-CUBE-AI/App/aiPbMgr.c **** 
+ 234:X-CUBE-AI/App/aiPbMgr.c ****   int maxr = data->size;
+ 235:X-CUBE-AI/App/aiPbMgr.c ****   size_t itsize = 1;
+ 236:X-CUBE-AI/App/aiPbMgr.c ****   uint8_t *pw = (uint8_t *)data->addr;
+ARM GAS  /tmp/ccjDkIVL.s 			page 8
+
+
+ 237:X-CUBE-AI/App/aiPbMgr.c ****   data->nb_read = 0;
+ 238:X-CUBE-AI/App/aiPbMgr.c **** 
+ 239:X-CUBE-AI/App/aiPbMgr.c ****   /* Read data */
+ 240:X-CUBE-AI/App/aiPbMgr.c ****   while (stream->bytes_left) {
+ 241:X-CUBE-AI/App/aiPbMgr.c ****     uint64_t number;
+ 242:X-CUBE-AI/App/aiPbMgr.c ****     if (!pb_read(stream, (pb_byte_t *)&number, itsize))
+ 243:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 244:X-CUBE-AI/App/aiPbMgr.c ****     if ((pw) && (maxr > 0)) /* additional data are skipped */
+ 245:X-CUBE-AI/App/aiPbMgr.c ****     {
+ 246:X-CUBE-AI/App/aiPbMgr.c ****       *pw = *(uint8_t *)&number;
+ 247:X-CUBE-AI/App/aiPbMgr.c ****       pw += itsize;
+ 248:X-CUBE-AI/App/aiPbMgr.c ****       maxr--;
+ 249:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 250:X-CUBE-AI/App/aiPbMgr.c ****     data->nb_read += itsize;
+ 251:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 252:X-CUBE-AI/App/aiPbMgr.c **** 
+ 253:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 254:X-CUBE-AI/App/aiPbMgr.c **** }
+ 255:X-CUBE-AI/App/aiPbMgr.c **** 
+ 256:X-CUBE-AI/App/aiPbMgr.c **** /*
+ 257:X-CUBE-AI/App/aiPbMgr.c ****  * Local callback function to encode datas field from aiDataMsg msg
+ 258:X-CUBE-AI/App/aiPbMgr.c ****  */
+ 259:X-CUBE-AI/App/aiPbMgr.c **** bool encode_data_cb(pb_ostream_t *stream, const pb_field_t *field,
+ 260:X-CUBE-AI/App/aiPbMgr.c ****     void * const *arg)
+ 261:X-CUBE-AI/App/aiPbMgr.c **** {
+ 150              		.loc 1 261 1 is_stmt 1 view -0
+ 151              		.cfi_startproc
+ 152              		@ args = 0, pretend = 0, frame = 0
+ 153              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154              		.loc 1 261 1 is_stmt 0 view .LVU39
+ 155 0000 70B5     		push	{r4, r5, r6, lr}
+ 156              	.LCFI1:
+ 157              		.cfi_def_cfa_offset 16
+ 158              		.cfi_offset 4, -16
+ 159              		.cfi_offset 5, -12
+ 160              		.cfi_offset 6, -8
+ 161              		.cfi_offset 14, -4
+ 162 0002 0446     		mov	r4, r0
+ 262:X-CUBE-AI/App/aiPbMgr.c ****   aiPbData *data = (aiPbData *)*arg;
+ 163              		.loc 1 262 3 is_stmt 1 view .LVU40
+ 164              		.loc 1 262 13 is_stmt 0 view .LVU41
+ 165 0004 1568     		ldr	r5, [r2]
+ 166              	.LVL12:
+ 263:X-CUBE-AI/App/aiPbMgr.c **** 
+ 264:X-CUBE-AI/App/aiPbMgr.c ****   pb_byte_t *pr = (pb_byte_t *)data->addr;
+ 167              		.loc 1 264 3 is_stmt 1 view .LVU42
+ 168              		.loc 1 264 36 is_stmt 0 view .LVU43
+ 169 0006 AE68     		ldr	r6, [r5, #8]
+ 170              	.LVL13:
+ 265:X-CUBE-AI/App/aiPbMgr.c **** 
+ 266:X-CUBE-AI/App/aiPbMgr.c ****   if (!pb_encode_tag_for_field(stream, field))
+ 171              		.loc 1 266 3 is_stmt 1 view .LVU44
+ 172              		.loc 1 266 8 is_stmt 0 view .LVU45
+ 173 0008 FFF7FEFF 		bl	pb_encode_tag_for_field
+ 174              	.LVL14:
+ 175              		.loc 1 266 6 view .LVU46
+ 176 000c 00B9     		cbnz	r0, .L14
+ARM GAS  /tmp/ccjDkIVL.s 			page 9
+
+
+ 177              	.L12:
+ 267:X-CUBE-AI/App/aiPbMgr.c ****     return false;
+ 268:X-CUBE-AI/App/aiPbMgr.c **** 
+ 269:X-CUBE-AI/App/aiPbMgr.c ****   if (!pb_encode_string(stream, pr, data->size))
+ 270:X-CUBE-AI/App/aiPbMgr.c ****     return false;
+ 271:X-CUBE-AI/App/aiPbMgr.c **** 
+ 272:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 273:X-CUBE-AI/App/aiPbMgr.c **** }
+ 178              		.loc 1 273 1 view .LVU47
+ 179 000e 70BD     		pop	{r4, r5, r6, pc}
+ 180              	.LVL15:
+ 181              	.L14:
+ 269:X-CUBE-AI/App/aiPbMgr.c ****     return false;
+ 182              		.loc 1 269 3 is_stmt 1 view .LVU48
+ 269:X-CUBE-AI/App/aiPbMgr.c ****     return false;
+ 183              		.loc 1 269 8 is_stmt 0 view .LVU49
+ 184 0010 6A68     		ldr	r2, [r5, #4]
+ 185 0012 3146     		mov	r1, r6
+ 186 0014 2046     		mov	r0, r4
+ 187 0016 FFF7FEFF 		bl	pb_encode_string
+ 188              	.LVL16:
+ 189 001a F8E7     		b	.L12
+ 190              		.cfi_endproc
+ 191              	.LFE113:
+ 193              		.section	.text.decode_data_cb,"ax",%progbits
+ 194              		.align	1
+ 195              		.syntax unified
+ 196              		.thumb
+ 197              		.thumb_func
+ 198              		.fpu fpv4-sp-d16
+ 200              	decode_data_cb:
+ 201              	.LVL17:
+ 202              	.LFB112:
+ 230:X-CUBE-AI/App/aiPbMgr.c ****   UNUSED(field);
+ 203              		.loc 1 230 1 is_stmt 1 view -0
+ 204              		.cfi_startproc
+ 205              		@ args = 0, pretend = 0, frame = 8
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 230:X-CUBE-AI/App/aiPbMgr.c ****   UNUSED(field);
+ 207              		.loc 1 230 1 is_stmt 0 view .LVU51
+ 208 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 209              	.LCFI2:
+ 210              		.cfi_def_cfa_offset 20
+ 211              		.cfi_offset 4, -20
+ 212              		.cfi_offset 5, -16
+ 213              		.cfi_offset 6, -12
+ 214              		.cfi_offset 7, -8
+ 215              		.cfi_offset 14, -4
+ 216 0002 83B0     		sub	sp, sp, #12
+ 217              	.LCFI3:
+ 218              		.cfi_def_cfa_offset 32
+ 219 0004 0446     		mov	r4, r0
+ 231:X-CUBE-AI/App/aiPbMgr.c ****   aiPbData *data = (aiPbData *)*arg;
+ 220              		.loc 1 231 3 is_stmt 1 view .LVU52
+ 232:X-CUBE-AI/App/aiPbMgr.c **** 
+ 221              		.loc 1 232 3 view .LVU53
+ 232:X-CUBE-AI/App/aiPbMgr.c **** 
+ARM GAS  /tmp/ccjDkIVL.s 			page 10
+
+
+ 222              		.loc 1 232 13 is_stmt 0 view .LVU54
+ 223 0006 1568     		ldr	r5, [r2]
+ 224              	.LVL18:
+ 234:X-CUBE-AI/App/aiPbMgr.c ****   size_t itsize = 1;
+ 225              		.loc 1 234 3 is_stmt 1 view .LVU55
+ 234:X-CUBE-AI/App/aiPbMgr.c ****   size_t itsize = 1;
+ 226              		.loc 1 234 18 is_stmt 0 view .LVU56
+ 227 0008 6F68     		ldr	r7, [r5, #4]
+ 228              	.LVL19:
+ 235:X-CUBE-AI/App/aiPbMgr.c ****   uint8_t *pw = (uint8_t *)data->addr;
+ 229              		.loc 1 235 3 is_stmt 1 view .LVU57
+ 236:X-CUBE-AI/App/aiPbMgr.c ****   data->nb_read = 0;
+ 230              		.loc 1 236 3 view .LVU58
+ 236:X-CUBE-AI/App/aiPbMgr.c ****   data->nb_read = 0;
+ 231              		.loc 1 236 32 is_stmt 0 view .LVU59
+ 232 000a AE68     		ldr	r6, [r5, #8]
+ 233              	.LVL20:
+ 237:X-CUBE-AI/App/aiPbMgr.c **** 
+ 234              		.loc 1 237 3 is_stmt 1 view .LVU60
+ 237:X-CUBE-AI/App/aiPbMgr.c **** 
+ 235              		.loc 1 237 17 is_stmt 0 view .LVU61
+ 236 000c 0023     		movs	r3, #0
+ 237 000e EB60     		str	r3, [r5, #12]
+ 240:X-CUBE-AI/App/aiPbMgr.c ****     uint64_t number;
+ 238              		.loc 1 240 3 is_stmt 1 view .LVU62
+ 240:X-CUBE-AI/App/aiPbMgr.c ****     uint64_t number;
+ 239              		.loc 1 240 9 is_stmt 0 view .LVU63
+ 240 0010 02E0     		b	.L16
+ 241              	.LVL21:
+ 242              	.L19:
+ 243              	.LBB5:
+ 250:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 244              		.loc 1 250 5 is_stmt 1 view .LVU64
+ 250:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 245              		.loc 1 250 19 is_stmt 0 view .LVU65
+ 246 0012 EB68     		ldr	r3, [r5, #12]
+ 247 0014 0133     		adds	r3, r3, #1
+ 248 0016 EB60     		str	r3, [r5, #12]
+ 249              	.L16:
+ 250:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 250              		.loc 1 250 19 view .LVU66
+ 251              	.LBE5:
+ 240:X-CUBE-AI/App/aiPbMgr.c ****     uint64_t number;
+ 252              		.loc 1 240 9 is_stmt 1 view .LVU67
+ 240:X-CUBE-AI/App/aiPbMgr.c ****     uint64_t number;
+ 253              		.loc 1 240 16 is_stmt 0 view .LVU68
+ 254 0018 A368     		ldr	r3, [r4, #8]
+ 240:X-CUBE-AI/App/aiPbMgr.c ****     uint64_t number;
+ 255              		.loc 1 240 9 view .LVU69
+ 256 001a 83B1     		cbz	r3, .L22
+ 257              	.LBB6:
+ 241:X-CUBE-AI/App/aiPbMgr.c ****     if (!pb_read(stream, (pb_byte_t *)&number, itsize))
+ 258              		.loc 1 241 5 is_stmt 1 view .LVU70
+ 242:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 259              		.loc 1 242 5 view .LVU71
+ 242:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 260              		.loc 1 242 10 is_stmt 0 view .LVU72
+ARM GAS  /tmp/ccjDkIVL.s 			page 11
+
+
+ 261 001c 0122     		movs	r2, #1
+ 262 001e 6946     		mov	r1, sp
+ 263 0020 2046     		mov	r0, r4
+ 264 0022 FFF7FEFF 		bl	pb_read
+ 265              	.LVL22:
+ 242:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 266              		.loc 1 242 8 view .LVU73
+ 267 0026 0346     		mov	r3, r0
+ 268 0028 50B1     		cbz	r0, .L18
+ 244:X-CUBE-AI/App/aiPbMgr.c ****     {
+ 269              		.loc 1 244 5 is_stmt 1 view .LVU74
+ 244:X-CUBE-AI/App/aiPbMgr.c ****     {
+ 270              		.loc 1 244 8 is_stmt 0 view .LVU75
+ 271 002a 002E     		cmp	r6, #0
+ 272 002c F1D0     		beq	.L19
+ 244:X-CUBE-AI/App/aiPbMgr.c ****     {
+ 273              		.loc 1 244 14 discriminator 1 view .LVU76
+ 274 002e 002F     		cmp	r7, #0
+ 275 0030 EFDD     		ble	.L19
+ 246:X-CUBE-AI/App/aiPbMgr.c ****       pw += itsize;
+ 276              		.loc 1 246 7 is_stmt 1 view .LVU77
+ 246:X-CUBE-AI/App/aiPbMgr.c ****       pw += itsize;
+ 277              		.loc 1 246 13 is_stmt 0 view .LVU78
+ 278 0032 9DF80030 		ldrb	r3, [sp]	@ zero_extendqisi2
+ 246:X-CUBE-AI/App/aiPbMgr.c ****       pw += itsize;
+ 279              		.loc 1 246 11 view .LVU79
+ 280 0036 06F8013B 		strb	r3, [r6], #1
+ 281              	.LVL23:
+ 247:X-CUBE-AI/App/aiPbMgr.c ****       maxr--;
+ 282              		.loc 1 247 7 is_stmt 1 view .LVU80
+ 248:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 283              		.loc 1 248 7 view .LVU81
+ 248:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 284              		.loc 1 248 11 is_stmt 0 view .LVU82
+ 285 003a 013F     		subs	r7, r7, #1
+ 286              	.LVL24:
+ 248:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 287              		.loc 1 248 11 view .LVU83
+ 288 003c E9E7     		b	.L19
+ 289              	.L22:
+ 248:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 290              		.loc 1 248 11 view .LVU84
+ 291              	.LBE6:
+ 253:X-CUBE-AI/App/aiPbMgr.c **** }
+ 292              		.loc 1 253 10 view .LVU85
+ 293 003e 0123     		movs	r3, #1
+ 294              	.L18:
+ 254:X-CUBE-AI/App/aiPbMgr.c **** 
+ 295              		.loc 1 254 1 view .LVU86
+ 296 0040 1846     		mov	r0, r3
+ 297 0042 03B0     		add	sp, sp, #12
+ 298              	.LCFI4:
+ 299              		.cfi_def_cfa_offset 20
+ 300              		@ sp needed
+ 301 0044 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 254:X-CUBE-AI/App/aiPbMgr.c **** 
+ 302              		.loc 1 254 1 view .LVU87
+ARM GAS  /tmp/ccjDkIVL.s 			page 12
+
+
+ 303              		.cfi_endproc
+ 304              	.LFE112:
+ 306              		.section	.text.aiPbMgrInit,"ax",%progbits
+ 307              		.align	1
+ 308              		.global	aiPbMgrInit
+ 309              		.syntax unified
+ 310              		.thumb
+ 311              		.thumb_func
+ 312              		.fpu fpv4-sp-d16
+ 314              	aiPbMgrInit:
+ 315              	.LVL25:
+ 316              	.LFB106:
+  59:X-CUBE-AI/App/aiPbMgr.c ****   const aiPbCmdFunc *cfunc;
+ 317              		.loc 1 59 1 is_stmt 1 view -0
+ 318              		.cfi_startproc
+ 319              		@ args = 0, pretend = 0, frame = 40
+ 320              		@ frame_needed = 0, uses_anonymous_args = 0
+  59:X-CUBE-AI/App/aiPbMgr.c ****   const aiPbCmdFunc *cfunc;
+ 321              		.loc 1 59 1 is_stmt 0 view .LVU89
+ 322 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 323              	.LCFI5:
+ 324              		.cfi_def_cfa_offset 20
+ 325              		.cfi_offset 4, -20
+ 326              		.cfi_offset 5, -16
+ 327              		.cfi_offset 6, -12
+ 328              		.cfi_offset 7, -8
+ 329              		.cfi_offset 14, -4
+ 330 0002 8BB0     		sub	sp, sp, #44
+ 331              	.LCFI6:
+ 332              		.cfi_def_cfa_offset 64
+ 333 0004 0646     		mov	r6, r0
+  60:X-CUBE-AI/App/aiPbMgr.c **** 
+ 334              		.loc 1 60 3 is_stmt 1 view .LVU90
+  62:X-CUBE-AI/App/aiPbMgr.c **** 
+ 335              		.loc 1 62 3 view .LVU91
+ 336 0006 194D     		ldr	r5, .L29
+ 337 0008 4FF4D072 		mov	r2, #416
+ 338 000c 0021     		movs	r1, #0
+ 339 000e 2846     		mov	r0, r5
+ 340              	.LVL26:
+  62:X-CUBE-AI/App/aiPbMgr.c **** 
+ 341              		.loc 1 62 3 is_stmt 0 view .LVU92
+ 342 0010 FFF7FEFF 		bl	memset
+ 343              	.LVL27:
+  64:X-CUBE-AI/App/aiPbMgr.c **** 
+ 344              		.loc 1 64 3 is_stmt 1 view .LVU93
+ 345 0014 FFF7FEFF 		bl	pb_io_stream_init
+ 346              	.LVL28:
+  66:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.output = pb_io_ostream(0);
+ 347              		.loc 1 66 3 view .LVU94
+  66:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.output = pb_io_ostream(0);
+ 348              		.loc 1 66 24 is_stmt 0 view .LVU95
+ 349 0018 06AC     		add	r4, sp, #24
+ 350 001a 0021     		movs	r1, #0
+ 351 001c 2046     		mov	r0, r4
+ 352 001e FFF7FEFF 		bl	pb_io_istream
+ 353              	.LVL29:
+ARM GAS  /tmp/ccjDkIVL.s 			page 13
+
+
+ 354 0022 94E80F00 		ldm	r4, {r0, r1, r2, r3}
+ 355 0026 85E80F00 		stm	r5, {r0, r1, r2, r3}
+  67:X-CUBE-AI/App/aiPbMgr.c **** 
+ 356              		.loc 1 67 3 is_stmt 1 view .LVU96
+  67:X-CUBE-AI/App/aiPbMgr.c **** 
+ 357              		.loc 1 67 25 is_stmt 0 view .LVU97
+ 358 002a 0021     		movs	r1, #0
+ 359 002c 6846     		mov	r0, sp
+ 360 002e FFF7FEFF 		bl	pb_io_ostream
+ 361              	.LVL30:
+ 362 0032 05F11007 		add	r7, r5, #16
+ 363 0036 6C46     		mov	r4, sp
+ 364 0038 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 365 003a 0FC7     		stmia	r7!, {r0, r1, r2, r3}
+ 366 003c 2368     		ldr	r3, [r4]
+ 367 003e 3B60     		str	r3, [r7]
+  69:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.funcs = NULL;
+ 368              		.loc 1 69 3 is_stmt 1 view .LVU98
+  69:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.funcs = NULL;
+ 369              		.loc 1 69 23 is_stmt 0 view .LVU99
+ 370 0040 0023     		movs	r3, #0
+ 371 0042 AB62     		str	r3, [r5, #40]
+  70:X-CUBE-AI/App/aiPbMgr.c **** 
+ 372              		.loc 1 70 3 is_stmt 1 view .LVU100
+  70:X-CUBE-AI/App/aiPbMgr.c **** 
+ 373              		.loc 1 70 22 is_stmt 0 view .LVU101
+ 374 0044 6B62     		str	r3, [r5, #36]
+  72:X-CUBE-AI/App/aiPbMgr.c ****     cfunc = funcs;
+ 375              		.loc 1 72 3 is_stmt 1 view .LVU102
+  72:X-CUBE-AI/App/aiPbMgr.c ****     cfunc = funcs;
+ 376              		.loc 1 72 6 is_stmt 0 view .LVU103
+ 377 0046 5EB1     		cbz	r6, .L25
+  73:X-CUBE-AI/App/aiPbMgr.c ****     while (cfunc->process) {
+ 378              		.loc 1 73 11 view .LVU104
+ 379 0048 3246     		mov	r2, r6
+ 380 004a 04E0     		b	.L24
+ 381              	.LVL31:
+ 382              	.L26:
+  75:X-CUBE-AI/App/aiPbMgr.c ****       cfunc++;
+ 383              		.loc 1 75 7 is_stmt 1 view .LVU105
+  75:X-CUBE-AI/App/aiPbMgr.c ****       cfunc++;
+ 384              		.loc 1 75 19 is_stmt 0 view .LVU106
+ 385 004c 0749     		ldr	r1, .L29
+ 386 004e 8B6A     		ldr	r3, [r1, #40]
+  75:X-CUBE-AI/App/aiPbMgr.c ****       cfunc++;
+ 387              		.loc 1 75 26 view .LVU107
+ 388 0050 0133     		adds	r3, r3, #1
+ 389 0052 8B62     		str	r3, [r1, #40]
+  76:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 390              		.loc 1 76 7 is_stmt 1 view .LVU108
+  76:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 391              		.loc 1 76 12 is_stmt 0 view .LVU109
+ 392 0054 0C32     		adds	r2, r2, #12
+ 393              	.LVL32:
+ 394              	.L24:
+  74:X-CUBE-AI/App/aiPbMgr.c ****       pbContextMgr.n_func++;
+ 395              		.loc 1 74 11 is_stmt 1 view .LVU110
+ARM GAS  /tmp/ccjDkIVL.s 			page 14
+
+
+  74:X-CUBE-AI/App/aiPbMgr.c ****       pbContextMgr.n_func++;
+ 396              		.loc 1 74 17 is_stmt 0 view .LVU111
+ 397 0056 5368     		ldr	r3, [r2, #4]
+  74:X-CUBE-AI/App/aiPbMgr.c ****       pbContextMgr.n_func++;
+ 398              		.loc 1 74 11 view .LVU112
+ 399 0058 002B     		cmp	r3, #0
+ 400 005a F7D1     		bne	.L26
+  78:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 401              		.loc 1 78 5 is_stmt 1 view .LVU113
+  78:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 402              		.loc 1 78 24 is_stmt 0 view .LVU114
+ 403 005c 034B     		ldr	r3, .L29
+ 404 005e 5E62     		str	r6, [r3, #36]
+ 405              	.LVL33:
+ 406              	.L25:
+  81:X-CUBE-AI/App/aiPbMgr.c **** }
+ 407              		.loc 1 81 3 is_stmt 1 view .LVU115
+  81:X-CUBE-AI/App/aiPbMgr.c **** }
+ 408              		.loc 1 81 22 is_stmt 0 view .LVU116
+ 409 0060 024B     		ldr	r3, .L29
+ 410 0062 0122     		movs	r2, #1
+ 411 0064 83F89821 		strb	r2, [r3, #408]
+  82:X-CUBE-AI/App/aiPbMgr.c **** 
+ 412              		.loc 1 82 1 view .LVU117
+ 413 0068 0BB0     		add	sp, sp, #44
+ 414              	.LCFI7:
+ 415              		.cfi_def_cfa_offset 20
+ 416              		@ sp needed
+ 417 006a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 418              	.LVL34:
+ 419              	.L30:
+  82:X-CUBE-AI/App/aiPbMgr.c **** 
+ 420              		.loc 1 82 1 view .LVU118
+ 421              		.align	2
+ 422              	.L29:
+ 423 006c 00000000 		.word	.LANCHOR0
+ 424              		.cfi_endproc
+ 425              	.LFE106:
+ 427              		.section	.text.aiPbTensorFormat,"ax",%progbits
+ 428              		.align	1
+ 429              		.global	aiPbTensorFormat
+ 430              		.syntax unified
+ 431              		.thumb
+ 432              		.thumb_func
+ 433              		.fpu fpv4-sp-d16
+ 435              	aiPbTensorFormat:
+ 436              	.LVL35:
+ 437              	.LFB108:
+ 118:X-CUBE-AI/App/aiPbMgr.c **** /* format is aligned with the ai_platform.h definition */
+ 438              		.loc 1 118 1 is_stmt 1 view -0
+ 439              		.cfi_startproc
+ 440              		@ args = 0, pretend = 0, frame = 0
+ 441              		@ frame_needed = 0, uses_anonymous_args = 0
+ 442              		@ link register save eliminated.
+ 139:X-CUBE-AI/App/aiPbMgr.c ****   switch (data_fmt_type) {
+ 443              		.loc 1 139 3 view .LVU120
+ 140:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_NONE:
+ARM GAS  /tmp/ccjDkIVL.s 			page 15
+
+
+ 444              		.loc 1 140 3 view .LVU121
+ 445 0000 0328     		cmp	r0, #3
+ 446 0002 03D8     		bhi	.L32
+ 447 0004 DFE800F0 		tbb	[pc, r0]
+ 448              	.L34:
+ 449 0008 16       		.byte	(.L38-.L34)/2
+ 450 0009 04       		.byte	(.L36-.L34)/2
+ 451 000a 06       		.byte	(.L35-.L34)/2
+ 452 000b 14       		.byte	(.L33-.L34)/2
+ 453              		.p2align 1
+ 454              	.L32:
+ 145:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 455              		.loc 1 145 11 is_stmt 0 view .LVU122
+ 456 000c 0020     		movs	r0, #0
+ 457              	.LVL36:
+ 145:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 458              		.loc 1 145 11 view .LVU123
+ 459 000e 7047     		bx	lr
+ 460              	.LVL37:
+ 461              	.L36:
+ 145:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 462              		.loc 1 145 7 is_stmt 1 view .LVU124
+ 146:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_INTEGER:
+ 463              		.loc 1 146 7 view .LVU125
+ 145:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 464              		.loc 1 145 11 is_stmt 0 view .LVU126
+ 465 0010 0948     		ldr	r0, .L39
+ 466              	.LVL38:
+ 146:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_INTEGER:
+ 467              		.loc 1 146 7 view .LVU127
+ 468 0012 7047     		bx	lr
+ 469              	.LVL39:
+ 470              	.L35:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 471              		.loc 1 148 7 is_stmt 1 view .LVU128
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 472              		.loc 1 148 13 is_stmt 0 view .LVU129
+ 473 0014 C905     		lsls	r1, r1, #23
+ 474              	.LVL40:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 475              		.loc 1 148 13 view .LVU130
+ 476 0016 01F40000 		and	r0, r1, #8388608
+ 477              	.LVL41:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 478              		.loc 1 148 13 view .LVU131
+ 479 001a 40F48020 		orr	r0, r0, #262144
+ 480 001e D201     		lsls	r2, r2, #7
+ 481              	.LVL42:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 482              		.loc 1 148 13 view .LVU132
+ 483 0020 02F47E52 		and	r2, r2, #16256
+ 484 0024 1043     		orrs	r0, r0, r2
+ 485 0026 4033     		adds	r3, r3, #64
+ 486              	.LVL43:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 487              		.loc 1 148 13 view .LVU133
+ 488 0028 03F07F03 		and	r3, r3, #127
+ARM GAS  /tmp/ccjDkIVL.s 			page 16
+
+
+ 489              	.LVL44:
+ 148:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 490              		.loc 1 148 13 view .LVU134
+ 491 002c 1843     		orrs	r0, r0, r3
+ 492              	.LVL45:
+ 149:X-CUBE-AI/App/aiPbMgr.c ****     case EnumDataFmtType_DATA_FMT_TYPE_BOOL:
+ 493              		.loc 1 149 7 is_stmt 1 view .LVU135
+ 494 002e 7047     		bx	lr
+ 495              	.LVL46:
+ 496              	.L33:
+ 151:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 497              		.loc 1 151 7 view .LVU136
+ 152:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 498              		.loc 1 152 7 view .LVU137
+ 151:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 499              		.loc 1 151 11 is_stmt 0 view .LVU138
+ 500 0030 0248     		ldr	r0, .L39+4
+ 501              	.LVL47:
+ 152:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 502              		.loc 1 152 7 view .LVU139
+ 503 0032 7047     		bx	lr
+ 504              	.LVL48:
+ 505              	.L38:
+ 142:X-CUBE-AI/App/aiPbMgr.c ****       break;
+ 506              		.loc 1 142 11 view .LVU140
+ 507 0034 4020     		movs	r0, #64
+ 508              	.LVL49:
+ 154:X-CUBE-AI/App/aiPbMgr.c **** }
+ 509              		.loc 1 154 3 is_stmt 1 view .LVU141
+ 155:X-CUBE-AI/App/aiPbMgr.c **** 
+ 510              		.loc 1 155 1 is_stmt 0 view .LVU142
+ 511 0036 7047     		bx	lr
+ 512              	.L40:
+ 513              		.align	2
+ 514              	.L39:
+ 515 0038 40108201 		.word	25301056
+ 516 003c 40040600 		.word	394304
+ 517              		.cfi_endproc
+ 518              	.LFE108:
+ 520              		.section	.rodata.aiPbStrCopy.str1.4,"aMS",%progbits,1
+ 521              		.align	2
+ 522              	.LC0:
+ 523 0000 554E4445 		.ascii	"UNDEFINED\000"
+ 523      46494E45 
+ 523      4400
+ 524              		.section	.text.aiPbStrCopy,"ax",%progbits
+ 525              		.align	1
+ 526              		.global	aiPbStrCopy
+ 527              		.syntax unified
+ 528              		.thumb
+ 529              		.thumb_func
+ 530              		.fpu fpv4-sp-d16
+ 532              	aiPbStrCopy:
+ 533              	.LVL50:
+ 534              	.LFB109:
+ 158:X-CUBE-AI/App/aiPbMgr.c ****   const char undef[] = "UNDEFINED";
+ 535              		.loc 1 158 1 is_stmt 1 view -0
+ARM GAS  /tmp/ccjDkIVL.s 			page 17
+
+
+ 536              		.cfi_startproc
+ 537              		@ args = 0, pretend = 0, frame = 16
+ 538              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158:X-CUBE-AI/App/aiPbMgr.c ****   const char undef[] = "UNDEFINED";
+ 539              		.loc 1 158 1 is_stmt 0 view .LVU144
+ 540 0000 70B5     		push	{r4, r5, r6, lr}
+ 541              	.LCFI8:
+ 542              		.cfi_def_cfa_offset 16
+ 543              		.cfi_offset 4, -16
+ 544              		.cfi_offset 5, -12
+ 545              		.cfi_offset 6, -8
+ 546              		.cfi_offset 14, -4
+ 547 0002 84B0     		sub	sp, sp, #16
+ 548              	.LCFI9:
+ 549              		.cfi_def_cfa_offset 32
+ 550 0004 0446     		mov	r4, r0
+ 551 0006 0D46     		mov	r5, r1
+ 552 0008 1646     		mov	r6, r2
+ 159:X-CUBE-AI/App/aiPbMgr.c ****   size_t l = strlen(src);
+ 553              		.loc 1 159 3 is_stmt 1 view .LVU145
+ 159:X-CUBE-AI/App/aiPbMgr.c ****   size_t l = strlen(src);
+ 554              		.loc 1 159 14 is_stmt 0 view .LVU146
+ 555 000a 0F4A     		ldr	r2, .L49
+ 556              	.LVL51:
+ 159:X-CUBE-AI/App/aiPbMgr.c ****   size_t l = strlen(src);
+ 557              		.loc 1 159 14 view .LVU147
+ 558 000c 01AB     		add	r3, sp, #4
+ 559 000e 07CA     		ldm	r2, {r0, r1, r2}
+ 560              	.LVL52:
+ 159:X-CUBE-AI/App/aiPbMgr.c ****   size_t l = strlen(src);
+ 561              		.loc 1 159 14 view .LVU148
+ 562 0010 03C3     		stmia	r3!, {r0, r1}
+ 563 0012 1A80     		strh	r2, [r3]	@ movhi
+ 160:X-CUBE-AI/App/aiPbMgr.c **** 
+ 564              		.loc 1 160 3 is_stmt 1 view .LVU149
+ 160:X-CUBE-AI/App/aiPbMgr.c **** 
+ 565              		.loc 1 160 14 is_stmt 0 view .LVU150
+ 566 0014 2046     		mov	r0, r4
+ 567 0016 FFF7FEFF 		bl	strlen
+ 568              	.LVL53:
+ 162:X-CUBE-AI/App/aiPbMgr.c ****     l = max-1;
+ 569              		.loc 1 162 3 is_stmt 1 view .LVU151
+ 162:X-CUBE-AI/App/aiPbMgr.c ****     l = max-1;
+ 570              		.loc 1 162 6 is_stmt 0 view .LVU152
+ 571 001a B042     		cmp	r0, r6
+ 572 001c 00D9     		bls	.L42
+ 163:X-CUBE-AI/App/aiPbMgr.c **** 
+ 573              		.loc 1 163 5 is_stmt 1 view .LVU153
+ 163:X-CUBE-AI/App/aiPbMgr.c **** 
+ 574              		.loc 1 163 7 is_stmt 0 view .LVU154
+ 575 001e 701E     		subs	r0, r6, #1
+ 576              	.LVL54:
+ 577              	.L42:
+ 165:X-CUBE-AI/App/aiPbMgr.c ****     return;
+ 578              		.loc 1 165 3 is_stmt 1 view .LVU155
+ 165:X-CUBE-AI/App/aiPbMgr.c ****     return;
+ 579              		.loc 1 165 6 is_stmt 0 view .LVU156
+ARM GAS  /tmp/ccjDkIVL.s 			page 18
+
+
+ 580 0020 4DB1     		cbz	r5, .L41
+ 168:X-CUBE-AI/App/aiPbMgr.c ****     memcpy(dst, src, l+1);
+ 581              		.loc 1 168 3 is_stmt 1 view .LVU157
+ 168:X-CUBE-AI/App/aiPbMgr.c ****     memcpy(dst, src, l+1);
+ 582              		.loc 1 168 6 is_stmt 0 view .LVU158
+ 583 0022 04B1     		cbz	r4, .L45
+ 168:X-CUBE-AI/App/aiPbMgr.c ****     memcpy(dst, src, l+1);
+ 584              		.loc 1 168 11 discriminator 1 view .LVU159
+ 585 0024 48B9     		cbnz	r0, .L48
+ 586              	.L45:
+ 171:X-CUBE-AI/App/aiPbMgr.c **** }
+ 587              		.loc 1 171 5 is_stmt 1 view .LVU160
+ 171:X-CUBE-AI/App/aiPbMgr.c **** }
+ 588              		.loc 1 171 24 is_stmt 0 view .LVU161
+ 589 0026 01A8     		add	r0, sp, #4
+ 590              	.LVL55:
+ 171:X-CUBE-AI/App/aiPbMgr.c **** }
+ 591              		.loc 1 171 24 view .LVU162
+ 592 0028 FFF7FEFF 		bl	strlen
+ 593              	.LVL56:
+ 171:X-CUBE-AI/App/aiPbMgr.c **** }
+ 594              		.loc 1 171 5 view .LVU163
+ 595 002c 421C     		adds	r2, r0, #1
+ 596 002e 01A9     		add	r1, sp, #4
+ 597 0030 2846     		mov	r0, r5
+ 598 0032 FFF7FEFF 		bl	memcpy
+ 599              	.LVL57:
+ 600              	.L41:
+ 172:X-CUBE-AI/App/aiPbMgr.c **** 
+ 601              		.loc 1 172 1 view .LVU164
+ 602 0036 04B0     		add	sp, sp, #16
+ 603              	.LCFI10:
+ 604              		.cfi_remember_state
+ 605              		.cfi_def_cfa_offset 16
+ 606              		@ sp needed
+ 607 0038 70BD     		pop	{r4, r5, r6, pc}
+ 608              	.LVL58:
+ 609              	.L48:
+ 610              	.LCFI11:
+ 611              		.cfi_restore_state
+ 169:X-CUBE-AI/App/aiPbMgr.c ****   else
+ 612              		.loc 1 169 5 is_stmt 1 view .LVU165
+ 613 003a 421C     		adds	r2, r0, #1
+ 614 003c 2146     		mov	r1, r4
+ 615 003e 2846     		mov	r0, r5
+ 616              	.LVL59:
+ 169:X-CUBE-AI/App/aiPbMgr.c ****   else
+ 617              		.loc 1 169 5 is_stmt 0 view .LVU166
+ 618 0040 FFF7FEFF 		bl	memcpy
+ 619              	.LVL60:
+ 169:X-CUBE-AI/App/aiPbMgr.c ****   else
+ 620              		.loc 1 169 5 view .LVU167
+ 621 0044 F7E7     		b	.L41
+ 622              	.L50:
+ 623 0046 00BF     		.align	2
+ 624              	.L49:
+ 625 0048 00000000 		.word	.LC0
+ARM GAS  /tmp/ccjDkIVL.s 			page 19
+
+
+ 626              		.cfi_endproc
+ 627              	.LFE109:
+ 629              		.section	.text.encode_tensor_desc,"ax",%progbits
+ 630              		.align	1
+ 631              		.global	encode_tensor_desc
+ 632              		.syntax unified
+ 633              		.thumb
+ 634              		.thumb_func
+ 635              		.fpu fpv4-sp-d16
+ 637              	encode_tensor_desc:
+ 638              	.LVL61:
+ 639              	.LFB111:
+ 202:X-CUBE-AI/App/aiPbMgr.c ****   struct _encode_tensor_desc* tensors = (struct _encode_tensor_desc *)*arg;
+ 640              		.loc 1 202 1 is_stmt 1 view -0
+ 641              		.cfi_startproc
+ 642              		@ args = 0, pretend = 0, frame = 112
+ 643              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202:X-CUBE-AI/App/aiPbMgr.c ****   struct _encode_tensor_desc* tensors = (struct _encode_tensor_desc *)*arg;
+ 644              		.loc 1 202 1 is_stmt 0 view .LVU169
+ 645 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 646              	.LCFI12:
+ 647              		.cfi_def_cfa_offset 24
+ 648              		.cfi_offset 4, -24
+ 649              		.cfi_offset 5, -20
+ 650              		.cfi_offset 6, -16
+ 651              		.cfi_offset 7, -12
+ 652              		.cfi_offset 8, -8
+ 653              		.cfi_offset 14, -4
+ 654 0004 9CB0     		sub	sp, sp, #112
+ 655              	.LCFI13:
+ 656              		.cfi_def_cfa_offset 136
+ 657 0006 0646     		mov	r6, r0
+ 658 0008 8846     		mov	r8, r1
+ 203:X-CUBE-AI/App/aiPbMgr.c **** 
+ 659              		.loc 1 203 3 is_stmt 1 view .LVU170
+ 203:X-CUBE-AI/App/aiPbMgr.c **** 
+ 660              		.loc 1 203 31 is_stmt 0 view .LVU171
+ 661 000a 1568     		ldr	r5, [r2]
+ 662              	.LVL62:
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 663              		.loc 1 205 3 is_stmt 1 view .LVU172
+ 664              	.LBB7:
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 665              		.loc 1 205 8 view .LVU173
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 666              		.loc 1 205 15 is_stmt 0 view .LVU174
+ 667 000c 0024     		movs	r4, #0
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 668              		.loc 1 205 3 view .LVU175
+ 669 000e 00E0     		b	.L52
+ 670              	.LVL63:
+ 671              	.L58:
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 672              		.loc 1 205 41 is_stmt 1 view .LVU176
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 673              		.loc 1 205 42 is_stmt 0 view .LVU177
+ 674 0010 0134     		adds	r4, r4, #1
+ARM GAS  /tmp/ccjDkIVL.s 			page 20
+
+
+ 675              	.LVL64:
+ 676              	.L52:
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 677              		.loc 1 205 22 is_stmt 1 discriminator 1 view .LVU178
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 678              		.loc 1 205 33 is_stmt 0 discriminator 1 view .LVU179
+ 679 0012 6B68     		ldr	r3, [r5, #4]
+ 205:X-CUBE-AI/App/aiPbMgr.c ****   {
+ 680              		.loc 1 205 3 discriminator 1 view .LVU180
+ 681 0014 A342     		cmp	r3, r4
+ 682 0016 1ED9     		bls	.L57
+ 683              	.LBB8:
+ 207:X-CUBE-AI/App/aiPbMgr.c ****     struct _encode_uint32 array_u32;
+ 684              		.loc 1 207 5 is_stmt 1 view .LVU181
+ 207:X-CUBE-AI/App/aiPbMgr.c ****     struct _encode_uint32 array_u32;
+ 685              		.loc 1 207 21 is_stmt 0 view .LVU182
+ 686 0018 6422     		movs	r2, #100
+ 687 001a 0021     		movs	r1, #0
+ 688 001c 03A8     		add	r0, sp, #12
+ 689 001e FFF7FEFF 		bl	memset
+ 690              	.LVL65:
+ 208:X-CUBE-AI/App/aiPbMgr.c ****     tensors->cb(i, tensors->data, &msg, &array_u32);
+ 691              		.loc 1 208 5 is_stmt 1 view .LVU183
+ 209:X-CUBE-AI/App/aiPbMgr.c **** 
+ 692              		.loc 1 209 5 view .LVU184
+ 209:X-CUBE-AI/App/aiPbMgr.c **** 
+ 693              		.loc 1 209 12 is_stmt 0 view .LVU185
+ 694 0022 2F68     		ldr	r7, [r5]
+ 209:X-CUBE-AI/App/aiPbMgr.c **** 
+ 695              		.loc 1 209 5 view .LVU186
+ 696 0024 6B46     		mov	r3, sp
+ 697 0026 03AA     		add	r2, sp, #12
+ 698 0028 A968     		ldr	r1, [r5, #8]
+ 699 002a 2046     		mov	r0, r4
+ 700 002c B847     		blx	r7
+ 701              	.LVL66:
+ 211:X-CUBE-AI/App/aiPbMgr.c ****     msg.dims.arg = &array_u32;
+ 702              		.loc 1 211 5 is_stmt 1 view .LVU187
+ 211:X-CUBE-AI/App/aiPbMgr.c ****     msg.dims.arg = &array_u32;
+ 703              		.loc 1 211 27 is_stmt 0 view .LVU188
+ 704 002e 0B4B     		ldr	r3, .L59
+ 705 0030 1693     		str	r3, [sp, #88]
+ 212:X-CUBE-AI/App/aiPbMgr.c **** 
+ 706              		.loc 1 212 5 is_stmt 1 view .LVU189
+ 212:X-CUBE-AI/App/aiPbMgr.c **** 
+ 707              		.loc 1 212 18 is_stmt 0 view .LVU190
+ 708 0032 CDF85CD0 		str	sp, [sp, #92]
+ 214:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 709              		.loc 1 214 5 is_stmt 1 view .LVU191
+ 214:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 710              		.loc 1 214 10 is_stmt 0 view .LVU192
+ 711 0036 4146     		mov	r1, r8
+ 712 0038 3046     		mov	r0, r6
+ 713 003a FFF7FEFF 		bl	pb_encode_tag_for_field
+ 714              	.LVL67:
+ 214:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 715              		.loc 1 214 8 view .LVU193
+ARM GAS  /tmp/ccjDkIVL.s 			page 21
+
+
+ 716 003e 30B1     		cbz	r0, .L53
+ 217:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 717              		.loc 1 217 5 is_stmt 1 view .LVU194
+ 217:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 718              		.loc 1 217 10 is_stmt 0 view .LVU195
+ 719 0040 03AA     		add	r2, sp, #12
+ 720 0042 0749     		ldr	r1, .L59+4
+ 721 0044 3046     		mov	r0, r6
+ 722 0046 FFF7FEFF 		bl	pb_encode_submessage
+ 723              	.LVL68:
+ 217:X-CUBE-AI/App/aiPbMgr.c ****       return false;
+ 724              		.loc 1 217 8 view .LVU196
+ 725 004a 0028     		cmp	r0, #0
+ 726 004c E0D1     		bne	.L58
+ 727              	.L53:
+ 215:X-CUBE-AI/App/aiPbMgr.c **** 
+ 728              		.loc 1 215 14 discriminator 1 view .LVU197
+ 729 004e 0020     		movs	r0, #0
+ 730              	.L54:
+ 215:X-CUBE-AI/App/aiPbMgr.c **** 
+ 731              		.loc 1 215 14 discriminator 1 view .LVU198
+ 732              	.LBE8:
+ 733              	.LBE7:
+ 221:X-CUBE-AI/App/aiPbMgr.c **** 
+ 734              		.loc 1 221 1 view .LVU199
+ 735 0050 1CB0     		add	sp, sp, #112
+ 736              	.LCFI14:
+ 737              		.cfi_remember_state
+ 738              		.cfi_def_cfa_offset 24
+ 739              		@ sp needed
+ 740 0052 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 741              	.LVL69:
+ 742              	.L57:
+ 743              	.LCFI15:
+ 744              		.cfi_restore_state
+ 220:X-CUBE-AI/App/aiPbMgr.c **** }
+ 745              		.loc 1 220 10 view .LVU200
+ 746 0056 0120     		movs	r0, #1
+ 747 0058 FAE7     		b	.L54
+ 748              	.L60:
+ 749 005a 00BF     		.align	2
+ 750              	.L59:
+ 751 005c 00000000 		.word	encode_uint32
+ 752 0060 00000000 		.word	aiTensorDescMsg_fields
+ 753              		.cfi_endproc
+ 754              	.LFE111:
+ 756              		.section	.text.aiPbMgrSendResp,"ax",%progbits
+ 757              		.align	1
+ 758              		.global	aiPbMgrSendResp
+ 759              		.syntax unified
+ 760              		.thumb
+ 761              		.thumb_func
+ 762              		.fpu fpv4-sp-d16
+ 764              	aiPbMgrSendResp:
+ 765              	.LVL70:
+ 766              	.LFB114:
+ 274:X-CUBE-AI/App/aiPbMgr.c **** 
+ARM GAS  /tmp/ccjDkIVL.s 			page 22
+
+
+ 275:X-CUBE-AI/App/aiPbMgr.c **** 
+ 276:X-CUBE-AI/App/aiPbMgr.c **** /*---------------------------------------------------------------------------*/
+ 277:X-CUBE-AI/App/aiPbMgr.c **** 
+ 278:X-CUBE-AI/App/aiPbMgr.c **** void aiPbMgrSendResp(const reqMsg *req, respMsg *resp,
+ 279:X-CUBE-AI/App/aiPbMgr.c ****     EnumState state)
+ 280:X-CUBE-AI/App/aiPbMgr.c **** {
+ 767              		.loc 1 280 1 is_stmt 1 view -0
+ 768              		.cfi_startproc
+ 769              		@ args = 0, pretend = 0, frame = 0
+ 770              		@ frame_needed = 0, uses_anonymous_args = 0
+ 771              		.loc 1 280 1 is_stmt 0 view .LVU202
+ 772 0000 08B5     		push	{r3, lr}
+ 773              	.LCFI16:
+ 774              		.cfi_def_cfa_offset 8
+ 775              		.cfi_offset 3, -8
+ 776              		.cfi_offset 14, -4
+ 281:X-CUBE-AI/App/aiPbMgr.c ****   resp->reqid = req->reqid;
+ 777              		.loc 1 281 3 is_stmt 1 view .LVU203
+ 778              		.loc 1 281 20 is_stmt 0 view .LVU204
+ 779 0002 0368     		ldr	r3, [r0]
+ 780              		.loc 1 281 15 view .LVU205
+ 781 0004 0B60     		str	r3, [r1]
+ 282:X-CUBE-AI/App/aiPbMgr.c ****   resp->state = state;
+ 782              		.loc 1 282 3 is_stmt 1 view .LVU206
+ 783              		.loc 1 282 15 is_stmt 0 view .LVU207
+ 784 0006 0A71     		strb	r2, [r1, #4]
+ 283:X-CUBE-AI/App/aiPbMgr.c ****   pb_encode(&pbContextMgr.output, respMsg_fields, resp);
+ 785              		.loc 1 283 3 is_stmt 1 view .LVU208
+ 786 0008 0A46     		mov	r2, r1
+ 787              	.LVL71:
+ 788              		.loc 1 283 3 is_stmt 0 view .LVU209
+ 789 000a 0349     		ldr	r1, .L63
+ 790              	.LVL72:
+ 791              		.loc 1 283 3 view .LVU210
+ 792 000c 0348     		ldr	r0, .L63+4
+ 793              	.LVL73:
+ 794              		.loc 1 283 3 view .LVU211
+ 795 000e FFF7FEFF 		bl	pb_encode
+ 796              	.LVL74:
+ 284:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_ostream();
+ 797              		.loc 1 284 3 is_stmt 1 view .LVU212
+ 798 0012 FFF7FEFF 		bl	pb_io_flush_ostream
+ 799              	.LVL75:
+ 285:X-CUBE-AI/App/aiPbMgr.c **** }
+ 800              		.loc 1 285 1 is_stmt 0 view .LVU213
+ 801 0016 08BD     		pop	{r3, pc}
+ 802              	.L64:
+ 803              		.align	2
+ 804              	.L63:
+ 805 0018 00000000 		.word	respMsg_fields
+ 806 001c 10000000 		.word	.LANCHOR0+16
+ 807              		.cfi_endproc
+ 808              	.LFE114:
+ 810              		.section	.text.aiPbMgrSendAck,"ax",%progbits
+ 811              		.align	1
+ 812              		.global	aiPbMgrSendAck
+ 813              		.syntax unified
+ARM GAS  /tmp/ccjDkIVL.s 			page 23
+
+
+ 814              		.thumb
+ 815              		.thumb_func
+ 816              		.fpu fpv4-sp-d16
+ 818              	aiPbMgrSendAck:
+ 819              	.LVL76:
+ 820              	.LFB115:
+ 286:X-CUBE-AI/App/aiPbMgr.c **** 
+ 287:X-CUBE-AI/App/aiPbMgr.c **** void aiPbMgrSendAck(const reqMsg *req, respMsg *resp,
+ 288:X-CUBE-AI/App/aiPbMgr.c ****     EnumState state, uint32_t param, EnumError error)
+ 289:X-CUBE-AI/App/aiPbMgr.c **** {
+ 821              		.loc 1 289 1 is_stmt 1 view -0
+ 822              		.cfi_startproc
+ 823              		@ args = 4, pretend = 0, frame = 0
+ 824              		@ frame_needed = 0, uses_anonymous_args = 0
+ 825              		.loc 1 289 1 is_stmt 0 view .LVU215
+ 826 0000 38B5     		push	{r3, r4, r5, lr}
+ 827              	.LCFI17:
+ 828              		.cfi_def_cfa_offset 16
+ 829              		.cfi_offset 3, -16
+ 830              		.cfi_offset 4, -12
+ 831              		.cfi_offset 5, -8
+ 832              		.cfi_offset 14, -4
+ 290:X-CUBE-AI/App/aiPbMgr.c ****   resp->which_payload = respMsg_ack_tag;
+ 833              		.loc 1 290 3 is_stmt 1 view .LVU216
+ 834              		.loc 1 290 23 is_stmt 0 view .LVU217
+ 835 0002 0C25     		movs	r5, #12
+ 836 0004 CD80     		strh	r5, [r1, #6]	@ movhi
+ 291:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.ack.param = param;
+ 837              		.loc 1 291 3 is_stmt 1 view .LVU218
+ 838              		.loc 1 291 27 is_stmt 0 view .LVU219
+ 839 0006 8B60     		str	r3, [r1, #8]
+ 292:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.ack.error = error;
+ 840              		.loc 1 292 3 is_stmt 1 view .LVU220
+ 841              		.loc 1 292 27 is_stmt 0 view .LVU221
+ 842 0008 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+ 843              	.LVL77:
+ 844              		.loc 1 292 27 view .LVU222
+ 845 000c 0B73     		strb	r3, [r1, #12]
+ 293:X-CUBE-AI/App/aiPbMgr.c ****   aiPbMgrSendResp(req, resp, state);
+ 846              		.loc 1 293 3 is_stmt 1 view .LVU223
+ 847 000e FFF7FEFF 		bl	aiPbMgrSendResp
+ 848              	.LVL78:
+ 294:X-CUBE-AI/App/aiPbMgr.c **** }
+ 849              		.loc 1 294 1 is_stmt 0 view .LVU224
+ 850 0012 38BD     		pop	{r3, r4, r5, pc}
+ 851              		.loc 1 294 1 view .LVU225
+ 852              		.cfi_endproc
+ 853              	.LFE115:
+ 855              		.section	.text.aiPbMgrWaitAndProcess,"ax",%progbits
+ 856              		.align	1
+ 857              		.global	aiPbMgrWaitAndProcess
+ 858              		.syntax unified
+ 859              		.thumb
+ 860              		.thumb_func
+ 861              		.fpu fpv4-sp-d16
+ 863              	aiPbMgrWaitAndProcess:
+ 864              	.LFB107:
+ARM GAS  /tmp/ccjDkIVL.s 			page 24
+
+
+  85:X-CUBE-AI/App/aiPbMgr.c ****   uint32_t idx;
+ 865              		.loc 1 85 1 is_stmt 1 view -0
+ 866              		.cfi_startproc
+ 867              		@ args = 0, pretend = 0, frame = 0
+ 868              		@ frame_needed = 0, uses_anonymous_args = 0
+ 869 0000 30B5     		push	{r4, r5, lr}
+ 870              	.LCFI18:
+ 871              		.cfi_def_cfa_offset 12
+ 872              		.cfi_offset 4, -12
+ 873              		.cfi_offset 5, -8
+ 874              		.cfi_offset 14, -4
+ 875 0002 83B0     		sub	sp, sp, #12
+ 876              	.LCFI19:
+ 877              		.cfi_def_cfa_offset 24
+  86:X-CUBE-AI/App/aiPbMgr.c ****   const aiPbCmdFunc *cfunc;
+ 878              		.loc 1 86 3 view .LVU227
+  87:X-CUBE-AI/App/aiPbMgr.c **** 
+ 879              		.loc 1 87 3 view .LVU228
+  89:X-CUBE-AI/App/aiPbMgr.c ****   if (pb_decode_delimited(&pbContextMgr.input, reqMsg_fields, &(pbContextMgr.req))) {
+ 880              		.loc 1 89 3 view .LVU229
+ 881 0004 FFF7FEFF 		bl	pb_io_flush_istream
+ 882              	.LVL79:
+  90:X-CUBE-AI/App/aiPbMgr.c ****     pb_io_flush_istream();
+ 883              		.loc 1 90 3 view .LVU230
+  90:X-CUBE-AI/App/aiPbMgr.c ****     pb_io_flush_istream();
+ 884              		.loc 1 90 7 is_stmt 0 view .LVU231
+ 885 0008 1F48     		ldr	r0, .L78
+ 886 000a 00F12C02 		add	r2, r0, #44
+ 887 000e 1F49     		ldr	r1, .L78+4
+ 888 0010 FFF7FEFF 		bl	pb_decode_delimited
+ 889              	.LVL80:
+  90:X-CUBE-AI/App/aiPbMgr.c ****     pb_io_flush_istream();
+ 890              		.loc 1 90 6 view .LVU232
+ 891 0014 20B9     		cbnz	r0, .L75
+ 892              	.L68:
+ 107:X-CUBE-AI/App/aiPbMgr.c **** 
+ 893              		.loc 1 107 3 is_stmt 1 view .LVU233
+ 894 0016 FFF7FEFF 		bl	pb_io_flush_istream
+ 895              	.LVL81:
+ 109:X-CUBE-AI/App/aiPbMgr.c **** }
+ 896              		.loc 1 109 3 view .LVU234
+ 110:X-CUBE-AI/App/aiPbMgr.c **** 
+ 897              		.loc 1 110 1 is_stmt 0 view .LVU235
+ 898 001a 0020     		movs	r0, #0
+ 899 001c 03B0     		add	sp, sp, #12
+ 900              	.LCFI20:
+ 901              		.cfi_remember_state
+ 902              		.cfi_def_cfa_offset 12
+ 903              		@ sp needed
+ 904 001e 30BD     		pop	{r4, r5, pc}
+ 905              	.L75:
+ 906              	.LCFI21:
+ 907              		.cfi_restore_state
+  91:X-CUBE-AI/App/aiPbMgr.c ****     pbContextMgr.state = PB_MGR_ON_GOING;
+ 908              		.loc 1 91 5 is_stmt 1 view .LVU236
+ 909 0020 FFF7FEFF 		bl	pb_io_flush_istream
+ 910              	.LVL82:
+ARM GAS  /tmp/ccjDkIVL.s 			page 25
+
+
+  92:X-CUBE-AI/App/aiPbMgr.c ****     for (idx = 0; idx < pbContextMgr.n_func; idx++) {
+ 911              		.loc 1 92 5 view .LVU237
+  92:X-CUBE-AI/App/aiPbMgr.c ****     for (idx = 0; idx < pbContextMgr.n_func; idx++) {
+ 912              		.loc 1 92 24 is_stmt 0 view .LVU238
+ 913 0024 184B     		ldr	r3, .L78
+ 914 0026 0222     		movs	r2, #2
+ 915 0028 83F89821 		strb	r2, [r3, #408]
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 916              		.loc 1 93 5 is_stmt 1 view .LVU239
+ 917              	.LVL83:
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 918              		.loc 1 93 14 is_stmt 0 view .LVU240
+ 919 002c 0024     		movs	r4, #0
+ 920              	.LVL84:
+ 921              	.L69:
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 922              		.loc 1 93 19 is_stmt 1 discriminator 1 view .LVU241
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 923              		.loc 1 93 37 is_stmt 0 discriminator 1 view .LVU242
+ 924 002e 164B     		ldr	r3, .L78
+ 925 0030 9B6A     		ldr	r3, [r3, #40]
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 926              		.loc 1 93 5 discriminator 1 view .LVU243
+ 927 0032 A342     		cmp	r3, r4
+ 928 0034 14D9     		bls	.L71
+  94:X-CUBE-AI/App/aiPbMgr.c ****       if (cfunc->cmd == pbContextMgr.req.cmd) {
+ 929              		.loc 1 94 7 is_stmt 1 view .LVU244
+  94:X-CUBE-AI/App/aiPbMgr.c ****       if (cfunc->cmd == pbContextMgr.req.cmd) {
+ 930              		.loc 1 94 28 is_stmt 0 view .LVU245
+ 931 0036 144B     		ldr	r3, .L78
+ 932 0038 5A6A     		ldr	r2, [r3, #36]
+  94:X-CUBE-AI/App/aiPbMgr.c ****       if (cfunc->cmd == pbContextMgr.req.cmd) {
+ 933              		.loc 1 94 34 view .LVU246
+ 934 003a 04EB4401 		add	r1, r4, r4, lsl #1
+  94:X-CUBE-AI/App/aiPbMgr.c ****       if (cfunc->cmd == pbContextMgr.req.cmd) {
+ 935              		.loc 1 94 13 view .LVU247
+ 936 003e 02EB8105 		add	r5, r2, r1, lsl #2
+ 937              	.LVL85:
+  95:X-CUBE-AI/App/aiPbMgr.c ****         cfunc->process(&(pbContextMgr.req), &(pbContextMgr.resp), cfunc->param);
+ 938              		.loc 1 95 7 is_stmt 1 view .LVU248
+  95:X-CUBE-AI/App/aiPbMgr.c ****         cfunc->process(&(pbContextMgr.req), &(pbContextMgr.resp), cfunc->param);
+ 939              		.loc 1 95 16 is_stmt 0 view .LVU249
+ 940 0042 12F82120 		ldrb	r2, [r2, r1, lsl #2]	@ zero_extendqisi2
+  95:X-CUBE-AI/App/aiPbMgr.c ****         cfunc->process(&(pbContextMgr.req), &(pbContextMgr.resp), cfunc->param);
+ 941              		.loc 1 95 41 view .LVU250
+ 942 0046 93F83030 		ldrb	r3, [r3, #48]	@ zero_extendqisi2
+  95:X-CUBE-AI/App/aiPbMgr.c ****         cfunc->process(&(pbContextMgr.req), &(pbContextMgr.resp), cfunc->param);
+ 943              		.loc 1 95 10 view .LVU251
+ 944 004a 9A42     		cmp	r2, r3
+ 945 004c 01D0     		beq	.L76
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 946              		.loc 1 93 46 is_stmt 1 discriminator 2 view .LVU252
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ 947              		.loc 1 93 49 is_stmt 0 discriminator 2 view .LVU253
+ 948 004e 0134     		adds	r4, r4, #1
+ 949              	.LVL86:
+  93:X-CUBE-AI/App/aiPbMgr.c ****       cfunc = &pbContextMgr.funcs[idx];
+ARM GAS  /tmp/ccjDkIVL.s 			page 26
+
+
+ 950              		.loc 1 93 49 discriminator 2 view .LVU254
+ 951 0050 EDE7     		b	.L69
+ 952              	.L76:
+  96:X-CUBE-AI/App/aiPbMgr.c ****         break;
+ 953              		.loc 1 96 9 is_stmt 1 view .LVU255
+  96:X-CUBE-AI/App/aiPbMgr.c ****         break;
+ 954              		.loc 1 96 14 is_stmt 0 view .LVU256
+ 955 0052 6B68     		ldr	r3, [r5, #4]
+  96:X-CUBE-AI/App/aiPbMgr.c ****         break;
+ 956              		.loc 1 96 9 view .LVU257
+ 957 0054 0C48     		ldr	r0, .L78
+ 958 0056 AA68     		ldr	r2, [r5, #8]
+ 959 0058 00F18001 		add	r1, r0, #128
+ 960 005c 2C30     		adds	r0, r0, #44
+ 961 005e 9847     		blx	r3
+ 962              	.LVL87:
+  97:X-CUBE-AI/App/aiPbMgr.c ****       }
+ 963              		.loc 1 97 9 is_stmt 1 view .LVU258
+ 964              	.L71:
+ 100:X-CUBE-AI/App/aiPbMgr.c ****       aiPbMgrSendAck(&(pbContextMgr.req), &(pbContextMgr.resp), EnumState_S_ERROR,
+ 965              		.loc 1 100 5 view .LVU259
+ 100:X-CUBE-AI/App/aiPbMgr.c ****       aiPbMgrSendAck(&(pbContextMgr.req), &(pbContextMgr.resp), EnumState_S_ERROR,
+ 966              		.loc 1 100 28 is_stmt 0 view .LVU260
+ 967 0060 094B     		ldr	r3, .L78
+ 968 0062 9B6A     		ldr	r3, [r3, #40]
+ 100:X-CUBE-AI/App/aiPbMgr.c ****       aiPbMgrSendAck(&(pbContextMgr.req), &(pbContextMgr.resp), EnumState_S_ERROR,
+ 969              		.loc 1 100 8 view .LVU261
+ 970 0064 A342     		cmp	r3, r4
+ 971 0066 04D0     		beq	.L77
+ 972              	.L73:
+ 104:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 973              		.loc 1 104 5 is_stmt 1 view .LVU262
+ 104:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 974              		.loc 1 104 24 is_stmt 0 view .LVU263
+ 975 0068 074B     		ldr	r3, .L78
+ 976 006a 0122     		movs	r2, #1
+ 977 006c 83F89821 		strb	r2, [r3, #408]
+ 978 0070 D1E7     		b	.L68
+ 979              	.L77:
+ 101:X-CUBE-AI/App/aiPbMgr.c ****           EnumError_E_INVALID_PARAM, EnumError_E_INVALID_PARAM);
+ 980              		.loc 1 101 7 is_stmt 1 view .LVU264
+ 981 0072 0548     		ldr	r0, .L78
+ 982 0074 0422     		movs	r2, #4
+ 983 0076 0092     		str	r2, [sp]
+ 984 0078 1346     		mov	r3, r2
+ 985 007a 00F18001 		add	r1, r0, #128
+ 986 007e 2C30     		adds	r0, r0, #44
+ 987 0080 FFF7FEFF 		bl	aiPbMgrSendAck
+ 988              	.LVL88:
+ 989 0084 F0E7     		b	.L73
+ 990              	.L79:
+ 991 0086 00BF     		.align	2
+ 992              	.L78:
+ 993 0088 00000000 		.word	.LANCHOR0
+ 994 008c 00000000 		.word	reqMsg_fields
+ 995              		.cfi_endproc
+ 996              	.LFE107:
+ARM GAS  /tmp/ccjDkIVL.s 			page 27
+
+
+ 998              		.section	.text.aiPbMgrWaitAck,"ax",%progbits
+ 999              		.align	1
+ 1000              		.global	aiPbMgrWaitAck
+ 1001              		.syntax unified
+ 1002              		.thumb
+ 1003              		.thumb_func
+ 1004              		.fpu fpv4-sp-d16
+ 1006              	aiPbMgrWaitAck:
+ 1007              	.LFB116:
+ 295:X-CUBE-AI/App/aiPbMgr.c **** 
+ 296:X-CUBE-AI/App/aiPbMgr.c **** bool aiPbMgrWaitAck(void)
+ 297:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1008              		.loc 1 297 1 view -0
+ 1009              		.cfi_startproc
+ 1010              		@ args = 0, pretend = 0, frame = 8
+ 1011              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1012 0000 10B5     		push	{r4, lr}
+ 1013              	.LCFI22:
+ 1014              		.cfi_def_cfa_offset 8
+ 1015              		.cfi_offset 4, -8
+ 1016              		.cfi_offset 14, -4
+ 1017 0002 82B0     		sub	sp, sp, #8
+ 1018              	.LCFI23:
+ 1019              		.cfi_def_cfa_offset 16
+ 298:X-CUBE-AI/App/aiPbMgr.c ****   bool res;
+ 1020              		.loc 1 298 3 view .LVU266
+ 299:X-CUBE-AI/App/aiPbMgr.c ****   ackMsg ack = ackMsg_init_default;
+ 1021              		.loc 1 299 3 view .LVU267
+ 1022              		.loc 1 299 10 is_stmt 0 view .LVU268
+ 1023 0004 0023     		movs	r3, #0
+ 1024 0006 0093     		str	r3, [sp]
+ 1025 0008 8DF80430 		strb	r3, [sp, #4]
+ 300:X-CUBE-AI/App/aiPbMgr.c ****   res = pb_decode_delimited(&pbContextMgr.input, ackMsg_fields, &ack);
+ 1026              		.loc 1 300 3 is_stmt 1 view .LVU269
+ 1027              		.loc 1 300 9 is_stmt 0 view .LVU270
+ 1028 000c 6A46     		mov	r2, sp
+ 1029 000e 0549     		ldr	r1, .L82
+ 1030 0010 0548     		ldr	r0, .L82+4
+ 1031 0012 FFF7FEFF 		bl	pb_decode_delimited
+ 1032              	.LVL89:
+ 1033 0016 0446     		mov	r4, r0
+ 1034              	.LVL90:
+ 301:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_istream();
+ 1035              		.loc 1 301 3 is_stmt 1 view .LVU271
+ 1036 0018 FFF7FEFF 		bl	pb_io_flush_istream
+ 1037              	.LVL91:
+ 302:X-CUBE-AI/App/aiPbMgr.c ****   return res;
+ 1038              		.loc 1 302 3 view .LVU272
+ 303:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1039              		.loc 1 303 1 is_stmt 0 view .LVU273
+ 1040 001c 2046     		mov	r0, r4
+ 1041 001e 02B0     		add	sp, sp, #8
+ 1042              	.LCFI24:
+ 1043              		.cfi_def_cfa_offset 8
+ 1044              		@ sp needed
+ 1045 0020 10BD     		pop	{r4, pc}
+ 1046              	.LVL92:
+ARM GAS  /tmp/ccjDkIVL.s 			page 28
+
+
+ 1047              	.L83:
+ 1048              		.loc 1 303 1 view .LVU274
+ 1049 0022 00BF     		.align	2
+ 1050              	.L82:
+ 1051 0024 00000000 		.word	ackMsg_fields
+ 1052 0028 00000000 		.word	.LANCHOR0
+ 1053              		.cfi_endproc
+ 1054              	.LFE116:
+ 1056              		.section	.text.aiPbMgrSendLog,"ax",%progbits
+ 1057              		.align	1
+ 1058              		.global	aiPbMgrSendLog
+ 1059              		.syntax unified
+ 1060              		.thumb
+ 1061              		.thumb_func
+ 1062              		.fpu fpv4-sp-d16
+ 1064              	aiPbMgrSendLog:
+ 1065              	.LVL93:
+ 1066              	.LFB117:
+ 304:X-CUBE-AI/App/aiPbMgr.c **** 
+ 305:X-CUBE-AI/App/aiPbMgr.c **** bool aiPbMgrSendLog(const reqMsg *req, respMsg *resp,
+ 306:X-CUBE-AI/App/aiPbMgr.c ****     EnumState state, uint32_t lvl, const char *str)
+ 307:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1067              		.loc 1 307 1 is_stmt 1 view -0
+ 1068              		.cfi_startproc
+ 1069              		@ args = 4, pretend = 0, frame = 8
+ 1070              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1071              		.loc 1 307 1 is_stmt 0 view .LVU276
+ 1072 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1073              	.LCFI25:
+ 1074              		.cfi_def_cfa_offset 24
+ 1075              		.cfi_offset 4, -24
+ 1076              		.cfi_offset 5, -20
+ 1077              		.cfi_offset 6, -16
+ 1078              		.cfi_offset 7, -12
+ 1079              		.cfi_offset 8, -8
+ 1080              		.cfi_offset 14, -4
+ 1081 0004 82B0     		sub	sp, sp, #8
+ 1082              	.LCFI26:
+ 1083              		.cfi_def_cfa_offset 32
+ 1084 0006 0546     		mov	r5, r0
+ 1085 0008 0C46     		mov	r4, r1
+ 1086 000a 1646     		mov	r6, r2
+ 1087 000c 1F46     		mov	r7, r3
+ 1088 000e DDF82080 		ldr	r8, [sp, #32]
+ 308:X-CUBE-AI/App/aiPbMgr.c ****   bool res;
+ 1089              		.loc 1 308 3 is_stmt 1 view .LVU277
+ 309:X-CUBE-AI/App/aiPbMgr.c ****   ackMsg ack = ackMsg_init_default;
+ 1090              		.loc 1 309 3 view .LVU278
+ 1091              		.loc 1 309 10 is_stmt 0 view .LVU279
+ 1092 0012 0023     		movs	r3, #0
+ 1093              	.LVL94:
+ 1094              		.loc 1 309 10 view .LVU280
+ 1095 0014 0093     		str	r3, [sp]
+ 1096 0016 8DF80430 		strb	r3, [sp, #4]
+ 310:X-CUBE-AI/App/aiPbMgr.c **** 
+ 311:X-CUBE-AI/App/aiPbMgr.c ****   size_t len = strlen(str);
+ 1097              		.loc 1 311 3 is_stmt 1 view .LVU281
+ARM GAS  /tmp/ccjDkIVL.s 			page 29
+
+
+ 1098              		.loc 1 311 16 is_stmt 0 view .LVU282
+ 1099 001a 4046     		mov	r0, r8
+ 1100              	.LVL95:
+ 1101              		.loc 1 311 16 view .LVU283
+ 1102 001c FFF7FEFF 		bl	strlen
+ 1103              	.LVL96:
+ 312:X-CUBE-AI/App/aiPbMgr.c **** 
+ 313:X-CUBE-AI/App/aiPbMgr.c ****   resp->which_payload = respMsg_log_tag;
+ 1104              		.loc 1 313 3 is_stmt 1 view .LVU284
+ 1105              		.loc 1 313 23 is_stmt 0 view .LVU285
+ 1106 0020 0D23     		movs	r3, #13
+ 1107 0022 E380     		strh	r3, [r4, #6]	@ movhi
+ 314:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.log.level = lvl;
+ 1108              		.loc 1 314 3 is_stmt 1 view .LVU286
+ 1109              		.loc 1 314 27 is_stmt 0 view .LVU287
+ 1110 0024 A760     		str	r7, [r4, #8]
+ 315:X-CUBE-AI/App/aiPbMgr.c ****   if (len >= sizeof(resp->payload.log.str))
+ 1111              		.loc 1 315 3 is_stmt 1 view .LVU288
+ 1112              		.loc 1 315 6 is_stmt 0 view .LVU289
+ 1113 0026 7F28     		cmp	r0, #127
+ 1114 0028 00D9     		bls	.L85
+ 316:X-CUBE-AI/App/aiPbMgr.c ****     len = sizeof(resp->payload.log.str) - 1;
+ 1115              		.loc 1 316 9 view .LVU290
+ 1116 002a 7F20     		movs	r0, #127
+ 1117              	.LVL97:
+ 1118              	.L85:
+ 317:X-CUBE-AI/App/aiPbMgr.c **** 
+ 318:X-CUBE-AI/App/aiPbMgr.c ****   memcpy(&resp->payload.log.str[0], str, len+1);
+ 1119              		.loc 1 318 3 is_stmt 1 view .LVU291
+ 1120 002c 421C     		adds	r2, r0, #1
+ 1121 002e 4146     		mov	r1, r8
+ 1122 0030 04F10C00 		add	r0, r4, #12
+ 1123              	.LVL98:
+ 1124              		.loc 1 318 3 is_stmt 0 view .LVU292
+ 1125 0034 FFF7FEFF 		bl	memcpy
+ 1126              	.LVL99:
+ 319:X-CUBE-AI/App/aiPbMgr.c **** 
+ 320:X-CUBE-AI/App/aiPbMgr.c ****   aiPbMgrSendResp(req, resp, state);
+ 1127              		.loc 1 320 3 is_stmt 1 view .LVU293
+ 1128 0038 3246     		mov	r2, r6
+ 1129 003a 2146     		mov	r1, r4
+ 1130 003c 2846     		mov	r0, r5
+ 1131 003e FFF7FEFF 		bl	aiPbMgrSendResp
+ 1132              	.LVL100:
+ 321:X-CUBE-AI/App/aiPbMgr.c **** 
+ 322:X-CUBE-AI/App/aiPbMgr.c ****   res = pb_decode_delimited(&pbContextMgr.input, ackMsg_fields, &ack);
+ 1133              		.loc 1 322 3 view .LVU294
+ 1134              		.loc 1 322 9 is_stmt 0 view .LVU295
+ 1135 0042 6A46     		mov	r2, sp
+ 1136 0044 0549     		ldr	r1, .L88
+ 1137 0046 0648     		ldr	r0, .L88+4
+ 1138 0048 FFF7FEFF 		bl	pb_decode_delimited
+ 1139              	.LVL101:
+ 1140 004c 0446     		mov	r4, r0
+ 1141              	.LVL102:
+ 323:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_istream();
+ 1142              		.loc 1 323 3 is_stmt 1 view .LVU296
+ARM GAS  /tmp/ccjDkIVL.s 			page 30
+
+
+ 1143 004e FFF7FEFF 		bl	pb_io_flush_istream
+ 1144              	.LVL103:
+ 324:X-CUBE-AI/App/aiPbMgr.c ****   return res;
+ 1145              		.loc 1 324 3 view .LVU297
+ 325:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1146              		.loc 1 325 1 is_stmt 0 view .LVU298
+ 1147 0052 2046     		mov	r0, r4
+ 1148 0054 02B0     		add	sp, sp, #8
+ 1149              	.LCFI27:
+ 1150              		.cfi_def_cfa_offset 24
+ 1151              		@ sp needed
+ 1152 0056 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1153              	.LVL104:
+ 1154              	.L89:
+ 1155              		.loc 1 325 1 view .LVU299
+ 1156 005a 00BF     		.align	2
+ 1157              	.L88:
+ 1158 005c 00000000 		.word	ackMsg_fields
+ 1159 0060 00000000 		.word	.LANCHOR0
+ 1160              		.cfi_endproc
+ 1161              	.LFE117:
+ 1163              		.section	.text.aiPbMgrSendLogV2,"ax",%progbits
+ 1164              		.align	1
+ 1165              		.global	aiPbMgrSendLogV2
+ 1166              		.syntax unified
+ 1167              		.thumb
+ 1168              		.thumb_func
+ 1169              		.fpu fpv4-sp-d16
+ 1171              	aiPbMgrSendLogV2:
+ 1172              	.LVL105:
+ 1173              	.LFB118:
+ 326:X-CUBE-AI/App/aiPbMgr.c **** 
+ 327:X-CUBE-AI/App/aiPbMgr.c **** bool aiPbMgrSendLogV2(EnumState state, uint32_t lvl, const char *str)
+ 328:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1174              		.loc 1 328 1 is_stmt 1 view -0
+ 1175              		.cfi_startproc
+ 1176              		@ args = 0, pretend = 0, frame = 8
+ 1177              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1178              		.loc 1 328 1 is_stmt 0 view .LVU301
+ 1179 0000 70B5     		push	{r4, r5, r6, lr}
+ 1180              	.LCFI28:
+ 1181              		.cfi_def_cfa_offset 16
+ 1182              		.cfi_offset 4, -16
+ 1183              		.cfi_offset 5, -12
+ 1184              		.cfi_offset 6, -8
+ 1185              		.cfi_offset 14, -4
+ 1186 0002 82B0     		sub	sp, sp, #8
+ 1187              	.LCFI29:
+ 1188              		.cfi_def_cfa_offset 24
+ 329:X-CUBE-AI/App/aiPbMgr.c ****   bool res;
+ 1189              		.loc 1 329 3 is_stmt 1 view .LVU302
+ 330:X-CUBE-AI/App/aiPbMgr.c ****   ackMsg ack = ackMsg_init_default;
+ 1190              		.loc 1 330 3 view .LVU303
+ 1191              		.loc 1 330 10 is_stmt 0 view .LVU304
+ 1192 0004 0023     		movs	r3, #0
+ 1193 0006 0093     		str	r3, [sp]
+ 1194 0008 8DF80430 		strb	r3, [sp, #4]
+ARM GAS  /tmp/ccjDkIVL.s 			page 31
+
+
+ 331:X-CUBE-AI/App/aiPbMgr.c **** 
+ 332:X-CUBE-AI/App/aiPbMgr.c ****   if (pbContextMgr.state != PB_MGR_ON_GOING)
+ 1195              		.loc 1 332 3 is_stmt 1 view .LVU305
+ 1196              		.loc 1 332 19 is_stmt 0 view .LVU306
+ 1197 000c 174B     		ldr	r3, .L96
+ 1198 000e 93F89831 		ldrb	r3, [r3, #408]	@ zero_extendqisi2
+ 1199              		.loc 1 332 6 view .LVU307
+ 1200 0012 022B     		cmp	r3, #2
+ 1201 0014 27D1     		bne	.L93
+ 1202 0016 0546     		mov	r5, r0
+ 1203 0018 0E46     		mov	r6, r1
+ 1204 001a 1446     		mov	r4, r2
+ 333:X-CUBE-AI/App/aiPbMgr.c ****     return false;
+ 334:X-CUBE-AI/App/aiPbMgr.c **** 
+ 335:X-CUBE-AI/App/aiPbMgr.c ****   size_t len = strlen(str);
+ 1205              		.loc 1 335 3 is_stmt 1 view .LVU308
+ 1206              		.loc 1 335 16 is_stmt 0 view .LVU309
+ 1207 001c 1046     		mov	r0, r2
+ 1208              	.LVL106:
+ 1209              		.loc 1 335 16 view .LVU310
+ 1210 001e FFF7FEFF 		bl	strlen
+ 1211              	.LVL107:
+ 336:X-CUBE-AI/App/aiPbMgr.c **** 
+ 337:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.resp.which_payload = respMsg_log_tag;
+ 1212              		.loc 1 337 3 is_stmt 1 view .LVU311
+ 1213              		.loc 1 337 35 is_stmt 0 view .LVU312
+ 1214 0022 124B     		ldr	r3, .L96
+ 1215 0024 0D22     		movs	r2, #13
+ 1216 0026 A3F88620 		strh	r2, [r3, #134]	@ movhi
+ 338:X-CUBE-AI/App/aiPbMgr.c ****   pbContextMgr.resp.payload.log.level = lvl;
+ 1217              		.loc 1 338 3 is_stmt 1 view .LVU313
+ 1218              		.loc 1 338 39 is_stmt 0 view .LVU314
+ 1219 002a C3F88860 		str	r6, [r3, #136]
+ 339:X-CUBE-AI/App/aiPbMgr.c ****   if (len >= sizeof(pbContextMgr.resp.payload.log.str))
+ 1220              		.loc 1 339 3 is_stmt 1 view .LVU315
+ 1221              		.loc 1 339 6 is_stmt 0 view .LVU316
+ 1222 002e 7F28     		cmp	r0, #127
+ 1223 0030 00D9     		bls	.L92
+ 340:X-CUBE-AI/App/aiPbMgr.c ****     len = sizeof(pbContextMgr.resp.payload.log.str) - 1;
+ 1224              		.loc 1 340 9 view .LVU317
+ 1225 0032 7F20     		movs	r0, #127
+ 1226              	.LVL108:
+ 1227              	.L92:
+ 341:X-CUBE-AI/App/aiPbMgr.c **** 
+ 342:X-CUBE-AI/App/aiPbMgr.c ****   memcpy(&pbContextMgr.resp.payload.log.str[0], str, len+1);
+ 1228              		.loc 1 342 3 is_stmt 1 view .LVU318
+ 1229 0034 0D4E     		ldr	r6, .L96
+ 1230              	.LVL109:
+ 1231              		.loc 1 342 3 is_stmt 0 view .LVU319
+ 1232 0036 421C     		adds	r2, r0, #1
+ 1233 0038 2146     		mov	r1, r4
+ 1234 003a 06F18C00 		add	r0, r6, #140
+ 1235              	.LVL110:
+ 1236              		.loc 1 342 3 view .LVU320
+ 1237 003e FFF7FEFF 		bl	memcpy
+ 1238              	.LVL111:
+ 343:X-CUBE-AI/App/aiPbMgr.c **** 
+ARM GAS  /tmp/ccjDkIVL.s 			page 32
+
+
+ 344:X-CUBE-AI/App/aiPbMgr.c ****   aiPbMgrSendResp(&(pbContextMgr.req), &(pbContextMgr.resp), state);
+ 1239              		.loc 1 344 3 is_stmt 1 view .LVU321
+ 1240 0042 2A46     		mov	r2, r5
+ 1241 0044 06F18001 		add	r1, r6, #128
+ 1242 0048 06F12C00 		add	r0, r6, #44
+ 1243 004c FFF7FEFF 		bl	aiPbMgrSendResp
+ 1244              	.LVL112:
+ 345:X-CUBE-AI/App/aiPbMgr.c **** 
+ 346:X-CUBE-AI/App/aiPbMgr.c ****   res = pb_decode_delimited(&pbContextMgr.input, ackMsg_fields, &ack);
+ 1245              		.loc 1 346 3 view .LVU322
+ 1246              		.loc 1 346 9 is_stmt 0 view .LVU323
+ 1247 0050 6A46     		mov	r2, sp
+ 1248 0052 0749     		ldr	r1, .L96+4
+ 1249 0054 3046     		mov	r0, r6
+ 1250 0056 FFF7FEFF 		bl	pb_decode_delimited
+ 1251              	.LVL113:
+ 1252 005a 0446     		mov	r4, r0
+ 1253              	.LVL114:
+ 347:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_istream();
+ 1254              		.loc 1 347 3 is_stmt 1 view .LVU324
+ 1255 005c FFF7FEFF 		bl	pb_io_flush_istream
+ 1256              	.LVL115:
+ 348:X-CUBE-AI/App/aiPbMgr.c ****   return res;
+ 1257              		.loc 1 348 3 view .LVU325
+ 1258              	.L91:
+ 349:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1259              		.loc 1 349 1 is_stmt 0 view .LVU326
+ 1260 0060 2046     		mov	r0, r4
+ 1261 0062 02B0     		add	sp, sp, #8
+ 1262              	.LCFI30:
+ 1263              		.cfi_remember_state
+ 1264              		.cfi_def_cfa_offset 16
+ 1265              		@ sp needed
+ 1266 0064 70BD     		pop	{r4, r5, r6, pc}
+ 1267              	.LVL116:
+ 1268              	.L93:
+ 1269              	.LCFI31:
+ 1270              		.cfi_restore_state
+ 333:X-CUBE-AI/App/aiPbMgr.c **** 
+ 1271              		.loc 1 333 12 view .LVU327
+ 1272 0066 0024     		movs	r4, #0
+ 1273 0068 FAE7     		b	.L91
+ 1274              	.L97:
+ 1275 006a 00BF     		.align	2
+ 1276              	.L96:
+ 1277 006c 00000000 		.word	.LANCHOR0
+ 1278 0070 00000000 		.word	ackMsg_fields
+ 1279              		.cfi_endproc
+ 1280              	.LFE118:
+ 1282              		.section	.text.aiPbMgrReceiveData,"ax",%progbits
+ 1283              		.align	1
+ 1284              		.global	aiPbMgrReceiveData
+ 1285              		.syntax unified
+ 1286              		.thumb
+ 1287              		.thumb_func
+ 1288              		.fpu fpv4-sp-d16
+ 1290              	aiPbMgrReceiveData:
+ARM GAS  /tmp/ccjDkIVL.s 			page 33
+
+
+ 1291              	.LVL117:
+ 1292              	.LFB119:
+ 350:X-CUBE-AI/App/aiPbMgr.c **** 
+ 351:X-CUBE-AI/App/aiPbMgr.c **** bool aiPbMgrReceiveData(aiPbData *data)
+ 352:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1293              		.loc 1 352 1 is_stmt 1 view -0
+ 1294              		.cfi_startproc
+ 1295              		@ args = 0, pretend = 0, frame = 24
+ 1296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1297              		.loc 1 352 1 is_stmt 0 view .LVU329
+ 1298 0000 10B5     		push	{r4, lr}
+ 1299              	.LCFI32:
+ 1300              		.cfi_def_cfa_offset 8
+ 1301              		.cfi_offset 4, -8
+ 1302              		.cfi_offset 14, -4
+ 1303 0002 86B0     		sub	sp, sp, #24
+ 1304              	.LCFI33:
+ 1305              		.cfi_def_cfa_offset 32
+ 1306 0004 0446     		mov	r4, r0
+ 353:X-CUBE-AI/App/aiPbMgr.c ****   aiDataMsg msg;
+ 1307              		.loc 1 353 3 is_stmt 1 view .LVU330
+ 354:X-CUBE-AI/App/aiPbMgr.c **** 
+ 355:X-CUBE-AI/App/aiPbMgr.c ****   msg.datas.funcs.decode = &decode_data_cb;
+ 1308              		.loc 1 355 3 view .LVU331
+ 1309              		.loc 1 355 26 is_stmt 0 view .LVU332
+ 1310 0006 084B     		ldr	r3, .L100
+ 1311 0008 0493     		str	r3, [sp, #16]
+ 356:X-CUBE-AI/App/aiPbMgr.c ****   msg.datas.arg = (void *)data;
+ 1312              		.loc 1 356 3 is_stmt 1 view .LVU333
+ 1313              		.loc 1 356 17 is_stmt 0 view .LVU334
+ 1314 000a 0590     		str	r0, [sp, #20]
+ 357:X-CUBE-AI/App/aiPbMgr.c **** 
+ 358:X-CUBE-AI/App/aiPbMgr.c ****   /* Waiting and decoding aiDataMsg message */
+ 359:X-CUBE-AI/App/aiPbMgr.c ****   pb_decode_delimited(&pbContextMgr.input, aiDataMsg_fields, &msg);
+ 1315              		.loc 1 359 3 is_stmt 1 view .LVU335
+ 1316 000c 01AA     		add	r2, sp, #4
+ 1317 000e 0749     		ldr	r1, .L100+4
+ 1318 0010 0748     		ldr	r0, .L100+8
+ 1319              	.LVL118:
+ 1320              		.loc 1 359 3 is_stmt 0 view .LVU336
+ 1321 0012 FFF7FEFF 		bl	pb_decode_delimited
+ 1322              	.LVL119:
+ 360:X-CUBE-AI/App/aiPbMgr.c ****   pb_io_flush_istream();
+ 1323              		.loc 1 360 3 is_stmt 1 view .LVU337
+ 1324 0016 FFF7FEFF 		bl	pb_io_flush_istream
+ 1325              	.LVL120:
+ 361:X-CUBE-AI/App/aiPbMgr.c **** 
+ 362:X-CUBE-AI/App/aiPbMgr.c ****   data->type = msg.type;
+ 1326              		.loc 1 362 3 view .LVU338
+ 1327              		.loc 1 362 19 is_stmt 0 view .LVU339
+ 1328 001a 019B     		ldr	r3, [sp, #4]
+ 1329              		.loc 1 362 14 view .LVU340
+ 1330 001c 2360     		str	r3, [r4]
+ 363:X-CUBE-AI/App/aiPbMgr.c ****   data->addr = msg.addr;
+ 1331              		.loc 1 363 3 is_stmt 1 view .LVU341
+ 1332              		.loc 1 363 19 is_stmt 0 view .LVU342
+ 1333 001e 039B     		ldr	r3, [sp, #12]
+ARM GAS  /tmp/ccjDkIVL.s 			page 34
+
+
+ 1334              		.loc 1 363 14 view .LVU343
+ 1335 0020 A360     		str	r3, [r4, #8]
+ 364:X-CUBE-AI/App/aiPbMgr.c **** 
+ 365:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 1336              		.loc 1 365 3 is_stmt 1 view .LVU344
+ 366:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1337              		.loc 1 366 1 is_stmt 0 view .LVU345
+ 1338 0022 0120     		movs	r0, #1
+ 1339 0024 06B0     		add	sp, sp, #24
+ 1340              	.LCFI34:
+ 1341              		.cfi_def_cfa_offset 8
+ 1342              		@ sp needed
+ 1343 0026 10BD     		pop	{r4, pc}
+ 1344              	.LVL121:
+ 1345              	.L101:
+ 1346              		.loc 1 366 1 view .LVU346
+ 1347              		.align	2
+ 1348              	.L100:
+ 1349 0028 00000000 		.word	decode_data_cb
+ 1350 002c 00000000 		.word	aiDataMsg_fields
+ 1351 0030 00000000 		.word	.LANCHOR0
+ 1352              		.cfi_endproc
+ 1353              	.LFE119:
+ 1355              		.section	.text.aiPbMgrSendData,"ax",%progbits
+ 1356              		.align	1
+ 1357              		.global	aiPbMgrSendData
+ 1358              		.syntax unified
+ 1359              		.thumb
+ 1360              		.thumb_func
+ 1361              		.fpu fpv4-sp-d16
+ 1363              	aiPbMgrSendData:
+ 1364              	.LVL122:
+ 1365              	.LFB120:
+ 367:X-CUBE-AI/App/aiPbMgr.c **** 
+ 368:X-CUBE-AI/App/aiPbMgr.c **** bool aiPbMgrSendData(const reqMsg *req, respMsg *resp, EnumState state, aiPbData *data)
+ 369:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1366              		.loc 1 369 1 is_stmt 1 view -0
+ 1367              		.cfi_startproc
+ 1368              		@ args = 0, pretend = 0, frame = 0
+ 1369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1370              		.loc 1 369 1 is_stmt 0 view .LVU348
+ 1371 0000 70B5     		push	{r4, r5, r6, lr}
+ 1372              	.LCFI35:
+ 1373              		.cfi_def_cfa_offset 16
+ 1374              		.cfi_offset 4, -16
+ 1375              		.cfi_offset 5, -12
+ 1376              		.cfi_offset 6, -8
+ 1377              		.cfi_offset 14, -4
+ 1378 0002 1546     		mov	r5, r2
+ 370:X-CUBE-AI/App/aiPbMgr.c ****   resp->which_payload = respMsg_data_tag;
+ 1379              		.loc 1 370 3 is_stmt 1 view .LVU349
+ 1380              		.loc 1 370 23 is_stmt 0 view .LVU350
+ 1381 0004 0F26     		movs	r6, #15
+ 1382 0006 CE80     		strh	r6, [r1, #6]	@ movhi
+ 371:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.data.type = data->type;
+ 1383              		.loc 1 371 3 is_stmt 1 view .LVU351
+ 1384              		.loc 1 371 33 is_stmt 0 view .LVU352
+ARM GAS  /tmp/ccjDkIVL.s 			page 35
+
+
+ 1385 0008 1E68     		ldr	r6, [r3]
+ 1386              		.loc 1 371 27 view .LVU353
+ 1387 000a 8E60     		str	r6, [r1, #8]
+ 372:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.data.addr = (uint32_t)data->addr;
+ 1388              		.loc 1 372 3 is_stmt 1 view .LVU354
+ 1389              		.loc 1 372 43 is_stmt 0 view .LVU355
+ 1390 000c 9E68     		ldr	r6, [r3, #8]
+ 1391              		.loc 1 372 27 view .LVU356
+ 1392 000e 0E61     		str	r6, [r1, #16]
+ 373:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.data.size = data->size;
+ 1393              		.loc 1 373 3 is_stmt 1 view .LVU357
+ 1394              		.loc 1 373 33 is_stmt 0 view .LVU358
+ 1395 0010 5E68     		ldr	r6, [r3, #4]
+ 1396              		.loc 1 373 27 view .LVU359
+ 1397 0012 CE60     		str	r6, [r1, #12]
+ 374:X-CUBE-AI/App/aiPbMgr.c **** 
+ 375:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.data.datas.funcs.encode = &encode_data_cb;
+ 1398              		.loc 1 375 3 is_stmt 1 view .LVU360
+ 1399              		.loc 1 375 41 is_stmt 0 view .LVU361
+ 1400 0014 054E     		ldr	r6, .L107
+ 1401 0016 4E61     		str	r6, [r1, #20]
+ 376:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.data.datas.arg = (void *)data;
+ 1402              		.loc 1 376 3 is_stmt 1 view .LVU362
+ 1403              		.loc 1 376 32 is_stmt 0 view .LVU363
+ 1404 0018 8B61     		str	r3, [r1, #24]
+ 377:X-CUBE-AI/App/aiPbMgr.c **** 
+ 378:X-CUBE-AI/App/aiPbMgr.c ****   aiPbMgrSendResp(req, resp, state);
+ 1405              		.loc 1 378 3 is_stmt 1 view .LVU364
+ 1406 001a FFF7FEFF 		bl	aiPbMgrSendResp
+ 1407              	.LVL123:
+ 379:X-CUBE-AI/App/aiPbMgr.c **** 
+ 380:X-CUBE-AI/App/aiPbMgr.c ****   if (state == EnumState_S_PROCESSING)
+ 1408              		.loc 1 380 3 view .LVU365
+ 1409              		.loc 1 380 6 is_stmt 0 view .LVU366
+ 1410 001e 022D     		cmp	r5, #2
+ 1411 0020 01D0     		beq	.L106
+ 381:X-CUBE-AI/App/aiPbMgr.c ****     return aiPbMgrWaitAck();
+ 382:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 1412              		.loc 1 382 10 view .LVU367
+ 1413 0022 0120     		movs	r0, #1
+ 1414              	.L103:
+ 383:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1415              		.loc 1 383 1 view .LVU368
+ 1416 0024 70BD     		pop	{r4, r5, r6, pc}
+ 1417              	.L106:
+ 381:X-CUBE-AI/App/aiPbMgr.c ****     return aiPbMgrWaitAck();
+ 1418              		.loc 1 381 5 is_stmt 1 view .LVU369
+ 381:X-CUBE-AI/App/aiPbMgr.c ****     return aiPbMgrWaitAck();
+ 1419              		.loc 1 381 12 is_stmt 0 view .LVU370
+ 1420 0026 FFF7FEFF 		bl	aiPbMgrWaitAck
+ 1421              	.LVL124:
+ 1422 002a FBE7     		b	.L103
+ 1423              	.L108:
+ 1424              		.align	2
+ 1425              	.L107:
+ 1426 002c 00000000 		.word	encode_data_cb
+ 1427              		.cfi_endproc
+ARM GAS  /tmp/ccjDkIVL.s 			page 36
+
+
+ 1428              	.LFE120:
+ 1430              		.section	.text.aiPbMgrSendOperator,"ax",%progbits
+ 1431              		.align	1
+ 1432              		.global	aiPbMgrSendOperator
+ 1433              		.syntax unified
+ 1434              		.thumb
+ 1435              		.thumb_func
+ 1436              		.fpu fpv4-sp-d16
+ 1438              	aiPbMgrSendOperator:
+ 1439              	.LVL125:
+ 1440              	.LFB121:
+ 384:X-CUBE-AI/App/aiPbMgr.c **** 
+ 385:X-CUBE-AI/App/aiPbMgr.c **** 
+ 386:X-CUBE-AI/App/aiPbMgr.c **** bool aiPbMgrSendOperator(const reqMsg *req, respMsg *resp,
+ 387:X-CUBE-AI/App/aiPbMgr.c ****     EnumState state, const char *name, const uint32_t type, const uint32_t id,
+ 388:X-CUBE-AI/App/aiPbMgr.c ****     aiOpPerf *perf)
+ 389:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1441              		.loc 1 389 1 is_stmt 1 view -0
+ 1442              		.cfi_startproc
+ 1443              		@ args = 12, pretend = 0, frame = 16
+ 1444              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1445              		.loc 1 389 1 is_stmt 0 view .LVU372
+ 1446 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1447              	.LCFI36:
+ 1448              		.cfi_def_cfa_offset 20
+ 1449              		.cfi_offset 4, -20
+ 1450              		.cfi_offset 5, -16
+ 1451              		.cfi_offset 6, -12
+ 1452              		.cfi_offset 7, -8
+ 1453              		.cfi_offset 14, -4
+ 1454 0002 85B0     		sub	sp, sp, #20
+ 1455              	.LCFI37:
+ 1456              		.cfi_def_cfa_offset 40
+ 1457 0004 0646     		mov	r6, r0
+ 1458 0006 0C46     		mov	r4, r1
+ 1459 0008 1746     		mov	r7, r2
+ 1460 000a 0C9D     		ldr	r5, [sp, #48]
+ 390:X-CUBE-AI/App/aiPbMgr.c ****   struct _encode_uint32 array;
+ 1461              		.loc 1 390 3 is_stmt 1 view .LVU373
+ 391:X-CUBE-AI/App/aiPbMgr.c ****   resp->which_payload = respMsg_op_tag;
+ 1462              		.loc 1 391 3 view .LVU374
+ 1463              		.loc 1 391 23 is_stmt 0 view .LVU375
+ 1464 000c 1022     		movs	r2, #16
+ 1465              	.LVL126:
+ 1466              		.loc 1 391 23 view .LVU376
+ 1467 000e CA80     		strh	r2, [r1, #6]	@ movhi
+ 392:X-CUBE-AI/App/aiPbMgr.c ****   if (name)
+ 1468              		.loc 1 392 3 is_stmt 1 view .LVU377
+ 1469              		.loc 1 392 6 is_stmt 0 view .LVU378
+ 1470 0010 03B3     		cbz	r3, .L110
+ 1471 0012 1846     		mov	r0, r3
+ 1472              	.LVL127:
+ 393:X-CUBE-AI/App/aiPbMgr.c ****     aiPbStrCopy(name, &resp->payload.op.name[0], sizeof(resp->payload.op.name));
+ 1473              		.loc 1 393 5 is_stmt 1 view .LVU379
+ 1474 0014 4022     		movs	r2, #64
+ 1475 0016 0831     		adds	r1, r1, #8
+ 1476              	.LVL128:
+ARM GAS  /tmp/ccjDkIVL.s 			page 37
+
+
+ 1477              		.loc 1 393 5 is_stmt 0 view .LVU380
+ 1478 0018 FFF7FEFF 		bl	aiPbStrCopy
+ 1479              	.LVL129:
+ 1480              	.L111:
+ 394:X-CUBE-AI/App/aiPbMgr.c ****   else
+ 395:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.name[0] = 0;
+ 396:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.op.type = type;
+ 1481              		.loc 1 396 3 is_stmt 1 view .LVU381
+ 1482              		.loc 1 396 25 is_stmt 0 view .LVU382
+ 1483 001c 0A9B     		ldr	r3, [sp, #40]
+ 1484 001e A364     		str	r3, [r4, #72]
+ 397:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.op.id = id;
+ 1485              		.loc 1 397 3 is_stmt 1 view .LVU383
+ 1486              		.loc 1 397 23 is_stmt 0 view .LVU384
+ 1487 0020 0B9B     		ldr	r3, [sp, #44]
+ 1488 0022 E364     		str	r3, [r4, #76]
+ 398:X-CUBE-AI/App/aiPbMgr.c **** 
+ 399:X-CUBE-AI/App/aiPbMgr.c ****   if (perf) {
+ 1489              		.loc 1 399 3 is_stmt 1 view .LVU385
+ 1490              		.loc 1 399 6 is_stmt 0 view .LVU386
+ 1491 0024 E5B1     		cbz	r5, .L112
+ 400:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.duration = perf->duration;
+ 1492              		.loc 1 400 5 is_stmt 1 view .LVU387
+ 1493              		.loc 1 400 37 is_stmt 0 view .LVU388
+ 1494 0026 2B68     		ldr	r3, [r5]	@ float
+ 1495              		.loc 1 400 31 view .LVU389
+ 1496 0028 2365     		str	r3, [r4, #80]	@ float
+ 401:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counter_type = perf->counter_type;
+ 1497              		.loc 1 401 5 is_stmt 1 view .LVU390
+ 1498              		.loc 1 401 41 is_stmt 0 view .LVU391
+ 1499 002a 6B68     		ldr	r3, [r5, #4]
+ 1500              		.loc 1 401 35 view .LVU392
+ 1501 002c 6365     		str	r3, [r4, #84]
+ 402:X-CUBE-AI/App/aiPbMgr.c ****     if (perf->counters) {
+ 1502              		.loc 1 402 5 is_stmt 1 view .LVU393
+ 1503              		.loc 1 402 13 is_stmt 0 view .LVU394
+ 1504 002e EB68     		ldr	r3, [r5, #12]
+ 1505              		.loc 1 402 8 view .LVU395
+ 1506 0030 9BB1     		cbz	r3, .L113
+ 403:X-CUBE-AI/App/aiPbMgr.c ****       array.size = perf->counter_n;
+ 1507              		.loc 1 403 7 is_stmt 1 view .LVU396
+ 1508              		.loc 1 403 24 is_stmt 0 view .LVU397
+ 1509 0032 AA68     		ldr	r2, [r5, #8]
+ 1510              		.loc 1 403 18 view .LVU398
+ 1511 0034 0192     		str	r2, [sp, #4]
+ 404:X-CUBE-AI/App/aiPbMgr.c **** 	  array.data = (void *)perf->counters;
+ 1512              		.loc 1 404 4 is_stmt 1 view .LVU399
+ 1513              		.loc 1 404 15 is_stmt 0 view .LVU400
+ 1514 0036 0293     		str	r3, [sp, #8]
+ 405:X-CUBE-AI/App/aiPbMgr.c **** 	  array.offset = 4;
+ 1515              		.loc 1 405 4 is_stmt 1 view .LVU401
+ 1516              		.loc 1 405 17 is_stmt 0 view .LVU402
+ 1517 0038 0423     		movs	r3, #4
+ 1518 003a 0393     		str	r3, [sp, #12]
+ 406:X-CUBE-AI/App/aiPbMgr.c ****       resp->payload.op.counters.funcs.encode = encode_uint32;
+ 1519              		.loc 1 406 7 is_stmt 1 view .LVU403
+ 1520              		.loc 1 406 46 is_stmt 0 view .LVU404
+ARM GAS  /tmp/ccjDkIVL.s 			page 38
+
+
+ 1521 003c 0B4B     		ldr	r3, .L116
+ 1522 003e A365     		str	r3, [r4, #88]
+ 407:X-CUBE-AI/App/aiPbMgr.c ****       resp->payload.op.counters.arg = &array;
+ 1523              		.loc 1 407 7 is_stmt 1 view .LVU405
+ 1524              		.loc 1 407 37 is_stmt 0 view .LVU406
+ 1525 0040 01AB     		add	r3, sp, #4
+ 1526 0042 E365     		str	r3, [r4, #92]
+ 1527              	.L114:
+ 408:X-CUBE-AI/App/aiPbMgr.c ****     } else {
+ 409:X-CUBE-AI/App/aiPbMgr.c ****       resp->payload.op.counters.funcs.encode = NULL;
+ 410:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 411:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 412:X-CUBE-AI/App/aiPbMgr.c ****   else {
+ 413:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.duration = 0.0f;
+ 414:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counter_type = 0;
+ 415:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counters.funcs.encode = NULL;
+ 416:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 417:X-CUBE-AI/App/aiPbMgr.c **** 
+ 418:X-CUBE-AI/App/aiPbMgr.c ****   aiPbMgrSendResp(req, resp, state);
+ 1528              		.loc 1 418 3 is_stmt 1 view .LVU407
+ 1529 0044 3A46     		mov	r2, r7
+ 1530 0046 2146     		mov	r1, r4
+ 1531 0048 3046     		mov	r0, r6
+ 1532 004a FFF7FEFF 		bl	aiPbMgrSendResp
+ 1533              	.LVL130:
+ 419:X-CUBE-AI/App/aiPbMgr.c ****   // aiPbMgrWaitAck();
+ 420:X-CUBE-AI/App/aiPbMgr.c **** 
+ 421:X-CUBE-AI/App/aiPbMgr.c ****   return true;
+ 1534              		.loc 1 421 3 view .LVU408
+ 422:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1535              		.loc 1 422 1 is_stmt 0 view .LVU409
+ 1536 004e 0120     		movs	r0, #1
+ 1537 0050 05B0     		add	sp, sp, #20
+ 1538              	.LCFI38:
+ 1539              		.cfi_remember_state
+ 1540              		.cfi_def_cfa_offset 20
+ 1541              		@ sp needed
+ 1542 0052 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1543              	.LVL131:
+ 1544              	.L110:
+ 1545              	.LCFI39:
+ 1546              		.cfi_restore_state
+ 395:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.op.type = type;
+ 1547              		.loc 1 395 5 is_stmt 1 view .LVU410
+ 395:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.op.type = type;
+ 1548              		.loc 1 395 30 is_stmt 0 view .LVU411
+ 1549 0054 0023     		movs	r3, #0
+ 1550              	.LVL132:
+ 395:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.op.type = type;
+ 1551              		.loc 1 395 30 view .LVU412
+ 1552 0056 0B72     		strb	r3, [r1, #8]
+ 1553 0058 E0E7     		b	.L111
+ 1554              	.LVL133:
+ 1555              	.L113:
+ 409:X-CUBE-AI/App/aiPbMgr.c ****     }
+ 1556              		.loc 1 409 7 is_stmt 1 view .LVU413
+ 409:X-CUBE-AI/App/aiPbMgr.c ****     }
+ARM GAS  /tmp/ccjDkIVL.s 			page 39
+
+
+ 1557              		.loc 1 409 46 is_stmt 0 view .LVU414
+ 1558 005a 0023     		movs	r3, #0
+ 1559 005c A365     		str	r3, [r4, #88]
+ 1560 005e F1E7     		b	.L114
+ 1561              	.L112:
+ 413:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counter_type = 0;
+ 1562              		.loc 1 413 5 is_stmt 1 view .LVU415
+ 413:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counter_type = 0;
+ 1563              		.loc 1 413 31 is_stmt 0 view .LVU416
+ 1564 0060 0023     		movs	r3, #0
+ 1565 0062 2365     		str	r3, [r4, #80]	@ float
+ 414:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counters.funcs.encode = NULL;
+ 1566              		.loc 1 414 5 is_stmt 1 view .LVU417
+ 414:X-CUBE-AI/App/aiPbMgr.c ****     resp->payload.op.counters.funcs.encode = NULL;
+ 1567              		.loc 1 414 35 is_stmt 0 view .LVU418
+ 1568 0064 0023     		movs	r3, #0
+ 1569 0066 6365     		str	r3, [r4, #84]
+ 415:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 1570              		.loc 1 415 5 is_stmt 1 view .LVU419
+ 415:X-CUBE-AI/App/aiPbMgr.c ****   }
+ 1571              		.loc 1 415 44 is_stmt 0 view .LVU420
+ 1572 0068 A365     		str	r3, [r4, #88]
+ 1573 006a EBE7     		b	.L114
+ 1574              	.L117:
+ 1575              		.align	2
+ 1576              	.L116:
+ 1577 006c 00000000 		.word	encode_uint32
+ 1578              		.cfi_endproc
+ 1579              	.LFE121:
+ 1581              		.section	.text.aiPbCmdSync,"ax",%progbits
+ 1582              		.align	1
+ 1583              		.global	aiPbCmdSync
+ 1584              		.syntax unified
+ 1585              		.thumb
+ 1586              		.thumb_func
+ 1587              		.fpu fpv4-sp-d16
+ 1589              	aiPbCmdSync:
+ 1590              	.LVL134:
+ 1591              	.LFB122:
+ 423:X-CUBE-AI/App/aiPbMgr.c **** 
+ 424:X-CUBE-AI/App/aiPbMgr.c **** 
+ 425:X-CUBE-AI/App/aiPbMgr.c **** #undef _ARM_TOOLS_ID
+ 426:X-CUBE-AI/App/aiPbMgr.c **** 
+ 427:X-CUBE-AI/App/aiPbMgr.c **** #if defined(_IS_AC6_COMPILER) && _IS_AC6_COMPILER
+ 428:X-CUBE-AI/App/aiPbMgr.c **** #define _ARM_TOOLS_ID       EnumTools_AI_MDK_6
+ 429:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 430:X-CUBE-AI/App/aiPbMgr.c **** 
+ 431:X-CUBE-AI/App/aiPbMgr.c **** #if defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+ 432:X-CUBE-AI/App/aiPbMgr.c **** #define _ARM_TOOLS_ID       EnumTools_AI_GCC
+ 433:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 434:X-CUBE-AI/App/aiPbMgr.c **** 
+ 435:X-CUBE-AI/App/aiPbMgr.c **** #if defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+ 436:X-CUBE-AI/App/aiPbMgr.c **** #define _ARM_TOOLS_ID       EnumTools_AI_IAR
+ 437:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 438:X-CUBE-AI/App/aiPbMgr.c **** 
+ 439:X-CUBE-AI/App/aiPbMgr.c **** #if defined(_IS_AC5_COMPILER) && _IS_AC5_COMPILER
+ 440:X-CUBE-AI/App/aiPbMgr.c **** #define _ARM_TOOLS_ID       EnumTools_AI_MDK_5
+ARM GAS  /tmp/ccjDkIVL.s 			page 40
+
+
+ 441:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 442:X-CUBE-AI/App/aiPbMgr.c **** 
+ 443:X-CUBE-AI/App/aiPbMgr.c **** #if defined(_IS_HTC_COMPILER) && _IS_HTC_COMPILER
+ 444:X-CUBE-AI/App/aiPbMgr.c **** #define _ARM_TOOLS_ID       EnumTools_AI_HTC
+ 445:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 446:X-CUBE-AI/App/aiPbMgr.c **** 
+ 447:X-CUBE-AI/App/aiPbMgr.c **** #if defined(_IS_GHS_COMPILER) && _IS_GHS_COMPILER
+ 448:X-CUBE-AI/App/aiPbMgr.c **** #define _ARM_TOOLS_ID       EnumTools_AI_GHS
+ 449:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 450:X-CUBE-AI/App/aiPbMgr.c **** 
+ 451:X-CUBE-AI/App/aiPbMgr.c **** void aiPbCmdSync(const reqMsg *req, respMsg *resp, void *param)
+ 452:X-CUBE-AI/App/aiPbMgr.c **** {
+ 1592              		.loc 1 452 1 is_stmt 1 view -0
+ 1593              		.cfi_startproc
+ 1594              		@ args = 0, pretend = 0, frame = 0
+ 1595              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1596              		.loc 1 452 1 is_stmt 0 view .LVU422
+ 1597 0000 10B5     		push	{r4, lr}
+ 1598              	.LCFI40:
+ 1599              		.cfi_def_cfa_offset 8
+ 1600              		.cfi_offset 4, -8
+ 1601              		.cfi_offset 14, -4
+ 453:X-CUBE-AI/App/aiPbMgr.c ****   resp->which_payload = respMsg_sync_tag;
+ 1602              		.loc 1 453 3 is_stmt 1 view .LVU423
+ 1603              		.loc 1 453 23 is_stmt 0 view .LVU424
+ 1604 0002 0A24     		movs	r4, #10
+ 1605 0004 CC80     		strh	r4, [r1, #6]	@ movhi
+ 454:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.sync.version =
+ 1606              		.loc 1 454 3 is_stmt 1 view .LVU425
+ 1607              		.loc 1 454 30 is_stmt 0 view .LVU426
+ 1608 0006 4FF44074 		mov	r4, #768
+ 1609 000a 8C60     		str	r4, [r1, #8]
+ 455:X-CUBE-AI/App/aiPbMgr.c ****       EnumVersion_P_VERSION_MAJOR << 8 |
+ 456:X-CUBE-AI/App/aiPbMgr.c ****       EnumVersion_P_VERSION_MINOR;
+ 457:X-CUBE-AI/App/aiPbMgr.c **** 
+ 458:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.sync.capability = 0;
+ 1610              		.loc 1 458 3 is_stmt 1 view .LVU427
+ 459:X-CUBE-AI/App/aiPbMgr.c **** 
+ 460:X-CUBE-AI/App/aiPbMgr.c **** #if defined(AI_PB_TEST) && (AI_PB_TEST == 1)
+ 461:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.sync.capability |= EnumCapability_CAP_SELF_TEST;
+ 462:X-CUBE-AI/App/aiPbMgr.c **** #endif
+ 463:X-CUBE-AI/App/aiPbMgr.c **** 
+ 464:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.sync.rtid = (uint32_t)param >> 16;
+ 1611              		.loc 1 464 3 view .LVU428
+ 1612              		.loc 1 464 45 is_stmt 0 view .LVU429
+ 1613 000c 140C     		lsrs	r4, r2, #16
+ 465:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.sync.capability |= ((uint32_t)param & 0xFFFF);
+ 1614              		.loc 1 465 3 is_stmt 1 view .LVU430
+ 1615              		.loc 1 465 53 is_stmt 0 view .LVU431
+ 1616 000e 92B2     		uxth	r2, r2
+ 1617              	.LVL135:
+ 1618              		.loc 1 465 33 view .LVU432
+ 1619 0010 CA60     		str	r2, [r1, #12]
+ 466:X-CUBE-AI/App/aiPbMgr.c **** 
+ 467:X-CUBE-AI/App/aiPbMgr.c ****   resp->payload.sync.rtid |= (_ARM_TOOLS_ID << 8);
+ 1620              		.loc 1 467 3 is_stmt 1 view .LVU433
+ 1621              		.loc 1 467 27 is_stmt 0 view .LVU434
+ARM GAS  /tmp/ccjDkIVL.s 			page 41
+
+
+ 1622 0012 44F48074 		orr	r4, r4, #256
+ 1623 0016 0C61     		str	r4, [r1, #16]
+ 468:X-CUBE-AI/App/aiPbMgr.c **** 
+ 469:X-CUBE-AI/App/aiPbMgr.c ****   aiPbMgrSendResp(req, resp, EnumState_S_IDLE);
+ 1624              		.loc 1 469 3 is_stmt 1 view .LVU435
+ 1625 0018 0022     		movs	r2, #0
+ 1626 001a FFF7FEFF 		bl	aiPbMgrSendResp
+ 1627              	.LVL136:
+ 470:X-CUBE-AI/App/aiPbMgr.c **** }
+ 1628              		.loc 1 470 1 is_stmt 0 view .LVU436
+ 1629 001e 10BD     		pop	{r4, pc}
+ 1630              		.cfi_endproc
+ 1631              	.LFE122:
+ 1633              		.section	.bss.pbContextMgr,"aw",%nobits
+ 1634              		.align	3
+ 1635              		.set	.LANCHOR0,. + 0
+ 1638              	pbContextMgr:
+ 1639 0000 00000000 		.space	416
+ 1639      00000000 
+ 1639      00000000 
+ 1639      00000000 
+ 1639      00000000 
+ 1640              		.text
+ 1641              	.Letext0:
+ 1642              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 1643              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 1644              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 1645              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 1646              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 1647              		.file 7 "X-CUBE-AI/App/pb.h"
+ 1648              		.file 8 "X-CUBE-AI/App/pb_decode.h"
+ 1649              		.file 9 "X-CUBE-AI/App/pb_encode.h"
+ 1650              		.file 10 "X-CUBE-AI/App/stm32msg.pb.h"
+ 1651              		.file 11 "X-CUBE-AI/App/aiPbMgr.h"
+ 1652              		.file 12 "X-CUBE-AI/App/aiPbIO.h"
+ 1653              		.file 13 "/usr/include/newlib/string.h"
+ 1654              		.file 14 "<built-in>"
+ARM GAS  /tmp/ccjDkIVL.s 			page 42
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 aiPbMgr.c
+     /tmp/ccjDkIVL.s:18     .text.encode_uint32:0000000000000000 $t
+     /tmp/ccjDkIVL.s:26     .text.encode_uint32:0000000000000000 encode_uint32
+     /tmp/ccjDkIVL.s:140    .text.encode_data_cb:0000000000000000 $t
+     /tmp/ccjDkIVL.s:147    .text.encode_data_cb:0000000000000000 encode_data_cb
+     /tmp/ccjDkIVL.s:194    .text.decode_data_cb:0000000000000000 $t
+     /tmp/ccjDkIVL.s:200    .text.decode_data_cb:0000000000000000 decode_data_cb
+     /tmp/ccjDkIVL.s:307    .text.aiPbMgrInit:0000000000000000 $t
+     /tmp/ccjDkIVL.s:314    .text.aiPbMgrInit:0000000000000000 aiPbMgrInit
+     /tmp/ccjDkIVL.s:423    .text.aiPbMgrInit:000000000000006c $d
+     /tmp/ccjDkIVL.s:428    .text.aiPbTensorFormat:0000000000000000 $t
+     /tmp/ccjDkIVL.s:435    .text.aiPbTensorFormat:0000000000000000 aiPbTensorFormat
+     /tmp/ccjDkIVL.s:449    .text.aiPbTensorFormat:0000000000000008 $d
+     /tmp/ccjDkIVL.s:453    .text.aiPbTensorFormat:000000000000000c $t
+     /tmp/ccjDkIVL.s:515    .text.aiPbTensorFormat:0000000000000038 $d
+     /tmp/ccjDkIVL.s:521    .rodata.aiPbStrCopy.str1.4:0000000000000000 $d
+     /tmp/ccjDkIVL.s:525    .text.aiPbStrCopy:0000000000000000 $t
+     /tmp/ccjDkIVL.s:532    .text.aiPbStrCopy:0000000000000000 aiPbStrCopy
+     /tmp/ccjDkIVL.s:625    .text.aiPbStrCopy:0000000000000048 $d
+     /tmp/ccjDkIVL.s:630    .text.encode_tensor_desc:0000000000000000 $t
+     /tmp/ccjDkIVL.s:637    .text.encode_tensor_desc:0000000000000000 encode_tensor_desc
+     /tmp/ccjDkIVL.s:751    .text.encode_tensor_desc:000000000000005c $d
+     /tmp/ccjDkIVL.s:757    .text.aiPbMgrSendResp:0000000000000000 $t
+     /tmp/ccjDkIVL.s:764    .text.aiPbMgrSendResp:0000000000000000 aiPbMgrSendResp
+     /tmp/ccjDkIVL.s:805    .text.aiPbMgrSendResp:0000000000000018 $d
+     /tmp/ccjDkIVL.s:811    .text.aiPbMgrSendAck:0000000000000000 $t
+     /tmp/ccjDkIVL.s:818    .text.aiPbMgrSendAck:0000000000000000 aiPbMgrSendAck
+     /tmp/ccjDkIVL.s:856    .text.aiPbMgrWaitAndProcess:0000000000000000 $t
+     /tmp/ccjDkIVL.s:863    .text.aiPbMgrWaitAndProcess:0000000000000000 aiPbMgrWaitAndProcess
+     /tmp/ccjDkIVL.s:993    .text.aiPbMgrWaitAndProcess:0000000000000088 $d
+     /tmp/ccjDkIVL.s:999    .text.aiPbMgrWaitAck:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1006   .text.aiPbMgrWaitAck:0000000000000000 aiPbMgrWaitAck
+     /tmp/ccjDkIVL.s:1051   .text.aiPbMgrWaitAck:0000000000000024 $d
+     /tmp/ccjDkIVL.s:1057   .text.aiPbMgrSendLog:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1064   .text.aiPbMgrSendLog:0000000000000000 aiPbMgrSendLog
+     /tmp/ccjDkIVL.s:1158   .text.aiPbMgrSendLog:000000000000005c $d
+     /tmp/ccjDkIVL.s:1164   .text.aiPbMgrSendLogV2:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1171   .text.aiPbMgrSendLogV2:0000000000000000 aiPbMgrSendLogV2
+     /tmp/ccjDkIVL.s:1277   .text.aiPbMgrSendLogV2:000000000000006c $d
+     /tmp/ccjDkIVL.s:1283   .text.aiPbMgrReceiveData:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1290   .text.aiPbMgrReceiveData:0000000000000000 aiPbMgrReceiveData
+     /tmp/ccjDkIVL.s:1349   .text.aiPbMgrReceiveData:0000000000000028 $d
+     /tmp/ccjDkIVL.s:1356   .text.aiPbMgrSendData:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1363   .text.aiPbMgrSendData:0000000000000000 aiPbMgrSendData
+     /tmp/ccjDkIVL.s:1426   .text.aiPbMgrSendData:000000000000002c $d
+     /tmp/ccjDkIVL.s:1431   .text.aiPbMgrSendOperator:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1438   .text.aiPbMgrSendOperator:0000000000000000 aiPbMgrSendOperator
+     /tmp/ccjDkIVL.s:1577   .text.aiPbMgrSendOperator:000000000000006c $d
+     /tmp/ccjDkIVL.s:1582   .text.aiPbCmdSync:0000000000000000 $t
+     /tmp/ccjDkIVL.s:1589   .text.aiPbCmdSync:0000000000000000 aiPbCmdSync
+     /tmp/ccjDkIVL.s:1634   .bss.pbContextMgr:0000000000000000 $d
+     /tmp/ccjDkIVL.s:1638   .bss.pbContextMgr:0000000000000000 pbContextMgr
+
+UNDEFINED SYMBOLS
+pb_encode_varint
+pb_encode_tag_for_field
+ARM GAS  /tmp/ccjDkIVL.s 			page 43
+
+
+pb_encode_string
+pb_read
+memset
+pb_io_stream_init
+pb_io_istream
+pb_io_ostream
+strlen
+memcpy
+pb_encode_submessage
+aiTensorDescMsg_fields
+pb_encode
+pb_io_flush_ostream
+respMsg_fields
+pb_io_flush_istream
+pb_decode_delimited
+reqMsg_fields
+ackMsg_fields
+aiDataMsg_fields

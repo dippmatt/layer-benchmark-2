@@ -1,0 +1,163 @@
+ARM GAS  /tmp/ccEf8nTj.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_relu6_s8.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_relu6_s8,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_relu6_s8
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_relu6_s8:
+  27              	.LVL0:
+  28              	.LFB47:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c"
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * SPDX-FileCopyrightText: Copyright 2010-2019, 2022 Arm Limited and/or its affiliates <open-source
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Title:        arm_relu6_s8.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Description:  Basic s8 version of ReLU6
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * $Date:        26 October 2022
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * $Revision:    V.1.0.2
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Target Processor:  Cortex-M cores
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * -------------------------------------------------------------------- */
+ARM GAS  /tmp/ccEf8nTj.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** #include "arm_nnfunctions.h"
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** #include "arm_nnsupportfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** /**
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *  @ingroup Public
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  */
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** /**
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * @addtogroup Acti
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * @{
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  */
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** /*
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *  Basic ReLU6 function
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  * Refer to header file for details.
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  *
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****  */
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** void arm_relu6_s8(int8_t *data, uint16_t size)
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** {
+  30              		.loc 1 51 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     int32_t i;
+  35              		.loc 1 52 5 view .LVU1
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     for (i = 0; i < size; i++)
+  36              		.loc 1 54 5 view .LVU2
+  37              		.loc 1 54 12 is_stmt 0 view .LVU3
+  38 0000 0022     		movs	r2, #0
+  39              	.LVL1:
+  40              	.L2:
+  41              		.loc 1 54 17 is_stmt 1 discriminator 1 view .LVU4
+  42              		.loc 1 54 5 is_stmt 0 discriminator 1 view .LVU5
+  43 0002 9142     		cmp	r1, r2
+  44 0004 08DD     		ble	.L4
+  45              	.LBB2:
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     {
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****         int32_t ip = data[i];
+  46              		.loc 1 56 9 is_stmt 1 discriminator 3 view .LVU6
+  47              		.loc 1 56 26 is_stmt 0 discriminator 3 view .LVU7
+  48 0006 8356     		ldrsb	r3, [r0, r2]
+  49              	.LVL2:
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** 
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****         ip = MAX(ip, 0);
+  50              		.loc 1 58 9 is_stmt 1 discriminator 3 view .LVU8
+  51              		.loc 1 58 12 is_stmt 0 discriminator 3 view .LVU9
+  52 0008 23EAE373 		bic	r3, r3, r3, asr #31
+  53              	.LVL3:
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****         data[i] = MIN(ip, 6);
+  54              		.loc 1 59 9 is_stmt 1 discriminator 3 view .LVU10
+  55              		.loc 1 59 19 is_stmt 0 discriminator 3 view .LVU11
+  56 000c 062B     		cmp	r3, #6
+ARM GAS  /tmp/ccEf8nTj.s 			page 3
+
+
+  57 000e A8BF     		it	ge
+  58 0010 0623     		movge	r3, #6
+  59              	.LVL4:
+  60              		.loc 1 59 17 discriminator 3 view .LVU12
+  61 0012 8354     		strb	r3, [r0, r2]
+  62              	.LVL5:
+  63              		.loc 1 59 17 discriminator 3 view .LVU13
+  64              	.LBE2:
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     {
+  65              		.loc 1 54 27 is_stmt 1 discriminator 3 view .LVU14
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     {
+  66              		.loc 1 54 28 is_stmt 0 discriminator 3 view .LVU15
+  67 0014 0132     		adds	r2, r2, #1
+  68              	.LVL6:
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     {
+  69              		.loc 1 54 28 discriminator 3 view .LVU16
+  70 0016 F4E7     		b	.L2
+  71              	.L4:
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c ****     }
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/ActivationFunctions/arm_relu6_s8.c **** }
+  72              		.loc 1 61 1 view .LVU17
+  73 0018 7047     		bx	lr
+  74              		.cfi_endproc
+  75              	.LFE47:
+  77              		.text
+  78              	.Letext0:
+  79              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+  80              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+  81              		.file 4 "/usr/include/newlib/sys/_types.h"
+  82              		.file 5 "/usr/include/newlib/sys/reent.h"
+  83              		.file 6 "/usr/include/newlib/sys/lock.h"
+ARM GAS  /tmp/ccEf8nTj.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_relu6_s8.c
+     /tmp/ccEf8nTj.s:18     .text.arm_relu6_s8:0000000000000000 $t
+     /tmp/ccEf8nTj.s:26     .text.arm_relu6_s8:0000000000000000 arm_relu6_s8
+
+NO UNDEFINED SYMBOLS

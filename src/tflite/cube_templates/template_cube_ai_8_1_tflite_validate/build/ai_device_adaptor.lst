@@ -1,0 +1,246 @@
+ARM GAS  /tmp/ccI2fVzy.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"ai_device_adaptor.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.port_hal_crc_ip_init_imp,"ax",%progbits
+  18              		.align	1
+  19              		.global	port_hal_crc_ip_init_imp
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	port_hal_crc_ip_init_imp:
+  27              	.LFB137:
+  28              		.file 1 "X-CUBE-AI/App/ai_device_adaptor.c"
+   1:X-CUBE-AI/App/ai_device_adaptor.c **** /**
+   2:X-CUBE-AI/App/ai_device_adaptor.c ****  ******************************************************************************
+   3:X-CUBE-AI/App/ai_device_adaptor.c ****  * @file    ai_device_adaptor.c
+   4:X-CUBE-AI/App/ai_device_adaptor.c ****  * @author  MCD/AIS Team
+   5:X-CUBE-AI/App/ai_device_adaptor.c ****  * @brief   Specific DEVICE port functions for AI test application
+   6:X-CUBE-AI/App/ai_device_adaptor.c ****  ******************************************************************************
+   7:X-CUBE-AI/App/ai_device_adaptor.c ****  * @attention
+   8:X-CUBE-AI/App/ai_device_adaptor.c ****  *
+   9:X-CUBE-AI/App/ai_device_adaptor.c ****  * <h2><center>&copy; Copyright (c) 2023 STMicroelectronics.
+  10:X-CUBE-AI/App/ai_device_adaptor.c ****  * All rights reserved.</center></h2>
+  11:X-CUBE-AI/App/ai_device_adaptor.c ****  *
+  12:X-CUBE-AI/App/ai_device_adaptor.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:X-CUBE-AI/App/ai_device_adaptor.c ****  * the root directory of this software component.
+  14:X-CUBE-AI/App/ai_device_adaptor.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:X-CUBE-AI/App/ai_device_adaptor.c ****  *
+  16:X-CUBE-AI/App/ai_device_adaptor.c ****  ******************************************************************************
+  17:X-CUBE-AI/App/ai_device_adaptor.c ****  */
+  18:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  19:X-CUBE-AI/App/ai_device_adaptor.c **** #include "ai_device_adaptor.h"
+  20:X-CUBE-AI/App/ai_device_adaptor.c ****  
+  21:X-CUBE-AI/App/ai_device_adaptor.c **** #ifdef __cplusplus
+  22:X-CUBE-AI/App/ai_device_adaptor.c **** extern "C" {
+  23:X-CUBE-AI/App/ai_device_adaptor.c **** #endif
+  24:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  25:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  26:X-CUBE-AI/App/ai_device_adaptor.c **** #if !defined(NO_PORT_CRC_IP_INIT_IMP)
+  27:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(HAS_CRC_IP) && HAS_CRC_IP == 1
+  28:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  29:X-CUBE-AI/App/ai_device_adaptor.c **** void port_hal_crc_ip_init_imp(void)
+  30:X-CUBE-AI/App/ai_device_adaptor.c **** {
+ARM GAS  /tmp/ccI2fVzy.s 			page 2
+
+
+  29              		.loc 1 30 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 8
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34 0000 82B0     		sub	sp, sp, #8
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  31:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(STM32H7)
+  32:X-CUBE-AI/App/ai_device_adaptor.c ****   /* By default the CRC IP clock is enabled */
+  33:X-CUBE-AI/App/ai_device_adaptor.c ****   __HAL_RCC_CRC_CLK_ENABLE();
+  34:X-CUBE-AI/App/ai_device_adaptor.c **** #elif defined(STM32MP1)
+  35:X-CUBE-AI/App/ai_device_adaptor.c ****   __HAL_RCC_CRC2_CLK_ENABLE();
+  36:X-CUBE-AI/App/ai_device_adaptor.c **** #else
+  37:X-CUBE-AI/App/ai_device_adaptor.c ****   /* By default the CRC IP clock is enabled */
+  38:X-CUBE-AI/App/ai_device_adaptor.c ****   __HAL_RCC_CRC_CLK_ENABLE();
+  37              		.loc 1 38 3 view .LVU1
+  38              	.LBB2:
+  39              		.loc 1 38 3 view .LVU2
+  40              		.loc 1 38 3 view .LVU3
+  41 0002 064B     		ldr	r3, .L3
+  42 0004 9A6C     		ldr	r2, [r3, #72]
+  43 0006 42F48052 		orr	r2, r2, #4096
+  44 000a 9A64     		str	r2, [r3, #72]
+  45              		.loc 1 38 3 view .LVU4
+  46 000c 9B6C     		ldr	r3, [r3, #72]
+  47 000e 03F48053 		and	r3, r3, #4096
+  48 0012 0193     		str	r3, [sp, #4]
+  49              		.loc 1 38 3 view .LVU5
+  50 0014 019B     		ldr	r3, [sp, #4]
+  51              	.LBE2:
+  52              		.loc 1 38 3 view .LVU6
+  39:X-CUBE-AI/App/ai_device_adaptor.c **** #endif
+  40:X-CUBE-AI/App/ai_device_adaptor.c **** }
+  53              		.loc 1 40 1 is_stmt 0 view .LVU7
+  54 0016 02B0     		add	sp, sp, #8
+  55              	.LCFI1:
+  56              		.cfi_def_cfa_offset 0
+  57              		@ sp needed
+  58 0018 7047     		bx	lr
+  59              	.L4:
+  60 001a 00BF     		.align	2
+  61              	.L3:
+  62 001c 00100240 		.word	1073876992
+  63              		.cfi_endproc
+  64              	.LFE137:
+  66              		.section	.text.port_dwt_init_imp,"ax",%progbits
+  67              		.align	1
+  68              		.global	port_dwt_init_imp
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  72              		.fpu fpv4-sp-d16
+  74              	port_dwt_init_imp:
+  75              	.LFB138:
+  41:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  42:X-CUBE-AI/App/ai_device_adaptor.c **** #endif /* HAS_CRC_IP */
+ARM GAS  /tmp/ccI2fVzy.s 			page 3
+
+
+  43:X-CUBE-AI/App/ai_device_adaptor.c **** #endif /* NO_PORT_CRC_IP_INIT_IMP */
+  44:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  45:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  46:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(STM32N657xx) || defined(STM32N6)
+  47:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  48:X-CUBE-AI/App/ai_device_adaptor.c **** /* --------------------------------------------
+  49:X-CUBE-AI/App/ai_device_adaptor.c ****  * STM32N6xx series
+  50:X-CUBE-AI/App/ai_device_adaptor.c ****  * --------------------------------------------
+  51:X-CUBE-AI/App/ai_device_adaptor.c ****  */
+  52:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  53:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(HAS_EXTRA_CONF) && HAS_EXTRA_CONF >= 4
+  54:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  55:X-CUBE-AI/App/ai_device_adaptor.c **** extern uint32_t npur_freq_mhz;         /* NIC freq */
+  56:X-CUBE-AI/App/ai_device_adaptor.c **** extern uint32_t npu_freq_mhz;          /* NPU freq */
+  57:X-CUBE-AI/App/ai_device_adaptor.c **** extern uint32_t sysb_freq_mhz;         /* NOC freq */
+  58:X-CUBE-AI/App/ai_device_adaptor.c **** extern uint32_t mcu_freq_mhz;          /* MCU freq */
+  59:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  60:X-CUBE-AI/App/ai_device_adaptor.c **** void port_hal_set_extra_conf(uint32_t *extra)
+  61:X-CUBE-AI/App/ai_device_adaptor.c **** {
+  62:X-CUBE-AI/App/ai_device_adaptor.c ****   /* Add specific infos in relation to the ATONss
+  63:X-CUBE-AI/App/ai_device_adaptor.c ****    * Note: NOC freq is returned by port_hal_get_sys_freq()
+  64:X-CUBE-AI/App/ai_device_adaptor.c ****    */
+  65:X-CUBE-AI/App/ai_device_adaptor.c ****   extra[0] = 0;                  /* extra config
+  66:X-CUBE-AI/App/ai_device_adaptor.c ****                                         b7..0  : type/format    00h : N6/ATONss
+  67:X-CUBE-AI/App/ai_device_adaptor.c ****                                         b8..31 : TBD
+  68:X-CUBE-AI/App/ai_device_adaptor.c ****                                   */
+  69:X-CUBE-AI/App/ai_device_adaptor.c ****   extra[1] = (npu_freq_mhz *1000*1000);   /* NPU freq. */
+  70:X-CUBE-AI/App/ai_device_adaptor.c ****   extra[2] = (npur_freq_mhz*1000*1000);    /* NIC freq, AXIMRAM3,4,5,6, NPUCACHE */
+  71:X-CUBE-AI/App/ai_device_adaptor.c ****   extra[3] = 0;
+  72:X-CUBE-AI/App/ai_device_adaptor.c **** }
+  73:X-CUBE-AI/App/ai_device_adaptor.c **** #endif
+  74:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  75:X-CUBE-AI/App/ai_device_adaptor.c **** #endif /* STM32N657xx, STM32N6 */
+  76:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  77:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  78:X-CUBE-AI/App/ai_device_adaptor.c **** #if !defined(NO_PORT_DWT_INIT_IMP)
+  79:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  80:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(HAS_PMU_CTRL) && defined(HAS_DWT_CTRL) && HAS_PMU_CTRL == 1 && HAS_DWT_CTRL == 1
+  81:X-CUBE-AI/App/ai_device_adaptor.c **** #error Only HAS_PMU_CTRL or HAS_DWT_CTRL should be defined.
+  82:X-CUBE-AI/App/ai_device_adaptor.c **** #endif
+  83:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  84:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(HAS_PMU_CTRL) && HAS_PMU_CTRL == 1
+  85:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  86:X-CUBE-AI/App/ai_device_adaptor.c **** void port_dwt_init_imp()
+  87:X-CUBE-AI/App/ai_device_adaptor.c **** {
+  88:X-CUBE-AI/App/ai_device_adaptor.c ****   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  89:X-CUBE-AI/App/ai_device_adaptor.c ****   ARM_PMU_Enable();
+  90:X-CUBE-AI/App/ai_device_adaptor.c ****   ARM_PMU_CNTR_Enable(PMU_CNTENSET_CCNTR_ENABLE_Msk);
+  91:X-CUBE-AI/App/ai_device_adaptor.c **** }
+  92:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  93:X-CUBE-AI/App/ai_device_adaptor.c **** #endif  /* HAS_PMU_CTRL */
+  94:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  95:X-CUBE-AI/App/ai_device_adaptor.c **** #if defined(HAS_DWT_CTRL) && HAS_DWT_CTRL == 1
+  96:X-CUBE-AI/App/ai_device_adaptor.c **** 
+  97:X-CUBE-AI/App/ai_device_adaptor.c **** void port_dwt_init_imp()
+  98:X-CUBE-AI/App/ai_device_adaptor.c **** {
+  76              		.loc 1 98 1 is_stmt 1 view -0
+ARM GAS  /tmp/ccI2fVzy.s 			page 4
+
+
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  99:X-CUBE-AI/App/ai_device_adaptor.c ****   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  81              		.loc 1 99 3 view .LVU9
+  82              		.loc 1 99 20 is_stmt 0 view .LVU10
+  83 0000 064A     		ldr	r2, .L6
+  84 0002 D368     		ldr	r3, [r2, #12]
+  85 0004 43F08073 		orr	r3, r3, #16777216
+  86 0008 D360     		str	r3, [r2, #12]
+ 100:X-CUBE-AI/App/ai_device_adaptor.c **** #ifdef STM32F7
+ 101:X-CUBE-AI/App/ai_device_adaptor.c ****   DWT->LAR = 0xC5ACCE55;
+ 102:X-CUBE-AI/App/ai_device_adaptor.c **** #endif
+ 103:X-CUBE-AI/App/ai_device_adaptor.c ****   DWT->CYCCNT = 0;
+  87              		.loc 1 103 3 is_stmt 1 view .LVU11
+  88              		.loc 1 103 15 is_stmt 0 view .LVU12
+  89 000a 054B     		ldr	r3, .L6+4
+  90 000c 0022     		movs	r2, #0
+  91 000e 5A60     		str	r2, [r3, #4]
+ 104:X-CUBE-AI/App/ai_device_adaptor.c ****   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+  92              		.loc 1 104 3 is_stmt 1 view .LVU13
+  93              		.loc 1 104 13 is_stmt 0 view .LVU14
+  94 0010 1A68     		ldr	r2, [r3]
+  95 0012 42F00102 		orr	r2, r2, #1
+  96 0016 1A60     		str	r2, [r3]
+ 105:X-CUBE-AI/App/ai_device_adaptor.c **** }
+  97              		.loc 1 105 1 view .LVU15
+  98 0018 7047     		bx	lr
+  99              	.L7:
+ 100 001a 00BF     		.align	2
+ 101              	.L6:
+ 102 001c F0ED00E0 		.word	-536810000
+ 103 0020 001000E0 		.word	-536866816
+ 104              		.cfi_endproc
+ 105              	.LFE138:
+ 107              		.text
+ 108              	.Letext0:
+ 109              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 110              		.file 3 "Middlewares/tensorflow/third_party/cmsis/CMSIS/Core/Include/core_cm4.h"
+ 111              		.file 4 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h"
+ 112              		.file 5 "Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4r5xx.h"
+ 113              		.file 6 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h"
+ 114              		.file 7 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h"
+ 115              		.file 8 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h"
+ 116              		.file 9 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h"
+ 117              		.file 10 "Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h"
+ 118              		.file 11 "Middlewares/ST/AI/Inc/ai_platform.h"
+ 119              		.file 12 "X-CUBE-AI/App/app_x-cube-ai.h"
+ 120              		.file 13 "X-CUBE-AI/App/ai_device_adaptor.h"
+ARM GAS  /tmp/ccI2fVzy.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ai_device_adaptor.c
+     /tmp/ccI2fVzy.s:18     .text.port_hal_crc_ip_init_imp:0000000000000000 $t
+     /tmp/ccI2fVzy.s:26     .text.port_hal_crc_ip_init_imp:0000000000000000 port_hal_crc_ip_init_imp
+     /tmp/ccI2fVzy.s:62     .text.port_hal_crc_ip_init_imp:000000000000001c $d
+     /tmp/ccI2fVzy.s:67     .text.port_dwt_init_imp:0000000000000000 $t
+     /tmp/ccI2fVzy.s:74     .text.port_dwt_init_imp:0000000000000000 port_dwt_init_imp
+     /tmp/ccI2fVzy.s:102    .text.port_dwt_init_imp:000000000000001c $d
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,767 @@
+ARM GAS  /tmp/cckP2QYi.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"aiPbMemRWServices.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.bsdChecksum,"ax",%progbits
+  18              		.align	1
+  19              		.global	bsdChecksum
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	bsdChecksum:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "X-CUBE-AI/App/aiPbMemRWServices.c"
+   1:X-CUBE-AI/App/aiPbMemRWServices.c **** /**
+   2:X-CUBE-AI/App/aiPbMemRWServices.c ****  ******************************************************************************
+   3:X-CUBE-AI/App/aiPbMemRWServices.c ****  * @file    aiPbMemRWservices.c
+   4:X-CUBE-AI/App/aiPbMemRWServices.c ****  * @author  MCD/AIS Team
+   5:X-CUBE-AI/App/aiPbMemRWServices.c ****  * @brief   AI Pb services to read/write in memory
+   6:X-CUBE-AI/App/aiPbMemRWServices.c ****  ******************************************************************************
+   7:X-CUBE-AI/App/aiPbMemRWServices.c ****  * @attention
+   8:X-CUBE-AI/App/aiPbMemRWServices.c ****  *
+   9:X-CUBE-AI/App/aiPbMemRWServices.c ****  * <h2><center>&copy; Copyright (c) 2019,2021 STMicroelectronics.
+  10:X-CUBE-AI/App/aiPbMemRWServices.c ****  * All rights reserved.</center></h2>
+  11:X-CUBE-AI/App/aiPbMemRWServices.c ****  *
+  12:X-CUBE-AI/App/aiPbMemRWServices.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:X-CUBE-AI/App/aiPbMemRWServices.c ****  * the root directory of this software component.
+  14:X-CUBE-AI/App/aiPbMemRWServices.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:X-CUBE-AI/App/aiPbMemRWServices.c ****  *
+  16:X-CUBE-AI/App/aiPbMemRWServices.c ****  ******************************************************************************
+  17:X-CUBE-AI/App/aiPbMemRWServices.c ****  */
+  18:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  19:X-CUBE-AI/App/aiPbMemRWServices.c **** #include <aiPbMemRWServices.h>
+  20:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  21:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  22:X-CUBE-AI/App/aiPbMemRWServices.c **** /** Computes BSD checksum if a given buffer. Same as 'sum -r' on Unix
+  23:X-CUBE-AI/App/aiPbMemRWServices.c ****  */
+  24:X-CUBE-AI/App/aiPbMemRWServices.c **** int bsdChecksum(uint8_t* buffer, int length)
+  25:X-CUBE-AI/App/aiPbMemRWServices.c **** {
+  30              		.loc 1 25 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/cckP2QYi.s 			page 2
+
+
+  34              		@ link register save eliminated.
+  35              		.loc 1 25 1 is_stmt 0 view .LVU1
+  36 0000 30B4     		push	{r4, r5}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 4, -8
+  40              		.cfi_offset 5, -4
+  41 0002 0546     		mov	r5, r0
+  26:X-CUBE-AI/App/aiPbMemRWServices.c ****   int i;
+  42              		.loc 1 26 3 is_stmt 1 view .LVU2
+  27:X-CUBE-AI/App/aiPbMemRWServices.c ****   int ch;                       /* Each character read. */
+  43              		.loc 1 27 3 view .LVU3
+  28:X-CUBE-AI/App/aiPbMemRWServices.c ****   int checksum = 0;             /* The checksum mod 2^16. */
+  44              		.loc 1 28 3 view .LVU4
+  45              	.LVL1:
+  29:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  30:X-CUBE-AI/App/aiPbMemRWServices.c ****   for(i=0; i<length; i++){
+  46              		.loc 1 30 3 view .LVU5
+  28:X-CUBE-AI/App/aiPbMemRWServices.c ****   int checksum = 0;             /* The checksum mod 2^16. */
+  47              		.loc 1 28 7 is_stmt 0 view .LVU6
+  48 0004 0020     		movs	r0, #0
+  49              	.LVL2:
+  50              		.loc 1 30 8 view .LVU7
+  51 0006 0246     		mov	r2, r0
+  52              	.LVL3:
+  53              	.L2:
+  54              		.loc 1 30 12 is_stmt 1 discriminator 1 view .LVU8
+  55              		.loc 1 30 3 is_stmt 0 discriminator 1 view .LVU9
+  56 0008 8A42     		cmp	r2, r1
+  57 000a 08DA     		bge	.L5
+  31:X-CUBE-AI/App/aiPbMemRWServices.c ****     ch = buffer[i];
+  58              		.loc 1 31 5 is_stmt 1 discriminator 3 view .LVU10
+  59              		.loc 1 31 16 is_stmt 0 discriminator 3 view .LVU11
+  60 000c AC5C     		ldrb	r4, [r5, r2]	@ zero_extendqisi2
+  61              	.LVL4:
+  32:X-CUBE-AI/App/aiPbMemRWServices.c ****     checksum = (checksum >> 1) + ((checksum & 1) << 15);
+  62              		.loc 1 32 5 is_stmt 1 discriminator 3 view .LVU12
+  63              		.loc 1 32 50 is_stmt 0 discriminator 3 view .LVU13
+  64 000e C303     		lsls	r3, r0, #15
+  65 0010 9BB2     		uxth	r3, r3
+  66              		.loc 1 32 14 discriminator 3 view .LVU14
+  67 0012 03EB6003 		add	r3, r3, r0, asr #1
+  68              	.LVL5:
+  33:X-CUBE-AI/App/aiPbMemRWServices.c ****     checksum += ch;
+  69              		.loc 1 33 5 is_stmt 1 discriminator 3 view .LVU15
+  70              		.loc 1 33 14 is_stmt 0 discriminator 3 view .LVU16
+  71 0016 2344     		add	r3, r3, r4
+  72              	.LVL6:
+  34:X-CUBE-AI/App/aiPbMemRWServices.c ****     checksum &= 0xffff;       /* Keep it within bounds. */
+  73              		.loc 1 34 5 is_stmt 1 discriminator 3 view .LVU17
+  74              		.loc 1 34 14 is_stmt 0 discriminator 3 view .LVU18
+  75 0018 98B2     		uxth	r0, r3
+  76              	.LVL7:
+  30:X-CUBE-AI/App/aiPbMemRWServices.c ****     ch = buffer[i];
+  77              		.loc 1 30 22 is_stmt 1 discriminator 3 view .LVU19
+  30:X-CUBE-AI/App/aiPbMemRWServices.c ****     ch = buffer[i];
+  78              		.loc 1 30 23 is_stmt 0 discriminator 3 view .LVU20
+ARM GAS  /tmp/cckP2QYi.s 			page 3
+
+
+  79 001a 0132     		adds	r2, r2, #1
+  80              	.LVL8:
+  30:X-CUBE-AI/App/aiPbMemRWServices.c ****     ch = buffer[i];
+  81              		.loc 1 30 23 discriminator 3 view .LVU21
+  82 001c F4E7     		b	.L2
+  83              	.LVL9:
+  84              	.L5:
+  35:X-CUBE-AI/App/aiPbMemRWServices.c ****   }
+  36:X-CUBE-AI/App/aiPbMemRWServices.c ****   return checksum;
+  37:X-CUBE-AI/App/aiPbMemRWServices.c **** }
+  85              		.loc 1 37 1 view .LVU22
+  86 001e 30BC     		pop	{r4, r5}
+  87              	.LCFI1:
+  88              		.cfi_restore 5
+  89              		.cfi_restore 4
+  90              		.cfi_def_cfa_offset 0
+  91              	.LVL10:
+  92              		.loc 1 37 1 view .LVU23
+  93 0020 7047     		bx	lr
+  94              		.cfi_endproc
+  95              	.LFE0:
+  97              		.section	.text.memory_valid_addr_range,"ax",%progbits
+  98              		.align	1
+  99              		.global	memory_valid_addr_range
+ 100              		.syntax unified
+ 101              		.thumb
+ 102              		.thumb_func
+ 103              		.fpu fpv4-sp-d16
+ 105              	memory_valid_addr_range:
+ 106              	.LVL11:
+ 107              	.LFB1:
+  38:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  39:X-CUBE-AI/App/aiPbMemRWServices.c **** bool memory_valid_addr_range(uint32_t base_addr, uint32_t size, int mode)
+  40:X-CUBE-AI/App/aiPbMemRWServices.c **** {
+ 108              		.loc 1 40 1 is_stmt 1 view -0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112              		@ link register save eliminated.
+  41:X-CUBE-AI/App/aiPbMemRWServices.c ****   return true;
+ 113              		.loc 1 41 3 view .LVU25
+  42:X-CUBE-AI/App/aiPbMemRWServices.c **** }
+ 114              		.loc 1 42 1 is_stmt 0 view .LVU26
+ 115 0000 0120     		movs	r0, #1
+ 116              	.LVL12:
+ 117              		.loc 1 42 1 view .LVU27
+ 118 0002 7047     		bx	lr
+ 119              		.cfi_endproc
+ 120              	.LFE1:
+ 122              		.section	.text.memory_checksum,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	memory_checksum
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.fpu fpv4-sp-d16
+ 130              	memory_checksum:
+ARM GAS  /tmp/cckP2QYi.s 			page 4
+
+
+ 131              	.LVL13:
+ 132              	.LFB2:
+  43:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  44:X-CUBE-AI/App/aiPbMemRWServices.c **** void memory_checksum(uintptr_t base_addr, uint32_t size, uint32_t *hash)
+  45:X-CUBE-AI/App/aiPbMemRWServices.c **** {
+ 133              		.loc 1 45 1 is_stmt 1 view -0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		.loc 1 45 1 is_stmt 0 view .LVU29
+ 138 0000 10B5     		push	{r4, lr}
+ 139              	.LCFI2:
+ 140              		.cfi_def_cfa_offset 8
+ 141              		.cfi_offset 4, -8
+ 142              		.cfi_offset 14, -4
+ 143 0002 1446     		mov	r4, r2
+  46:X-CUBE-AI/App/aiPbMemRWServices.c ****   if ((size == 0) && hash)
+ 144              		.loc 1 46 3 is_stmt 1 view .LVU30
+ 145              		.loc 1 46 6 is_stmt 0 view .LVU31
+ 146 0004 19B9     		cbnz	r1, .L8
+ 147              		.loc 1 46 19 discriminator 1 view .LVU32
+ 148 0006 12B1     		cbz	r2, .L8
+  47:X-CUBE-AI/App/aiPbMemRWServices.c ****     *hash = ~0UL;
+ 149              		.loc 1 47 5 is_stmt 1 view .LVU33
+ 150              		.loc 1 47 11 is_stmt 0 view .LVU34
+ 151 0008 4FF0FF33 		mov	r3, #-1
+ 152 000c 1360     		str	r3, [r2]
+ 153              	.L8:
+  48:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  49:X-CUBE-AI/App/aiPbMemRWServices.c ****   *hash = bsdChecksum((uint8_t *)base_addr, size);
+ 154              		.loc 1 49 3 is_stmt 1 view .LVU35
+ 155              		.loc 1 49 11 is_stmt 0 view .LVU36
+ 156 000e FFF7FEFF 		bl	bsdChecksum
+ 157              	.LVL14:
+ 158              		.loc 1 49 9 view .LVU37
+ 159 0012 2060     		str	r0, [r4]
+  50:X-CUBE-AI/App/aiPbMemRWServices.c **** }
+ 160              		.loc 1 50 1 view .LVU38
+ 161 0014 10BD     		pop	{r4, pc}
+ 162              		.loc 1 50 1 view .LVU39
+ 163              		.cfi_endproc
+ 164              	.LFE2:
+ 166              		.section	.text.memory_write,"ax",%progbits
+ 167              		.align	1
+ 168              		.global	memory_write
+ 169              		.syntax unified
+ 170              		.thumb
+ 171              		.thumb_func
+ 172              		.fpu fpv4-sp-d16
+ 174              	memory_write:
+ 175              	.LVL15:
+ 176              	.LFB3:
+  51:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  52:X-CUBE-AI/App/aiPbMemRWServices.c **** bool memory_write(uintptr_t src, uintptr_t dest, uint32_t size, uint32_t *hash)
+  53:X-CUBE-AI/App/aiPbMemRWServices.c **** {
+ 177              		.loc 1 53 1 is_stmt 1 view -0
+ 178              		.cfi_startproc
+ARM GAS  /tmp/cckP2QYi.s 			page 5
+
+
+ 179              		@ args = 0, pretend = 0, frame = 0
+ 180              		@ frame_needed = 0, uses_anonymous_args = 0
+ 181              		.loc 1 53 1 is_stmt 0 view .LVU41
+ 182 0000 70B5     		push	{r4, r5, r6, lr}
+ 183              	.LCFI3:
+ 184              		.cfi_def_cfa_offset 16
+ 185              		.cfi_offset 4, -16
+ 186              		.cfi_offset 5, -12
+ 187              		.cfi_offset 6, -8
+ 188              		.cfi_offset 14, -4
+ 189 0002 0C46     		mov	r4, r1
+ 190 0004 1646     		mov	r6, r2
+ 191 0006 1D46     		mov	r5, r3
+  54:X-CUBE-AI/App/aiPbMemRWServices.c ****   memcpy((void *)dest, (void *)src, size);
+ 192              		.loc 1 54 3 is_stmt 1 view .LVU42
+ 193 0008 0146     		mov	r1, r0
+ 194              	.LVL16:
+ 195              		.loc 1 54 3 is_stmt 0 view .LVU43
+ 196 000a 2046     		mov	r0, r4
+ 197              	.LVL17:
+ 198              		.loc 1 54 3 view .LVU44
+ 199 000c FFF7FEFF 		bl	memcpy
+ 200              	.LVL18:
+  55:X-CUBE-AI/App/aiPbMemRWServices.c ****   *hash = bsdChecksum((uint8_t *)dest, size);
+ 201              		.loc 1 55 3 is_stmt 1 view .LVU45
+ 202              		.loc 1 55 11 is_stmt 0 view .LVU46
+ 203 0010 3146     		mov	r1, r6
+ 204 0012 2046     		mov	r0, r4
+ 205 0014 FFF7FEFF 		bl	bsdChecksum
+ 206              	.LVL19:
+ 207              		.loc 1 55 9 view .LVU47
+ 208 0018 2860     		str	r0, [r5]
+  56:X-CUBE-AI/App/aiPbMemRWServices.c ****   return true;
+ 209              		.loc 1 56 3 is_stmt 1 view .LVU48
+  57:X-CUBE-AI/App/aiPbMemRWServices.c **** }
+ 210              		.loc 1 57 1 is_stmt 0 view .LVU49
+ 211 001a 0120     		movs	r0, #1
+ 212 001c 70BD     		pop	{r4, r5, r6, pc}
+ 213              		.loc 1 57 1 view .LVU50
+ 214              		.cfi_endproc
+ 215              	.LFE3:
+ 217              		.section	.text.aiPbCmdRWMemory,"ax",%progbits
+ 218              		.align	1
+ 219              		.global	aiPbCmdRWMemory
+ 220              		.syntax unified
+ 221              		.thumb
+ 222              		.thumb_func
+ 223              		.fpu fpv4-sp-d16
+ 225              	aiPbCmdRWMemory:
+ 226              	.LVL20:
+ 227              	.LFB4:
+  58:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  59:X-CUBE-AI/App/aiPbMemRWServices.c **** void aiPbCmdRWMemory(const reqMsg *req, respMsg *resp, void *param)
+  60:X-CUBE-AI/App/aiPbMemRWServices.c **** {
+ 228              		.loc 1 60 1 is_stmt 1 view -0
+ 229              		.cfi_startproc
+ 230              		@ args = 0, pretend = 0, frame = 24
+ARM GAS  /tmp/cckP2QYi.s 			page 6
+
+
+ 231              		@ frame_needed = 0, uses_anonymous_args = 0
+ 232              		.loc 1 60 1 is_stmt 0 view .LVU52
+ 233 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 234              	.LCFI4:
+ 235              		.cfi_def_cfa_offset 24
+ 236              		.cfi_offset 4, -24
+ 237              		.cfi_offset 5, -20
+ 238              		.cfi_offset 6, -16
+ 239              		.cfi_offset 7, -12
+ 240              		.cfi_offset 8, -8
+ 241              		.cfi_offset 14, -4
+ 242 0004 88B0     		sub	sp, sp, #32
+ 243              	.LCFI5:
+ 244              		.cfi_def_cfa_offset 56
+ 245 0006 0646     		mov	r6, r0
+ 246 0008 0F46     		mov	r7, r1
+ 247 000a 9046     		mov	r8, r2
+  61:X-CUBE-AI/App/aiPbMemRWServices.c ****   uint32_t addr = req->param;
+ 248              		.loc 1 61 3 is_stmt 1 view .LVU53
+ 249              		.loc 1 61 12 is_stmt 0 view .LVU54
+ 250 000c 8568     		ldr	r5, [r0, #8]
+ 251              	.LVL21:
+  62:X-CUBE-AI/App/aiPbMemRWServices.c ****   uint32_t size = req->opt;
+ 252              		.loc 1 62 3 is_stmt 1 view .LVU55
+ 253              		.loc 1 62 12 is_stmt 0 view .LVU56
+ 254 000e C46C     		ldr	r4, [r0, #76]
+ 255              	.LVL22:
+  63:X-CUBE-AI/App/aiPbMemRWServices.c ****   uint32_t res = 0;
+ 256              		.loc 1 63 3 is_stmt 1 view .LVU57
+ 257              		.loc 1 63 12 is_stmt 0 view .LVU58
+ 258 0010 0023     		movs	r3, #0
+ 259 0012 0793     		str	r3, [sp, #28]
+  64:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  65:X-CUBE-AI/App/aiPbMemRWServices.c ****   static uint32_t buffer[1024 / 4];
+ 260              		.loc 1 65 3 is_stmt 1 view .LVU59
+  66:X-CUBE-AI/App/aiPbMemRWServices.c **** #if defined(AI_PB_TEST) && (AI_PB_TEST == 1)
+  67:X-CUBE-AI/App/aiPbMemRWServices.c ****   static uint32_t test[1024 / 4];
+  68:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  69:X-CUBE-AI/App/aiPbMemRWServices.c ****   if (aiPbTestModeEnabled())
+  70:X-CUBE-AI/App/aiPbMemRWServices.c ****     addr = (uint32_t)test;
+  71:X-CUBE-AI/App/aiPbMemRWServices.c **** #endif
+  72:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  73:X-CUBE-AI/App/aiPbMemRWServices.c ****   if (!memory_valid_addr_range(addr, size, (int)param - EnumCmd_CMD_MEMORY_READ)) {
+ 261              		.loc 1 73 3 view .LVU60
+ 262              		.loc 1 73 8 is_stmt 0 view .LVU61
+ 263 0014 143A     		subs	r2, r2, #20
+ 264              	.LVL23:
+ 265              		.loc 1 73 8 view .LVU62
+ 266 0016 2146     		mov	r1, r4
+ 267              	.LVL24:
+ 268              		.loc 1 73 8 view .LVU63
+ 269 0018 2846     		mov	r0, r5
+ 270              	.LVL25:
+ 271              		.loc 1 73 8 view .LVU64
+ 272 001a FFF7FEFF 		bl	memory_valid_addr_range
+ 273              	.LVL26:
+ 274              		.loc 1 73 6 view .LVU65
+ARM GAS  /tmp/cckP2QYi.s 			page 7
+
+
+ 275 001e D0B1     		cbz	r0, .L31
+ 276              	.L13:
+  74:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, EnumState_S_ERROR,
+  75:X-CUBE-AI/App/aiPbMemRWServices.c ****         res, EnumError_E_INVALID_PARAM);
+  76:X-CUBE-AI/App/aiPbMemRWServices.c ****   }
+  77:X-CUBE-AI/App/aiPbMemRWServices.c **** 
+  78:X-CUBE-AI/App/aiPbMemRWServices.c ****   if ((uint32_t)param == EnumCmd_CMD_MEMORY_CHECKSUM) {
+ 277              		.loc 1 78 3 is_stmt 1 view .LVU66
+ 278              		.loc 1 78 6 is_stmt 0 view .LVU67
+ 279 0020 B8F1160F 		cmp	r8, #22
+ 280 0024 1FD0     		beq	.L32
+  79:X-CUBE-AI/App/aiPbMemRWServices.c ****     memory_checksum(addr, size, &res);
+  80:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, EnumState_S_DONE,
+  81:X-CUBE-AI/App/aiPbMemRWServices.c ****         res, EnumError_E_NONE);
+  82:X-CUBE-AI/App/aiPbMemRWServices.c ****   }
+  83:X-CUBE-AI/App/aiPbMemRWServices.c ****   else if ((uint32_t)param == EnumCmd_CMD_MEMORY_WRITE) {
+ 281              		.loc 1 83 8 is_stmt 1 view .LVU68
+ 282              		.loc 1 83 11 is_stmt 0 view .LVU69
+ 283 0026 B8F1150F 		cmp	r8, #21
+ 284 002a 2CD0     		beq	.L33
+ 285              	.LBB2:
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbData data = {0, size>1024?1024:size, (uintptr_t)buffer, 0};
+  85:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+  86:X-CUBE-AI/App/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+  87:X-CUBE-AI/App/aiPbMemRWServices.c ****     while (size) {
+  88:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+  89:X-CUBE-AI/App/aiPbMemRWServices.c ****       if (data.nb_read > data.size) {
+  90:X-CUBE-AI/App/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+  91:X-CUBE-AI/App/aiPbMemRWServices.c ****             EnumError_E_MEM_OVERFLOW);
+  92:X-CUBE-AI/App/aiPbMemRWServices.c ****       }
+  93:X-CUBE-AI/App/aiPbMemRWServices.c **** #if defined(AI_PB_TEST) && (AI_PB_TEST == 1)
+  94:X-CUBE-AI/App/aiPbMemRWServices.c ****       memory_write((uintptr_t)buffer, (uint32_t)test, data.nb_read, &res);
+  95:X-CUBE-AI/App/aiPbMemRWServices.c **** #else
+  96:X-CUBE-AI/App/aiPbMemRWServices.c ****       memory_write((uintptr_t)buffer, addr, data.nb_read, &res);
+  97:X-CUBE-AI/App/aiPbMemRWServices.c **** #endif
+  98:X-CUBE-AI/App/aiPbMemRWServices.c ****       size -= data.nb_read;
+  99:X-CUBE-AI/App/aiPbMemRWServices.c ****       addr += data.nb_read;
+ 100:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING, res,
+ 101:X-CUBE-AI/App/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 102:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 103:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 104:X-CUBE-AI/App/aiPbMemRWServices.c ****     }
+ 105:X-CUBE-AI/App/aiPbMemRWServices.c ****   }
+ 106:X-CUBE-AI/App/aiPbMemRWServices.c ****   else { // EnumCmd_CMD_MEMORY_READ
+ 107:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbData data = {0, size>1024?1024:size, (uintptr_t)addr, 0};
+ 286              		.loc 1 107 5 is_stmt 1 view .LVU70
+ 287              		.loc 1 107 14 is_stmt 0 view .LVU71
+ 288 002c 0022     		movs	r2, #0
+ 289 002e 0392     		str	r2, [sp, #12]
+ 290              		.loc 1 107 39 view .LVU72
+ 291 0030 2346     		mov	r3, r4
+ 292 0032 B4F5806F 		cmp	r4, #1024
+ 293 0036 28BF     		it	cs
+ 294 0038 4FF48063 		movcs	r3, #1024
+ 295              		.loc 1 107 14 view .LVU73
+ 296 003c 0493     		str	r3, [sp, #16]
+ 297 003e 0595     		str	r5, [sp, #20]
+ARM GAS  /tmp/cckP2QYi.s 			page 8
+
+
+ 298 0040 0692     		str	r2, [sp, #24]
+ 108:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING,
+ 299              		.loc 1 108 5 is_stmt 1 view .LVU74
+ 300 0042 002C     		cmp	r4, #0
+ 301 0044 67D1     		bne	.L28
+ 302              		.loc 1 108 5 is_stmt 0 view .LVU75
+ 303 0046 0322     		movs	r2, #3
+ 304              	.L22:
+ 305              		.loc 1 108 5 discriminator 4 view .LVU76
+ 306 0048 0021     		movs	r1, #0
+ 307 004a 0091     		str	r1, [sp]
+ 308 004c 3946     		mov	r1, r7
+ 309 004e 3046     		mov	r0, r6
+ 310 0050 FFF7FEFF 		bl	aiPbMgrSendAck
+ 311              	.LVL27:
+ 109:X-CUBE-AI/App/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 110:X-CUBE-AI/App/aiPbMemRWServices.c ****     while (size) {
+ 312              		.loc 1 110 5 is_stmt 1 discriminator 4 view .LVU77
+ 313              		.loc 1 110 11 is_stmt 0 discriminator 4 view .LVU78
+ 314 0054 6EE0     		b	.L23
+ 315              	.L31:
+ 316              		.loc 1 110 11 discriminator 4 view .LVU79
+ 317              	.LBE2:
+  74:X-CUBE-AI/App/aiPbMemRWServices.c ****         res, EnumError_E_INVALID_PARAM);
+ 318              		.loc 1 74 5 is_stmt 1 view .LVU80
+ 319 0056 0422     		movs	r2, #4
+ 320 0058 0092     		str	r2, [sp]
+ 321 005a 0023     		movs	r3, #0
+ 322 005c 3946     		mov	r1, r7
+ 323 005e 3046     		mov	r0, r6
+ 324 0060 FFF7FEFF 		bl	aiPbMgrSendAck
+ 325              	.LVL28:
+ 326 0064 DCE7     		b	.L13
+ 327              	.L32:
+  79:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, EnumState_S_DONE,
+ 328              		.loc 1 79 5 view .LVU81
+ 329 0066 07AA     		add	r2, sp, #28
+ 330 0068 2146     		mov	r1, r4
+ 331 006a 2846     		mov	r0, r5
+ 332 006c FFF7FEFF 		bl	memory_checksum
+ 333              	.LVL29:
+  80:X-CUBE-AI/App/aiPbMemRWServices.c ****         res, EnumError_E_NONE);
+ 334              		.loc 1 80 5 view .LVU82
+ 335 0070 0023     		movs	r3, #0
+ 336 0072 0093     		str	r3, [sp]
+ 337 0074 079B     		ldr	r3, [sp, #28]
+ 338 0076 0322     		movs	r2, #3
+ 339 0078 3946     		mov	r1, r7
+ 340 007a 3046     		mov	r0, r6
+ 341 007c FFF7FEFF 		bl	aiPbMgrSendAck
+ 342              	.LVL30:
+ 343              	.L12:
+ 111:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.addr = addr;
+ 112:X-CUBE-AI/App/aiPbMemRWServices.c ****       size -= data.size;
+ 113:X-CUBE-AI/App/aiPbMemRWServices.c ****       addr += data.size;
+ 114:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrSendData(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING, &data);
+ 115:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ARM GAS  /tmp/cckP2QYi.s 			page 9
+
+
+ 116:X-CUBE-AI/App/aiPbMemRWServices.c ****     };
+ 117:X-CUBE-AI/App/aiPbMemRWServices.c ****   }
+ 118:X-CUBE-AI/App/aiPbMemRWServices.c **** }
+ 344              		.loc 1 118 1 is_stmt 0 view .LVU83
+ 345 0080 08B0     		add	sp, sp, #32
+ 346              	.LCFI6:
+ 347              		.cfi_remember_state
+ 348              		.cfi_def_cfa_offset 24
+ 349              		@ sp needed
+ 350 0082 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 351              	.LVL31:
+ 352              	.L33:
+ 353              	.LCFI7:
+ 354              		.cfi_restore_state
+ 355              	.LBB3:
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 356              		.loc 1 84 5 is_stmt 1 view .LVU84
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 357              		.loc 1 84 14 is_stmt 0 view .LVU85
+ 358 0086 0022     		movs	r2, #0
+ 359 0088 0392     		str	r2, [sp, #12]
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 360              		.loc 1 84 39 view .LVU86
+ 361 008a 2346     		mov	r3, r4
+ 362 008c B4F5806F 		cmp	r4, #1024
+ 363 0090 28BF     		it	cs
+ 364 0092 4FF48063 		movcs	r3, #1024
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 365              		.loc 1 84 14 view .LVU87
+ 366 0096 0493     		str	r3, [sp, #16]
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 367              		.loc 1 84 46 view .LVU88
+ 368 0098 DFF8AC80 		ldr	r8, .L35
+ 369              	.LVL32:
+  84:X-CUBE-AI/App/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 370              		.loc 1 84 14 view .LVU89
+ 371 009c CDF81480 		str	r8, [sp, #20]
+ 372 00a0 0692     		str	r2, [sp, #24]
+  85:X-CUBE-AI/App/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 373              		.loc 1 85 5 is_stmt 1 view .LVU90
+ 374 00a2 3CB9     		cbnz	r4, .L26
+ 375 00a4 0322     		movs	r2, #3
+ 376              	.L17:
+  85:X-CUBE-AI/App/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 377              		.loc 1 85 5 is_stmt 0 discriminator 4 view .LVU91
+ 378 00a6 0021     		movs	r1, #0
+ 379 00a8 0091     		str	r1, [sp]
+ 380 00aa 3946     		mov	r1, r7
+ 381 00ac 3046     		mov	r0, r6
+ 382 00ae FFF7FEFF 		bl	aiPbMgrSendAck
+ 383              	.LVL33:
+  87:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+ 384              		.loc 1 87 5 is_stmt 1 discriminator 4 view .LVU92
+  87:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+ 385              		.loc 1 87 11 is_stmt 0 discriminator 4 view .LVU93
+ 386 00b2 1BE0     		b	.L18
+ 387              	.L26:
+ARM GAS  /tmp/cckP2QYi.s 			page 10
+
+
+  85:X-CUBE-AI/App/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 388              		.loc 1 85 5 view .LVU94
+ 389 00b4 0122     		movs	r2, #1
+ 390 00b6 F6E7     		b	.L17
+ 391              	.L34:
+  90:X-CUBE-AI/App/aiPbMemRWServices.c ****             EnumError_E_MEM_OVERFLOW);
+ 392              		.loc 1 90 9 is_stmt 1 view .LVU95
+ 393 00b8 0821     		movs	r1, #8
+ 394 00ba 0091     		str	r1, [sp]
+ 395 00bc D31A     		subs	r3, r2, r3
+ 396 00be 0422     		movs	r2, #4
+ 397 00c0 3946     		mov	r1, r7
+ 398 00c2 3046     		mov	r0, r6
+ 399 00c4 FFF7FEFF 		bl	aiPbMgrSendAck
+ 400              	.LVL34:
+ 401 00c8 19E0     		b	.L19
+ 402              	.L27:
+ 100:X-CUBE-AI/App/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 403              		.loc 1 100 7 is_stmt 0 view .LVU96
+ 404 00ca 0122     		movs	r2, #1
+ 405              	.L20:
+ 100:X-CUBE-AI/App/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 406              		.loc 1 100 7 discriminator 4 view .LVU97
+ 407 00cc 0023     		movs	r3, #0
+ 408 00ce 0093     		str	r3, [sp]
+ 409 00d0 079B     		ldr	r3, [sp, #28]
+ 410 00d2 3946     		mov	r1, r7
+ 411 00d4 3046     		mov	r0, r6
+ 412 00d6 FFF7FEFF 		bl	aiPbMgrSendAck
+ 413              	.LVL35:
+ 102:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 414              		.loc 1 102 7 is_stmt 1 discriminator 4 view .LVU98
+ 102:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 415              		.loc 1 102 33 is_stmt 0 discriminator 4 view .LVU99
+ 416 00da 2346     		mov	r3, r4
+ 417 00dc B4F5806F 		cmp	r4, #1024
+ 418 00e0 28BF     		it	cs
+ 419 00e2 4FF48063 		movcs	r3, #1024
+ 102:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 420              		.loc 1 102 17 discriminator 4 view .LVU100
+ 421 00e6 0493     		str	r3, [sp, #16]
+ 103:X-CUBE-AI/App/aiPbMemRWServices.c ****     }
+ 422              		.loc 1 103 7 is_stmt 1 discriminator 4 view .LVU101
+ 103:X-CUBE-AI/App/aiPbMemRWServices.c ****     }
+ 423              		.loc 1 103 17 is_stmt 0 discriminator 4 view .LVU102
+ 424 00e8 CDF81480 		str	r8, [sp, #20]
+ 425              	.LVL36:
+ 426              	.L18:
+  87:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+ 427              		.loc 1 87 11 is_stmt 1 view .LVU103
+ 428 00ec 002C     		cmp	r4, #0
+ 429 00ee C7D0     		beq	.L12
+  88:X-CUBE-AI/App/aiPbMemRWServices.c ****       if (data.nb_read > data.size) {
+ 430              		.loc 1 88 7 view .LVU104
+ 431 00f0 03A8     		add	r0, sp, #12
+ 432 00f2 FFF7FEFF 		bl	aiPbMgrReceiveData
+ 433              	.LVL37:
+ARM GAS  /tmp/cckP2QYi.s 			page 11
+
+
+  89:X-CUBE-AI/App/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 434              		.loc 1 89 7 view .LVU105
+  89:X-CUBE-AI/App/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 435              		.loc 1 89 15 is_stmt 0 view .LVU106
+ 436 00f6 069A     		ldr	r2, [sp, #24]
+  89:X-CUBE-AI/App/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 437              		.loc 1 89 30 view .LVU107
+ 438 00f8 049B     		ldr	r3, [sp, #16]
+  89:X-CUBE-AI/App/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 439              		.loc 1 89 10 view .LVU108
+ 440 00fa 9A42     		cmp	r2, r3
+ 441 00fc DCD8     		bhi	.L34
+ 442              	.L19:
+  96:X-CUBE-AI/App/aiPbMemRWServices.c **** #endif
+ 443              		.loc 1 96 7 is_stmt 1 view .LVU109
+ 444 00fe 07AB     		add	r3, sp, #28
+ 445 0100 069A     		ldr	r2, [sp, #24]
+ 446 0102 2946     		mov	r1, r5
+ 447 0104 4046     		mov	r0, r8
+ 448 0106 FFF7FEFF 		bl	memory_write
+ 449              	.LVL38:
+  98:X-CUBE-AI/App/aiPbMemRWServices.c ****       addr += data.nb_read;
+ 450              		.loc 1 98 7 view .LVU110
+  98:X-CUBE-AI/App/aiPbMemRWServices.c ****       addr += data.nb_read;
+ 451              		.loc 1 98 19 is_stmt 0 view .LVU111
+ 452 010a 069B     		ldr	r3, [sp, #24]
+ 453              	.LVL39:
+  99:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING, res,
+ 454              		.loc 1 99 7 is_stmt 1 view .LVU112
+  99:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING, res,
+ 455              		.loc 1 99 12 is_stmt 0 view .LVU113
+ 456 010c 1D44     		add	r5, r5, r3
+ 457              	.LVL40:
+ 100:X-CUBE-AI/App/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 458              		.loc 1 100 7 is_stmt 1 view .LVU114
+ 459 010e E41A     		subs	r4, r4, r3
+ 460              	.LVL41:
+ 100:X-CUBE-AI/App/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 461              		.loc 1 100 7 is_stmt 0 view .LVU115
+ 462 0110 DBD1     		bne	.L27
+ 463 0112 0322     		movs	r2, #3
+ 464 0114 DAE7     		b	.L20
+ 465              	.LVL42:
+ 466              	.L28:
+ 100:X-CUBE-AI/App/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 467              		.loc 1 100 7 view .LVU116
+ 468              	.LBE3:
+ 469              	.LBB4:
+ 108:X-CUBE-AI/App/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 470              		.loc 1 108 5 view .LVU117
+ 471 0116 0222     		movs	r2, #2
+ 472 0118 96E7     		b	.L22
+ 473              	.L29:
+ 114:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 474              		.loc 1 114 7 view .LVU118
+ 475 011a 0222     		movs	r2, #2
+ 476              	.L24:
+ARM GAS  /tmp/cckP2QYi.s 			page 12
+
+
+ 114:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 477              		.loc 1 114 7 discriminator 4 view .LVU119
+ 478 011c 03AB     		add	r3, sp, #12
+ 479 011e 3946     		mov	r1, r7
+ 480 0120 3046     		mov	r0, r6
+ 481 0122 FFF7FEFF 		bl	aiPbMgrSendData
+ 482              	.LVL43:
+ 115:X-CUBE-AI/App/aiPbMemRWServices.c ****     };
+ 483              		.loc 1 115 7 is_stmt 1 discriminator 4 view .LVU120
+ 115:X-CUBE-AI/App/aiPbMemRWServices.c ****     };
+ 484              		.loc 1 115 33 is_stmt 0 discriminator 4 view .LVU121
+ 485 0126 2346     		mov	r3, r4
+ 486 0128 B4F5806F 		cmp	r4, #1024
+ 487 012c 28BF     		it	cs
+ 488 012e 4FF48063 		movcs	r3, #1024
+ 115:X-CUBE-AI/App/aiPbMemRWServices.c ****     };
+ 489              		.loc 1 115 17 discriminator 4 view .LVU122
+ 490 0132 0493     		str	r3, [sp, #16]
+ 491              	.LVL44:
+ 492              	.L23:
+ 110:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.addr = addr;
+ 493              		.loc 1 110 11 is_stmt 1 view .LVU123
+ 494 0134 002C     		cmp	r4, #0
+ 495 0136 A3D0     		beq	.L12
+ 111:X-CUBE-AI/App/aiPbMemRWServices.c ****       size -= data.size;
+ 496              		.loc 1 111 7 view .LVU124
+ 111:X-CUBE-AI/App/aiPbMemRWServices.c ****       size -= data.size;
+ 497              		.loc 1 111 17 is_stmt 0 view .LVU125
+ 498 0138 0595     		str	r5, [sp, #20]
+ 112:X-CUBE-AI/App/aiPbMemRWServices.c ****       addr += data.size;
+ 499              		.loc 1 112 7 is_stmt 1 view .LVU126
+ 112:X-CUBE-AI/App/aiPbMemRWServices.c ****       addr += data.size;
+ 500              		.loc 1 112 19 is_stmt 0 view .LVU127
+ 501 013a 049B     		ldr	r3, [sp, #16]
+ 502              	.LVL45:
+ 113:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrSendData(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING, &data);
+ 503              		.loc 1 113 7 is_stmt 1 view .LVU128
+ 113:X-CUBE-AI/App/aiPbMemRWServices.c ****       aiPbMgrSendData(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING, &data);
+ 504              		.loc 1 113 12 is_stmt 0 view .LVU129
+ 505 013c 1D44     		add	r5, r5, r3
+ 506              	.LVL46:
+ 114:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 507              		.loc 1 114 7 is_stmt 1 view .LVU130
+ 508 013e E41A     		subs	r4, r4, r3
+ 509              	.LVL47:
+ 114:X-CUBE-AI/App/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 510              		.loc 1 114 7 is_stmt 0 view .LVU131
+ 511 0140 EBD1     		bne	.L29
+ 512 0142 0322     		movs	r2, #3
+ 513 0144 EAE7     		b	.L24
+ 514              	.L36:
+ 515 0146 00BF     		.align	2
+ 516              	.L35:
+ 517 0148 00000000 		.word	.LANCHOR0
+ 518              	.LBE4:
+ 519              		.cfi_endproc
+ 520              	.LFE4:
+ARM GAS  /tmp/cckP2QYi.s 			page 13
+
+
+ 522              		.section	.bss.buffer.6355,"aw",%nobits
+ 523              		.align	2
+ 524              		.set	.LANCHOR0,. + 0
+ 527              	buffer.6355:
+ 528 0000 00000000 		.space	1024
+ 528      00000000 
+ 528      00000000 
+ 528      00000000 
+ 528      00000000 
+ 529              		.text
+ 530              	.Letext0:
+ 531              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 532              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 533              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 534              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 535              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 536              		.file 7 "X-CUBE-AI/App/pb.h"
+ 537              		.file 8 "X-CUBE-AI/App/stm32msg.pb.h"
+ 538              		.file 9 "X-CUBE-AI/App/aiPbMgr.h"
+ 539              		.file 10 "<built-in>"
+ARM GAS  /tmp/cckP2QYi.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 aiPbMemRWServices.c
+     /tmp/cckP2QYi.s:18     .text.bsdChecksum:0000000000000000 $t
+     /tmp/cckP2QYi.s:26     .text.bsdChecksum:0000000000000000 bsdChecksum
+     /tmp/cckP2QYi.s:98     .text.memory_valid_addr_range:0000000000000000 $t
+     /tmp/cckP2QYi.s:105    .text.memory_valid_addr_range:0000000000000000 memory_valid_addr_range
+     /tmp/cckP2QYi.s:123    .text.memory_checksum:0000000000000000 $t
+     /tmp/cckP2QYi.s:130    .text.memory_checksum:0000000000000000 memory_checksum
+     /tmp/cckP2QYi.s:167    .text.memory_write:0000000000000000 $t
+     /tmp/cckP2QYi.s:174    .text.memory_write:0000000000000000 memory_write
+     /tmp/cckP2QYi.s:218    .text.aiPbCmdRWMemory:0000000000000000 $t
+     /tmp/cckP2QYi.s:225    .text.aiPbCmdRWMemory:0000000000000000 aiPbCmdRWMemory
+     /tmp/cckP2QYi.s:517    .text.aiPbCmdRWMemory:0000000000000148 $d
+     /tmp/cckP2QYi.s:523    .bss.buffer.6355:0000000000000000 $d
+     /tmp/cckP2QYi.s:527    .bss.buffer.6355:0000000000000000 buffer.6355
+
+UNDEFINED SYMBOLS
+memcpy
+aiPbMgrSendAck
+aiPbMgrReceiveData
+aiPbMgrSendData

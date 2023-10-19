@@ -1,0 +1,263 @@
+ARM GAS  /tmp/ccPI6exv.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"arm_convolve_wrapper_s16.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.arm_convolve_wrapper_s16,"ax",%progbits
+  18              		.align	1
+  19              		.global	arm_convolve_wrapper_s16
+  20              		.arch armv7e-m
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  24              		.fpu fpv4-sp-d16
+  26              	arm_convolve_wrapper_s16:
+  27              	.LVL0:
+  28              	.LFB0:
+  29              		.file 1 "Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrap
+   1:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** /*
+   2:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * SPDX-FileCopyrightText: Copyright 2021-2023 Arm Limited and/or its affiliates <open-source-offic
+   3:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+   4:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * SPDX-License-Identifier: Apache-2.0
+   5:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+   6:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * not use this file except in compliance with the License.
+   8:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * You may obtain a copy of the License at
+   9:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+  10:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * www.apache.org/licenses/LICENSE-2.0
+  11:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+  12:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Unless required by applicable law or agreed to in writing, software
+  13:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * See the License for the specific language governing permissions and
+  16:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * limitations under the License.
+  17:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  */
+  18:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** 
+  19:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** /* ----------------------------------------------------------------------
+  20:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Project:      CMSIS NN Library
+  21:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Title:        arm_convolve_wrapper_s16.c
+  22:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Description:  s16 convolution layer wrapper function with the main purpose to call the optimal k
+  23:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * cmsis-nn to perform the convolution.
+  24:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+  25:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * $Date:        30 January 2023
+  26:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * $Revision:    V.2.1.0
+  27:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+  28:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Target :  Arm(R) M-Profile Architecture
+  29:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+ARM GAS  /tmp/ccPI6exv.s 			page 2
+
+
+  30:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * -------------------------------------------------------------------- */
+  31:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** 
+  32:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** #include "arm_nnfunctions.h"
+  33:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** 
+  34:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** /**
+  35:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *  @ingroup Public
+  36:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  */
+  37:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** 
+  38:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** /**
+  39:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * @addtogroup NNConv
+  40:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * @{
+  41:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  */
+  42:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** 
+  43:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** /*
+  44:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Convolution layer
+  45:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+  46:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  * Refer header file for details.
+  47:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  *
+  48:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****  */
+  49:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** 
+  50:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** arm_cmsis_nn_status arm_convolve_wrapper_s16(const cmsis_nn_context *ctx,
+  51:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const cmsis_nn_conv_params *conv_params,
+  52:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const cmsis_nn_per_channel_quant_params *quant_params,
+  53:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const cmsis_nn_dims *input_dims,
+  54:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const int16_t *input_data,
+  55:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const cmsis_nn_dims *filter_dims,
+  56:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const int8_t *filter_data,
+  57:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const cmsis_nn_dims *bias_dims,
+  58:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const int64_t *bias_data,
+  59:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              const cmsis_nn_dims *output_dims,
+  60:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                              int16_t *output_data)
+  61:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** {
+  30              		.loc 1 61 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 28, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 61 1 is_stmt 0 view .LVU1
+  35 0000 70B5     		push	{r4, r5, r6, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 16
+  38              		.cfi_offset 4, -16
+  39              		.cfi_offset 5, -12
+  40              		.cfi_offset 6, -8
+  41              		.cfi_offset 14, -4
+  42 0002 88B0     		sub	sp, sp, #32
+  43              	.LCFI1:
+  44              		.cfi_def_cfa_offset 48
+  45 0004 0D9E     		ldr	r6, [sp, #52]
+  62:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** #if defined(ARM_MATH_DSP) && !defined(ARM_MATH_MVEI)
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     if (filter_dims->w * filter_dims->h * input_dims->c < 512 &&
+  46              		.loc 1 63 5 is_stmt 1 view .LVU2
+  47              		.loc 1 63 20 is_stmt 0 view .LVU3
+  48 0006 B568     		ldr	r5, [r6, #8]
+  49              		.loc 1 63 37 view .LVU4
+  50 0008 7468     		ldr	r4, [r6, #4]
+  51              		.loc 1 63 24 view .LVU5
+  52 000a 04FB05F5 		mul	r5, r4, r5
+ARM GAS  /tmp/ccPI6exv.s 			page 3
+
+
+  53              		.loc 1 63 53 view .LVU6
+  54 000e DC68     		ldr	r4, [r3, #12]
+  55              		.loc 1 63 41 view .LVU7
+  56 0010 04FB05F4 		mul	r4, r4, r5
+  57              		.loc 1 63 8 view .LVU8
+  58 0014 B4F5007F 		cmp	r4, #512
+  59 0018 05DA     		bge	.L2
+  64:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****         (conv_params->dilation.w == 1 && conv_params->dilation.h == 1))
+  60              		.loc 1 64 31 discriminator 1 view .LVU9
+  61 001a 8C69     		ldr	r4, [r1, #24]
+  63:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****         (conv_params->dilation.w == 1 && conv_params->dilation.h == 1))
+  62              		.loc 1 63 63 discriminator 1 view .LVU10
+  63 001c 012C     		cmp	r4, #1
+  64 001e 02D1     		bne	.L2
+  65              		.loc 1 64 63 view .LVU11
+  66 0020 CC69     		ldr	r4, [r1, #28]
+  67              		.loc 1 64 39 view .LVU12
+  68 0022 012C     		cmp	r4, #1
+  69 0024 10D0     		beq	.L5
+  70              	.L2:
+  65:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     {
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****         return arm_convolve_fast_s16(ctx,
+  67:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      conv_params,
+  68:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      quant_params,
+  69:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      input_dims,
+  70:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      input_data,
+  71:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      filter_dims,
+  72:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      filter_data,
+  73:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      bias_dims,
+  74:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      bias_data,
+  75:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      output_dims,
+  76:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      output_data);
+  77:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     }
+  78:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     else
+  79:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     {
+  80:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****         return arm_convolve_s16(ctx,
+  71              		.loc 1 80 9 is_stmt 1 view .LVU13
+  72              		.loc 1 80 16 is_stmt 0 view .LVU14
+  73 0026 129C     		ldr	r4, [sp, #72]
+  74 0028 0694     		str	r4, [sp, #24]
+  75 002a 119C     		ldr	r4, [sp, #68]
+  76 002c 0594     		str	r4, [sp, #20]
+  77 002e 109C     		ldr	r4, [sp, #64]
+  78 0030 0494     		str	r4, [sp, #16]
+  79 0032 0F9C     		ldr	r4, [sp, #60]
+  80 0034 0394     		str	r4, [sp, #12]
+  81 0036 0E9C     		ldr	r4, [sp, #56]
+  82 0038 0294     		str	r4, [sp, #8]
+  83 003a 0196     		str	r6, [sp, #4]
+  84 003c 0C9C     		ldr	r4, [sp, #48]
+  85 003e 0094     		str	r4, [sp]
+  86 0040 FFF7FEFF 		bl	arm_convolve_s16
+  87              	.LVL1:
+  88              	.L3:
+  81:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 conv_params,
+  82:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 quant_params,
+  83:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 input_dims,
+ARM GAS  /tmp/ccPI6exv.s 			page 4
+
+
+  84:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 input_data,
+  85:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 filter_dims,
+  86:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 filter_data,
+  87:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 bias_dims,
+  88:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 bias_data,
+  89:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 output_dims,
+  90:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                 output_data);
+  91:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     }
+  92:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** #else
+  93:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****     return arm_convolve_s16(ctx,
+  94:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             conv_params,
+  95:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             quant_params,
+  96:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             input_dims,
+  97:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             input_data,
+  98:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             filter_dims,
+  99:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             filter_data,
+ 100:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             bias_dims,
+ 101:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             bias_data,
+ 102:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             output_dims,
+ 103:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                             output_data);
+ 104:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** #endif
+ 105:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c **** }
+  89              		.loc 1 105 1 view .LVU15
+  90 0044 08B0     		add	sp, sp, #32
+  91              	.LCFI2:
+  92              		.cfi_remember_state
+  93              		.cfi_def_cfa_offset 16
+  94              		@ sp needed
+  95 0046 70BD     		pop	{r4, r5, r6, pc}
+  96              	.LVL2:
+  97              	.L5:
+  98              	.LCFI3:
+  99              		.cfi_restore_state
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      conv_params,
+ 100              		.loc 1 66 9 is_stmt 1 view .LVU16
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      conv_params,
+ 101              		.loc 1 66 16 is_stmt 0 view .LVU17
+ 102 0048 129C     		ldr	r4, [sp, #72]
+ 103 004a 0694     		str	r4, [sp, #24]
+ 104 004c 119C     		ldr	r4, [sp, #68]
+ 105 004e 0594     		str	r4, [sp, #20]
+ 106 0050 109C     		ldr	r4, [sp, #64]
+ 107 0052 0494     		str	r4, [sp, #16]
+ 108 0054 0F9C     		ldr	r4, [sp, #60]
+ 109 0056 0394     		str	r4, [sp, #12]
+ 110 0058 0E9C     		ldr	r4, [sp, #56]
+ 111 005a 0294     		str	r4, [sp, #8]
+ 112 005c 0196     		str	r6, [sp, #4]
+ 113 005e 0C9C     		ldr	r4, [sp, #48]
+ 114 0060 0094     		str	r4, [sp]
+ 115 0062 FFF7FEFF 		bl	arm_convolve_fast_s16
+ 116              	.LVL3:
+  66:Middlewares/tensorflow/third_party/cmsis_nn/Source/ConvolutionFunctions/arm_convolve_wrapper_s16.c ****                                      conv_params,
+ 117              		.loc 1 66 16 view .LVU18
+ 118 0066 EDE7     		b	.L3
+ 119              		.cfi_endproc
+ 120              	.LFE0:
+ARM GAS  /tmp/ccPI6exv.s 			page 5
+
+
+ 122              		.text
+ 123              	.Letext0:
+ 124              		.file 2 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stdint.h"
+ 125              		.file 3 "/usr/lib/gcc/arm-none-eabi/9.2.1/include/stddef.h"
+ 126              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 127              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 128              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 129              		.file 7 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nn_types.h"
+ 130              		.file 8 "Middlewares/tensorflow/third_party/cmsis_nn/Include/arm_nnfunctions.h"
+ARM GAS  /tmp/ccPI6exv.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_convolve_wrapper_s16.c
+     /tmp/ccPI6exv.s:18     .text.arm_convolve_wrapper_s16:0000000000000000 $t
+     /tmp/ccPI6exv.s:26     .text.arm_convolve_wrapper_s16:0000000000000000 arm_convolve_wrapper_s16
+
+UNDEFINED SYMBOLS
+arm_convolve_s16
+arm_convolve_fast_s16

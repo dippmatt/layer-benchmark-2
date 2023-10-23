@@ -59,6 +59,7 @@
     "frameworks": {
         "st": {
             "workdir": "<root_dir>/src/st/workdir",
+            "out_dir": "<root_dir>/data_gen",
             "stm32ai": "/home/matthias/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai",
             "cube_template": [
                 "<root_dir>/src/st/cube_templates/template_cube_ai_8_1_balanced -cube_template_validate <root_dir>/src/st/cube_templates/template_cube_ai_8_1_balanced_validate",
@@ -68,6 +69,7 @@
         },
         "tiny_engine": {
             "workdir": "<root_dir>/src/tiny_engine/workdir",
+            "out_dir": "<root_dir>/data_gen",
             "tiny_engine_submodule": "<root_dir>/third_party/tinyengine",
             "cube_template": "<root_dir>/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi",
             "cube_template_ref": "<root_dir>/src/tiny_engine/cube_templates/TinyEngineTemplateCleanR5Zi_ref",
@@ -80,6 +82,7 @@
             ],
             "nxp": true,
             "workdir": "<root_dir>/src/glow/workdir",
+            "out_dir": "<root_dir>/data_gen",
             "glow_compiler": "/opt/nxp/Glow/bin/model-compiler",
             "glow_profiler": "/opt/nxp/Glow/bin/model-profiler",
             "cube_template": "<root_dir>/src/glow/cube_templates/Glow_Template/",

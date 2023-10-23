@@ -6,6 +6,33 @@ def get_json(json_path: Path):
     json_dict = json.load(codecs.open(json_path, 'r', 'utf-8-sig'))
     return json_dict
 
+def create_run_commands(final_permutations: list):
+    
+    
+    for permutation in final_permutations:
+        venv_dir = (Path(permutation["-workdir"]) / Path("..", "venv", "bin")).resolve()
+        python_exec = venv_dir / Path("python3")
+        python_main = Path(permutation["-workdir"]) / Path("..", "python_scripting", "main.py")
+        python_main = python_main.resolve()
+
+        assert python_exec.exists()
+        assert python_main.exists()
+        
+        print(python_exec, python_main, end=" ")
+        for key, value in permutation.items():
+            if key[0] == "-":
+                if type(value) == bool and value == True:
+                    print(key, end=" ")
+                else:
+                    print(key, value, end=" ")
+        print("\n")
+        if "glow" in str(python_main):
+            print("\n", permutation)
+            break
+
+    import sys;sys.exit()
+        
+
 def create_permutations(config, schema, root_dir):
     framework_permutations = []
     frameworks = config["frameworks"].keys()
@@ -57,7 +84,7 @@ def create_permutations(config, schema, root_dir):
                     
 
     # create use case permutations
-    finaly_permutations = []
+    final_permutations = []
     for use_case in config["use_case"].keys():
         input_permutations = framework_permutations.copy()
         output_permutations = []
@@ -142,19 +169,23 @@ def create_permutations(config, schema, root_dir):
                     perm_copy["-model"] = model_int
                     output_permutations.append(perm_copy)
 
-        finaly_permutations.extend(output_permutations)
-        
+        final_permutations.extend(output_permutations)
+    
+    return final_permutations
+    
+    # Dead code to verify permutations and unique keys
     unique_keys = []
-    for permutation in finaly_permutations:
+    for permutation in final_permutations:
         permutation_string = json.dumps(permutation, indent=2)
         unique_keys.append(permutation["unique_key"])
         print(permutation_string)
-    print(len(finaly_permutations))
+    print(len(final_permutations))
     print(len(set(unique_keys)))
     import sys;sys.exit()
 
     print(config["frameworks"][framework].keys())
 
+    return final_permutations
     
 
 if __name__ == "__main__":
@@ -168,10 +199,12 @@ if __name__ == "__main__":
     # insert root_dir placeholder
     root_dir = config["root_dir"]
     config_string = json.dumps(config, indent=2)
-    #config_string = config_string.replace("<root_dir>", str(root_dir))
+    config_string = config_string.replace("<root_dir>", str(root_dir))
     config = json.loads(config_string)
 
-    create_permutations(config, schema, root_dir)
+    final_permutations = create_permutations(config, schema, root_dir)
+
+    create_run_commands(final_permutations)
     
     config_string = json.dumps(config, indent=2)
     schema_string = json.dumps(schema, indent=2)

@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
 import codecs
+import subprocess
 
 def get_json(json_path: Path):    
     json_dict = json.load(codecs.open(json_path, 'r', 'utf-8-sig'))
     return json_dict
 
 def create_run_commands(final_permutations: list):
-    
     
     for permutation in final_permutations:
         venv_dir = (Path(permutation["-workdir"]) / Path("..", "venv", "bin")).resolve()
@@ -21,6 +21,17 @@ def create_run_commands(final_permutations: list):
         print(python_exec, python_main, end=" ")
         for key, value in permutation.items():
             if key[0] == "-":
+                if key == "-out_dir":
+                    # create unique out_dir
+                    out_dir = Path(value) / Path(permutation["unique_key"])
+                    out_dir = out_dir.resolve()
+                    # create out_dir if it does not exist
+                    if not out_dir.exists():
+                        out_dir.mkdir(parents=True, exist_ok=True)
+                    else: # otherwise delete and create
+                        subprocess.run(["rm", "-r", str(out_dir)])
+                        out_dir.mkdir(parents=True, exist_ok=True)
+                    value = str(out_dir)
                 if type(value) == bool and value == True:
                     print(key, end=" ")
                 else:

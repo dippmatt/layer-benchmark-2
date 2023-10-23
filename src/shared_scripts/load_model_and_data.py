@@ -4,8 +4,14 @@ import numpy as np
 import shutil
 from shared_scripts.color_print import print_in_color, Color
 
-INPUT_SAMPLES = 196
-PROFILE_SAMPLES = 1000
+# Final values to use
+# INPUT_SAMPLES = 196
+# PROFILE_SAMPLES = 1000
+
+# For testing
+INPUT_SAMPLES = 1
+PROFILE_SAMPLES = 100
+
 
 def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, representative_data: Path = None, quantize: bool = False):
     """Loads the tflite model and the input data.

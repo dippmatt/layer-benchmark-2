@@ -41,6 +41,9 @@ from flash_and_readback import flash_and_readback
 # process and store data
 from process_data import process_data
 
+# save the results
+from shared_scripts.save_results import save_results
+
 def _main():
 
     parser = argparse.ArgumentParser()
@@ -202,8 +205,24 @@ def _main():
                          {'step': 6, 'name': 'reps_no_ir'}]
     pipeline.add_step(process_data, step_requirements)
 
+    step_requirements = [{'main_arg': 'out_dir'},
+                         {'step': 4, 'name': 'layer_list'},
+                         {'step': 5, 'name': 'ram'},
+                         {'step': 5, 'name': 'flash'},
+                         {'step': 7, 'name': 'per_layer_timings_mean'},
+                         {'step': 7, 'name': 'per_layer_timings_std_dev'},
+                         {'step': 7, 'name': 'all_layers_timings_mean'},
+                         {'step': 7, 'name': 'all_layers_timings_std_dev'},
+                         {'step': 7, 'name': 'mcu_tensor_values'},
+                         {'step': 7, 'name': 'ref_tensor_values'}]
+    pipeline.add_step(save_results, step_requirements)
+
     pipeline.run()
 
+    if pipeline.steps[-1].output["Success"] == True:
+        return 0
+    else:
+        return -1
     # Test output
     layer_list = pipeline.steps[4].output["layer_list"]
     ram = pipeline.steps[5].output["ram"]

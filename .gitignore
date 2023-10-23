@@ -4,3 +4,4 @@ venv/
 workdir/
 .vscode/
 test_data/
+data_gen/

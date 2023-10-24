@@ -2,13 +2,14 @@ import json
 from pathlib import Path
 import codecs
 import subprocess
+from shared_scripts.color_print import print_in_color, Color
 
 def get_json(json_path: Path):    
     json_dict = json.load(codecs.open(json_path, 'r', 'utf-8-sig'))
     return json_dict
 
 def create_run_commands(final_permutations: list):
-    
+    commands = []
     for permutation in final_permutations:
         venv_dir = (Path(permutation["-workdir"]) / Path("..", "venv", "bin")).resolve()
         python_exec = venv_dir / Path("python3")
@@ -17,8 +18,11 @@ def create_run_commands(final_permutations: list):
 
         assert python_exec.exists()
         assert python_main.exists()
-        
-        print(python_exec, python_main, end=" ")
+
+        command = ""
+        command += python_exec + " " + python_main + " "
+        #print(python_exec, python_main, end=" ")
+
         for key, value in permutation.items():
             if key[0] == "-":
                 if key == "-out_dir":
@@ -33,16 +37,30 @@ def create_run_commands(final_permutations: list):
                         out_dir.mkdir(parents=True, exist_ok=True)
                     value = str(out_dir)
                 if type(value) == bool and value == True:
-                    print(key, end=" ")
+                    #print(key, end=" ")
+                    command += key + " "
                 else:
-                    print(key, value, end=" ")
-        print("\n")
-        if "glow" in str(python_main):
-            print("\n", permutation)
-            break
+                    #print(key, value, end=" ")
+                    command += key + " " + str(value) + " "
+        commands.append(command)
 
-    import sys;sys.exit()
+    return commands
         
+def run_commands(commands: list, permutations: list, command_run_dir: Path):
+    
+    num_permutations = len(permutations)
+    for i, command in enumerate(commands):
+        unique_key = permutations[i]["unique_key"]
+        print("Running permutation: ", f"{i}/{num_permutations}")
+        print("Running configuration: ", unique_key)
+        result = subprocess.run(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # Check the return code
+        if result.returncode == 0:
+            print_in_color(Color.GREEN, f"SUCCESS {unique_key}")
+        else:
+            print_in_color(Color.RED, f"FAILED {unique_key}")
+        print()
+    return
 
 def create_permutations(config, schema, root_dir):
     framework_permutations = []
@@ -215,7 +233,12 @@ if __name__ == "__main__":
 
     final_permutations = create_permutations(config, schema, root_dir)
 
-    create_run_commands(final_permutations)
+    commands = create_run_commands(final_permutations)
+    command_run_dir = Path(root_dir, "src")
+
+    run_commands(commands, final_permutations, command_run_dir)
+
+    import sys; sys.exit(0)
     
     config_string = json.dumps(config, indent=2)
     schema_string = json.dumps(schema, indent=2)

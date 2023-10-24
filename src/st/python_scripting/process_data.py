@@ -26,6 +26,9 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     step_output["per_layer_timings_mean"] = per_layer_timings_mean
     step_output["all_layers_timings_mean"] = all_layers_timings_mean
     
+    # dummy values for saving results
+    step_output["per_layer_timings_std_dev"] = None
+    step_output["all_layers_timings_std_dev"] = None
     return step_output
 
 

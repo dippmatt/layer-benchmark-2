@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/python_scripting/main.py", line 263, in <module>
+    sys.exit(_main())
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/python_scripting/main.py", line 85, in _main
+    pipeline = Pipeline(args, validate_args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/benchmark_pipeline.py", line 14, in __init__
+    validate_args(self.args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/python_scripting/validate_args.py", line 20, in validate_args
+    args.model = Path(args.model).resolve()
+  File "/usr/lib/python3.8/pathlib.py", line 1042, in __new__
+    self = cls._from_parts(args, init=False)
+  File "/usr/lib/python3.8/pathlib.py", line 683, in _from_parts
+    drv, root, parts = self._parse_args(args)
+  File "/usr/lib/python3.8/pathlib.py", line 667, in _parse_args
+    a = os.fspath(a)
+TypeError: expected str, bytes or os.PathLike object, not NoneType

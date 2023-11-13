@@ -52,7 +52,7 @@
             ],
             "representative_data_fp": "<root_dir>/test_data/vww/representative_dataset_float32.npz",
             "test_data_fp": [
-                "<root_dir>/test_data/vww/5_non_person_5_person_float32.npz"
+                "<root_dir>/test_data/vww/2_non_person_2_person_float32.npz"
             ]
         }
     },

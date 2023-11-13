@@ -1,0 +1,257 @@
+ID   : 0
+Kind : 155 (armcmconvolution)
+Name : model_activation_Relu_model_batch_normalization_FusedBatchNormV3_model_conv2d_BiasAdd_ReadVariableOp_model_conv2d_BiasAdd_model_depthwise_conv2d_depthwise_model_conv2d_Conv2D1__1
+Inp[0] Src:       float<1 x 96 x 96 x 3>
+Inp[1] Filter:    float<8 x 3 x 3 x 3>
+Inp[2] Bias:      float<8>
+Out[0] Dest:      float<1 x 48 x 48 x 8>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<216>
+
+ID   : 1
+Kind : 155 (armcmconvolution)
+Name : model_activation_1_Relu_model_batch_normalization_1_FusedBatchNormV3_model_depthwise_conv2d_depthwise_model_depthwise_conv2d_BiasAdd_ReadVariableOp_model_depthwise_conv2d_BiasAdd1__1
+Inp[0] Src:       float<1 x 48 x 48 x 8>
+Inp[1] Filter:    float<8 x 3 x 3 x 1>
+Inp[2] Bias:      float<8>
+Out[0] Dest:      float<1 x 48 x 48 x 8>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 2
+Kind : 155 (armcmconvolution)
+Name : model_activation_2_Relu_model_batch_normalization_2_FusedBatchNormV3_model_conv2d_1_BiasAdd_ReadVariableOp_model_conv2d_1_BiasAdd_model_depthwise_conv2d_1_depthwise_model_conv2d_1_Conv2D1__1
+Inp[0] Src:       float<1 x 48 x 48 x 8>
+Inp[1] Filter:    float<16 x 1 x 1 x 8>
+Inp[2] Bias:      float<16>
+Out[0] Dest:      float<1 x 48 x 48 x 16>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 3
+Kind : 155 (armcmconvolution)
+Name : model_activation_3_Relu_model_batch_normalization_3_FusedBatchNormV3_model_depthwise_conv2d_1_depthwise_model_depthwise_conv2d_1_BiasAdd_ReadVariableOp_model_depthwise_conv2d_1_BiasAdd1__1
+Inp[0] Src:       float<1 x 48 x 48 x 16>
+Inp[1] Filter:    float<16 x 3 x 3 x 1>
+Inp[2] Bias:      float<16>
+Out[0] Dest:      float<1 x 24 x 24 x 16>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 4
+Kind : 155 (armcmconvolution)
+Name : model_activation_4_Relu_model_batch_normalization_4_FusedBatchNormV3_model_conv2d_2_BiasAdd_ReadVariableOp_model_conv2d_2_BiasAdd_model_depthwise_conv2d_3_depthwise_model_conv2d_2_Conv2D1__1
+Inp[0] Src:       float<1 x 24 x 24 x 16>
+Inp[1] Filter:    float<32 x 1 x 1 x 16>
+Inp[2] Bias:      float<32>
+Out[0] Dest:      float<1 x 24 x 24 x 32>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 5
+Kind : 155 (armcmconvolution)
+Name : model_activation_5_Relu_model_batch_normalization_5_FusedBatchNormV3_model_depthwise_conv2d_2_depthwise_model_depthwise_conv2d_2_BiasAdd_ReadVariableOp_model_depthwise_conv2d_2_BiasAdd_model_depthwise_conv2d_3_depthwise1__1
+Inp[0] Src:       float<1 x 24 x 24 x 32>
+Inp[1] Filter:    float<32 x 3 x 3 x 1>
+Inp[2] Bias:      float<32>
+Out[0] Dest:      float<1 x 24 x 24 x 32>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 6
+Kind : 155 (armcmconvolution)
+Name : model_activation_6_Relu_model_batch_normalization_6_FusedBatchNormV3_model_conv2d_3_BiasAdd_ReadVariableOp_model_conv2d_3_BiasAdd_model_depthwise_conv2d_3_depthwise_model_conv2d_3_Conv2D1__1
+Inp[0] Src:       float<1 x 24 x 24 x 32>
+Inp[1] Filter:    float<32 x 1 x 1 x 32>
+Inp[2] Bias:      float<32>
+Out[0] Dest:      float<1 x 24 x 24 x 32>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 7
+Kind : 155 (armcmconvolution)
+Name : model_activation_7_Relu_model_batch_normalization_7_FusedBatchNormV3_model_depthwise_conv2d_3_depthwise_model_depthwise_conv2d_3_BiasAdd_ReadVariableOp_model_depthwise_conv2d_3_BiasAdd1__1
+Inp[0] Src:       float<1 x 24 x 24 x 32>
+Inp[1] Filter:    float<32 x 3 x 3 x 1>
+Inp[2] Bias:      float<32>
+Out[0] Dest:      float<1 x 12 x 12 x 32>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 8
+Kind : 155 (armcmconvolution)
+Name : model_activation_8_Relu_model_batch_normalization_8_FusedBatchNormV3_model_conv2d_4_BiasAdd_ReadVariableOp_model_conv2d_4_BiasAdd_model_depthwise_conv2d_5_depthwise_model_conv2d_4_Conv2D1__1
+Inp[0] Src:       float<1 x 12 x 12 x 32>
+Inp[1] Filter:    float<64 x 1 x 1 x 32>
+Inp[2] Bias:      float<64>
+Out[0] Dest:      float<1 x 12 x 12 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 9
+Kind : 155 (armcmconvolution)
+Name : model_activation_9_Relu_model_batch_normalization_9_FusedBatchNormV3_model_depthwise_conv2d_4_depthwise_model_depthwise_conv2d_4_BiasAdd_ReadVariableOp_model_depthwise_conv2d_4_BiasAdd_model_depthwise_conv2d_5_depthwise1__1
+Inp[0] Src:       float<1 x 12 x 12 x 64>
+Inp[1] Filter:    float<64 x 3 x 3 x 1>
+Inp[2] Bias:      float<64>
+Out[0] Dest:      float<1 x 12 x 12 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 10
+Kind : 155 (armcmconvolution)
+Name : model_activation_10_Relu_model_batch_normalization_10_FusedBatchNormV3_model_conv2d_5_BiasAdd_ReadVariableOp_model_conv2d_5_BiasAdd_model_depthwise_conv2d_5_depthwise_model_conv2d_5_Conv2D1__1
+Inp[0] Src:       float<1 x 12 x 12 x 64>
+Inp[1] Filter:    float<64 x 1 x 1 x 64>
+Inp[2] Bias:      float<64>
+Out[0] Dest:      float<1 x 12 x 12 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 11
+Kind : 155 (armcmconvolution)
+Name : model_activation_11_Relu_model_batch_normalization_11_FusedBatchNormV3_model_depthwise_conv2d_5_depthwise_model_depthwise_conv2d_5_BiasAdd_ReadVariableOp_model_depthwise_conv2d_5_BiasAdd1__1
+Inp[0] Src:       float<1 x 12 x 12 x 64>
+Inp[1] Filter:    float<64 x 3 x 3 x 1>
+Inp[2] Bias:      float<64>
+Out[0] Dest:      float<1 x 6 x 6 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 12
+Kind : 155 (armcmconvolution)
+Name : model_activation_12_Relu_model_batch_normalization_12_FusedBatchNormV3_model_conv2d_6_BiasAdd_ReadVariableOp_model_conv2d_6_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_6_Conv2D1__1
+Inp[0] Src:       float<1 x 6 x 6 x 64>
+Inp[1] Filter:    float<128 x 1 x 1 x 64>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 13
+Kind : 155 (armcmconvolution)
+Name : model_activation_13_Relu_model_batch_normalization_13_FusedBatchNormV3_model_depthwise_conv2d_6_depthwise_model_depthwise_conv2d_6_BiasAdd_ReadVariableOp_model_depthwise_conv2d_6_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 3 x 3 x 1>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 14
+Kind : 155 (armcmconvolution)
+Name : model_activation_14_Relu_model_batch_normalization_14_FusedBatchNormV3_model_conv2d_7_BiasAdd_ReadVariableOp_model_conv2d_7_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_7_Conv2D1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 1 x 1 x 128>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 15
+Kind : 155 (armcmconvolution)
+Name : model_activation_15_Relu_model_batch_normalization_15_FusedBatchNormV3_model_depthwise_conv2d_7_depthwise_model_depthwise_conv2d_7_BiasAdd_ReadVariableOp_model_depthwise_conv2d_7_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 3 x 3 x 1>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 16
+Kind : 155 (armcmconvolution)
+Name : model_activation_16_Relu_model_batch_normalization_16_FusedBatchNormV3_model_conv2d_8_BiasAdd_ReadVariableOp_model_conv2d_8_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_8_Conv2D1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 1 x 1 x 128>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 17
+Kind : 155 (armcmconvolution)
+Name : model_activation_17_Relu_model_batch_normalization_17_FusedBatchNormV3_model_depthwise_conv2d_8_depthwise_model_depthwise_conv2d_8_BiasAdd_ReadVariableOp_model_depthwise_conv2d_8_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 3 x 3 x 1>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 18
+Kind : 155 (armcmconvolution)
+Name : model_activation_18_Relu_model_batch_normalization_18_FusedBatchNormV3_model_conv2d_9_BiasAdd_ReadVariableOp_model_conv2d_9_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_9_Conv2D1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 1 x 1 x 128>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 19
+Kind : 155 (armcmconvolution)
+Name : model_activation_19_Relu_model_batch_normalization_19_FusedBatchNormV3_model_depthwise_conv2d_9_depthwise_model_depthwise_conv2d_9_BiasAdd_ReadVariableOp_model_depthwise_conv2d_9_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 3 x 3 x 1>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 20
+Kind : 155 (armcmconvolution)
+Name : model_activation_20_Relu_model_batch_normalization_20_FusedBatchNormV3_model_conv2d_10_BiasAdd_ReadVariableOp_model_conv2d_10_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_10_Conv2D1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 1 x 1 x 128>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 21
+Kind : 155 (armcmconvolution)
+Name : model_activation_21_Relu_model_batch_normalization_21_FusedBatchNormV3_model_depthwise_conv2d_10_depthwise_model_depthwise_conv2d_10_BiasAdd_ReadVariableOp_model_depthwise_conv2d_10_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 3 x 3 x 1>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 22
+Kind : 155 (armcmconvolution)
+Name : model_activation_22_Relu_model_batch_normalization_22_FusedBatchNormV3_model_conv2d_11_BiasAdd_ReadVariableOp_model_conv2d_11_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_11_Conv2D1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 1 x 1 x 128>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 23
+Kind : 155 (armcmconvolution)
+Name : model_activation_23_Relu_model_batch_normalization_23_FusedBatchNormV3_model_depthwise_conv2d_11_depthwise_model_depthwise_conv2d_11_BiasAdd_ReadVariableOp_model_depthwise_conv2d_11_BiasAdd1__1
+Inp[0] Src:       float<1 x 6 x 6 x 128>
+Inp[1] Filter:    float<128 x 3 x 3 x 1>
+Inp[2] Bias:      float<128>
+Out[0] Dest:      float<1 x 3 x 3 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 24
+Kind : 155 (armcmconvolution)
+Name : model_activation_24_Relu_model_batch_normalization_24_FusedBatchNormV3_model_conv2d_12_BiasAdd_ReadVariableOp_model_conv2d_12_BiasAdd_model_conv2d_13_Conv2D_model_conv2d_12_Conv2D1__1
+Inp[0] Src:       float<1 x 3 x 3 x 128>
+Inp[1] Filter:    float<256 x 1 x 1 x 128>
+Inp[2] Bias:      float<256>
+Out[0] Dest:      float<1 x 3 x 3 x 256>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 25
+Kind : 155 (armcmconvolution)
+Name : model_activation_25_Relu_model_batch_normalization_25_FusedBatchNormV3_model_depthwise_conv2d_12_depthwise_model_depthwise_conv2d_12_BiasAdd_ReadVariableOp_model_depthwise_conv2d_12_BiasAdd_model_conv2d_13_Conv2D1__1
+Inp[0] Src:       float<1 x 3 x 3 x 256>
+Inp[1] Filter:    float<256 x 3 x 3 x 1>
+Inp[2] Bias:      float<256>
+Out[0] Dest:      float<1 x 3 x 3 x 256>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 26
+Kind : 155 (armcmconvolution)
+Name : model_activation_26_Relu_model_batch_normalization_26_FusedBatchNormV3_model_conv2d_13_BiasAdd_ReadVariableOp_model_conv2d_13_BiasAdd_model_conv2d_13_Conv2D1__1
+Inp[0] Src:       float<1 x 3 x 3 x 256>
+Inp[1] Filter:    float<256 x 1 x 1 x 256>
+Inp[2] Bias:      float<256>
+Out[0] Dest:      float<1 x 3 x 3 x 256>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 27
+Kind : 15 (avgpool)
+Name : model_average_pooling2d_AvgPool
+Inp[0] Src:       float<1 x 3 x 3 x 256>
+Out[0] Dest:      float<1 x 1 x 1 x 256>
+
+ID   : 28
+Kind : 157 (armcmfullyconnected)
+Name : FULLY_CONNECTED__1
+Inp[0] Src:       float<1 x 256>
+Inp[1] Weights:   float<2 x 256>
+Inp[2] Bias:      float<2>
+Out[0] Dest:      float<1 x 2>
+

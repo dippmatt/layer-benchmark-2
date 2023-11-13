@@ -1,0 +1,9 @@
+usage: main.py [-h] [-quantize] [-nxp] [-glow_compiler GLOW_COMPILER]
+               [-glow_profiler GLOW_PROFILER] [-repetitions REPETITIONS]
+               [-model MODEL] [-cube_programmer CUBE_PROGRAMMER]
+               [-workdir WORKDIR] [-input_tensors INPUT_TENSORS]
+               [-representative_tensors REPRESENTATIVE_TENSORS]
+               [-dat_bin_folder DAT_BIN_FOLDER] [-cube_template CUBE_TEMPLATE]
+               [-cube_template_ref CUBE_TEMPLATE_REF]
+               [-cube_template_empty CUBE_TEMPLATE_EMPTY] [-out_dir OUT_DIR]
+main.py: error: unrecognized arguments: False

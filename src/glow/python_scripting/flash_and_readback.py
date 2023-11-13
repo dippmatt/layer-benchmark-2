@@ -90,6 +90,9 @@ def readback(ser, reps, tensor_values, log_file_path, NO_IR=False):
         lines = []
         while True:
             line = ser.readline().decode().strip('\r\n\x00')
+            ############ DEBUG ############
+            print(line)
+            ########## DEBUG END ##########
             
             # for debugging
             # print(current_state, line)

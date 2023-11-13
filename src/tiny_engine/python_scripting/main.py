@@ -192,7 +192,8 @@ def _main():
 
 
     step_requirements = [{'main_arg': 'out_dir'},
-                         {'step': 4, 'name': 'layer_list'},
+                         {'main_arg': 'workdir'},
+                         {'step': 5, 'name': 'layer_list'},
                          {'step': 5, 'name': 'ram'},
                          {'step': 5, 'name': 'flash'},
                          {'step': 7, 'name': 'per_layer_timings_mean'},

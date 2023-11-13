@@ -1,7 +1,9 @@
 from pathlib import Path
 import numpy as np
+import shutil
 
 def save_results(out_dir: Path,
+                workdir: Path,
                 layer_list: list,
                 ram: int,
                 flash: int,
@@ -56,6 +58,13 @@ def save_results(out_dir: Path,
     if ref_tensor_values is not None:
         ref_tensor_values_file = out_dir / "ref_tensor_values.npz"
         np.savez(ref_tensor_values_file, ref_tensor_values)
+
+    # copy the entire workdir
+    if workdir is not None:
+        workdir_dst = out_dir / "workdir"
+        workdir_dst.mkdir(parents=True, exist_ok=True)
+        workdir_src = workdir
+        shutil.copytree(workdir_src, workdir_dst, dirs_exist_ok=True)
 
     step_output["Success"] = True
     return step_output

@@ -1,0 +1,453 @@
+[93mNote: Found 12 samples in input_tensors.[0m
+Directory '/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir/build/ir' created successfully.
+Directory '/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir/build/no-ir' created successfully.
+3648.2147483647 2147483647.2147483647 
+Tensor values:
+-2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 2147483647.2147483647 
+Tensor values:
+-2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 2147483647.2147483647 
+Tensor values:
+-2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 2147483647.2147483647 
+Tensor values:
+-2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 2147483647.2147483647 
+Tensor values:
+-2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 -2147483648.2147483647 2147483647.2147483647 
+Tensor values:
+-2147483648.2147483647 -2147483648.2147483647 -21474836Start of benchmark.
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        2 µs | +        2 µs
+STOP                          :    14521 µs | +    14519 µs
+START                         :    14522 µs | +        1 µs
+STOP                          :    23123 µs | +     8601 µs
+START                         :    23125 µs | +        2 µs
+STOP                          :    33847 µs | +    10722 µs
+START                         :    33848 µs | +        1 µs
+STOP                          :    42449 µs | +     8601 µs
+START                         :    42450 µs | +        1 µs
+STOP                          :    53173 µs | +    10723 µs
+START                         :    53174 µs | +        1 µs
+STOP                          :    61775 µs | +     8601 µs
+START                         :    61776 µs | +        1 µs
+STOP                          :    72499 µs | +    10723 µs
+START                         :    72500 µs | +        1 µs
+STOP                          :    81101 µs | +     8601 µs
+START                         :    81102 µs | +        1 µs
+STOP                          :    91825 µs | +    10723 µs
+START                         :    91825 µs | +        0 µs
+STOP                          :    92113 µs | +      288 µs
+START                         :    92114 µs | +        1 µs
+STOP                          :    92144 µs | +       30 µs
+START                         :    92144 µs | +        0 µs
+STOP                          :    92154 µs | +       10 µs
+END                           :    92155 µs | +        1 µs
+
+Finished timing measurements!
+Tensor values:
+127 -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+Tensor values:
+-128 127 -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+Tensor values:
+-128 -128 124 -128 -128 -128 -128 -128 -128 -128 -128 -125 
+Tensor values:
+-127 -122 -128 117 -128 -128 -128 -128 -128 -128 -128 -126 
+Tensor values:
+-128 -128 -128 -128 127 -128 -128 -128 -128 -128 -128 -128 
+Tensor values:
+-128 -128 -128 -128 -128 127 -128 -128 -128 -128 -128 -128 
+Tensor values:
+-128 -128 -128 -128 -128 -128 127 -128 -128 -128 -128 -128 
+Tensor values:
+-128 -128 -128 -128 -128 -128 -128 116 -128 -128 -128 -117 
+Tensor values:
+-128 -128 -128 -128 -127 -128 -128 -128 125 -128 -128 -128 
+Tensor values:
+-128 -128 -128 -128 -128 -128 -128 -128 -128 127 -128 -128 
+Tensor values:
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 127 -128 
+Tensor values:
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 127 
+End of benchmark.
+Start of benchmark.
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92080 µs | +    92080 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92080 µs | +    92080 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92080 µs | +    92080 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :    92079 µs | +    92079 µs
+
+Finished timing measurements!
+Tensor values:

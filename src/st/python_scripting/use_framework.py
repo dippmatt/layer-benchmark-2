@@ -114,6 +114,20 @@ def compile_project(workdir: Path,
     compile_cmd = f"make -C {make_dir}"
 
     if compile_mode == CompileMode.VALIDATE:
+        # set optimisation based option parameters
+        with open(first_ioc_file, "r") as f:
+            ioc_lines = f.readlines()
+        ioc_lines = ''.join(ioc_lines)
+        if '=time' in ioc_lines:
+            allocate_inputs_option = "-O time"
+        elif '=ram' in ioc_lines:
+            allocate_inputs_option = "-O ram"
+        else:
+            allocate_inputs_option = ""
+        # print("allocate_inputs_option: ", allocate_inputs_option)
+        # import sys;sys.exit(0)
+
+        # Generate the C project
         generate_log = workdir / Path("generate_report.txt")
         with open(generate_log, "w") as outfile:
             result = subprocess.run(generate_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
@@ -153,7 +167,7 @@ def compile_project(workdir: Path,
                 --compression none \
                 --verbosity 1 \
                 --output {network_output_directory} \
-                --allocate-inputs \
+                --allocate-inputs {allocate_inputs_option}\
                 --series stm_series \
                 --allocate-outputs"
         subprocess.run(analyze_command, shell=True)
@@ -167,7 +181,7 @@ def compile_project(workdir: Path,
                 --verbosity 1 \
                 --workspace {validate_directory} \
                 --output {network_output_directory} \
-                --allocate-inputs \
+                --allocate-inputs {allocate_inputs_option}\
                 --allocate-outputs \
                 --mode stm32 \
                 --valinput {input_data_path} \

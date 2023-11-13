@@ -159,8 +159,18 @@ int main(void)
 	  uint8_t start_message[] = "Start of benchmark.\r\n";
 	  HAL_UART_Transmit (&hlpuart1, start_message, sizeof(start_message), HAL_MAX_DELAY);
 	  for (i=0; i< ROWS; i++){
-		memcpy(inputAddr, array[i], dataSizeInBytes);
 
+    // !!! memcpy causes MCU crash !!!
+    // use for loop instead
+		//memcpy(inputAddr, array[i], dataSizeInBytes);
+    for (j=0; j<COLS; j++){
+			inputAddr[j] = array[i][j];
+		}
+
+    // uint8_t debug_message[50];
+    // int length2 = floatToString(array[i][0], debug_message, sizeof(debug_message), 6);
+    // HAL_UART_Transmit (&hlpuart1, debug_message, length2, HAL_MAX_DELAY);
+    // HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
 
 	    for(k=0; k < NUM_REPS; k++){
 	      PROFILING_START("MAIN loop timing");
@@ -177,7 +187,7 @@ int main(void)
 
 	  // now read model output for each input tensor
 	  // array to store output data
-	  <o_type> out_array[ROWS][OUT_COLS];
+	  // <o_type> out_array[ROWS][OUT_COLS];
 	  size_t out_dtype_size = sizeof(<o_type>);
 
 	  for (i=0; i< ROWS; i++){
@@ -193,10 +203,10 @@ int main(void)
 		//////////////////////////////////////////////////////////////////////////
 
 		// copy input tensor to model input buffer address
-		memcpy(inputAddr, array[i], dataSizeInBytes);
-//		for (j=0; j<COLS; j++){
-//			inputAddr[j] = array[i][j];
-//		}
+		//memcpy(inputAddr, array[i], dataSizeInBytes);
+		for (j=0; j<COLS; j++){
+			inputAddr[j] = array[i][j];
+		}
 		error_code = model(constantWeight, mutableWeight, activations);
 
 		//////////////////////////////////////////////////////////////////////////
@@ -226,11 +236,35 @@ int main(void)
 		  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
 		  return -1;
 		}
-		//memcpy(out_array[i], outputs, OUT_COLS * out_dtype_size);
-		for (j=0; j<OUT_COLS; j++){
+
+    uint8_t txbuf[64];
+    //int length = sprintf((char*)txbuf, "Returned: %<o_format_specifier>\r\n", (<o_type>)out_array[i][0]);
+    uint8_t new_tensor_message[] = "Tensor values:\r\n";
+    HAL_UART_Transmit (&hlpuart1, new_tensor_message, strlen(new_tensor_message), HAL_MAX_DELAY);
+    for (k=0; k<OUT_COLS; k++){
+      // check if output value is of type float
+      int length = 0;
+      if (sizeof(outputs[k]) == sizeof(float)){
+          length = floatToString(outputs[k], txbuf, sizeof(txbuf), 6);
+        }
+      else{
+          length = <int_type>ToString(outputs[k], txbuf, sizeof(txbuf));
+      }
+
+      HAL_UART_Transmit (&hlpuart1, txbuf, length, HAL_MAX_DELAY);
+    }
+    HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
+
+		// memcpy(out_array[i], outputs, OUT_COLS * out_dtype_size);
+	
+  	/*
+    for (j=0; j<OUT_COLS; j++){
 			out_array[i][j] = outputs[j];
 		}
+    */
+
       }
+      /*
       for (i=0; i< ROWS; i++){
           uint8_t txbuf[64];
           //int length = sprintf((char*)txbuf, "Returned: %<o_format_specifier>\r\n", (<o_type>)out_array[i][0]);
@@ -253,6 +287,7 @@ int main(void)
           }
           HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
       }
+      */
       uint8_t final_message[] = "End of benchmark.\r\n";
       HAL_UART_Transmit (&hlpuart1, final_message, strlen(final_message), HAL_MAX_DELAY);
 	  break;

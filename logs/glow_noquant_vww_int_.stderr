@@ -1,0 +1,21 @@
+2023-10-31 00:04:31.714835: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2023-10-31 00:04:31.716321: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-10-31 00:04:31.745297: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-10-31 00:04:31.745581: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-10-31 00:04:32.155184: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+Traceback (most recent call last):
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/main.py", line 276, in <module>
+    sys.exit(_main())
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/main.py", line 221, in _main
+    pipeline.run()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/benchmark_pipeline.py", line 57, in run
+    step.run()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/step.py", line 35, in run
+    self.output = self._callable(* self.args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/get_mcu_dev.py", line 14, in get_mcu_dev
+    location, speed, port = get_uart(str(cube_programmer))
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/get_mcu_dev.py", line 70, in get_uart
+    assert location is not None, "Did not find STM32 Nucleo Board connected to UART."
+AssertionError: Did not find STM32 Nucleo Board connected to UART.

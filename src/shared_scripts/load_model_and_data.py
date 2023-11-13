@@ -5,13 +5,14 @@ import shutil
 from shared_scripts.color_print import print_in_color, Color
 
 # Final values to use
-# INPUT_SAMPLES = 196
-# PROFILE_SAMPLES = 1000
+VWW_LIMIT = 5
+INPUT_SAMPLES = 196
+PROFILE_SAMPLES = 1000
 
 # For testing
-INPUT_SAMPLES = 1
-PROFILE_SAMPLES = 100
-
+# VWW_LIMIT = 5
+# INPUT_SAMPLES = 12
+# PROFILE_SAMPLES = 100
 
 def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, representative_data: Path = None, quantize: bool = False):
     """Loads the tflite model and the input data.
@@ -39,15 +40,27 @@ def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, repre
     input_tensors = load_data(input_data, step_output['input_shape'])
 
     num_samples = input_tensors.shape[0]
-    if num_samples > INPUT_SAMPLES:
-        print_in_color(Color.YELLOW, f"Note: Found {num_samples} samples in input_tensors, but limiting sample size to {INPUT_SAMPLES} for simplicity!")
-        input_tensors = input_tensors[:INPUT_SAMPLES,...]
-        num_samples = INPUT_SAMPLES
+    if "vww" in str(model_path).lower():
+        if num_samples > VWW_LIMIT:
+            print_in_color(Color.YELLOW, f"Note: Found {num_samples} samples in input_tensors, but limiting sample size to {VWW_LIMIT} due to MCU ram limit!")
+            input_tensors = input_tensors[:VWW_LIMIT,...]
+            num_samples = VWW_LIMIT
+        else:
+            print_in_color(Color.YELLOW, f"Note: Found {num_samples} samples in input_tensors.")
+    else:
+        if num_samples > INPUT_SAMPLES:
+            print_in_color(Color.YELLOW, f"Note: Found {num_samples} samples in input_tensors, but limiting sample size to {INPUT_SAMPLES} for simplicity!")
+            input_tensors = input_tensors[:INPUT_SAMPLES,...]
+            num_samples = INPUT_SAMPLES
+        else:
+            print_in_color(Color.YELLOW, f"Note: Found {num_samples} samples in input_tensors.")
     step_output['num_samples'] = num_samples
 
-    # save npz in workdir for cube mx to use as input data
+    # save npz to store the original input data as for record keeping
     data_save_path = workdir / Path("data.npz")
-    quant_data_save_path = workdir / Path("data_quant.npz")
+    # save npz in workdir for cube mx to use as input data
+    # depending on the model input, the validation data is either quantized or not
+    validate_data_save_path = workdir / Path("data_validate.npz")
 
     np.savez(data_save_path, input_tensors=input_tensors)
 
@@ -68,7 +81,7 @@ def load_model_and_data(workdir: Path, model_path: Path, input_data: Path, repre
     
     # next load the model again and test it on the input data
     if model_path.suffix == '.tflite':
-        quant_data_and_test_tflite(model_path, input_tensors, step_output, quant_data_save_path)
+        quant_data_and_test_tflite(model_path, input_tensors, step_output, validate_data_save_path)
     elif model_path.suffix == '.onnx':
         raise NotImplementedError("test_onnx functionality is not implemented yet")
 
@@ -164,7 +177,7 @@ def floatBin2np(bin_files: Path, tensor_shape: tuple):
     
     return out_data
 
-def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, step_output: Dict, quant_data_save_path: Path):
+def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, step_output: Dict, validate_data_save_path: Path):
     """Runs the model on the input tensors
 
     Args:
@@ -188,7 +201,7 @@ def quant_data_and_test_tflite(tflite_model_path: Path, input_data: np.array, st
     else:
         processed_input_data = input_data
     
-    np.savez(quant_data_save_path, input_tensors=processed_input_data)
+    np.savez(validate_data_save_path, input_tensors=processed_input_data)
     step_output["input_tensors"] = processed_input_data
     reference_output = []
 

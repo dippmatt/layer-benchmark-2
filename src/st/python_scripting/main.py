@@ -178,15 +178,16 @@ def _main():
 
 
     step_requirements = [{'main_arg': 'out_dir'},
+                         {'main_arg': 'workdir'},
                          {'step': 4, 'name': 'layer_list'},
-                         {'step': 5, 'name': 'ram'},
-                         {'step': 5, 'name': 'flash'},
-                         {'step': 7, 'name': 'per_layer_timings_mean'},
-                         {'step': 7, 'name': 'per_layer_timings_std_dev'},
-                         {'step': 7, 'name': 'all_layers_timings_mean'},
-                         {'step': 7, 'name': 'all_layers_timings_std_dev'},
-                         {'step': 7, 'name': 'mcu_tensor_values'},
-                         {'step': 7, 'name': 'ref_tensor_values'}]
+                         {'step': 4, 'name': 'ram'},
+                         {'step': 4, 'name': 'flash'},
+                         {'step': 6, 'name': 'per_layer_timings_mean'},
+                         {'step': 6, 'name': 'per_layer_timings_std_dev'},
+                         {'step': 6, 'name': 'all_layers_timings_mean'},
+                         {'step': 6, 'name': 'all_layers_timings_std_dev'},
+                         {'step': 6, 'name': 'mcu_tensor_values'},
+                         {'step': 6, 'name': 'ref_tensor_values'}]
     pipeline.add_step(save_results, step_requirements)
 
     pipeline.run()

@@ -1,0 +1,49 @@
+Progress Checked FAILED: line 197
+
+fake failes (bugfix in layer-benchmark)
+- st: allocate-inputs option muss "-O ram" / "-O time" enthalten
+- tiny_engine permutationen nur fur quant_no_softmax erlaubt (3x quant mit softmax entfernt)
+- glow binary arguments "-quantize False" eingefügt statt nur "-quantize", betraf alle glow_noquant permutationen
+- glow setting input tensors with memcpy for large buffers crashes MCU -> use for loops
+
+echte fails (von framework verursacht):
+Folgende Permutationen haben lassen den MCU crashen:
+
+glow_noquant_ad_anomaly_float_
+glow_noquant_ad_normal_float_
+
+vermutlich ein fehler in glow bei der C generierung oder unkompatibles C (kein UART output)
+
+
+
+
+
+Folgende permutation erzeugt einen not implemented error in tiny_engine:
+
+tiny_engine_kws_int_nosoftmax_
+
+Error:
+Traceback (most recent call last):
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/examples/custom_tflite.py", line 92, in <module>
+    code_generator.codeGeneration()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/CodeGenerator.py", line 134, in codeGeneration
+    self._genInvoke()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/CodeGenerator.py", line 391, in _genInvoke
+    string = self._genOpstr(
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/CodeGenerator.py", line 162, in _genOpstr
+    return op.generate_inference_str(*args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/operators/conv2d.py", line 258, in generate_inference_str
+    raise NotImplementedError
+NotImplementedError
+In file included from ../Core/Src/TinyEngine/src/kernels/int_forward_op/add.c:21:
+../Core/Src/TinyEngine/include/tinyengine_function.h:181:10: fatal error: genInclude.h: No such file or directory
+  181 | #include "genInclude.h"
+      |          ^~~~~~~~~~~~~~
+compilation terminated.
+
+
+
+
+
+Folgende Permutationen freezen den MCU
+glow_quant_vww_float_nosoftmax_

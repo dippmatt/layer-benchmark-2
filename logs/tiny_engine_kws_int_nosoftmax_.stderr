@@ -1,0 +1,38 @@
+2023-10-31 09:53:16.980812: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2023-10-31 09:53:17.010168: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-10-31 09:53:17.162115: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2023-10-31 09:53:17.162699: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2023-10-31 09:53:18.038315: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+  0%|          | 0/9 [00:00<?, ?it/s]100%|██████████| 9/9 [00:00<00:00, 117597.31it/s]
+Traceback (most recent call last):
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/examples/custom_tflite.py", line 92, in <module>
+    code_generator.codeGeneration()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/CodeGenerator.py", line 134, in codeGeneration
+    self._genInvoke()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/CodeGenerator.py", line 391, in _genInvoke
+    string = self._genOpstr(
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/CodeGenerator.py", line 162, in _genOpstr
+    return op.generate_inference_str(*args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/tinyengine/code_generator/operators/conv2d.py", line 258, in generate_inference_str
+    raise NotImplementedError
+NotImplementedError
+In file included from ../Core/Src/TinyEngine/src/kernels/int_forward_op/add.c:21:
+../Core/Src/TinyEngine/include/tinyengine_function.h:181:10: fatal error: genInclude.h: No such file or directory
+  181 | #include "genInclude.h"
+      |          ^~~~~~~~~~~~~~
+compilation terminated.
+make: *** [Core/Src/TinyEngine/src/kernels/int_forward_op/subdir.mk:115: Core/Src/TinyEngine/src/kernels/int_forward_op/add.o] Error 1
+Traceback (most recent call last):
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/python_scripting/main.py", line 263, in <module>
+    sys.exit(_main())
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/python_scripting/main.py", line 207, in _main
+    pipeline.run()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/benchmark_pipeline.py", line 57, in run
+    step.run()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/step.py", line 35, in run
+    self.output = self._callable(* self.args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/python_scripting/copy_build_compile.py", line 103, in copy_build_compile
+    assert subprocess.call("make all > compile.log", shell=True) == 0, f"Compiling model project encountered an error. See {logfile} for details."
+AssertionError: Compiling model project encountered an error. See /home/matthias/Documents/BA/layer-benchmark-2/src/tiny_engine/workdir/TinyEngineTemplateCleanR5Zi/Debug/compile.log for details.

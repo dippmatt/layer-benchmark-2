@@ -206,6 +206,7 @@ def _main():
     pipeline.add_step(process_data, step_requirements)
 
     step_requirements = [{'main_arg': 'out_dir'},
+                         {'main_arg': 'workdir'},
                          {'step': 4, 'name': 'layer_list'},
                          {'step': 5, 'name': 'ram'},
                          {'step': 5, 'name': 'flash'},

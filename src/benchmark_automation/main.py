@@ -8,9 +8,22 @@ def get_json(json_path: Path):
     json_dict = json.load(codecs.open(json_path, 'r', 'utf-8-sig'))
     return json_dict
 
-def create_run_commands(final_permutations: list):
+def create_run_commands(permutations: list):
     commands = []
-    for permutation in final_permutations:
+    final_permutations = []
+    broken_keys = ["glow_noquant_ad_normal_float_", 
+                   "glow_noquant_ad_anomaly_float_", 
+                   "glow_quant_ad_normal_float_", 
+                   "glow_quant_ad_anomaly_float_", 
+                   "glow_quant_vww_float_", 
+                   "tiny_engine_kws_int_nosoftmax_", 
+                   "glow_quant_vww_float_nosoftmax_", 
+                   "glow_noquant_vww_int_",
+                   "glow_noquant_vww_int_nosoftmax_",
+                   "glow_noquant_vww_float_",
+                   "glow_noquant_vww_float_nosoftmax_"]
+    skip_counter = 0
+    for permutation in permutations:
         venv_dir = (Path(permutation["-workdir"]) / Path("..", "venv", "bin")).resolve()
         python_exec = venv_dir / Path("python3")
         python_main = Path(permutation["-workdir"]) / Path("..", "python_scripting", "main.py")
@@ -20,38 +33,60 @@ def create_run_commands(final_permutations: list):
         assert python_main.exists()
 
         command = ""
-        command += python_exec + " " + python_main + " "
+        command += str(python_exec) + " " + str(python_main) + " "
         #print(python_exec, python_main, end=" ")
-
+    
         for key, value in permutation.items():
             if key[0] == "-":
                 if key == "-out_dir":
                     # create unique out_dir
                     out_dir = Path(value) / Path(permutation["unique_key"])
                     out_dir = out_dir.resolve()
+  
                     # create out_dir if it does not exist
                     if not out_dir.exists():
                         out_dir.mkdir(parents=True, exist_ok=True)
-                    else: # otherwise delete and create
-                        subprocess.run(["rm", "-r", str(out_dir)])
-                        out_dir.mkdir(parents=True, exist_ok=True)
+                    
+                    # check if output is already present
+                    contents = list(out_dir.glob('*'))
+                    if not contents:
+                        results_present = False
+                    else:
+                        results_present = True
+
                     value = str(out_dir)
                 if type(value) == bool and value == True:
                     #print(key, end=" ")
                     command += key + " "
+                elif type(value) == bool and value == False:
+                    pass
                 else:
                     #print(key, value, end=" ")
                     command += key + " " + str(value) + " "
-        commands.append(command)
-
-    return commands
         
-def run_commands(commands: list, permutations: list, command_run_dir: Path):
+        if permutation["unique_key"] in broken_keys:
+            omit_command = True
+        else:
+            omit_command = False
+        
+        if not results_present and not omit_command:
+            commands.append(command)
+            final_permutations.append(permutation)
+        else:
+            print_in_color(Color.YELLOW, f"Skipping {permutation['unique_key']}, results already present")
+            skip_counter += 1
+            continue
+    print_in_color(Color.YELLOW, f"Skipping {skip_counter} permutations")
+    return commands, final_permutations
+        
+def run_commands(commands: list, permutations: list, command_run_dir: Path, log_dir: Path):
     
     num_permutations = len(permutations)
     for i, command in enumerate(commands):
         unique_key = permutations[i]["unique_key"]
-        print("Running permutation: ", f"{i}/{num_permutations}")
+        print(command)
+        print()
+        print("Running permutation: ", f"{i+1}/{num_permutations}")
         print("Running configuration: ", unique_key)
         result = subprocess.run(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             # Check the return code
@@ -60,9 +95,17 @@ def run_commands(commands: list, permutations: list, command_run_dir: Path):
         else:
             print_in_color(Color.RED, f"FAILED {unique_key}")
         print()
+
+        stdout_output = result.stdout.decode('utf-8')
+        stderr_output = result.stderr.decode('utf-8')
+
+        with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
+            file.write(stdout_output)
+        with open(Path(log_dir, unique_key + ".stderr"), "w") as file:
+            file.write(stderr_output)
     return
 
-def create_permutations(config, schema, root_dir):
+def create_permutations(config):
     framework_permutations = []
     frameworks = config["frameworks"].keys()
 
@@ -148,6 +191,7 @@ def create_permutations(config, schema, root_dir):
         for permutation in input_permutations:
 
             if "tiny_engine" in permutation["unique_key"]:
+                # glow can only use quantized models
                 for model_int in config["use_case"][use_case]["model_int"]:
                     perm_copy = permutation.copy()
                     if use_case == "ad":
@@ -156,6 +200,9 @@ def create_permutations(config, schema, root_dir):
                     elif "no_softmax" in model_int:
                         perm_copy["-model"] = model_int
                         perm_copy["unique_key"] += "int_nosoftmax_"
+                    else:
+                        continue
+                
                     output_permutations.append(perm_copy)
 
             elif "glow" in permutation["unique_key"]:
@@ -218,12 +265,8 @@ def create_permutations(config, schema, root_dir):
     
 
 if __name__ == "__main__":
-    config_path = Path.cwd() / "config.json"
-    schema_path = Path.cwd() / "schema.json"
-
-    
+    config_path = Path(Path.cwd(), "benchmark_automation" , "config.json")
     config = get_json(config_path)
-    schema = get_json(schema_path)
 
     # insert root_dir placeholder
     root_dir = config["root_dir"]
@@ -231,17 +274,22 @@ if __name__ == "__main__":
     config_string = config_string.replace("<root_dir>", str(root_dir))
     config = json.loads(config_string)
 
-    final_permutations = create_permutations(config, schema, root_dir)
+    permutations = create_permutations(config)
+    print()
+    for permutation in permutations:
+        print(permutation["unique_key"])
+    print()
+    print(len(permutations))
+    # import sys; sys.exit(0)
 
-    commands = create_run_commands(final_permutations)
+    commands, final_permutations = create_run_commands(permutations)
     command_run_dir = Path(root_dir, "src")
+    log_dir = Path(root_dir, "logs")
 
-    run_commands(commands, final_permutations, command_run_dir)
+    run_commands(commands, final_permutations, command_run_dir, log_dir)
 
     import sys; sys.exit(0)
     
     config_string = json.dumps(config, indent=2)
-    schema_string = json.dumps(schema, indent=2)
     print(config_string)
-    print(schema_string)
     

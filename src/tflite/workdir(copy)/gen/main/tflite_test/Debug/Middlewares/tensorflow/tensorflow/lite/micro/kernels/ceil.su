@@ -1,0 +1,4 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/ceil.cc:30:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	48	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/ceil.cc:53:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	80	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/ceil.cc:69:23:TfLiteRegistration_V1 tflite::Register_CEIL()	16	static

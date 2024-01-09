@@ -28,6 +28,14 @@ def calc_flash_ram(elf_file: Path):
     rodata_sizes = re.findall(pattern_rodata, eabi_size)
     bss_sizes = re.findall(pattern_bss, eabi_size)
 
+    ###############################
+    # print(data_sizes)
+    # print(rodata_sizes)
+    # print(text_sizes)
+
+    # print(eabi_size)
+    ###############################
+
     flash = int(data_sizes[0]) + int(rodata_sizes[0]) + int(text_sizes[0])
     ram = int(bss_sizes[0]) + int(data_sizes[0])
 

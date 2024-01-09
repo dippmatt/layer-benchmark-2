@@ -1,0 +1,4 @@
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/read_variable.cc:56:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	16	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/read_variable.cc:38:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	24	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/read_variable.cc:83:23:TfLiteRegistration_V1 tflite::Register_READ_VARIABLE()	16	static

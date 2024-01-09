@@ -43,6 +43,9 @@ from flash_and_readback import flash_and_readback
 # process and store data
 from process_data import process_data
 
+# save the results
+from shared_scripts.save_results import save_results
+
 def _main():
 
     parser = argparse.ArgumentParser()
@@ -58,6 +61,18 @@ def _main():
                         help='Path STM 32 Cube Cube MX executable. \
                             Usually found at /usr/local/STMicroelectronics/STM32Cube/STM32CubeMX/STM32CubeMX', 
                             default="/usr/local/STMicroelectronics/STM32Cube/STM32CubeMX/STM32CubeMX")
+    parser.add_argument('-cube_ide', dest='cube_ide', type=str,
+                        help='Path STM 32 Cube Cube IDE executable. \
+                            Usually found at /opt/st/stm32cubeide_1.11.2/stm32cubeide', 
+                            default="/opt/st/stm32cubeide_1.11.2/stm32cubeide")
+    parser.add_argument('-cube_ide_workspace', dest='cube_ide_workspace', type=str,
+                        help='Path STM 32 Cube Cube IDE workspace. \
+                            Usually found at ~/STM32CubeIDE/workspace_<IDE version>', 
+                            default="~/STM32CubeIDE/workspace_1.11.2")
+    parser.add_argument('-stm32tflm', dest='stm32tflm', type=str,
+                        help='Path stm32tflm executable. \
+                            Usually found at ~/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/<cube AI version>/Utilities/linux/stm32tflm', 
+                            default="~/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32tflm")
     parser.add_argument('-stm32ai', dest='stm32ai', type=str,
                         help='Path STM 32 stm32ai executable. \
                             Usually found at /home/<user>/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/<cube ai version>/Utilities/linux/stm32ai', 
@@ -130,20 +145,21 @@ def _main():
     # tensor_values: list. Model output in either float or int8 format, depending on quantization
     # cube_template: Path to the elf file of the compiled model
     # cube_template_all_layers: Path to the elf file of the compiled model without per-layer timings 
-    # flash: int, total flash size in KB of the model + framework runtime
-    # flash_rt: int, flash size framework runtime only in KB
-    # ram: int, total ram size in KB of the model + framework runtime
-    # ram_rt: int, ram size framework runtime only in KB
+    # flash: int, total flash size in bytes of the model + framework runtime
+    # ram: int, total ram size in bytes of the model + framework runtime
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'cube_mx'},
+                         {'main_arg': 'cube_ide'},
+                         {'main_arg': 'cube_ide_workspace'},
+                         {'main_arg': 'stm32tflm'},
                          {'main_arg': 'stm32ai'},
                          {'main_arg': 'repetitions'},
                          {'main_arg': 'cube_programmer'},
                          {'step': 0, 'name': 'model'},
                          {'step': 1, 'name': 'cube_template'},
                          {'step': 1, 'name': 'cube_template_validate'}]
-    pipeline.add_step(use_framework_compile, step_requirements)    
-   
+    pipeline.add_step(use_framework_compile, step_requirements)
+
 
     # 5. keys added in flash_and_readback step:
     # reps: list of list. first dimenion: repetitions, second dimension: layer measurements
@@ -173,12 +189,26 @@ def _main():
                          {'step': 5, 'name': 'reps_all_layers'}]
     pipeline.add_step(process_data, step_requirements)
 
+
+    step_requirements = [{'main_arg': 'out_dir'},
+                         {'main_arg': 'workdir'},
+                         {'step': 6, 'name': 'layer_list'},
+                         {'step': 4, 'name': 'ram'},
+                         {'step': 4, 'name': 'flash'},
+                         {'step': 6, 'name': 'per_layer_timings_mean'},
+                         {'step': 6, 'name': 'per_layer_timings_std_dev'},
+                         {'step': 6, 'name': 'all_layers_timings_mean'},
+                         {'step': 6, 'name': 'all_layers_timings_std_dev'},
+                         {'step': 6, 'name': 'mcu_tensor_values'},
+                         {'step': 6, 'name': 'ref_tensor_values'}]
+    pipeline.add_step(save_results, step_requirements)
+
     pipeline.run()
     
     # Test output
-    layer_list = pipeline.steps[4].output["layer_list"]
     ram = pipeline.steps[4].output["ram"]
     flash = pipeline.steps[4].output["flash"]
+    layer_list = pipeline.steps[6].output["layer_list"]
     per_layer_timings_mean = pipeline.steps[6].output["per_layer_timings_mean"]
     all_layers_timings_mean = pipeline.steps[6].output["all_layers_timings_mean"]
     mcu_tensor_values = pipeline.steps[6].output["mcu_tensor_values"]

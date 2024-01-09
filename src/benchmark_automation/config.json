@@ -67,6 +67,13 @@
                 "<root_dir>/src/st/cube_templates/template_cube_ai_8_1_time -cube_template_validate <root_dir>/src/st/cube_templates/template_cube_ai_8_1_time_validate"
             ]
         },
+        "tflite": {
+            "workdir": "<root_dir>/src/tflite/workdir",
+            "out_dir": "<root_dir>/data_gen",
+            "stm32ai": "/home/matthias/STM32Cube/Repository/Packs/STMicroelectronics/X-CUBE-AI/8.1.0/Utilities/linux/stm32ai",
+            "cube_template": "<root_dir>/src/tflite/cube_templates/tflite_test",
+            "cube_template_validate": "<root_dir>/src/tflite/cube_templates/tflite_validate"
+        },
         "tiny_engine": {
             "workdir": "<root_dir>/src/tiny_engine/workdir",
             "out_dir": "<root_dir>/data_gen",

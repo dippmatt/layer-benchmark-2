@@ -133,10 +133,10 @@ def _main():
     # tensor_values: list. Model output in either float or int8 format, depending on quantization
     # cube_template: Path to the elf file of the compiled model
     # cube_template_all_layers: Path to the elf file of the compiled model without per-layer timings 
-    # flash: int, total flash size in KB of the model + framework runtime
-    # flash_rt: int, flash size framework runtime only in KB
-    # ram: int, total ram size in KB of the model + framework runtime
-    # ram_rt: int, ram size framework runtime only in KB
+    # flash: int, total flash size in bytes of the model + framework runtime
+    # flash_rt: int, flash size framework runtime only in bytes
+    # ram: int, total ram size in bytes of the model + framework runtime
+    # ram_rt: int, ram size framework runtime only in bytes
     step_requirements = [{'main_arg': 'workdir'},
                          {'main_arg': 'cube_mx'},
                          {'main_arg': 'stm32ai'},

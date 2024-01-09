@@ -8,11 +8,14 @@ import re
 from shared_scripts.color_print import print_in_color, Color
 from flash_and_readback import flash_mcu
 
-def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitions: int, cube_programmer: Path, model: Path, cube_project: Path, cube_project_validate: Path):
+def use_framework_compile(workdir: Path, cube_mx: Path, cube_ide: Path, cube_ide_workspace: Path, stm32tflm: Path, stm32ai: Path, repetitions: int, cube_programmer: Path, model: Path, cube_project: Path, cube_project_validate: Path):
     """Uses MX cube application to benchmark the model on the MCU.
     """
     
     step_output = dict()
+
+    # extract ram and flash usage from model
+    extract_ram_flash(workdir, stm32tflm, model, step_output)
 
     # Create the directpry where cube MX will validate the project
     validate_directory = workdir / Path("validate")
@@ -35,34 +38,18 @@ def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitio
 
     # Modify and copy the input script for MX to generate the project
     mx_generate_script = workdir / Path("..", "misc", "gen_mx_prj.txt")
-    
 
-    ##############################################################
-    input_data_path = workdir / Path("data_quant.npz")
-    validate_command = f"{stm32ai} validate \
-            --name network -m {model} \
-            --type tflite \
-            --compression none \
-            --verbosity 1 \
-            --workspace {validate_directory} \
-            --output {network_output_directory} \
-            --allocate-inputs \
-            --allocate-outputs \
-            --mode stm32 \
-            --valinput {input_data_path} \
-            --desc /dev/ttyACM0:115200"
-    print(validate_command)
-    import sys; sys.exit()
-    ##############################################################
     # compile main project, all layer project and validation project
-    compile_project(workdir, 
-                    cube_mx, 
+    compile_project(workdir,
+                    cube_mx,
+                    cube_ide,
+                    cube_ide_workspace,
                     cube_programmer,
                     stm32ai,
                     model,
-                    step_output, 
-                    repetitions, 
-                    cube_project_validate, 
+                    step_output,
+                    repetitions,
+                    cube_project_validate,
                     mx_generate_script, 
                     generate_valitate_prj_dir, 
                     compile_mode=CompileMode.VALIDATE, 
@@ -72,19 +59,8 @@ def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitio
     
     compile_project(workdir, 
                     cube_mx,
-                    cube_programmer,
-                    stm32ai,
-                    model,
-                    step_output, 
-                    repetitions, 
-                    cube_project, 
-                    mx_generate_script, 
-                    generate_reference_prj_dir, 
-                    compile_mode=CompileMode.REFERENCE, 
-                    postfix="_all_layers")
-    
-    compile_project(workdir, 
-                    cube_mx,
+                    cube_ide,
+                    cube_ide_workspace,
                     cube_programmer,
                     stm32ai,
                     model,
@@ -96,11 +72,28 @@ def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitio
                     compile_mode=CompileMode.BENCHMARK, 
                     postfix="")
     
+    compile_project(workdir, 
+                    cube_mx,
+                    cube_ide,
+                    cube_ide_workspace,
+                    cube_programmer,
+                    stm32ai,
+                    model,
+                    step_output, 
+                    repetitions, 
+                    cube_project, 
+                    mx_generate_script, 
+                    generate_reference_prj_dir, 
+                    compile_mode=CompileMode.REFERENCE, 
+                    postfix="_all_layers")
+    
     return step_output
 
 
 def compile_project(workdir: Path, 
                     cube_mx: Path, 
+                    cube_ide: Path,
+                    cube_ide_workspace: Path,
                     cube_programmer: Path,
                     stm32ai: Path,
                     model: Path,
@@ -113,6 +106,7 @@ def compile_project(workdir: Path,
                     postfix: str, 
                     validate_directory: Path = None,
                     network_output_directory: Path = None):
+    
     
     # get the .ioc file by matching the .ioc file type
     ioc_files = cube_project.glob("*.ioc")
@@ -128,58 +122,75 @@ def compile_project(workdir: Path,
     # Generate the C project
     generate_command = f"{cube_mx} -q {mx_generate_script}"
     
-    # copy the project to the generate directory
-    # subprocess.run(f"cp -r {cube_project} {generate_prj_dir}", shell=True)
-    # generate_command = f"{stm32ai} generate -m {model} -n {first_ioc_file.stem} -c low -o {generate_prj_dir}"
-    
     # Compile the C project
     make_dir = generate_prj_dir / Path(project_name)
-    compile_cmd = f"make -C {make_dir}"
+    #makefile_dir = make_dir / Path("Debug")
+    #compile_cmd = f"make -j16 all -C {makefile_dir}"
 
-    if compile_mode == CompileMode.VALIDATE:
-        generate_log = workdir / Path("generate_report.txt")
-        with open(generate_log, "w") as outfile:
-            result = subprocess.run(generate_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
-            # Print the output to the terminal
-            print(result.stdout, end='')
-            outfile.write(result.stdout)
-    else:
+    # /opt/st/stm32cubeide_1.11.2/stm32cubeide --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import "./tflite_test" -build all
+    compile_cmd = f"{cube_ide} --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import \"{make_dir}\" -build all"
+
+    # avoid long compilation times by skipping the generation of the reference project
+    # instead copy precompiled project from main directory
+    if compile_mode != CompileMode.REFERENCE:
         subprocess.run(generate_command, shell=True)
-
+    else:
+        copy_to_path = generate_prj_dir / Path(project_name)
+        copy_from_path = generate_prj_dir.parent / Path("main", project_name)
+        # dummy value
+        #copy_from_path = Path("/home/matthias/Documents/BA/layer-benchmark-2/src/tflite/workdir(copy)/gen/main/tflite_test")
+        assert copy_to_path.parent.exists()
+        assert copy_to_path.parent.exists()
+        shutil.copytree(copy_from_path, copy_to_path)
+    
+    ################################################################
     if compile_mode in [CompileMode.BENCHMARK, CompileMode.REFERENCE]:
         # Set number of iterations per perf test to the reps variable, 
         # the default value is 16, we overwrite it here. 
         # Maybe there is a way to configure that in the MX IDE, that setting wasn't found.
-        aiSystemPerformance_c = generate_prj_dir / Path(project_name, "X-CUBE-AI", "App", "aiSystemPerformance.c")
+        aiSystemPerformance_c = generate_prj_dir / Path(project_name, "X-CUBE-AI", "App", "aiSystemPerformance_TFLM.c")
         main_c = generate_prj_dir / Path(project_name, "Core", "Src", "main.c")
         if compile_mode == CompileMode.BENCHMARK:
             set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions, observer=True)
         else:
             set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions, observer=False)
         set_end_of_benchmark(main_c)
+    ################################################################
 
+    # prepeare the generated project for compilation (copy libraries, etc.)
+    copy_middlewares(make_dir)
+
+    # delete cube ide (eclipse) workspace metadata, so that we can import the project, even if it already exists
+    workspace_dir = cube_ide_workspace / Path(".metadata")
+    if workspace_dir.exists():
+        shutil.rmtree(workspace_dir)
+
+    cwd = Path.cwd()
+    chdir(generate_prj_dir)
     subprocess.run(compile_cmd, shell=True)
+    chdir(cwd)
 
-    elf_file = make_dir / Path("build", project_name + ".elf")
+    elf_file = make_dir / Path("Debug", project_name + ".elf")
+
     print(elf_file)
     assert elf_file.exists()
     step_output["cube_template" + postfix] = elf_file
-
-    # validate the model
+    
     if compile_mode == CompileMode.VALIDATE:
+        # flash the elf file to the MCU
         flash_mcu(cube_programmer, elf_file)
-        
+            
         # analyze model
-        analyze_command = f"{stm32ai} analyze \
-                --name network -m {model} \
-                --type tflite \
-                --compression none \
-                --verbosity 1 \
-                --output {network_output_directory} \
-                --allocate-inputs \
-                --series stm_series \
-                --allocate-outputs"
-        subprocess.run(analyze_command, shell=True)
+        # analyze_command = f"{stm32ai} analyze \
+        #         --name network -m {model} \
+        #         --type tflite \
+        #         --compression none \
+        #         --verbosity 1 \
+        #         --output {network_output_directory} \
+        #         --allocate-inputs \
+        #         --series stm_series \
+        #         --allocate-outputs"
+        # subprocess.run(analyze_command, shell=True)
         
         # Validate the input data
         input_data_path = workdir / Path("data.npz")
@@ -198,12 +209,11 @@ def compile_project(workdir: Path,
         
         subprocess.run(validate_command, shell=True)
 
-        network_analyze_report = network_output_directory / Path("network_analyze_report.txt")
-        extract_ram_flash(workdir, generate_log, step_output)
-        extract_layer_names(workdir, network_analyze_report, step_output)
+        # network_analyze_report = network_output_directory / Path("network_analyze_report.txt")
+        
         # Check if the validation was successful and we got the output tensors
         assert step_output["tensor_values"].exists()
-   
+       
     return
 
 def extract_layer_names(workdir: Path, analyze_report: Path, step_output: dict):
@@ -265,68 +275,27 @@ def extract_layer_names(workdir: Path, analyze_report: Path, step_output: dict):
     return
 
 
-def extract_ram_flash(workdir: Path, generate_log: Path, step_output: dict):
+def extract_ram_flash(workdir: Path, stm32tflm: Path, model: Path, step_output: dict):
     """Extracts the network generate report from the log.
 
     Info found in the network generate report:
     Flash usage, RAM usage: network only and network + framework (toolchain, runtime)
     """
-    with open(generate_log, "r") as f:
+    ram_flash_file = workdir / Path("ram_flash.txt")
+    print([f"{stm32tflm}", f"{model}", ">", f"{ram_flash_file}"])
+    #with open(ram_flash_file, "w") as f:
+    subprocess.run([f"touch {ram_flash_file}"], shell=True)
+    subprocess.run([f"{stm32tflm} {model} > {ram_flash_file}"], shell=True)
+    with open (ram_flash_file, "r") as f:
         lines = f.readlines()
-    # flag to indicate that the network analyze report is being read
-    extraction_start = False
-    report = []
-    for i, line in enumerate(lines):
-        if "Exec/report summary (generate)" in line:
-            extraction_start = True
-        if extraction_start:
-            report.append(line)
-            if "Creating txt report file" in line:
-                report_file = line.split("Creating txt report file ")[1].strip()
-                break
-    report_file = workdir / (Path(report_file).stem + ".txt")
-    
-    with open(report_file, "w") as f:
-        f.writelines(report)
-    
-    # extract flash and ram usage, as well as layer names
-    start_summery_flag = False
-
-    # Example for flash and ram usage extraction:
-
-    # Summary per memory device type
-    # --------------------------------------------
-    # .\device       FLASH      %     RAM       %
-    # --------------------------------------------
-    # RT total      15,253   5.3%   4,496   68.7%
-    # --------------------------------------------
-    # TOTAL        286,133          6,544
-    # --------------------------------------------
-    
-    for line in report:
-        if "Summary per memory device type" in line:
-            start_summery_flag = True
-        if start_summery_flag:
-            # RT total is the calculated ram and flash ONLY of the runtime using 
-            # text, rodata, data and bss sections of the elf file
-            if "RT total" in line:
-                line = line.split("RT total")[1]
-                result = re.split(r'\s+', line.strip())
-                flash_usage_rt = result[0].replace(",", "")
-                ram_usage_rt = result[2].replace(",", "")
-            # TOTAL is the calculated ram and flash of the runtime AND the network (weights, activations, io buffers)
-            if "TOTAL" in line:
-                line = line.split("TOTAL")[1]
-                result = re.split(r'\s+', line.strip())
-                flash_usage = result[0].replace(",", "")
-                ram_usage = result[1].replace(",", "")
-                break
-    
-    # save the results for ram and flash in bytes 
-    step_output["flash"] = int(flash_usage)
-    step_output["ram"] = int(ram_usage)
-    step_output["flash_rt"] = int(flash_usage_rt)
-    step_output["ram_rt"] = int(ram_usage_rt)
+    for line in lines:
+        line = line.strip()
+        if "Flash" in line:
+            flash_usage = int(line.split(":")[1])
+        elif "Ram" in line:
+            ram_usage = int(line.split(":")[1])
+    step_output["flash"] = flash_usage
+    step_output["ram"] = ram_usage
     
     return
  
@@ -393,6 +362,13 @@ def set_generate_path(workdir: Path, mx_generate_script: Path, ioc_file: Path, c
     with open(save_path, "w") as f:
         f.writelines(lines)
     return save_path
+
+def copy_middlewares(generated_cube_prj: Path):
+    # copy middleware to to the parent directory of the generated project
+    middleware_dir = generated_cube_prj / Path("Middlewares")
+    if middleware_dir.exists():
+        shutil.copytree(middleware_dir, generated_cube_prj.parent / Path("Middlewares"))
+    return
     
 
 class CompileMode(Enum):

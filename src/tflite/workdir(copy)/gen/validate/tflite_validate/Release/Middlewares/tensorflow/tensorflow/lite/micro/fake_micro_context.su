@@ -1,0 +1,13 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:41:15:virtual TfLiteTensor* tflite::FakeMicroContext::AllocateTempTfLiteTensor(int)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:46:6:virtual void tflite::FakeMicroContext::DeallocateTempTfLiteTensor(TfLiteTensor*)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:54:10:virtual uint8_t* tflite::FakeMicroContext::AllocateTempBuffer(size_t, size_t)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:59:6:virtual void tflite::FakeMicroContext::DeallocateTempBuffer(uint8_t*)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:78:7:virtual void* tflite::FakeMicroContext::AllocatePersistentBuffer(size_t)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.h:28:7:tflite::FakeMicroContext::~FakeMicroContext()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.h:28:7:virtual tflite::FakeMicroContext::~FakeMicroContext()	8	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:64:19:virtual TfLiteEvalTensor* tflite::FakeMicroContext::GetEvalTensor(int)	16	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:87:14:virtual TfLiteStatus tflite::FakeMicroContext::RequestScratchBufferInArena(size_t, int*)	16	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:108:7:virtual void* tflite::FakeMicroContext::GetScratchBuffer(int)	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:32:1:tflite::FakeMicroContext::FakeMicroContext(TfLiteTensor*, tflite::SingleArenaBufferAllocator*, tflite::MicroGraph*)	24	static
+../Middlewares/tensorflow/tensorflow/lite/micro/fake_micro_context.cc:50:6:bool tflite::FakeMicroContext::IsAllTempTfLiteTensorDeallocated()	0	static

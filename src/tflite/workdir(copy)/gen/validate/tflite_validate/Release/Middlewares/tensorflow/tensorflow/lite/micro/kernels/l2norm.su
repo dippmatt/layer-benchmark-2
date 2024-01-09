@@ -1,0 +1,12 @@
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2norm.cc:76:7:void* tflite::{anonymous}::Init(TfLiteContext*, const char*, size_t)	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2norm.cc:37:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	48	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:65:11:int32_t tflite::RuntimeShape::Dims(int) const	8	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/types.h:263:12:int tflite::MatchingDim(const tflite::RuntimeShape&, int, const tflite::RuntimeShape&, int)	16	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/types.h:530:12:int tflite::MatchingFlatSizeSkipDim(const tflite::RuntimeShape&, int, const tflite::RuntimeShape&)	32	static
+../Middlewares/tensorflow/third_party/gemmlowp/fixedpoint/fixedpoint.h:329:21:IntegerType gemmlowp::SaturatingRoundingDoublingHighMul(IntegerType, IntegerType) [with IntegerType = long int]	8	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/common.h:846:13:void tflite::GetInvSqrtQuantizedMultiplierExp(int32_t, int, int32_t*, int*)	40	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/integer_ops/l2normalization.h:25:13:void tflite::reference_integer_ops::L2Normalization(int32_t, int32_t, int32_t, const int8_t*, int8_t*)	56	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2norm.cc:82:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	152	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2norm.cc:135:23:TfLiteRegistration_V1 tflite::Register_L2NORM_REF()	16	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2norm.cc:139:23:TfLiteRegistration_V1 tflite::Register_L2_NORMALIZATION()	8	static

@@ -1,0 +1,7 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/space_to_batch_nd.cc:47:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	40	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/space_to_batch_nd.cc:42:7:void* tflite::{anonymous}::Init(TfLiteContext*, const char*, size_t)	8	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:131:12:int tflite::Offset(const tflite::RuntimeShape&, int, int, int, int)	16	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/space_to_batch_nd.h:28:21:tflite::RuntimeShape tflite::reference_ops::ExtendShapeSpaceToBatch(const tflite::RuntimeShape&)	48	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/space_to_batch_nd.cc:70:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	448	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/space_to_batch_nd.cc:117:23:TfLiteRegistration_V1 tflite::Register_SPACE_TO_BATCH_ND()	16	static

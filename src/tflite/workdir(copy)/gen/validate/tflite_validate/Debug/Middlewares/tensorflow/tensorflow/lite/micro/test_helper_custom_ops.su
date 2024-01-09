@@ -1,0 +1,6 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/test_helper_custom_ops.cc:51:7:static void* tflite::testing::PackerOp::Init(TfLiteContext*, const char*, size_t)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/test_helper_custom_ops.cc:58:6:static void tflite::testing::PackerOp::Free(TfLiteContext*, void*)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/test_helper_custom_ops.cc:60:14:static TfLiteStatus tflite::testing::PackerOp::Prepare(TfLiteContext*, TfLiteNode*)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/test_helper_custom_ops.cc:64:14:static TfLiteStatus tflite::testing::PackerOp::Invoke(TfLiteContext*, TfLiteNode*)	48	static
+../Middlewares/tensorflow/tensorflow/lite/micro/test_helper_custom_ops.cc:42:24:static TfLiteRegistration_V1* tflite::testing::PackerOp::GetMutableRegistration()	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/test_helper_custom_ops.cc:38:30:static const TfLiteRegistration_V1* tflite::testing::PackerOp::getRegistration()	0	static

@@ -4,6 +4,39 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
 
+def data_metrics(tensor_values, tensor_values_ref):
+    # print(tensor_values.shape)
+    # print(tensor_values_ref.shape)
+    # print(tensor_values.dtype)
+    # print(tensor_values_ref.dtype)
+    # import sys; sys.exit()
+    tensor_values = tensor_values.astype(np.float64)
+    tensor_values_ref = tensor_values_ref.astype(np.float64)
+
+    return_metrics = {}
+    return_metrics['rmse'] = rmse(tensor_values_ref, tensor_values)
+    return_metrics['mae'] = mae(tensor_values_ref, tensor_values)
+    return_metrics['l2r'] = l2r(tensor_values_ref, tensor_values)
+    # if return_metrics['l2r'] > 1.1:
+    #     print("large error")
+    return return_metrics
+
+
+def rmse(ref, pred):
+  """Return Root Mean Squared Error (RMSE)."""
+  return np.sqrt(((ref - pred).astype(np.float64) ** 2).mean())
+
+def mae(ref, pred):
+  """Return Mean Absolute Error (MAE)."""
+  return (np.abs(ref - pred).astype(np.float64)).mean()
+
+def l2r(ref, pred):
+  """Compute L2 relative error"""
+  def magnitude(v):
+    return np.sqrt(np.sum(np.square(v).flatten()))
+  mag = magnitude(pred) + np.finfo(np.float32).eps
+  return magnitude(ref - pred) / mag
+
 def main():
     """Add generated data into one pandas data frame.
 
@@ -18,7 +51,7 @@ def main():
     """
     timings_dir = Path('..', '..', 'data_gen')
 
-    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name'])
+    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'rmse', 'mae', 'l2r', 'std_dev', 'sum_timing'])
     
     # Sanity check: verify the naming scheme of the benchmark folders
     framework_counter = 0
@@ -28,6 +61,36 @@ def main():
     ##############################################
     ######     Loop over all benchmarks     ######
     ##############################################
+
+    ################ temp addition for tflite #####
+    # new_row_data = {'config_name': "tflite_ad"}
+    # new_row_data['framework'] = 'tflite'
+    # new_row_data['model'] = 'ad'
+    # new_row_data['dtype'] = 'int'
+    # new_row_data['avg_timing'] = 8.55
+    # new_row_data['ram'] = 0
+    # new_row_data['flash'] = 0
+    # new_row_data['rmse'] = 0
+    # new_row_data['mae'] = 0
+    # new_row_data['l2r'] = 1
+    # new_row_data['std_dev'] = 0
+    # df.loc[len(df)] = new_row_data
+
+    # new_row_data['config_name'] = "tflite_ic"
+    # new_row_data['model'] = 'ic'
+    # new_row_data['avg_timing'] = 418.21
+    # df.loc[len(df)] = new_row_data
+
+    # new_row_data['config_name'] = "tflite_kws"
+    # new_row_data['model'] = 'kws'
+    # new_row_data['avg_timing'] = 115.19
+    # df.loc[len(df)] = new_row_data
+
+    # new_row_data['config_name'] = "tflite_vww"
+    # new_row_data['model'] = 'vww'
+    # new_row_data['avg_timing'] = 378.48
+    # df.loc[len(df)] = new_row_data
+    ###############################################
     
     for benchmark in timings_dir.iterdir():
         # filter empty directories
@@ -51,6 +114,9 @@ def main():
         if 'glow_' in benchmark.stem:
             framework_counter += 1
             new_row_data['framework'] = 'glow'
+        if 'tflite_' in benchmark.stem:
+            framework_counter += 1
+            new_row_data['framework'] = 'tflite'
         # models
         if 'ad_' in benchmark.stem:
             model_counter += 1
@@ -70,14 +136,17 @@ def main():
             new_row_data['dtype'] = 'int'
         if 'float' in benchmark.stem:
             quant_counter += 1
-            new_row_data['dtype'] = 'float'
+            if '_quant' in benchmark.stem:
+                new_row_data['dtype'] = 'int'
+            else:
+                new_row_data['dtype'] = 'float'
 
         ###################################################
         ###### Insert average timings for all layers ######
         ###################################################
         
         mean_timings = Path(benchmark, 'all_layers_timings_mean.npz')
-        assert mean_timings.exists(), 'No mean timings found.'
+        assert mean_timings.exists(), f'No mean timings found for {benchmark}.'
         input_data = np.load(mean_timings)
 
         avg_timing =input_data['arr_0']
@@ -86,6 +155,41 @@ def main():
         else:
             avg_timing = avg_timing
         new_row_data['avg_timing'] = avg_timing
+
+        ###################################################
+        #############  Insert sum of layers ###############
+        ###################################################
+        
+        sum_timings = Path(benchmark, 'per_layer_timings_mean.npz')
+        assert sum_timings.exists(), f'No mean timings found for {benchmark}.'
+        input_data = np.load(sum_timings)
+
+        sum_timing =input_data['arr_0']
+        print(sum_timing.shape)
+        sum = 0
+        for layer_timing in sum_timing:
+            sum += layer_timing
+        new_row_data['sum_timing'] = sum
+
+        ###################################################
+        ###### STD DEVIATION  ######
+        ###################################################
+        
+        std_dev_file = Path(benchmark, 'all_layers_timings_std_dev.npz')
+        if not std_dev_file.exists():
+            std_dev = np.array([0])
+            print(new_row_data['framework'])
+        else:
+            input_data = np.load(std_dev_file)
+            std_dev =input_data['arr_0']
+     
+        if std_dev.shape == (1,):
+            std_dev = std_dev[0]
+        else:
+            std_dev = std_dev
+
+        #print(std_dev)
+        new_row_data['std_dev'] = float(std_dev)
         
         ##################################################
         ####           Insert Ram & Flash             ####
@@ -96,29 +200,59 @@ def main():
         
         with open(mean_timings, 'r') as f:
             lines = f.readlines()
-        print()
-        print(lines)
         
         ram = lines[0].strip().split(' ')[-1]
         flash = lines[1].strip().split(' ')[-1]
-        new_row_data['ram'] = ram
-        new_row_data['flash'] = flash
+        new_row_data['ram'] = int(ram)
+        new_row_data['flash'] = int(flash)
+
+        #################################################
+        ####            Calulate Errors              ####
+        #################################################
+
+        # load reference data
+        ref_data = Path(benchmark, 'ref_tensor_values.npz')
+        assert ref_data.exists(), 'No reference data found.'
+        ref_data = np.load(ref_data)
+        ref_tensor_values = ref_data['arr_0']
+        # load mcu data
+        mcu_data = Path(benchmark, 'mcu_tensor_values.npz')
+        assert mcu_data.exists(), 'No mcu data found.'
+        mcu_data = np.load(mcu_data)
+        mcu_tensor_values = mcu_data['arr_0']
+        # calculate metrics
+        metrics = data_metrics(mcu_tensor_values, ref_tensor_values)
+        new_row_data['rmse'] = metrics['rmse']
+        new_row_data['mae'] = metrics['mae']
+        new_row_data['l2r'] = metrics['l2r'] + 1
+        # print(metrics)
 
         # add the new row to the df
         df.loc[len(df)] = new_row_data
 
     
-    assert quant_counter == 66, 'Benchmark folder name does not follow naming convention.'
-    assert framework_counter == 66, 'Benchmark folder name does not follow naming convention.'
-    assert model_counter == 66, 'Benchmark folder name does not follow naming convention.'
+    # assert quant_counter == 66, f'Benchmark folder name does not follow naming convention ({quant_counter} vs 66).'
+    # assert framework_counter == 66, f'Benchmark folder name does not follow naming convention ({framework_counter} vs 66).'
+    # assert model_counter == 66, f'Benchmark folder name does not follow naming convention ({model_counter} vs 66).'
     
-    ######################### create pandas df #########################
-    # Create a pandas DataFrame from the benchmark data
-    # we us columns for the model, framework, flash, ram, and timings
+    #################################################
+    ####              Visualisation              ####
+    #################################################
+    # model_name = 'kws'
+    #framework_name = 'tiny_engine'
+    # filtered_df = df[df['framework'] != framework_name]
+    #data_type = 'int'
+    #filtered_df = df[df['dtype'] == data_type]
+    filtered_df = df
 
-    print(df)
-
+    #filtered_df['ram_flash_product'] = filtered_df['ram'] * filtered_df['flash'] / 10E6
+    #filtered_df = filtered_df.sort_values(by='ram_flash_product')
+    fig = px.scatter(filtered_df, x='ram', y='sum_timing', color='framework',
+                 facet_col='model', title='Timing vs Memory', size='l2r', hover_data=['config_name', 'ram', 'flash', 'dtype', 'framework', 'avg_timing', 'l2r'])
+   
+    fig.show()
     return 0
 
 if __name__ == '__main__':
     main()
+

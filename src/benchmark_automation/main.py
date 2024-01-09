@@ -29,8 +29,8 @@ def create_run_commands(permutations: list):
         python_main = Path(permutation["-workdir"]) / Path("..", "python_scripting", "main.py")
         python_main = python_main.resolve()
 
-        assert python_exec.exists()
-        assert python_main.exists()
+        assert python_exec.exists(), f"Python executable {python_exec} does not exist"
+        assert python_main.exists(), f"Python main {python_main} does not exist"
 
         command = ""
         command += str(python_exec) + " " + str(python_main) + " "
@@ -46,6 +46,11 @@ def create_run_commands(permutations: list):
                     # create out_dir if it does not exist
                     if not out_dir.exists():
                         out_dir.mkdir(parents=True, exist_ok=True)
+
+                    # if "tflite" in str(out_dir):
+                    #     print(type(out_dir))
+                    #     print(out_dir)
+                    #     import sys;sys.exit()
                     
                     # check if output is already present
                     contents = list(out_dir.glob('*'))
@@ -240,6 +245,24 @@ def create_permutations(config):
                     perm_copy = permutation.copy()
                     if "no_softmax" in model_int:
                         perm_copy["unique_key"] += "int_nosoftmax_"
+                    else:
+                        perm_copy["unique_key"] += "int_"
+                    perm_copy["-model"] = model_int
+                    output_permutations.append(perm_copy)
+
+            elif "tflite" in permutation["unique_key"]:
+                # for model_fp in config["use_case"][use_case]["model_fp"]:
+                #     perm_copy = permutation.copy()
+                #     if "no_softmax" in model_fp:
+                #         perm_copy["unique_key"] += "float_nosoftmax_"
+                #     else:
+                #         perm_copy["unique_key"] += "float_"
+                #     perm_copy["-model"] = model_fp
+                #     output_permutations.append(perm_copy)
+                for model_int in config["use_case"][use_case]["model_int"]:
+                    perm_copy = permutation.copy()
+                    if "no_softmax" in model_int:
+                        continue
                     else:
                         perm_copy["unique_key"] += "int_"
                     perm_copy["-model"] = model_int

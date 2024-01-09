@@ -190,6 +190,8 @@ def compile_project(workdir: Path,
         subprocess.run(validate_command, shell=True)
 
         network_analyze_report = network_output_directory / Path("network_analyze_report.txt")
+        network_validate_report = network_output_directory / Path("network_validate_report.txt")
+        extract_std_dev(network_validate_report, step_output)
         extract_ram_flash(workdir, generate_log, step_output)
         extract_layer_names(workdir, network_analyze_report, step_output)
         # Check if the validation was successful and we got the output tensors

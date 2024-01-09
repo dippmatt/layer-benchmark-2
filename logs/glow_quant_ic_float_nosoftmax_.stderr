@@ -1,9 +1,9 @@
-2023-10-30 20:36:03.373896: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-2023-10-30 20:36:03.375297: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
-2023-10-30 20:36:03.402457: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
-2023-10-30 20:36:03.402740: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2024-01-08 12:41:21.044275: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-01-08 12:41:21.046129: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2024-01-08 12:41:21.083845: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
+2024-01-08 12:41:21.084206: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2023-10-30 20:36:03.807029: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+2024-01-08 12:41:21.659244: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
 INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
 ../Core/Src/main.c: In function 'main':
 ../Core/Src/main.c:243:62: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness [-Wpointer-sign]
@@ -415,3 +415,19 @@ In file included from ../Core/Inc/stm32l4xx_hal_conf.h:450,
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h:1674:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
  1674 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
       |                                                                ~~~~~~~~~~~~~~~^~~~~
+Traceback (most recent call last):
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/main.py", line 276, in <module>
+    sys.exit(_main())
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/main.py", line 221, in _main
+    pipeline.run()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/benchmark_pipeline.py", line 57, in run
+    step.run()
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/shared_scripts/step.py", line 35, in run
+    self.output = self._callable(* self.args)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/process_data.py", line 11, in process_data
+    mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values)
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/process_data.py", line 153, in process_mcu_output_tensors
+    tensor_value = [float(x) for x in tensor_value]
+  File "/home/matthias/Documents/BA/layer-benchmark-2/src/glow/python_scripting/process_data.py", line 153, in <listcomp>
+    tensor_value = [float(x) for x in tensor_value]
+ValueError: could not convert string to float: '0.-515561'

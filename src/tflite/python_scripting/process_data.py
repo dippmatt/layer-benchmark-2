@@ -12,16 +12,23 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values, num_samples)
     step_output["mcu_tensor_values"] = mcu_tensor_values
     
-    # ref_tensor_values_df = out_tensors_to_df(reference_output)
-    #step_output["ref_tensor_values_df"] = ref_tensor_values_df
     ref_tensor_values = np.array(reference_output)
     step_output["ref_tensor_values"] = ref_tensor_values
     
     # process per layer timings
-    per_layer_timings_mean = process_layer_timings(reps)
+    per_layer_timings_mean, layer_names = process_layer_timings(reps)
+    step_output["layer_list"] = layer_names
 
     # process reference total inference time
     all_layers_timings_mean = process_layer_timings_ref(reps_all_layers)  
+    
+    ########################################
+    # dummy value for per_layer_timings_std_dev
+    step_output["per_layer_timings_std_dev"] = None
+    step_output["all_layers_timings_std_dev"] = None
+    print(per_layer_timings_mean)
+    print(all_layers_timings_mean)
+    ########################################
     
     step_output["per_layer_timings_mean"] = per_layer_timings_mean
     step_output["all_layers_timings_mean"] = all_layers_timings_mean
@@ -53,18 +60,20 @@ def process_layer_timings(reps):
     """
     # create array-like list of lists for all measurements
     timing_array = []
-    
+    layer_names = []
+
     for layer in reps:
         # Example for one layer:
-        # 0     DENSE               0          2.174  28.60 %
+        # 0     FULLY_CONNECTED                2.213  27.33 %
         timing = layer.split(' ')
         # remove empty strings
         timing = list(filter(None, timing))
+        layer_names.append(timing[-4])
         timing = timing[-3]
         timing = float(timing)
         timing_array.append(timing)
     timing_array = np.array(timing_array)
-    return timing_array
+    return timing_array, layer_names
 
 def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path, num_samples: int):
     """Converts a list of output tensors (raw UART string data) to a pandas DataFrame.
@@ -80,26 +89,6 @@ def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values:
 
     return tensor_values
 
-
-def out_tensors_to_df(tensor_values):
-    """Converts a list of output tensors to a pandas DataFrame.
-    """
-    # Create a list of column names
-    column_names = [f"output_{i+1}" for i in range(len(tensor_values))]
-
-    # Create a list of dictionaries where each dictionary corresponds to an output tensor
-    data = [{column_names[i]: value} for i, value in enumerate(tensor_values)]
-    print(data)
-
-    # Create a pandas DataFrame
-    df = pd.DataFrame(data)
-
-    # Display the DataFrame
-    print(df.columns)
-    print()
-    print(df)
-    import sys; sys.exit()
-    return df
 
 ######################## TESTS ########################
 

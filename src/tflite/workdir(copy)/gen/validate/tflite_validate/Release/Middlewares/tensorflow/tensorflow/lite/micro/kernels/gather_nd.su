@@ -1,0 +1,4 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/gather_nd.cc:31:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	72	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/gather_nd.cc:188:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	80	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/gather_nd.cc:208:23:TfLiteRegistration_V1 tflite::Register_GATHER_ND()	16	static

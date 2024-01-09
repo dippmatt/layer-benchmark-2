@@ -1,0 +1,4 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/logical.cc:26:14:TfLiteStatus tflite::{anonymous}::LogicalOrEval(TfLiteContext*, TfLiteNode*)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/logical.cc:30:14:TfLiteStatus tflite::{anonymous}::LogicalAndEval(TfLiteContext*, TfLiteNode*)	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/logical.cc:36:23:TfLiteRegistration_V1 tflite::Register_LOGICAL_OR()	16	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/logical.cc:40:23:TfLiteRegistration_V1 tflite::Register_LOGICAL_AND()	16	static

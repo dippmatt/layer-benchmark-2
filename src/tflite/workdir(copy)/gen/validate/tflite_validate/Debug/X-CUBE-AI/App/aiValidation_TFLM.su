@@ -1,0 +1,11 @@
+../X-CUBE-AI/App/aiTestUtility.h:142:20:_mon_alloc_reset	8	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:568:6:aiPbCmdSysInfo	40	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:586:6:aiPbCmdNNInfo	136	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:225:13:_encode_to_tensor_desc_cb	24	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:390:6:_print_debug	20	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:602:6:aiPbCmdNNRun	136	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:431:5:tflm_io_write	16	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:454:6:log_tensor	48	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:688:5:aiValidationInit	32	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:701:5:aiValidationProcess	48	static
+../X-CUBE-AI/App/aiValidation_TFLM.c:733:6:aiValidationDeInit	8	static

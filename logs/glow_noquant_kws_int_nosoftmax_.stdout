@@ -1,7 +1,7 @@
 [93mNote: Found 12 samples in input_tensors.[0m
 Directory '/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir/build/ir' created successfully.
 Directory '/home/matthias/Documents/BA/layer-benchmark-2/src/glow/workdir/build/no-ir' created successfully.
-nsor values:
+ values:
 -128 -128 124 -128 -128 -128 -128 -128 -128 -128 -128 -125 
 Tensor values:
 -127 -122 -128 117 -128 -128 -128 -128 -128 -128 -128 -126 

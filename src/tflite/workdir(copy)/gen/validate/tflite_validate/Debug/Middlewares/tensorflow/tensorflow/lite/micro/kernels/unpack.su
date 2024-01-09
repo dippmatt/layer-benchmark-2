@@ -1,0 +1,3 @@
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/unpack.cc:75:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	56	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/unpack.cc:104:23:TfLiteRegistration_V1 tflite::Register_UNPACK()	16	static

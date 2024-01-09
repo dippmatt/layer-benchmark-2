@@ -1,0 +1,4 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/exp.cc:30:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	48	static
+../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/exp.cc:54:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	72	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/exp.cc:75:23:TfLiteRegistration_V1 tflite::Register_EXP()	16	static

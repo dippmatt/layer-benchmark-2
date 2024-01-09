@@ -1,0 +1,3 @@
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/squeeze.cc:90:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	48	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/squeeze.cc:47:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	64	static
+../Middlewares/tensorflow/tensorflow/lite/micro/kernels/squeeze.cc:114:23:TfLiteRegistration_V1 tflite::Register_SQUEEZE()	16	static

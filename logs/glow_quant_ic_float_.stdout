@@ -7,584 +7,591 @@ Tensor values:
 -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
 Tensor values:
 -128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+Tensor values:
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
 Start of benchmark.
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
 START                         :        1 µs | +        1 µs
-STOP                          :     1016 µs | +     1015 µs
-START                         :     1017 µs | +        1 µs
-STOP                          :    29131 µs | +    28114 µs
-START                         :    29131 µs | +        0 µs
-STOP                          :    30140 µs | +     1009 µs
-START                         :    30141 µs | +        1 µs
-STOP                          :   128912 µs | +    98771 µs
-START                         :   128913 µs | +        1 µs
-STOP                          :   130195 µs | +     1282 µs
-START                         :   130196 µs | +        1 µs
-STOP                          :   228968 µs | +    98772 µs
-START                         :   228969 µs | +        1 µs
-STOP                          :   230200 µs | +     1231 µs
-START                         :   230200 µs | +        0 µs
-STOP                          :   231482 µs | +     1282 µs
-START                         :   231483 µs | +        1 µs
-STOP                          :   249929 µs | +    18446 µs
-START                         :   249930 µs | +        1 µs
-STOP                          :   297355 µs | +    47425 µs
-START                         :   297355 µs | +        0 µs
-STOP                          :   297997 µs | +      642 µs
-START                         :   297999 µs | +        2 µs
-STOP                          :   389767 µs | +    91768 µs
-START                         :   389768 µs | +        1 µs
-STOP                          :   390385 µs | +      617 µs
-START                         :   390385 µs | +        0 µs
-STOP                          :   391027 µs | +      642 µs
-START                         :   391028 µs | +        1 µs
-STOP                          :   404943 µs | +    13915 µs
-START                         :   404944 µs | +        1 µs
-STOP                          :   450006 µs | +    45062 µs
-START                         :   450007 µs | +        1 µs
-STOP                          :   450328 µs | +      321 µs
-START                         :   450330 µs | +        2 µs
-STOP                          :   539010 µs | +    88680 µs
-START                         :   539011 µs | +        1 µs
-STOP                          :   539320 µs | +      309 µs
-START                         :   539321 µs | +        1 µs
-STOP                          :   539608 µs | +      287 µs
-START                         :   539609 µs | +        1 µs
-STOP                          :   540123 µs | +      514 µs
-START                         :   540124 µs | +        1 µs
-STOP                          :   540272 µs | +      148 µs
-START                         :   540272 µs | +        0 µs
-STOP                          :   540298 µs | +       26 µs
-START                         :   540298 µs | +        0 µs
-STOP                          :   540307 µs | +        9 µs
-START                         :   540308 µs | +        1 µs
-STOP                          :   540310 µs | +        2 µs
-END                           :   540310 µs | +        0 µs
+STOP                          :     1025 µs | +     1024 µs
+START                         :     1026 µs | +        1 µs
+STOP                          :    29139 µs | +    28113 µs
+START                         :    29140 µs | +        1 µs
+STOP                          :    30148 µs | +     1008 µs
+START                         :    30149 µs | +        1 µs
+STOP                          :   128921 µs | +    98772 µs
+START                         :   128922 µs | +        1 µs
+STOP                          :   130203 µs | +     1281 µs
+START                         :   130205 µs | +        2 µs
+STOP                          :   228976 µs | +    98771 µs
+START                         :   228977 µs | +        1 µs
+STOP                          :   230208 µs | +     1231 µs
+START                         :   230209 µs | +        1 µs
+STOP                          :   231490 µs | +     1281 µs
+START                         :   231492 µs | +        2 µs
+STOP                          :   249937 µs | +    18445 µs
+START                         :   249939 µs | +        2 µs
+STOP                          :   297363 µs | +    47424 µs
+START                         :   297364 µs | +        1 µs
+STOP                          :   298006 µs | +      642 µs
+START                         :   298007 µs | +        1 µs
+STOP                          :   389775 µs | +    91768 µs
+START                         :   389776 µs | +        1 µs
+STOP                          :   390393 µs | +      617 µs
+START                         :   390393 µs | +        0 µs
+STOP                          :   391035 µs | +      642 µs
+START                         :   391036 µs | +        1 µs
+STOP                          :   404951 µs | +    13915 µs
+START                         :   404952 µs | +        1 µs
+STOP                          :   450014 µs | +    45062 µs
+START                         :   450015 µs | +        1 µs
+STOP                          :   450337 µs | +      322 µs
+START                         :   450338 µs | +        1 µs
+STOP                          :   539018 µs | +    88680 µs
+START                         :   539019 µs | +        1 µs
+STOP                          :   539328 µs | +      309 µs
+START                         :   539329 µs | +        1 µs
+STOP                          :   539617 µs | +      288 µs
+START                         :   539617 µs | +        0 µs
+STOP                          :   540131 µs | +      514 µs
+START                         :   540132 µs | +        1 µs
+STOP                          :   540280 µs | +      148 µs
+START                         :   540281 µs | +        1 µs
+STOP                          :   540306 µs | +       25 µs
+START                         :   540307 µs | +        1 µs
+STOP                          :   540315 µs | +        8 µs
+START                         :   540316 µs | +        1 µs
+STOP                          :   540318 µs | +        2 µs
+END                           :   540319 µs | +        1 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
 START                         :        1 µs | +        1 µs
-STOP                          :     1031 µs | +     1030 µs
-START                         :     1033 µs | +        2 µs
-STOP                          :    29146 µs | +    28113 µs
-START                         :    29147 µs | +        1 µs
-STOP                          :    30155 µs | +     1008 µs
-START                         :    30156 µs | +        1 µs
-STOP                          :   128928 µs | +    98772 µs
-START                         :   128928 µs | +        0 µs
-STOP                          :   130210 µs | +     1282 µs
-START                         :   130211 µs | +        1 µs
-STOP                          :   228983 µs | +    98772 µs
-START                         :   228984 µs | +        1 µs
-STOP                          :   230215 µs | +     1231 µs
-START                         :   230215 µs | +        0 µs
-STOP                          :   231497 µs | +     1282 µs
-START                         :   231498 µs | +        1 µs
-STOP                          :   249944 µs | +    18446 µs
-START                         :   249945 µs | +        1 µs
-STOP                          :   297370 µs | +    47425 µs
-START                         :   297371 µs | +        1 µs
+STOP                          :     1040 µs | +     1039 µs
+START                         :     1041 µs | +        1 µs
+STOP                          :    29154 µs | +    28113 µs
+START                         :    29155 µs | +        1 µs
+STOP                          :    30163 µs | +     1008 µs
+START                         :    30164 µs | +        1 µs
+STOP                          :   128936 µs | +    98772 µs
+START                         :   128937 µs | +        1 µs
+STOP                          :   130219 µs | +     1282 µs
+START                         :   130220 µs | +        1 µs
+STOP                          :   228991 µs | +    98771 µs
+START                         :   228992 µs | +        1 µs
+STOP                          :   230223 µs | +     1231 µs
+START                         :   230224 µs | +        1 µs
+STOP                          :   231506 µs | +     1282 µs
+START                         :   231507 µs | +        1 µs
+STOP                          :   249952 µs | +    18445 µs
+START                         :   249954 µs | +        2 µs
+STOP                          :   297378 µs | +    47424 µs
+START                         :   297379 µs | +        1 µs
+STOP                          :   298021 µs | +      642 µs
+START                         :   298022 µs | +        1 µs
+STOP                          :   389791 µs | +    91769 µs
+START                         :   389792 µs | +        1 µs
+STOP                          :   390408 µs | +      616 µs
+START                         :   390409 µs | +        1 µs
+STOP                          :   391050 µs | +      641 µs
+START                         :   391052 µs | +        2 µs
+STOP                          :   404966 µs | +    13914 µs
+START                         :   404967 µs | +        1 µs
+STOP                          :   450029 µs | +    45062 µs
+START                         :   450030 µs | +        1 µs
+STOP                          :   450352 µs | +      322 µs
+START                         :   450353 µs | +        1 µs
+STOP                          :   539033 µs | +    88680 µs
+START                         :   539034 µs | +        1 µs
+STOP                          :   539344 µs | +      310 µs
+START                         :   539344 µs | +        0 µs
+STOP                          :   539632 µs | +      288 µs
+START                         :   539632 µs | +        0 µs
+STOP                          :   540147 µs | +      515 µs
+START                         :   540147 µs | +        0 µs
+STOP                          :   540295 µs | +      148 µs
+START                         :   540296 µs | +        1 µs
+STOP                          :   540321 µs | +       25 µs
+START                         :   540322 µs | +        1 µs
+STOP                          :   540331 µs | +        9 µs
+START                         :   540331 µs | +        0 µs
+STOP                          :   540334 µs | +        3 µs
+END                           :   540334 µs | +        0 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        1 µs | +        1 µs
+STOP                          :     1032 µs | +     1031 µs
+START                         :     1033 µs | +        1 µs
+STOP                          :    29147 µs | +    28114 µs
+START                         :    29147 µs | +        0 µs
+STOP                          :    30156 µs | +     1009 µs
+START                         :    30157 µs | +        1 µs
+STOP                          :   128928 µs | +    98771 µs
+START                         :   128929 µs | +        1 µs
+STOP                          :   130211 µs | +     1282 µs
+START                         :   130212 µs | +        1 µs
+STOP                          :   228984 µs | +    98772 µs
+START                         :   228985 µs | +        1 µs
+STOP                          :   230216 µs | +     1231 µs
+START                         :   230216 µs | +        0 µs
+STOP                          :   231498 µs | +     1282 µs
+START                         :   231499 µs | +        1 µs
+STOP                          :   249945 µs | +    18446 µs
+START                         :   249946 µs | +        1 µs
+STOP                          :   297371 µs | +    47425 µs
+START                         :   297371 µs | +        0 µs
 STOP                          :   298013 µs | +      642 µs
 START                         :   298014 µs | +        1 µs
-STOP                          :   389782 µs | +    91768 µs
-START                         :   389783 µs | +        1 µs
-STOP                          :   390400 µs | +      617 µs
-START                         :   390400 µs | +        0 µs
-STOP                          :   391042 µs | +      642 µs
-START                         :   391043 µs | +        1 µs
-STOP                          :   404958 µs | +    13915 µs
-START                         :   404959 µs | +        1 µs
-STOP                          :   450021 µs | +    45062 µs
-START                         :   450022 µs | +        1 µs
+STOP                          :   389783 µs | +    91769 µs
+START                         :   389784 µs | +        1 µs
+STOP                          :   390400 µs | +      616 µs
+START                         :   390401 µs | +        1 µs
+STOP                          :   391043 µs | +      642 µs
+START                         :   391044 µs | +        1 µs
+STOP                          :   404958 µs | +    13914 µs
+START                         :   404960 µs | +        2 µs
+STOP                          :   450022 µs | +    45062 µs
+START                         :   450022 µs | +        0 µs
 STOP                          :   450344 µs | +      322 µs
-START                         :   450345 µs | +        1 µs
-STOP                          :   539025 µs | +    88680 µs
-START                         :   539026 µs | +        1 µs
-STOP                          :   539335 µs | +      309 µs
-START                         :   539336 µs | +        1 µs
-STOP                          :   539623 µs | +      287 µs
-START                         :   539624 µs | +        1 µs
-STOP                          :   540138 µs | +      514 µs
-START                         :   540139 µs | +        1 µs
-STOP                          :   540287 µs | +      148 µs
-START                         :   540288 µs | +        1 µs
-STOP                          :   540313 µs | +       25 µs
-START                         :   540313 µs | +        0 µs
-STOP                          :   540322 µs | +        9 µs
-START                         :   540323 µs | +        1 µs
-STOP                          :   540325 µs | +        2 µs
-END                           :   540326 µs | +        1 µs
+START                         :   450346 µs | +        2 µs
+STOP                          :   539026 µs | +    88680 µs
+START                         :   539027 µs | +        1 µs
+STOP                          :   539336 µs | +      309 µs
+START                         :   539336 µs | +        0 µs
+STOP                          :   539624 µs | +      288 µs
+START                         :   539625 µs | +        1 µs
+STOP                          :   540139 µs | +      514 µs
+START                         :   540140 µs | +        1 µs
+STOP                          :   540288 µs | +      148 µs
+START                         :   540288 µs | +        0 µs
+STOP                          :   540314 µs | +       26 µs
+START                         :   540314 µs | +        0 µs
+STOP                          :   540323 µs | +        9 µs
+START                         :   540324 µs | +        1 µs
+STOP                          :   540326 µs | +        2 µs
+END                           :   540326 µs | +        0 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
 START                         :        1 µs | +        1 µs
-STOP                          :     1024 µs | +     1023 µs
-START                         :     1025 µs | +        1 µs
-STOP                          :    29138 µs | +    28113 µs
-START                         :    29139 µs | +        1 µs
-STOP                          :    30147 µs | +     1008 µs
-START                         :    30148 µs | +        1 µs
-STOP                          :   128920 µs | +    98772 µs
-START                         :   128921 µs | +        1 µs
-STOP                          :   130203 µs | +     1282 µs
-START                         :   130204 µs | +        1 µs
-STOP                          :   228975 µs | +    98771 µs
-START                         :   228976 µs | +        1 µs
-STOP                          :   230207 µs | +     1231 µs
-START                         :   230208 µs | +        1 µs
-STOP                          :   231490 µs | +     1282 µs
-START                         :   231491 µs | +        1 µs
-STOP                          :   249936 µs | +    18445 µs
-START                         :   249938 µs | +        2 µs
-STOP                          :   297362 µs | +    47424 µs
-START                         :   297363 µs | +        1 µs
-STOP                          :   298005 µs | +      642 µs
-START                         :   298006 µs | +        1 µs
-STOP                          :   389775 µs | +    91769 µs
-START                         :   389776 µs | +        1 µs
-STOP                          :   390392 µs | +      616 µs
-START                         :   390393 µs | +        1 µs
-STOP                          :   391034 µs | +      641 µs
-START                         :   391036 µs | +        2 µs
-STOP                          :   404950 µs | +    13914 µs
-START                         :   404951 µs | +        1 µs
-STOP                          :   450013 µs | +    45062 µs
-START                         :   450014 µs | +        1 µs
-STOP                          :   450336 µs | +      322 µs
-START                         :   450337 µs | +        1 µs
-STOP                          :   539017 µs | +    88680 µs
-START                         :   539018 µs | +        1 µs
-STOP                          :   539328 µs | +      310 µs
-START                         :   539328 µs | +        0 µs
-STOP                          :   539616 µs | +      288 µs
-START                         :   539616 µs | +        0 µs
-STOP                          :   540131 µs | +      515 µs
-START                         :   540131 µs | +        0 µs
-STOP                          :   540279 µs | +      148 µs
-START                         :   540280 µs | +        1 µs
-STOP                          :   540305 µs | +       25 µs
-START                         :   540306 µs | +        1 µs
-STOP                          :   540315 µs | +        9 µs
-START                         :   540315 µs | +        0 µs
-STOP                          :   540317 µs | +        2 µs
-END                           :   540318 µs | +        1 µs
+STOP                          :     1028 µs | +     1027 µs
+START                         :     1029 µs | +        1 µs
+STOP                          :    29143 µs | +    28114 µs
+START                         :    29143 µs | +        0 µs
+STOP                          :    30152 µs | +     1009 µs
+START                         :    30153 µs | +        1 µs
+STOP                          :   128924 µs | +    98771 µs
+START                         :   128925 µs | +        1 µs
+STOP                          :   130207 µs | +     1282 µs
+START                         :   130208 µs | +        1 µs
+STOP                          :   228980 µs | +    98772 µs
+START                         :   228981 µs | +        1 µs
+STOP                          :   230212 µs | +     1231 µs
+START                         :   230212 µs | +        0 µs
+STOP                          :   231494 µs | +     1282 µs
+START                         :   231495 µs | +        1 µs
+STOP                          :   249941 µs | +    18446 µs
+START                         :   249942 µs | +        1 µs
+STOP                          :   297367 µs | +    47425 µs
+START                         :   297367 µs | +        0 µs
+STOP                          :   298009 µs | +      642 µs
+START                         :   298010 µs | +        1 µs
+STOP                          :   389779 µs | +    91769 µs
+START                         :   389780 µs | +        1 µs
+STOP                          :   390397 µs | +      617 µs
+START                         :   390397 µs | +        0 µs
+STOP                          :   391039 µs | +      642 µs
+START                         :   391040 µs | +        1 µs
+STOP                          :   404954 µs | +    13914 µs
+START                         :   404956 µs | +        2 µs
+STOP                          :   450018 µs | +    45062 µs
+START                         :   450018 µs | +        0 µs
+STOP                          :   450340 µs | +      322 µs
+START                         :   450342 µs | +        2 µs
+STOP                          :   539022 µs | +    88680 µs
+START                         :   539023 µs | +        1 µs
+STOP                          :   539332 µs | +      309 µs
+START                         :   539333 µs | +        1 µs
+STOP                          :   539620 µs | +      287 µs
+START                         :   539621 µs | +        1 µs
+STOP                          :   540135 µs | +      514 µs
+START                         :   540136 µs | +        1 µs
+STOP                          :   540284 µs | +      148 µs
+START                         :   540284 µs | +        0 µs
+STOP                          :   540310 µs | +       26 µs
+START                         :   540310 µs | +        0 µs
+STOP                          :   540319 µs | +        9 µs
+START                         :   540320 µs | +        1 µs
+STOP                          :   540322 µs | +        2 µs
+END                           :   540322 µs | +        0 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        1 µs | +        1 µs
+STOP                          :     1047 µs | +     1046 µs
+START                         :     1048 µs | +        1 µs
+STOP                          :    29162 µs | +    28114 µs
+START                         :    29162 µs | +        0 µs
+STOP                          :    30171 µs | +     1009 µs
+START                         :    30172 µs | +        1 µs
+STOP                          :   128943 µs | +    98771 µs
+START                         :   128944 µs | +        1 µs
+STOP                          :   130226 µs | +     1282 µs
+START                         :   130227 µs | +        1 µs
+STOP                          :   228999 µs | +    98772 µs
+START                         :   229000 µs | +        1 µs
+STOP                          :   230231 µs | +     1231 µs
+START                         :   230231 µs | +        0 µs
+STOP                          :   231513 µs | +     1282 µs
+START                         :   231514 µs | +        1 µs
+STOP                          :   249960 µs | +    18446 µs
+START                         :   249961 µs | +        1 µs
+STOP                          :   297386 µs | +    47425 µs
+START                         :   297386 µs | +        0 µs
+STOP                          :   298028 µs | +      642 µs
+START                         :   298029 µs | +        1 µs
+STOP                          :   389798 µs | +    91769 µs
+START                         :   389799 µs | +        1 µs
+STOP                          :   390415 µs | +      616 µs
+START                         :   390416 µs | +        1 µs
+STOP                          :   391058 µs | +      642 µs
+START                         :   391059 µs | +        1 µs
+STOP                          :   404973 µs | +    13914 µs
+START                         :   404975 µs | +        2 µs
+STOP                          :   450037 µs | +    45062 µs
+START                         :   450037 µs | +        0 µs
+STOP                          :   450359 µs | +      322 µs
+START                         :   450361 µs | +        2 µs
+STOP                          :   539041 µs | +    88680 µs
+START                         :   539042 µs | +        1 µs
+STOP                          :   539351 µs | +      309 µs
+START                         :   539352 µs | +        1 µs
+STOP                          :   539639 µs | +      287 µs
+START                         :   539640 µs | +        1 µs
+STOP                          :   540154 µs | +      514 µs
+START                         :   540155 µs | +        1 µs
+STOP                          :   540303 µs | +      148 µs
+START                         :   540303 µs | +        0 µs
+STOP                          :   540329 µs | +       26 µs
+START                         :   540329 µs | +        0 µs
+STOP                          :   540338 µs | +        9 µs
+START                         :   540339 µs | +        1 µs
+STOP                          :   540341 µs | +        2 µs
+END                           :   540341 µs | +        0 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        1 µs | +        1 µs
+STOP                          :     1047 µs | +     1046 µs
+START                         :     1048 µs | +        1 µs
+STOP                          :    29162 µs | +    28114 µs
+START                         :    29162 µs | +        0 µs
+STOP                          :    30171 µs | +     1009 µs
+START                         :    30172 µs | +        1 µs
+STOP                          :   128943 µs | +    98771 µs
+START                         :   128944 µs | +        1 µs
+STOP                          :   130226 µs | +     1282 µs
+START                         :   130227 µs | +        1 µs
+STOP                          :   228999 µs | +    98772 µs
+START                         :   229000 µs | +        1 µs
+STOP                          :   230231 µs | +     1231 µs
+START                         :   230231 µs | +        0 µs
+STOP                          :   231513 µs | +     1282 µs
+START                         :   231514 µs | +        1 µs
+STOP                          :   249960 µs | +    18446 µs
+START                         :   249961 µs | +        1 µs
+STOP                          :   297386 µs | +    47425 µs
+START                         :   297386 µs | +        0 µs
+STOP                          :   298028 µs | +      642 µs
+START                         :   298029 µs | +        1 µs
+STOP                          :   389798 µs | +    91769 µs
+START                         :   389799 µs | +        1 µs
+STOP                          :   390415 µs | +      616 µs
+START                         :   390416 µs | +        1 µs
+STOP                          :   391058 µs | +      642 µs
+START                         :   391059 µs | +        1 µs
+STOP                          :   404973 µs | +    13914 µs
+START                         :   404975 µs | +        2 µs
+STOP                          :   450037 µs | +    45062 µs
+START                         :   450037 µs | +        0 µs
+STOP                          :   450359 µs | +      322 µs
+START                         :   450361 µs | +        2 µs
+STOP                          :   539041 µs | +    88680 µs
+START                         :   539042 µs | +        1 µs
+STOP                          :   539351 µs | +      309 µs
+START                         :   539352 µs | +        1 µs
+STOP                          :   539639 µs | +      287 µs
+START                         :   539640 µs | +        1 µs
+STOP                          :   540154 µs | +      514 µs
+START                         :   540155 µs | +        1 µs
+STOP                          :   540303 µs | +      148 µs
+START                         :   540303 µs | +        0 µs
+STOP                          :   540329 µs | +       26 µs
+START                         :   540329 µs | +        0 µs
+STOP                          :   540338 µs | +        9 µs
+START                         :   540339 µs | +        1 µs
+STOP                          :   540341 µs | +        2 µs
+END                           :   540341 µs | +        0 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+START                         :        1 µs | +        1 µs
+STOP                          :     1039 µs | +     1038 µs
+START                         :     1040 µs | +        1 µs
+STOP                          :    29153 µs | +    28113 µs
+START                         :    29154 µs | +        1 µs
+STOP                          :    30162 µs | +     1008 µs
+START                         :    30164 µs | +        2 µs
+STOP                          :   128935 µs | +    98771 µs
+START                         :   128936 µs | +        1 µs
+STOP                          :   130218 µs | +     1282 µs
+START                         :   130219 µs | +        1 µs
+STOP                          :   228991 µs | +    98772 µs
+START                         :   228991 µs | +        0 µs
+STOP                          :   230222 µs | +     1231 µs
+START                         :   230223 µs | +        1 µs
+STOP                          :   231505 µs | +     1282 µs
+START                         :   231506 µs | +        1 µs
+STOP                          :   249952 µs | +    18446 µs
+START                         :   249953 µs | +        1 µs
+STOP                          :   297377 µs | +    47424 µs
+START                         :   297378 µs | +        1 µs
+STOP                          :   298020 µs | +      642 µs
+START                         :   298021 µs | +        1 µs
+STOP                          :   389790 µs | +    91769 µs
+START                         :   389791 µs | +        1 µs
+STOP                          :   390407 µs | +      616 µs
+START                         :   390408 µs | +        1 µs
+STOP                          :   391050 µs | +      642 µs
+START                         :   391051 µs | +        1 µs
+STOP                          :   404965 µs | +    13914 µs
+START                         :   404967 µs | +        2 µs
+STOP                          :   450029 µs | +    45062 µs
+START                         :   450029 µs | +        0 µs
+STOP                          :   450351 µs | +      322 µs
+START                         :   450352 µs | +        1 µs
+STOP                          :   539033 µs | +    88681 µs
+START                         :   539033 µs | +        0 µs
+STOP                          :   539343 µs | +      310 µs
+START                         :   539343 µs | +        0 µs
+STOP                          :   539631 µs | +      288 µs
+START                         :   539632 µs | +        1 µs
+STOP                          :   540146 µs | +      514 µs
+START                         :   540147 µs | +        1 µs
+STOP                          :   540294 µs | +      147 µs
+START                         :   540295 µs | +        1 µs
+STOP                          :   540320 µs | +       25 µs
+START                         :   540321 µs | +        1 µs
+STOP                          :   540330 µs | +        9 µs
+START                         :   540331 µs | +        1 µs
+STOP                          :   540333 µs | +        2 µs
+END                           :   540333 µs | +        0 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
 START                         :        1 µs | +        1 µs
 STOP                          :     1020 µs | +     1019 µs
-START                         :     1021 µs | +        1 µs
-STOP                          :    29134 µs | +    28113 µs
-START                         :    29135 µs | +        1 µs
-STOP                          :    30143 µs | +     1008 µs
-START                         :    30144 µs | +        1 µs
-STOP                          :   128916 µs | +    98772 µs
-START                         :   128917 µs | +        1 µs
+START                         :     1022 µs | +        2 µs
+STOP                          :    29135 µs | +    28113 µs
+START                         :    29136 µs | +        1 µs
+STOP                          :    30144 µs | +     1008 µs
+START                         :    30145 µs | +        1 µs
+STOP                          :   128917 µs | +    98772 µs
+START                         :   128917 µs | +        0 µs
 STOP                          :   130199 µs | +     1282 µs
 START                         :   130200 µs | +        1 µs
-STOP                          :   228971 µs | +    98771 µs
-START                         :   228972 µs | +        1 µs
-STOP                          :   230203 µs | +     1231 µs
-START                         :   230204 µs | +        1 µs
-STOP                          :   231486 µs | +     1282 µs
+STOP                          :   228972 µs | +    98772 µs
+START                         :   228973 µs | +        1 µs
+STOP                          :   230204 µs | +     1231 µs
+START                         :   230205 µs | +        1 µs
+STOP                          :   231486 µs | +     1281 µs
 START                         :   231487 µs | +        1 µs
-STOP                          :   249932 µs | +    18445 µs
-START                         :   249934 µs | +        2 µs
-STOP                          :   297358 µs | +    47424 µs
-START                         :   297359 µs | +        1 µs
-STOP                          :   298001 µs | +      642 µs
-START                         :   298002 µs | +        1 µs
-STOP                          :   389771 µs | +    91769 µs
+STOP                          :   249933 µs | +    18446 µs
+START                         :   249935 µs | +        2 µs
+STOP                          :   297359 µs | +    47424 µs
+START                         :   297360 µs | +        1 µs
+STOP                          :   298002 µs | +      642 µs
+START                         :   298003 µs | +        1 µs
+STOP                          :   389771 µs | +    91768 µs
 START                         :   389772 µs | +        1 µs
-STOP                          :   390388 µs | +      616 µs
-START                         :   390389 µs | +        1 µs
+STOP                          :   390389 µs | +      617 µs
+START                         :   390389 µs | +        0 µs
 STOP                          :   391031 µs | +      642 µs
 START                         :   391032 µs | +        1 µs
-STOP                          :   404946 µs | +    13914 µs
-START                         :   404947 µs | +        1 µs
-STOP                          :   450009 µs | +    45062 µs
-START                         :   450010 µs | +        1 µs
-STOP                          :   450332 µs | +      322 µs
-START                         :   450333 µs | +        1 µs
-STOP                          :   539013 µs | +    88680 µs
-START                         :   539014 µs | +        1 µs
-STOP                          :   539324 µs | +      310 µs
-START                         :   539324 µs | +        0 µs
-STOP                          :   539612 µs | +      288 µs
-START                         :   539612 µs | +        0 µs
-STOP                          :   540127 µs | +      515 µs
-START                         :   540127 µs | +        0 µs
-STOP                          :   540275 µs | +      148 µs
-START                         :   540276 µs | +        1 µs
-STOP                          :   540301 µs | +       25 µs
-START                         :   540302 µs | +        1 µs
-STOP                          :   540311 µs | +        9 µs
-START                         :   540311 µs | +        0 µs
-STOP                          :   540314 µs | +        3 µs
-END                           :   540314 µs | +        0 µs
+STOP                          :   404947 µs | +    13915 µs
+START                         :   404948 µs | +        1 µs
+STOP                          :   450010 µs | +    45062 µs
+START                         :   450011 µs | +        1 µs
+STOP                          :   450333 µs | +      322 µs
+START                         :   450334 µs | +        1 µs
+STOP                          :   539014 µs | +    88680 µs
+START                         :   539015 µs | +        1 µs
+STOP                          :   539324 µs | +      309 µs
+START                         :   539325 µs | +        1 µs
+STOP                          :   539612 µs | +      287 µs
+START                         :   539613 µs | +        1 µs
+STOP                          :   540127 µs | +      514 µs
+START                         :   540128 µs | +        1 µs
+STOP                          :   540276 µs | +      148 µs
+START                         :   540277 µs | +        1 µs
+STOP                          :   540302 µs | +       25 µs
+START                         :   540303 µs | +        1 µs
+STOP                          :   540311 µs | +        8 µs
+START                         :   540312 µs | +        1 µs
+STOP                          :   540314 µs | +        2 µs
+END                           :   540315 µs | +        1 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
 START                         :        1 µs | +        1 µs
-STOP                          :     1039 µs | +     1038 µs
-START                         :     1040 µs | +        1 µs
-STOP                          :    29153 µs | +    28113 µs
-START                         :    29154 µs | +        1 µs
-STOP                          :    30162 µs | +     1008 µs
-START                         :    30163 µs | +        1 µs
-STOP                          :   128935 µs | +    98772 µs
-START                         :   128936 µs | +        1 µs
-STOP                          :   130218 µs | +     1282 µs
-START                         :   130219 µs | +        1 µs
-STOP                          :   228990 µs | +    98771 µs
-START                         :   228991 µs | +        1 µs
-STOP                          :   230222 µs | +     1231 µs
-START                         :   230223 µs | +        1 µs
-STOP                          :   231505 µs | +     1282 µs
-START                         :   231506 µs | +        1 µs
-STOP                          :   249951 µs | +    18445 µs
-START                         :   249953 µs | +        2 µs
-STOP                          :   297377 µs | +    47424 µs
-START                         :   297378 µs | +        1 µs
-STOP                          :   298020 µs | +      642 µs
-START                         :   298021 µs | +        1 µs
-STOP                          :   389790 µs | +    91769 µs
-START                         :   389791 µs | +        1 µs
-STOP                          :   390407 µs | +      616 µs
-START                         :   390408 µs | +        1 µs
-STOP                          :   391050 µs | +      642 µs
-START                         :   391051 µs | +        1 µs
-STOP                          :   404965 µs | +    13914 µs
-START                         :   404966 µs | +        1 µs
-STOP                          :   450028 µs | +    45062 µs
-START                         :   450029 µs | +        1 µs
-STOP                          :   450351 µs | +      322 µs
-START                         :   450352 µs | +        1 µs
-STOP                          :   539032 µs | +    88680 µs
-START                         :   539033 µs | +        1 µs
-STOP                          :   539343 µs | +      310 µs
-START                         :   539343 µs | +        0 µs
-STOP                          :   539631 µs | +      288 µs
-START                         :   539631 µs | +        0 µs
-STOP                          :   540146 µs | +      515 µs
-START                         :   540146 µs | +        0 µs
-STOP                          :   540294 µs | +      148 µs
-START                         :   540295 µs | +        1 µs
-STOP                          :   540320 µs | +       25 µs
-START                         :   540321 µs | +        1 µs
-STOP                          :   540330 µs | +        9 µs
-START                         :   540330 µs | +        0 µs
-STOP                          :   540333 µs | +        3 µs
-END                           :   540333 µs | +        0 µs
+STOP                          :     1009 µs | +     1008 µs
+START                         :     1010 µs | +        1 µs
+STOP                          :    29123 µs | +    28113 µs
+START                         :    29124 µs | +        1 µs
+STOP                          :    30133 µs | +     1009 µs
+START                         :    30134 µs | +        1 µs
+STOP                          :   128905 µs | +    98771 µs
+START                         :   128906 µs | +        1 µs
+STOP                          :   130188 µs | +     1282 µs
+START                         :   130189 µs | +        1 µs
+STOP                          :   228961 µs | +    98772 µs
+START                         :   228962 µs | +        1 µs
+STOP                          :   230193 µs | +     1231 µs
+START                         :   230193 µs | +        0 µs
+STOP                          :   231475 µs | +     1282 µs
+START                         :   231476 µs | +        1 µs
+STOP                          :   249922 µs | +    18446 µs
+START                         :   249923 µs | +        1 µs
+STOP                          :   297348 µs | +    47425 µs
+START                         :   297348 µs | +        0 µs
+STOP                          :   297990 µs | +      642 µs
+START                         :   297991 µs | +        1 µs
+STOP                          :   389760 µs | +    91769 µs
+START                         :   389761 µs | +        1 µs
+STOP                          :   390377 µs | +      616 µs
+START                         :   390378 µs | +        1 µs
+STOP                          :   391020 µs | +      642 µs
+START                         :   391021 µs | +        1 µs
+STOP                          :   404935 µs | +    13914 µs
+START                         :   404937 µs | +        2 µs
+STOP                          :   449999 µs | +    45062 µs
+START                         :   449999 µs | +        0 µs
+STOP                          :   450321 µs | +      322 µs
+START                         :   450323 µs | +        2 µs
+STOP                          :   539003 µs | +    88680 µs
+START                         :   539004 µs | +        1 µs
+STOP                          :   539313 µs | +      309 µs
+START                         :   539313 µs | +        0 µs
+STOP                          :   539601 µs | +      288 µs
+START                         :   539602 µs | +        1 µs
+STOP                          :   540116 µs | +      514 µs
+START                         :   540117 µs | +        1 µs
+STOP                          :   540264 µs | +      147 µs
+START                         :   540265 µs | +        1 µs
+STOP                          :   540291 µs | +       26 µs
+START                         :   540291 µs | +        0 µs
+STOP                          :   540300 µs | +        9 µs
+START                         :   540301 µs | +        1 µs
+STOP                          :   540303 µs | +        2 µs
+END                           :   540303 µs | +        0 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
 START                         :        1 µs | +        1 µs
-STOP                          :     1039 µs | +     1038 µs
-START                         :     1040 µs | +        1 µs
-STOP                          :    29153 µs | +    28113 µs
-START                         :    29154 µs | +        1 µs
-STOP                          :    30162 µs | +     1008 µs
-START                         :    30163 µs | +        1 µs
-STOP                          :   128935 µs | +    98772 µs
-START                         :   128936 µs | +        1 µs
-STOP                          :   130218 µs | +     1282 µs
-START                         :   130219 µs | +        1 µs
-STOP                          :   228990 µs | +    98771 µs
-START                         :   228991 µs | +        1 µs
-STOP                          :   230222 µs | +     1231 µs
-START                         :   230223 µs | +        1 µs
-STOP                          :   231505 µs | +     1282 µs
-START                         :   231506 µs | +        1 µs
-STOP                          :   249951 µs | +    18445 µs
-START                         :   249953 µs | +        2 µs
-STOP                          :   297377 µs | +    47424 µs
-START                         :   297378 µs | +        1 µs
-STOP                          :   298020 µs | +      642 µs
-START                         :   298021 µs | +        1 µs
-STOP                          :   389790 µs | +    91769 µs
-START                         :   389791 µs | +        1 µs
-STOP                          :   390407 µs | +      616 µs
-START                         :   390408 µs | +        1 µs
-STOP                          :   391050 µs | +      642 µs
-START                         :   391051 µs | +        1 µs
-STOP                          :   404965 µs | +    13914 µs
-START                         :   404966 µs | +        1 µs
-STOP                          :   450028 µs | +    45062 µs
-START                         :   450029 µs | +        1 µs
-STOP                          :   450351 µs | +      322 µs
-START                         :   450352 µs | +        1 µs
-STOP                          :   539032 µs | +    88680 µs
-START                         :   539033 µs | +        1 µs
-STOP                          :   539343 µs | +      310 µs
-START                         :   539343 µs | +        0 µs
-STOP                          :   539631 µs | +      288 µs
-START                         :   539631 µs | +        0 µs
-STOP                          :   540146 µs | +      515 µs
-START                         :   540146 µs | +        0 µs
-STOP                          :   540294 µs | +      148 µs
-START                         :   540295 µs | +        1 µs
-STOP                          :   540320 µs | +       25 µs
-START                         :   540321 µs | +        1 µs
-STOP                          :   540330 µs | +        9 µs
-START                         :   540330 µs | +        0 µs
-STOP                          :   540333 µs | +        3 µs
-END                           :   540333 µs | +        0 µs
-
-Profiling "MAIN loop timing" sequence: 
---Event-----------------------|--timestamp--|----delta_t---
-BEGIN                         :        0 µs | +        0 µs
-START                         :        1 µs | +        1 µs
-STOP                          :     1031 µs | +     1030 µs
-START                         :     1032 µs | +        1 µs
-STOP                          :    29145 µs | +    28113 µs
-START                         :    29146 µs | +        1 µs
-STOP                          :    30154 µs | +     1008 µs
-START                         :    30155 µs | +        1 µs
-STOP                          :   128927 µs | +    98772 µs
-START                         :   128928 µs | +        1 µs
-STOP                          :   130210 µs | +     1282 µs
-START                         :   130211 µs | +        1 µs
-STOP                          :   228982 µs | +    98771 µs
-START                         :   228983 µs | +        1 µs
-STOP                          :   230214 µs | +     1231 µs
-START                         :   230215 µs | +        1 µs
-STOP                          :   231497 µs | +     1282 µs
-START                         :   231498 µs | +        1 µs
-STOP                          :   249943 µs | +    18445 µs
-START                         :   249945 µs | +        2 µs
-STOP                          :   297369 µs | +    47424 µs
-START                         :   297370 µs | +        1 µs
-STOP                          :   298012 µs | +      642 µs
-START                         :   298013 µs | +        1 µs
-STOP                          :   389782 µs | +    91769 µs
-START                         :   389782 µs | +        0 µs
-STOP                          :   390399 µs | +      617 µs
-START                         :   390400 µs | +        1 µs
-STOP                          :   391041 µs | +      641 µs
-START                         :   391042 µs | +        1 µs
-STOP                          :   404957 µs | +    13915 µs
-START                         :   404958 µs | +        1 µs
-STOP                          :   450020 µs | +    45062 µs
-START                         :   450021 µs | +        1 µs
-STOP                          :   450343 µs | +      322 µs
-START                         :   450344 µs | +        1 µs
-STOP                          :   539024 µs | +    88680 µs
-START                         :   539025 µs | +        1 µs
-STOP                          :   539335 µs | +      310 µs
-START                         :   539335 µs | +        0 µs
-STOP                          :   539623 µs | +      288 µs
-START                         :   539623 µs | +        0 µs
-STOP                          :   540138 µs | +      515 µs
-START                         :   540138 µs | +        0 µs
-STOP                          :   540286 µs | +      148 µs
-START                         :   540287 µs | +        1 µs
-STOP                          :   540312 µs | +       25 µs
-START                         :   540313 µs | +        1 µs
-STOP                          :   540322 µs | +        9 µs
-START                         :   540322 µs | +        0 µs
-STOP                          :   540324 µs | +        2 µs
-END                           :   540325 µs | +        1 µs
-
-Profiling "MAIN loop timing" sequence: 
---Event-----------------------|--timestamp--|----delta_t---
-BEGIN                         :        0 µs | +        0 µs
-START                         :        1 µs | +        1 µs
-STOP                          :     1012 µs | +     1011 µs
-START                         :     1013 µs | +        1 µs
-STOP                          :    29127 µs | +    28114 µs
-START                         :    29127 µs | +        0 µs
-STOP                          :    30136 µs | +     1009 µs
-START                         :    30137 µs | +        1 µs
-STOP                          :   128908 µs | +    98771 µs
-START                         :   128909 µs | +        1 µs
-STOP                          :   130191 µs | +     1282 µs
-START                         :   130192 µs | +        1 µs
-STOP                          :   228964 µs | +    98772 µs
-START                         :   228965 µs | +        1 µs
-STOP                          :   230196 µs | +     1231 µs
-START                         :   230196 µs | +        0 µs
-STOP                          :   231478 µs | +     1282 µs
-START                         :   231479 µs | +        1 µs
-STOP                          :   249925 µs | +    18446 µs
-START                         :   249926 µs | +        1 µs
-STOP                          :   297351 µs | +    47425 µs
-START                         :   297351 µs | +        0 µs
-STOP                          :   297993 µs | +      642 µs
-START                         :   297995 µs | +        2 µs
-STOP                          :   389763 µs | +    91768 µs
-START                         :   389764 µs | +        1 µs
-STOP                          :   390381 µs | +      617 µs
-START                         :   390381 µs | +        0 µs
-STOP                          :   391023 µs | +      642 µs
-START                         :   391024 µs | +        1 µs
-STOP                          :   404939 µs | +    13915 µs
-START                         :   404940 µs | +        1 µs
-STOP                          :   450002 µs | +    45062 µs
-START                         :   450003 µs | +        1 µs
-STOP                          :   450324 µs | +      321 µs
-START                         :   450326 µs | +        2 µs
-STOP                          :   539006 µs | +    88680 µs
-START                         :   539007 µs | +        1 µs
-STOP                          :   539316 µs | +      309 µs
-START                         :   539317 µs | +        1 µs
-STOP                          :   539604 µs | +      287 µs
-START                         :   539605 µs | +        1 µs
-STOP                          :   540119 µs | +      514 µs
-START                         :   540120 µs | +        1 µs
-STOP                          :   540268 µs | +      148 µs
-START                         :   540268 µs | +        0 µs
-STOP                          :   540294 µs | +       26 µs
-START                         :   540294 µs | +        0 µs
-STOP                          :   540303 µs | +        9 µs
-START                         :   540304 µs | +        1 µs
-STOP                          :   540306 µs | +        2 µs
-END                           :   540306 µs | +        0 µs
-
-Profiling "MAIN loop timing" sequence: 
---Event-----------------------|--timestamp--|----delta_t---
-BEGIN                         :        0 µs | +        0 µs
-START                         :        1 µs | +        1 µs
-STOP                          :     1001 µs | +     1000 µs
-START                         :     1002 µs | +        1 µs
-STOP                          :    29115 µs | +    28113 µs
-START                         :    29116 µs | +        1 µs
-STOP                          :    30124 µs | +     1008 µs
-START                         :    30125 µs | +        1 µs
-STOP                          :   128897 µs | +    98772 µs
-START                         :   128898 µs | +        1 µs
-STOP                          :   130180 µs | +     1282 µs
-START                         :   130181 µs | +        1 µs
-STOP                          :   228952 µs | +    98771 µs
-START                         :   228953 µs | +        1 µs
-STOP                          :   230184 µs | +     1231 µs
-START                         :   230185 µs | +        1 µs
-STOP                          :   231467 µs | +     1282 µs
-START                         :   231468 µs | +        1 µs
-STOP                          :   249913 µs | +    18445 µs
-START                         :   249915 µs | +        2 µs
-STOP                          :   297339 µs | +    47424 µs
-START                         :   297340 µs | +        1 µs
-STOP                          :   297982 µs | +      642 µs
-START                         :   297983 µs | +        1 µs
-STOP                          :   389752 µs | +    91769 µs
-START                         :   389753 µs | +        1 µs
-STOP                          :   390369 µs | +      616 µs
-START                         :   390370 µs | +        1 µs
-STOP                          :   391011 µs | +      641 µs
-START                         :   391013 µs | +        2 µs
-STOP                          :   404927 µs | +    13914 µs
-START                         :   404928 µs | +        1 µs
-STOP                          :   449990 µs | +    45062 µs
-START                         :   449991 µs | +        1 µs
-STOP                          :   450313 µs | +      322 µs
-START                         :   450314 µs | +        1 µs
-STOP                          :   538994 µs | +    88680 µs
-START                         :   538995 µs | +        1 µs
-STOP                          :   539305 µs | +      310 µs
-START                         :   539305 µs | +        0 µs
-STOP                          :   539593 µs | +      288 µs
-START                         :   539593 µs | +        0 µs
-STOP                          :   540108 µs | +      515 µs
-START                         :   540108 µs | +        0 µs
-STOP                          :   540256 µs | +      148 µs
-START                         :   540257 µs | +        1 µs
-STOP                          :   540282 µs | +       25 µs
-START                         :   540283 µs | +        1 µs
-STOP                          :   540292 µs | +        9 µs
-START                         :   540292 µs | +        0 µs
-STOP                          :   540295 µs | +        3 µs
-END                           :   540295 µs | +        0 µs
-
-Profiling "MAIN loop timing" sequence: 
---Event-----------------------|--timestamp--|----delta_t---
-BEGIN                         :        0 µs | +        0 µs
-START                         :        1 µs | +        1 µs
-STOP                          :     1003 µs | +     1002 µs
-START                         :     1004 µs | +        1 µs
-STOP                          :    29117 µs | +    28113 µs
-START                         :    29118 µs | +        1 µs
-STOP                          :    30126 µs | +     1008 µs
-START                         :    30127 µs | +        1 µs
-STOP                          :   128899 µs | +    98772 µs
-START                         :   128900 µs | +        1 µs
-STOP                          :   130182 µs | +     1282 µs
-START                         :   130183 µs | +        1 µs
-STOP                          :   228955 µs | +    98772 µs
-START                         :   228955 µs | +        0 µs
-STOP                          :   230186 µs | +     1231 µs
-START                         :   230187 µs | +        1 µs
-STOP                          :   231469 µs | +     1282 µs
-START                         :   231470 µs | +        1 µs
-STOP                          :   249915 µs | +    18445 µs
-START                         :   249917 µs | +        2 µs
-STOP                          :   297341 µs | +    47424 µs
-START                         :   297342 µs | +        1 µs
-STOP                          :   297984 µs | +      642 µs
-START                         :   297985 µs | +        1 µs
-STOP                          :   389754 µs | +    91769 µs
-START                         :   389755 µs | +        1 µs
-STOP                          :   390371 µs | +      616 µs
-START                         :   390372 µs | +        1 µs
-STOP                          :   391014 µs | +      642 µs
-START                         :   391015 µs | +        1 µs
-STOP                          :   404929 µs | +    13914 µs
-START                         :   404930 µs | +        1 µs
-STOP                          :   449992 µs | +    45062 µs
-START                         :   449993 µs | +        1 µs
-STOP                          :   450315 µs | +      322 µs
-START                         :   450316 µs | +        1 µs
-STOP                          :   538997 µs | +    88681 µs
-START                         :   538997 µs | +        0 µs
-STOP                          :   539307 µs | +      310 µs
-START                         :   539307 µs | +        0 µs
-STOP                          :   539595 µs | +      288 µs
-START                         :   539596 µs | +        1 µs
-STOP                          :   540110 µs | +      514 µs
-START                         :   540111 µs | +        1 µs
-STOP                          :   540258 µs | +      147 µs
-START                         :   540259 µs | +        1 µs
-STOP                          :   540284 µs | +       25 µs
-START                         :   540285 µs | +        1 µs
-STOP                          :   540294 µs | +        9 µs
-START                         :   540294 µs | +        0 µs
-STOP                          :   540297 µs | +        3 µs
-END                           :   540297 µs | +        0 µs
+STOP                          :     1011 µs | +     1010 µs
+START                         :     1012 µs | +        1 µs
+STOP                          :    29126 µs | +    28114 µs
+START                         :    29126 µs | +        0 µs
+STOP                          :    30135 µs | +     1009 µs
+START                         :    30136 µs | +        1 µs
+STOP                          :   128907 µs | +    98771 µs
+START                         :   128908 µs | +        1 µs
+STOP                          :   130190 µs | +     1282 µs
+START                         :   130191 µs | +        1 µs
+STOP                          :   228963 µs | +    98772 µs
+START                         :   228964 µs | +        1 µs
+STOP                          :   230195 µs | +     1231 µs
+START                         :   230195 µs | +        0 µs
+STOP                          :   231477 µs | +     1282 µs
+START                         :   231478 µs | +        1 µs
+STOP                          :   249924 µs | +    18446 µs
+START                         :   249925 µs | +        1 µs
+STOP                          :   297350 µs | +    47425 µs
+START                         :   297350 µs | +        0 µs
+STOP                          :   297992 µs | +      642 µs
+START                         :   297994 µs | +        2 µs
+STOP                          :   389762 µs | +    91768 µs
+START                         :   389763 µs | +        1 µs
+STOP                          :   390380 µs | +      617 µs
+START                         :   390380 µs | +        0 µs
+STOP                          :   391022 µs | +      642 µs
+START                         :   391023 µs | +        1 µs
+STOP                          :   404938 µs | +    13915 µs
+START                         :   404939 µs | +        1 µs
+STOP                          :   450001 µs | +    45062 µs
+START                         :   450002 µs | +        1 µs
+STOP                          :   450323 µs | +      321 µs
+START                         :   450325 µs | +        2 µs
+STOP                          :   539005 µs | +    88680 µs
+START                         :   539006 µs | +        1 µs
+STOP                          :   539315 µs | +      309 µs
+START                         :   539316 µs | +        1 µs
+STOP                          :   539603 µs | +      287 µs
+START                         :   539604 µs | +        1 µs
+STOP                          :   540118 µs | +      514 µs
+START                         :   540119 µs | +        1 µs
+STOP                          :   540267 µs | +      148 µs
+START                         :   540267 µs | +        0 µs
+STOP                          :   540293 µs | +       26 µs
+START                         :   540293 µs | +        0 µs
+STOP                          :   540302 µs | +        9 µs
+START                         :   540303 µs | +        1 µs
+STOP                          :   540305 µs | +        2 µs
+END                           :   540306 µs | +        1 µs
 
 Finished timing measurements!
 Tensor values:
-0.000000 0.000000 0.000000 0.701961 0.000000 0.000000 0.000000 0.294118 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.988235 0.000000 0.000000 0.000000 0.007843 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.050980 0.000000 0.000000 0.000000 0.945098 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.623529 0.000000 0.000000 0.000000 0.372549 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.035294 0.000000 0.000000 0.000000 0.960784 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.109804 0.000000 0.000000 0.000000 0.886275 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.945098 0.000000 0.000000 0.000000 0.050980 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.996078 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.172549 0.000000 0.000000 0.000000 0.823529 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.866667 0.000000 0.000000 0.000000 0.129412 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.172549 0.000000 0.000000 0.000000 0.823529 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.866667 0.000000 0.000000 0.000000 0.129412 0.000000 0.000000 
 Tensor values:
 0.000000 0.000000 0.000000 0.847059 0.000000 0.000000 0.000000 0.149020 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.011765 0.000000 0.000000 0.000000 0.984314 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.498039 0.000000 0.000000 0.000000 0.498039 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.094118 0.000000 0.000000 0.000000 0.901961 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.019608 0.000000 0.000000 0.000000 0.976471 0.000000 0.000000 
 Tensor values:
-0.000000 0.000000 0.000000 0.027451 0.000000 0.000000 0.000000 0.968628 0.000000 0.000000 
+0.000000 0.000000 0.000000 0.149020 0.000000 0.000000 0.000000 0.847059 0.000000 0.000000 
 End of benchmark.
 Start of benchmark.
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
-END                           :   540340 µs | +   540340 µs
+END                           :   540348 µs | +   540348 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :   540363 µs | +   540363 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
@@ -594,12 +601,17 @@ END                           :   540355 µs | +   540355 µs
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
-END                           :   540347 µs | +   540347 µs
+END                           :   540352 µs | +   540352 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
-END                           :   540343 µs | +   540343 µs
+END                           :   540370 µs | +   540370 µs
+
+Profiling "MAIN loop timing" sequence: 
+--Event-----------------------|--timestamp--|----delta_t---
+BEGIN                         :        0 µs | +        0 µs
+END                           :   540370 µs | +   540370 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
@@ -609,27 +621,17 @@ END                           :   540362 µs | +   540362 µs
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
-END                           :   540362 µs | +   540362 µs
+END                           :   540344 µs | +   540344 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
-END                           :   540354 µs | +   540354 µs
+END                           :   540333 µs | +   540333 µs
 
 Profiling "MAIN loop timing" sequence: 
 --Event-----------------------|--timestamp--|----delta_t---
 BEGIN                         :        0 µs | +        0 µs
-END                           :   540336 µs | +   540336 µs
-
-Profiling "MAIN loop timing" sequence: 
---Event-----------------------|--timestamp--|----delta_t---
-BEGIN                         :        0 µs | +        0 µs
-END                           :   540324 µs | +   540324 µs
-
-Profiling "MAIN loop timing" sequence: 
---Event-----------------------|--timestamp--|----delta_t---
-BEGIN                         :        0 µs | +        0 µs
-END                           :   540326 µs | +   540326 µs
+END                           :   540335 µs | +   540335 µs
 
 Finished timing measurements!
 Tensor values:

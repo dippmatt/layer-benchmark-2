@@ -1,0 +1,32 @@
+../X-CUBE-AI/App/tflm_c.cc:318:46:void __tcf_0()	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:43:7:virtual tflite::MicroMutableOpResolver<1>::~MicroMutableOpResolver()	0	static
+../X-CUBE-AI/App/tflm_c.cc:62:3:virtual CTfLiteProfiler::~CTfLiteProfiler()	0	static
+../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:73:36:TfLiteStatus (* tflite::MicroMutableOpResolver<tOpCount>::GetOpDataParser(tflite::BuiltinOperator) const)(const tflite::Operator*, tflite::ErrorReporter*, tflite::BuiltinDataAllocator*, void**) [with unsigned int tOpCount = 1]	8	static
+../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:62:32:const TfLiteRegistration_V1* tflite::MicroMutableOpResolver<tOpCount>::FindOp(const char*) const [with unsigned int tOpCount = 1]	24	static
+../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:49:32:const TfLiteRegistration_V1* tflite::MicroMutableOpResolver<tOpCount>::FindOp(tflite::BuiltinOperator) const [with unsigned int tOpCount = 1]	0	static
+../Middlewares/tensorflow/third_party/flatbuffers/include/flatbuffers/table.h:35:13:flatbuffers::voffset_t flatbuffers::Table::GetOptionalFieldOffset(flatbuffers::voffset_t) const	0	static
+../Middlewares/tensorflow/tensorflow/lite/schema/schema_generated.h:13399:69:const flatbuffers::Vector<flatbuffers::Offset<tflite::SubGraph> >* tflite::Model::subgraphs() const	8	static
+../X-CUBE-AI/App/tflm_c.cc:221:14:TfLiteStatus CTfLiteInterpreterContext::tflitetensor_to(const TfLiteTensor*, tflm_c_tensor_info*, int32_t)	24	static
+../X-CUBE-AI/App/tflm_c.cc:296:14:TfLiteStatus tflm_c_create(const uint8_t*, uint8_t*, uint32_t, uint32_t*)	80	static
+../X-CUBE-AI/App/tflm_c.cc:347:14:TfLiteStatus tflm_c_destroy(uint32_t)	8	static
+../X-CUBE-AI/App/tflm_c.cc:366:14:TfLiteStatus tflm_c_input(uint32_t, int32_t, tflm_c_tensor_info*)	16	static
+../X-CUBE-AI/App/tflm_c.cc:371:14:TfLiteStatus tflm_c_output(uint32_t, int32_t, tflm_c_tensor_info*)	16	static
+../X-CUBE-AI/App/tflm_c.cc:376:14:TfLiteStatus tflm_c_invoke(uint32_t)	0	static
+../X-CUBE-AI/App/tflm_c.cc:381:14:TfLiteStatus tflm_c_reset_all_variables(uint32_t)	0	static
+../X-CUBE-AI/App/tflm_c.cc:398:9:int32_t tflm_c_operator_codes_size(uint32_t)	8	static
+../X-CUBE-AI/App/tflm_c.cc:404:9:int32_t tflm_c_arena_used_bytes(uint32_t)	0	static
+../X-CUBE-AI/App/tflm_c.cc:410:13:const char* tflm_c_TfLiteTypeGetName(TfLiteType)	0	static
+../X-CUBE-AI/App/tflm_c.cc:415:6:void tflm_c_rt_version(tflm_c_version*)	0	static
+../X-CUBE-AI/App/tflm_c.cc:425:14:TfLiteStatus tflm_c_observer_register(uint32_t, tflm_c_observer_options*)	12	static
+../X-CUBE-AI/App/tflm_c.cc:430:14:TfLiteStatus tflm_c_observer_unregister(uint32_t, tflm_c_observer_options*)	0	static
+../X-CUBE-AI/App/tflm_c.cc:435:14:TfLiteStatus tflm_c_observer_start(uint32_t)	12	static
+../X-CUBE-AI/App/tflm_c.cc:440:14:TfLiteStatus tflm_c_observer_info(uint32_t, tflm_c_profile_info*)	0	static
+../X-CUBE-AI/App/tflm_c.cc:445:10:uint32_t CTfLiteProfiler::begin_event(const char*)	32	static
+../X-CUBE-AI/App/tflm_c.cc:64:12:virtual uint32_t CTfLiteProfiler::BeginEvent(const char*)	0	static
+../X-CUBE-AI/App/tflm_c.cc:456:6:void CTfLiteProfiler::end_event(uint32_t)	72	static
+../X-CUBE-AI/App/tflm_c.cc:71:8:virtual void CTfLiteProfiler::EndEvent(uint32_t)	0	static
+../Middlewares/tensorflow/third_party/flatbuffers/include/flatbuffers/vector.h:169:15:flatbuffers::Vector<T>::return_type flatbuffers::Vector<T>::Get(flatbuffers::uoffset_t) const [with T = flatbuffers::Offset<tflite::SubGraph>]	8	static
+../X-CUBE-AI/App/tflm_c.cc:386:9:int32_t tflm_c_operators_size(uint32_t)	8	static
+../X-CUBE-AI/App/tflm_c.cc:392:9:int32_t tflm_c_tensors_size(uint32_t)	8	static
+../X-CUBE-AI/App/tflm_c.cc:360:9:int32_t tflm_c_outputs_size(uint32_t)	8	static
+../X-CUBE-AI/App/tflm_c.cc:354:9:int32_t tflm_c_inputs_size(uint32_t)	8	static

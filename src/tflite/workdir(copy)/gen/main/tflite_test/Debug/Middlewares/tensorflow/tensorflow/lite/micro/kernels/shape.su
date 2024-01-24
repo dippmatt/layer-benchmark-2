@@ -1,3 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/shape.cc:45:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/shape.cc:38:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	32	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/shape.cc:63:23:TfLiteRegistration_V1 tflite::Register_SHAPE()	16	static

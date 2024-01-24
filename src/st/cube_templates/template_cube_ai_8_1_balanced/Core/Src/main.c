@@ -32,7 +32,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define NUM_REPS <REPETITIONS_PER_INPUT_TENSOR>
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -107,9 +107,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+  
     /* USER CODE END WHILE */
-
-  MX_X_CUBE_AI_Process();
+  uint8_t repetition_message[] = "Finished repetition!\r\n";
+  for (k = 0; k < NUM_REPS; k++)
+    MX_X_CUBE_AI_Process();
+    HAL_UART_Transmit (&hlpuart1, repetition, sizeof (repetition), HAL_MAX_DELAY);
+  }
   uint8_t end_message[] = "Finished timing measurements!\r\n";
   HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
   return 0;

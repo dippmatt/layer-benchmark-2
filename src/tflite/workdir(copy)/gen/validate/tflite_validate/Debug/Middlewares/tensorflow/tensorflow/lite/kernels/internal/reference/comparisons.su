@@ -1,5 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:65:11:int32_t tflite::RuntimeShape::Dims(int) const	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:107:3:tflite::RuntimeShape::RuntimeShape(int, const tflite::RuntimeShape&, int)	24	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/common.h:1013:22:void tflite::CopyDimsToDesc(const tflite::RuntimeShape&, tflite::NdArrayDesc<N>*) [with int N = 4]	24	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/comparisons.cc:21:33:tflite::reference_ops::BroadcastComparison4DSlowCommon tflite::reference_ops::BroadcastComparison4DSlowPreprocess(const tflite::RuntimeShape&, const tflite::RuntimeShape&, const tflite::RuntimeShape&)	152	static

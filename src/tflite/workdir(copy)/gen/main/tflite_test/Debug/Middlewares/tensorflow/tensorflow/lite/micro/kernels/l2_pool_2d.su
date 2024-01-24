@@ -1,9 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:65:11:int32_t tflite::RuntimeShape::Dims(int) const	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:131:12:int tflite::Offset(const tflite::RuntimeShape&, int, int, int, int)	16	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/types.h:263:12:int tflite::MatchingDim(const tflite::RuntimeShape&, int, const tflite::RuntimeShape&, int)	16	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/pooling.h:142:13:void tflite::reference_ops::L2Pool(const tflite::PoolParams&, const tflite::RuntimeShape&, const float*, const tflite::RuntimeShape&, float*)	144	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2_pool_2d.cc:108:14:TfLiteStatus tflite::{anonymous}::L2Eval(TfLiteContext*, TfLiteNode*)	144	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/padding.h:44:12:int tflite::ComputeOutSize(TfLitePadding, int, int, int, int)	0	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2_pool_2d.cc:39:14:TfLiteStatus tflite::{anonymous}::L2Prepare(TfLiteContext*, TfLiteNode*)	96	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/l2_pool_2d.cc:138:23:TfLiteRegistration_V1 tflite::Register_L2_POOL_2D()	16	static

@@ -1,7 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/micro/all_ops_resolver.h:28:7:virtual tflite::AllOpsResolver::~AllOpsResolver()	0	static
-../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:73:36:TfLiteStatus (* tflite::MicroMutableOpResolver<tOpCount>::GetOpDataParser(tflite::BuiltinOperator) const)(const tflite::Operator*, tflite::ErrorReporter*, tflite::BuiltinDataAllocator*, void**) [with unsigned int tOpCount = 128]	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:62:32:const TfLiteRegistration_V1* tflite::MicroMutableOpResolver<tOpCount>::FindOp(const char*) const [with unsigned int tOpCount = 128]	24	static
-../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:49:32:const TfLiteRegistration_V1* tflite::MicroMutableOpResolver<tOpCount>::FindOp(tflite::BuiltinOperator) const [with unsigned int tOpCount = 128]	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:88:16:TfLiteStatus tflite::MicroMutableOpResolver<tOpCount>::AddCustom(const char*, TfLiteRegistration_V1*) [with unsigned int tOpCount = 128]	24	static
-../Middlewares/tensorflow/tensorflow/lite/micro/micro_mutable_op_resolver.h:580:16:TfLiteStatus tflite::MicroMutableOpResolver<tOpCount>::AddBuiltin(tflite::BuiltinOperator, const TfLiteRegistration_V1&, tflite::TfLiteBridgeBuiltinParseFunction) [with unsigned int tOpCount = 128]	32	static
-../Middlewares/tensorflow/tensorflow/lite/micro/all_ops_resolver.cc:22:1:tflite::AllOpsResolver::AllOpsResolver()	48	static

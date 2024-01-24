@@ -62,17 +62,23 @@ def process_layer_timings(reps):
     timing_array = []
     layer_names = []
 
-    for layer in reps:
-        # Example for one layer:
-        # 0     FULLY_CONNECTED                2.213  27.33 %
-        timing = layer.split(' ')
-        # remove empty strings
-        timing = list(filter(None, timing))
-        layer_names.append(timing[-4])
-        timing = timing[-3]
-        timing = float(timing)
-        timing_array.append(timing)
+    for rep in reps:
+        sample_array = []
+        for layer in rep:
+            # Example for one layer:
+            # 0     FULLY_CONNECTED                2.213  27.33 %
+            timing = layer.split(' ')
+            # remove empty strings
+            timing = list(filter(None, timing))
+            layer_names.append(timing[-4])
+            timing = timing[-3]
+            timing = float(timing)
+            sample_array.append(timing)
+        timing_array.append(np.array(sample_array))
+
     timing_array = np.array(timing_array)
+    timing_array = timing_array.reshape((len(reps), -1))
+    
     return timing_array, layer_names
 
 def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path, num_samples: int):

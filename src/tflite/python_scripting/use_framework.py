@@ -40,23 +40,6 @@ def use_framework_compile(workdir: Path, cube_mx: Path, cube_ide: Path, cube_ide
     mx_generate_script = workdir / Path("..", "misc", "gen_mx_prj.txt")
 
     # compile main project, all layer project and validation project
-    compile_project(workdir,
-                    cube_mx,
-                    cube_ide,
-                    cube_ide_workspace,
-                    cube_programmer,
-                    stm32ai,
-                    model,
-                    step_output,
-                    repetitions,
-                    cube_project_validate,
-                    mx_generate_script, 
-                    generate_valitate_prj_dir, 
-                    compile_mode=CompileMode.VALIDATE, 
-                    postfix="_validate",
-                    validate_directory=validate_directory,
-                    network_output_directory=network_output_directory)
-    
     compile_project(workdir, 
                     cube_mx,
                     cube_ide,
@@ -86,6 +69,23 @@ def use_framework_compile(workdir: Path, cube_mx: Path, cube_ide: Path, cube_ide
                     generate_reference_prj_dir, 
                     compile_mode=CompileMode.REFERENCE, 
                     postfix="_all_layers")
+
+    compile_project(workdir,
+                    cube_mx,
+                    cube_ide,
+                    cube_ide_workspace,
+                    cube_programmer,
+                    stm32ai,
+                    model,
+                    step_output,
+                    repetitions,
+                    cube_project_validate,
+                    mx_generate_script, 
+                    generate_valitate_prj_dir, 
+                    compile_mode=CompileMode.VALIDATE, 
+                    postfix="_validate",
+                    validate_directory=validate_directory,
+                    network_output_directory=network_output_directory)
     
     return step_output
 
@@ -130,7 +130,7 @@ def compile_project(workdir: Path,
     # /opt/st/stm32cubeide_1.11.2/stm32cubeide --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import "./tflite_test" -build all
     compile_cmd = f"{cube_ide} --launcher.suppressErrors -nosplash -application org.eclipse.cdt.managedbuilder.core.headlessbuild -import \"{make_dir}\" -build all"
 
-    # avoid long compilation times by skipping the generation of the reference project
+    # avoid long generation times by skipping the generation of the reference project
     # instead copy precompiled project from main directory
     if compile_mode != CompileMode.REFERENCE:
         subprocess.run(generate_command, shell=True)
@@ -140,7 +140,7 @@ def compile_project(workdir: Path,
         # dummy value
         #copy_from_path = Path("/home/matthias/Documents/BA/layer-benchmark-2/src/tflite/workdir(copy)/gen/main/tflite_test")
         assert copy_to_path.parent.exists()
-        assert copy_to_path.parent.exists()
+        assert copy_from_path.parent.exists()
         shutil.copytree(copy_from_path, copy_to_path)
     
     ################################################################
@@ -151,10 +151,11 @@ def compile_project(workdir: Path,
         aiSystemPerformance_c = generate_prj_dir / Path(project_name, "X-CUBE-AI", "App", "aiSystemPerformance_TFLM.c")
         main_c = generate_prj_dir / Path(project_name, "Core", "Src", "main.c")
         if compile_mode == CompileMode.BENCHMARK:
-            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions, observer=True)
+            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions=repetitions, observer=True)
+            set_end_of_benchmark(main_c, repetitions)
         else:
-            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions, observer=False)
-        set_end_of_benchmark(main_c)
+            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions=1, observer=False)
+            set_end_of_benchmark(main_c, None)
     ################################################################
 
     # prepeare the generated project for compilation (copy libraries, etc.)
@@ -314,10 +315,19 @@ def set_repetitions_and_observer_end(aiSystemPerformance_c: Path, repetitions: i
     for i, line in enumerate(lines):
         # set number of repetitions
         if re.match(pattern, line):
-            lines[i] = f"#define _APP_ITER_ {repetitions}\n"
+            lines[i] = f"#define _APP_ITER_ {1}\n"
+        # set repetition counter for benchmark
+        if "  int r;" in line:
+            lines[i+1] = "  int idx = 0;\n"
         # set termination condition of benchmark
-        if "idx = (idx+1) % AI_MNETWORK_NUMBER;" in line:
-            lines[i+1] = "    r=CONS_EVT_QUIT;\n"
+        if "r = aiTestPerformance();" in line:
+            lines[i+1] = f"    idx = (idx+1);\n    if (idx == {repetitions}){{\n      return 0;\n    }}\n"
+        
+        # set termination condition of benchmark
+        # if "r = aiTestPerformance();" in line:
+        #     lines[i+1] = "    idx = (idx+1);\n    r=CONS_EVT_QUIT;\n"
+        # if "r = aiTestConsole();" in line:
+        #     lines[i] = "    r=CONS_EVT_RESTART;\n"
         # set observer
         if not observer:
             if "#define USE_OBSERVER" in line:
@@ -327,7 +337,7 @@ def set_repetitions_and_observer_end(aiSystemPerformance_c: Path, repetitions: i
     return
 
 
-def set_end_of_benchmark(main_c: Path):
+def set_end_of_benchmark(main_c: Path, repetitions: int):
     """Sets the termination condition for the benchmark in the main() functions's while loop.
     """
     found_line_flag = False
@@ -336,7 +346,20 @@ def set_end_of_benchmark(main_c: Path):
     for i, line in enumerate(lines):
         if "MX_X_CUBE_AI_Process();" in line:
             found_line_flag = True
-        elif found_line_flag:
+            continue
+        # set repetitions for "BENCHMARK" mode, repeat each measurement 'repetitions' times
+        if found_line_flag and repetitions is not None:
+            # These lines create a for loop over the AI process, we don't need that any more and use it in ai_system_performance.c instead
+            #insertion_before = f'  int k;\n  uint8_t repetition_message[] = "Finished repetition!\\r\\n";\n  for (k = 0; k < {repetitions}; k++){{\n'
+            #insertion_after = '    HAL_UART_Transmit (&hlpuart1, repetition_message, sizeof (repetition_message), HAL_MAX_DELAY);\n  }\n  uint8_t end_message[] = "Finished timing measurements!\\r\\n";\n  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);\n  return 0;\n'
+            insertion_before = f'  int k;\n  uint8_t repetition_message[] = "Finished repetition!\\r\\n";\n'
+            insertion_after = '  uint8_t end_message[] = "Finished timing measurements!\\r\\n";\n  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);\n  return 0;\n'
+            
+            lines[i-2] = insertion_before
+            lines[i] = insertion_after
+            break
+        # omit repetitions for "REFERENCE" mode for now, because data aquisition is not updated yet, delete this if implemented later
+        if found_line_flag and repetitions is None:
             insertion = '  uint8_t end_message[] = "Finished timing measurements!\\r\\n";\n  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);\n  return 0;\n'
             lines[i] = insertion
             break

@@ -5,4 +5,4 @@ workdir/
 .vscode/
 test_data/
 data_gen*
-logs/
+logs*

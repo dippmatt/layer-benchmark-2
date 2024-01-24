@@ -1,1 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/micro/micro_op_resolver.cc:24:14:TfLiteStatus tflite::GetRegistrationFromOpCode(const tflite::OperatorCode*, const tflite::MicroOpResolver&, const TfLiteRegistration_V1**)	24	static

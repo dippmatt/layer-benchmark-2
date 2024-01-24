@@ -166,6 +166,7 @@ def _main():
     # reps_all_layers: list. Layer measurements of the whole model
     step_requirements = [{'main_arg': 'cube_programmer'},
                          {'main_arg': 'workdir'},
+                         {'main_arg': 'repetitions'},
                          {'step': 2, 'name': 'serial'},
                          {'step': 4, 'name': 'cube_template'},
                          {'step': 4, 'name': 'cube_template_all_layers'}]
@@ -204,6 +205,11 @@ def _main():
     pipeline.add_step(save_results, step_requirements)
 
     pipeline.run()
+
+    if pipeline.steps[-1].output["Success"] == True:
+        return 0
+    else:
+        return -1
     
     # Test output
     ram = pipeline.steps[4].output["ram"]

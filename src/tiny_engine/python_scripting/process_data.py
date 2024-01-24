@@ -94,8 +94,10 @@ def process_layer_timings(reps, num_samples, num_reps):
 
     # now that we have an np array with shape (num_samples, num_reps, num_layers),
     # we want to average over all samples and repetitions, to generate an array of shape (num_layers)
-    mean = np.mean(timing_array, axis=(0, 1))
-    std_dev = np.std(timing_array, axis=(0, 1))
+    # mean = np.mean(timing_array, axis=(0, 1))
+    # std_dev = np.std(timing_array, axis=(0, 1))
+    mean = np.mean(timing_array, axis=0)
+    std_dev = np.std(timing_array, axis=0)
     return mean, std_dev
 
 def get_uart_timing_list_in_ms(uart_result_reps):

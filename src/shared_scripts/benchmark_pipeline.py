@@ -53,6 +53,8 @@ class Pipeline:
 
     def run(self):
         for step in self.steps:
+            print(f"NOW RUNNING STEP: {step.name}")
             step.set_args(self.get_step_args(step.requirements))
             step.run()
+            print(f"STEP {step.name} FINISHED\n")
 

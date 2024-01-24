@@ -1,4 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/split.cc:70:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	24	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/split.cc:85:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	64	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/split.cc:121:23:TfLiteRegistration_V1 tflite::Register_SPLIT()	16	static

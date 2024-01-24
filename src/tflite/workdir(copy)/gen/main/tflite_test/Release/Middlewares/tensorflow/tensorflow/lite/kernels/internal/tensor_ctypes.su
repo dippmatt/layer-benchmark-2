@@ -1,3 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:85:8:void tflite::RuntimeShape::ReplaceWith(int, const int32_t*)	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/tensor_ctypes.cc:22:14:tflite::RuntimeShape tflite::GetTensorShape(const TfLiteTensor*)	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/tensor_ctypes.cc:33:14:tflite::RuntimeShape tflite::GetTensorShape(std::vector<long int>)	8	static

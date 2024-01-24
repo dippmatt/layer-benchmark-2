@@ -1,4 +1,0 @@
-config load /home/matthias/Documents/BA/layer-benchmark-2/src/tflite/workdir/tflite_test/tflite_test.ioc
-project path /home/matthias/Documents/BA/layer-benchmark-2/src/tflite/workdir/gen/main
-project generate
-exit

@@ -9,6 +9,15 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     """
     step_output = dict()
 
+    # process reference total inference time
+    all_layers_timings_mean = process_layer_timings_ref(reps_all_layers)  
+
+    # process per layer timings
+    per_layer_timings_mean = process_layer_timings(reps)
+    
+    step_output["per_layer_timings_mean"] = per_layer_timings_mean
+    step_output["all_layers_timings_mean"] = all_layers_timings_mean
+    
     mcu_tensor_values = process_mcu_output_tensors(output_shape, output_dtype, tensor_values, num_samples)
     step_output["mcu_tensor_values"] = mcu_tensor_values
     
@@ -16,15 +25,6 @@ def process_data(repetitions: int, num_samples: int, output_shape: Tuple, output
     #step_output["ref_tensor_values_df"] = ref_tensor_values_df
     ref_tensor_values = np.array(reference_output)
     step_output["ref_tensor_values"] = ref_tensor_values
-    
-    # process per layer timings
-    per_layer_timings_mean = process_layer_timings(reps)
-
-    # process reference total inference time
-    all_layers_timings_mean = process_layer_timings_ref(reps_all_layers)  
-    
-    step_output["per_layer_timings_mean"] = per_layer_timings_mean
-    step_output["all_layers_timings_mean"] = all_layers_timings_mean
     
     # dummy values for saving results
     step_output["per_layer_timings_std_dev"] = None
@@ -37,7 +37,7 @@ def process_layer_timings_ref(reps_all_layers):
     """
     # Example string to process:
     # duration     : 7.597 ms (average)
-    
+    print(reps_all_layers)
     assert len(reps_all_layers) == 1, "Found more than one line in reps_all_layers"
     timing = reps_all_layers[0].split(':')[1]
     timing = timing.split('ms')[0]
@@ -54,19 +54,26 @@ def process_layer_timings_ref(reps_all_layers):
 def process_layer_timings(reps):
     """Converts a list of layer timings to a numpy array with one timing in ms per layer.
     """
+
     # create array-like list of lists for all measurements
     timing_array = []
-    
-    for layer in reps:
-        # Example for one layer:
-        # 0     DENSE               0          2.174  28.60 %
-        timing = layer.split(' ')
-        # remove empty strings
-        timing = list(filter(None, timing))
-        timing = timing[-3]
-        timing = float(timing)
-        timing_array.append(timing)
+
+    for rep in reps:
+        sample_array = []
+        for layer in rep:
+            # Example for one layer:
+            # 0     DENSE               0          2.174  28.60 %
+            timing = layer.split(' ')
+            # remove empty strings
+            timing = list(filter(None, timing))
+            timing = timing[-3]
+            timing = float(timing)
+            sample_array.append(timing)
+        timing_array.append(np.array(sample_array))
+
     timing_array = np.array(timing_array)
+    timing_array = timing_array.reshape((len(reps), -1))
+    
     return timing_array
 
 def process_mcu_output_tensors(output_shape: Tuple, output_dtype, tensor_values: Path, num_samples: int):

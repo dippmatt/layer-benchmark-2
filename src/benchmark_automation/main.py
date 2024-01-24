@@ -69,7 +69,7 @@ def create_run_commands(permutations: list):
                     #print(key, value, end=" ")
                     command += key + " " + str(value) + " "
         
-        if permutation["unique_key"] in broken_keys:
+        if permutation["unique_key"] in broken_keys: # or "tiny_engine" in permutation["unique_key"]:
             omit_command = True
         else:
             omit_command = False
@@ -93,19 +93,40 @@ def run_commands(commands: list, permutations: list, command_run_dir: Path, log_
         print()
         print("Running permutation: ", f"{i+1}/{num_permutations}")
         print("Running configuration: ", unique_key)
-        result = subprocess.run(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # Check the return code
-        if result.returncode == 0:
+        
+        ############################################################
+        process = subprocess.Popen(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
+            # Read from process output
+            while True:
+                stdout_output = process.stdout.readline()
+                stderr_output = process.stderr.readline()
+                print(stdout_output)
+                print(stderr_output)
+                if stdout_output == '' and process.poll() is not None:
+                    break
+                if stdout_output:
+                    file.write(stdout_output)
+                    file.flush()
+
+        return_code = process.wait()
+        stderr_output = process.stderr.read()
+        ############################################################
+
+        # result = subprocess.run(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #     # Check the return code
+        #if result.returncode == 0:
+        if return_code == 0:
             print_in_color(Color.GREEN, f"SUCCESS {unique_key}")
         else:
             print_in_color(Color.RED, f"FAILED {unique_key}")
         print()
 
-        stdout_output = result.stdout.decode('utf-8')
-        stderr_output = result.stderr.decode('utf-8')
+        # stdout_output = result.stdout.decode('utf-8')
+        # stderr_output = result.stderr.decode('utf-8')
 
-        with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
-            file.write(stdout_output)
+        # with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
+        #     file.write(stdout_output)
         with open(Path(log_dir, unique_key + ".stderr"), "w") as file:
             file.write(stderr_output)
     return
@@ -115,7 +136,6 @@ def create_permutations(config):
     frameworks = config["frameworks"].keys()
 
     # create unique keys, to identify permutations
-    permutation_string = ""
     for framework in frameworks:
         # create framework permutations
         permutation = {}
@@ -132,6 +152,9 @@ def create_permutations(config):
         for key in fixed:
             permutation["-" + key] = config["frameworks"][framework][key]
             
+        # add repetitions
+        permutation["-" + "repetitions"] = config["repetitions"]
+    
         # add variable values to permutation
         if len(variables) == 0:
             framework_permutations.append(permutation.copy())
@@ -298,6 +321,7 @@ if __name__ == "__main__":
     config = json.loads(config_string)
 
     permutations = create_permutations(config)
+
     print()
     for permutation in permutations:
         print(permutation["unique_key"])

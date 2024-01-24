@@ -17,24 +17,7 @@ def flash_and_readback(cube_programmer: Path,  workdir: Path, ser: serial.Serial
     # All arguments for methods in 'Process' are passed as 'copy by value',
     # therefore we need a list from manager
     manager = multiprocessing.Manager()
-    reps = manager.list()
-    tensor_values = manager.list()
-    readback_args = (ser, reps, tensor_values, log_file_path, False)
-    flash_args = (cube_programmer, cube_template)
-
-    readback_process = multiprocessing.Process(target=readback, args=readback_args)
-    flash_process = multiprocessing.Process(target=flash_mcu, args=flash_args)
-
-    # flash cube template
-    readback_process.start()
-    flash_process.start()
-
-    flash_process.join()
-    readback_process.join()
-
-    assert readback_process.exitcode == 0, "UART Readback of STM32 MCU encountered an error."
-    assert flash_process.exitcode == 0, "Flashing STM32 MCU encountered an error."
-
+    
     reps_no_ir = manager.list()
     tensor_values_no_ir = manager.list()
     readback_args = (ser, reps_no_ir, tensor_values_no_ir, log_file_path, True)
@@ -44,6 +27,24 @@ def flash_and_readback(cube_programmer: Path,  workdir: Path, ser: serial.Serial
     flash_process = multiprocessing.Process(target=flash_mcu, args=flash_args)
 
     # flash cube template without IR
+    readback_process.start()
+    flash_process.start()
+
+    flash_process.join()
+    readback_process.join()
+
+    assert readback_process.exitcode == 0, "UART Readback of STM32 MCU encountered an error."
+    assert flash_process.exitcode == 0, "Flashing STM32 MCU encountered an error."
+    
+    reps = manager.list()
+    tensor_values = manager.list()
+    readback_args = (ser, reps, tensor_values, log_file_path, False)
+    flash_args = (cube_programmer, cube_template)
+
+    readback_process = multiprocessing.Process(target=readback, args=readback_args)
+    flash_process = multiprocessing.Process(target=flash_mcu, args=flash_args)
+
+    # flash cube template
     readback_process.start()
     flash_process.start()
 
@@ -88,12 +89,16 @@ def readback(ser, reps, tensor_values, log_file_path, NO_IR=False):
         # Initialize the state
         current_state = STATES["UNKNOWN"]
         lines = []
+        i = 0
         while True:
             line = ser.readline().decode().strip('\r\n\x00')
             
             # for debugging
-            # print(current_state, line)
-            
+            #print(current_state, i)
+            print(i)
+            print(line)
+            print()
+
             # Check the state and perform transitions based on the special strings in the UART line
             if current_state != STATES["UNKNOWN"]:
                 log_file.write(line + "\n")
@@ -119,8 +124,11 @@ def readback(ser, reps, tensor_values, log_file_path, NO_IR=False):
                     elif 'END' in line:
                         if NO_IR:
                             reps.append(line)
+                            i += 1
                         else:
                             reps.append(lines.copy())
+                            i += 1
+                            print(i)
                     elif 'STOP' in line:
                         lines.append(line)
 

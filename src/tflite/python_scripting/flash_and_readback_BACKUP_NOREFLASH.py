@@ -5,7 +5,7 @@ import multiprocessing
 import subprocess
 #from shared_scripts.color_print import print_in_color, Color
 
-def flash_and_readback(cube_programmer: Path,  workdir: Path, num_reps: int, ser: serial.Serial, cube_template: Path, cube_template_all_layers: Path):
+def flash_and_readback(cube_programmer: Path,  workdir: Path, ser: serial.Serial, cube_template: Path, cube_template_all_layers: Path):
     """Flashes the STM32 MCU with the cube_template elf file and reads back the UART output.
     Then flashes the cube_template_no_ir elf file and reads back the UART output.
     Logs of the UART output are saved to the workdir.
@@ -24,6 +24,24 @@ def flash_and_readback(cube_programmer: Path,  workdir: Path, num_reps: int, ser
 
     manager = multiprocessing.Manager()
 
+    reps = manager.list()
+    reference_duration = manager.list()
+    readback_args = (ser, reps, log_file_path, False, reference_duration)
+    flash_args = (cube_programmer, cube_template)
+
+    readback_process = multiprocessing.Process(target=readback2, args=readback_args)
+    flash_process = multiprocessing.Process(target=flash_mcu, args=flash_args)
+
+    # flash cube template
+    readback_process.start()
+    flash_process.start()
+
+    flash_process.join()
+    readback_process.join()
+    
+    assert readback_process.exitcode == 0, "UART Readback of STM32 MCU encountered an error."
+    assert flash_process.exitcode == 0, "Flashing STM32 MCU encountered an error."
+
 
     reps_all_layers = manager.list()
     readback_args = (ser, reps_all_layers, log_file_path_all_layers, True, None)
@@ -41,29 +59,7 @@ def flash_and_readback(cube_programmer: Path,  workdir: Path, num_reps: int, ser
 
     assert readback_process.exitcode == 0, "UART Readback of STM32 MCU encountered an error."
     assert flash_process.exitcode == 0, "Flashing STM32 MCU encountered an error."
-    
 
-    reps = manager.list()
-    reference_duration = manager.list()
-    readback_args = (ser, reps, log_file_path, False, reference_duration)
-    flash_args = (cube_programmer, cube_template)
-
-    result_reps = []
-    for i in range(num_reps):
-        readback_process = multiprocessing.Process(target=readback2, args=readback_args)
-        flash_process = multiprocessing.Process(target=flash_mcu, args=flash_args)
-        # flash cube template
-        readback_process.start()
-        flash_process.start()
-
-        flash_process.join()
-        readback_process.join()
-        result_reps.append(list(reps).copy())
-        
-            
-        assert readback_process.exitcode == 0, "UART Readback of STM32 MCU encountered an error."
-        assert flash_process.exitcode == 0, "Flashing STM32 MCU encountered an error."
-    
     
     step_output["reference_duration"] = reference_duration
     step_output["reps"] = reps
@@ -130,7 +126,6 @@ def readback2(ser: serial.Serial, reps: List, log_file_path: Path, all_layer: bo
             elif current_state == STATES["ONE_TIMING_REPETITION"]:
                 if '----------------------------' in line:
                     reps.append(lines.copy())
-                    return 0
                     current_state = STATES["START"]
                 else:
                     lines.append(line)

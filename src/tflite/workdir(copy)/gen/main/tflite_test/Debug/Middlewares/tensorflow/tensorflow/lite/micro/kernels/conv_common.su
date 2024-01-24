@@ -1,6 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/padding.h:44:12:int tflite::ComputeOutSize(TfLitePadding, int, int, int, int)	0	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/conv_common.cc:37:12:tflite::ConvParams tflite::ConvParamsFloat(const TfLiteConvParams&, const tflite::OpDataConv&)	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/conv_common.cc:54:12:tflite::ConvParams tflite::ConvParamsQuantized(const TfLiteConvParams&, const tflite::OpDataConv&)	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/conv_common.cc:74:14:TfLiteStatus tflite::CalculateOpDataConv(TfLiteContext*, TfLiteNode*, const TfLiteConvParams&, int, int, int, int, int, int, TfLiteType, tflite::OpDataConv*)	96	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/conv_common.cc:131:14:TfLiteStatus tflite::ConvPrepare(TfLiteContext*, TfLiteNode*)	136	static

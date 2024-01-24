@@ -25,7 +25,13 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
         codegen_src: The path to the generated model C code.
     """
     step_output = dict()
-    
+
+    # print("Input tensors shape  ", input_tensors.shape)
+    # print("repetitions ", repetitions)
+    # print("input_dtype ", input_dtype)
+    # print("TOTAL REPETITIONS ", repetitions * input_tensors.shape[0])
+    # import sys;sys.exit(0)
+
     # generate input test tensors as C header from npz data
     if input_dtype in [np.float16, np.float32, np.float64, np.float128]:
         io_dtype = 'float'

@@ -1,8 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/depth_to_space.cc:96:14:TfLiteStatus tflite::{anonymous}::Prepare(TfLiteContext*, TfLiteNode*)	64	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:107:3:tflite::RuntimeShape::RuntimeShape(int, const tflite::RuntimeShape&, int)	24	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:131:12:int tflite::Offset(const tflite::RuntimeShape&, int, int, int, int)	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/depth_to_space.cc:138:23:TfLiteRegistration_V1 tflite::Register_DEPTH_TO_SPACE()	16	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/depth_to_space.h:24:13:void tflite::reference_ops::DepthToSpace(const tflite::DepthToSpaceParams&, const tflite::RuntimeShape&, const T*, const tflite::RuntimeShape&, T*) [with T = float]	128	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/depth_to_space.h:24:13:void tflite::reference_ops::DepthToSpace(const tflite::DepthToSpaceParams&, const tflite::RuntimeShape&, const T*, const tflite::RuntimeShape&, T*) [with T = signed char]	128	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/depth_to_space.cc:100:14:TfLiteStatus tflite::{anonymous}::Eval(TfLiteContext*, TfLiteNode*)	160	static

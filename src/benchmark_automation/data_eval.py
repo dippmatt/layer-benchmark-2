@@ -4,6 +4,14 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
 
+def read_layer_names(layer_names_txt):
+    with open(layer_names_txt, 'r') as f:
+        lines = f.readlines()
+    layer_names = []
+    for line in lines:
+        layer_names.append(line.strip())
+    return layer_names
+
 def data_metrics(tensor_values, tensor_values_ref):
     # print(tensor_values.shape)
     # print(tensor_values_ref.shape)
@@ -51,46 +59,16 @@ def main():
     """
     timings_dir = Path('..', '..', 'data_gen')
 
-    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'rmse', 'mae', 'l2r', 'std_dev', 'sum_timing'])
+    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments'])
     
     # Sanity check: verify the naming scheme of the benchmark folders
     framework_counter = 0
     model_counter = 0
     quant_counter = 0
 
-    ##############################################
-    ######     Loop over all benchmarks     ######
-    ##############################################
-
-    ################ temp addition for tflite #####
-    # new_row_data = {'config_name': "tflite_ad"}
-    # new_row_data['framework'] = 'tflite'
-    # new_row_data['model'] = 'ad'
-    # new_row_data['dtype'] = 'int'
-    # new_row_data['avg_timing'] = 8.55
-    # new_row_data['ram'] = 0
-    # new_row_data['flash'] = 0
-    # new_row_data['rmse'] = 0
-    # new_row_data['mae'] = 0
-    # new_row_data['l2r'] = 1
-    # new_row_data['std_dev'] = 0
-    # df.loc[len(df)] = new_row_data
-
-    # new_row_data['config_name'] = "tflite_ic"
-    # new_row_data['model'] = 'ic'
-    # new_row_data['avg_timing'] = 418.21
-    # df.loc[len(df)] = new_row_data
-
-    # new_row_data['config_name'] = "tflite_kws"
-    # new_row_data['model'] = 'kws'
-    # new_row_data['avg_timing'] = 115.19
-    # df.loc[len(df)] = new_row_data
-
-    # new_row_data['config_name'] = "tflite_vww"
-    # new_row_data['model'] = 'vww'
-    # new_row_data['avg_timing'] = 378.48
-    # df.loc[len(df)] = new_row_data
-    ###############################################
+    #########################################################################
+    ######     Loop over all benchmarks and fill pandas data frame     ######
+    #########################################################################
     
     for benchmark in timings_dir.iterdir():
         # filter empty directories
@@ -140,6 +118,13 @@ def main():
                 new_row_data['dtype'] = 'int'
             else:
                 new_row_data['dtype'] = 'float'
+        
+        ###################################################
+        ############### Insert layer names ################
+        ###################################################
+
+        layer_names_file = Path(benchmark, 'layer_list.txt')
+        new_row_data['layer_names'] = read_layer_names(layer_names_file)
 
         ###################################################
         ###### Insert average timings for all layers ######
@@ -150,6 +135,7 @@ def main():
         input_data = np.load(mean_timings)
 
         avg_timing =input_data['arr_0']
+
         if avg_timing.shape == (1,):
             avg_timing = avg_timing[0]
         else:
@@ -160,16 +146,22 @@ def main():
         #############  Insert sum of layers ###############
         ###################################################
         
-        sum_timings = Path(benchmark, 'per_layer_timings_mean.npz')
-        assert sum_timings.exists(), f'No mean timings found for {benchmark}.'
-        input_data = np.load(sum_timings)
+        per_layer_timings = Path(benchmark, 'per_layer_timings_mean.npz')
+        assert per_layer_timings.exists(), f'No mean timings found for {benchmark}.'
+        input_data = np.load(per_layer_timings)
 
-        sum_timing =input_data['arr_0']
-        print(sum_timing.shape)
-        sum = 0
-        for layer_timing in sum_timing:
+        per_layer_timings = input_data['arr_0']
+        
+        # the per layer timings have shape (reps, layers)
+        # now create the mean and standard deviation over the first axis (reps)
+        std_dev_timing = np.std(per_layer_timings, axis=0)
+        mean_timing = np.mean(per_layer_timings, axis=0)
+
+        sum = 0.0
+        for layer_timing in mean_timing:
             sum += layer_timing
         new_row_data['sum_timing'] = sum
+        new_row_data['per_layer_timings'] = per_layer_timings
 
         ###################################################
         ###### STD DEVIATION  ######
@@ -178,7 +170,6 @@ def main():
         std_dev_file = Path(benchmark, 'all_layers_timings_std_dev.npz')
         if not std_dev_file.exists():
             std_dev = np.array([0])
-            print(new_row_data['framework'])
         else:
             input_data = np.load(std_dev_file)
             std_dev =input_data['arr_0']
@@ -190,6 +181,29 @@ def main():
 
         #print(std_dev)
         new_row_data['std_dev'] = float(std_dev)
+
+        ###################################################
+        ###### STD DEVIATION PER LAYER ######
+        ###################################################
+
+        std_dev_file_per_layer = Path(benchmark, 'per_layer_timings_std_dev.npz')
+        if not std_dev_file_per_layer.exists():
+            # print(new_row_data['framework'])
+            # print(std_dev_timing.shape)
+            # print()
+            std_dev = np.array([0])
+        else:
+            input_data = np.load(std_dev_file_per_layer)
+            std_dev_per_layer =input_data['arr_0']
+            #print(std_dev_per_layer)
+     
+        if std_dev_per_layer.shape == (1,):
+            std_dev_per_layer = std_dev_per_layer[0]
+        else:
+            std_dev_per_layer = std_dev_per_layer
+
+        #print(std_dev)
+        new_row_data['std_dev_per_layer'] = std_dev_per_layer
         
         ##################################################
         ####           Insert Ram & Flash             ####
@@ -229,11 +243,116 @@ def main():
 
         # add the new row to the df
         df.loc[len(df)] = new_row_data
+    
+    ############################################################
+    ######     Postprocess data & Perform experiments     ######
+    ############################################################
+    
+    ############# Process per layer data:
+        # Optimisation techniques split or fuse layers
+        # in this step correspond the layers to the original (tflite) model layers
+        # e.g., if the original model has 10 layers, but the optimised model has 20 layers,
+        # probably 1 layer was split into 2 layers, so the first 2 layers of the optimised model
+        # correspond to the first layer of the original model.
+        # This analysis is done manually and represented in a list of tuples, where each tuple
+        # represents the layer of the original model and the tuple elements represent the generated layers of the optimised model.
+
+
+    # Original AD model has 10 layers
+    layer_assignment_ad_10 = np.array([(0,), (1,), (2,), (3,), (4,), (5,), (6,), (7,), (8,), (9,)])
+    layer_assignment_ad_19 = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11), (12, 13), (14, 15), (16, 17), (18)]
+    
+    # Original KWS model has 13 layers
+    layer_assignment_kws_11 = [(0), (1), (2), (3), (4), (5), (6), (7), (8), (8), (9), (9), (10)]
+    layer_assignment_kws_12 = [(0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (10), (11)]
+    layer_assignment_kws_13 = [(0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12)]
+    layer_assignment_kws_16 = [(0, 1), (2), (3, 4), (5), (6, 7), (8), (9, 10), (11), (12), (13), (14), (14), (15)]
+    layer_assignment_kws_21 = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11), (12, 13), (14, 15), (16, 17), (18), (19), (19), (20)]
+    layer_assignment_kws_24 = [(0,1,2), (3,4), (5,6), (7,8), (9,10), (11,12), (13,14), (15,16), (17,18), (19,20), (21), (21), (22,23)]
+
+    # Original IC model has 16 layers
+    layer_assignment_ic_15 = [(0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (13), (14)]
+    layer_assignment_ic_16 = [(0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (14), (15)]
+    layer_assignment_ic_17 = [(0), (1), (2), (3), (5), (6, 7), (4), (8), (10), (11, 12), (9), (13), (14), (15), (15), (16)]
+    layer_assignment_ic_18 = [(0), (1), (2), (3,4), (6), (7), (5), (8,9), (11), (13), (10), (13,14), (15), (16), (16), (17)]
+    layer_assignment_ic_21 = [(0), (1,2), (3,4), (5), (6,7), (8,9), (10), (11), (12,13), (14,15), (16), (17), (18), (19), (19), (20)]
+    layer_assignment_ic_22 = [(0,1), (2,3), (4), (5,6), (8,9), (10), (7), (11,12), (14,15), (16), (13), (17,18), (19), (20), (20), (21)]
+
+    # Original VWW model has 31 layers
+    layer_assignment_vww_31 = [(0), (1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (14), (15), (16), (17), (18), (19), (20), (21), (22), (23), (24), (25), (26), (27), (28), (29), (30)]
+    layer_assignment_vww_43 = [(0), (1, 2), (3), (4, 5), (6), (7, 8), (9), (10, 11), (12), (13, 14), (15), (16, 17), (18), (19, 20), (21), (22, 23), (24), (25, 26), (27), (28, 29), (30), (31, 32), (33), (34, 35), (36), (37, 38), (39), (40), (41), (41), (42)]
+    layer_assignment_vww_57 = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11), (12, 13), (14, 15), (16, 17), (18, 19), (20, 21), (22, 23), (24, 25), (26, 27), (28, 29), (30, 31), (32, 33), (34, 35), (36, 37), (38, 39), (40, 41), (42, 43), (44, 45), (46, 47), (48, 49), (50, 51), (52, 53), (54), (55), (55), (56)]
+
+    # data_list = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11), (12, 13), (14, 15), (16, 17), (18)]
+    # df2 = pd.DataFrame({'column_name': data_list})
+    # print(df2)
+    # import sys;sys.exit()
+
+    for index, row in df.iterrows():
+        config_name = row["config_name"]
+        layer_number = row["per_layer_timings"].shape
+        if row['model'] == 'ad':
+            if layer_number[-1] == 10:
+                #df.at[index, 'layer_assignments'] = layer_assignment_ad_10
+                df.at[index, 'layer_assignments'] = layer_assignment_ad_10
+        #     elif layer_number[-1] == 19:
+        #         df.at[index, 'layer_assignments'] = layer_assignment_ad_19
+
+        # if row['model'] == 'kws':
+        #     if 'nosoftmax' in config_name:
+        #         # ignore all models without softmax
+        #         continue
+        #     else:
+        #         if layer_number[-1] == 11:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_kws_11
+        #         elif layer_number[-1] == 12:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_kws_12
+        #         elif layer_number[-1] == 13:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_kws_13
+        #         elif layer_number[-1] == 16:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_kws_16
+        #         elif layer_number[-1] == 21:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_kws_21
+        #         elif layer_number[-1] == 24:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_kws_24
+
+        # if row['model'] == 'ic':
+        #     if 'nosoftmax' in config_name:
+        #         # ignore all models without softmax
+        #         continue
+        #     else:
+        #         if layer_number[-1] == 15:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_ic_15
+        #         elif layer_number[-1] == 16:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_ic_16
+        #         elif layer_number[-1] == 17:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_ic_17
+        #         elif layer_number[-1] == 18:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_ic_18
+        #         elif layer_number[-1] == 21:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_ic_21
+        #         elif layer_number[-1] == 22:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_ic_22
+
+        # if row['model'] == 'vww':
+        #     if 'nosoftmax' in config_name:
+        #         # ignore all models without softmax
+        #         continue
+        #     else:
+        #         if layer_number[-1] == 31:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_vww_31
+        #         elif layer_number[-1] == 43:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_vww_43
+        #         elif layer_number[-1] == 57:
+        #             df.at[index, 'layer_assignments'] = layer_assignment_vww_57
+            
+        
+    # for index, row in df.iterrows():
+    #     print(row['layer_assignments'])
+        
+    import sys;sys.exit()
 
     
-    # assert quant_counter == 66, f'Benchmark folder name does not follow naming convention ({quant_counter} vs 66).'
-    # assert framework_counter == 66, f'Benchmark folder name does not follow naming convention ({framework_counter} vs 66).'
-    # assert model_counter == 66, f'Benchmark folder name does not follow naming convention ({model_counter} vs 66).'
     
     #################################################
     ####              Visualisation              ####

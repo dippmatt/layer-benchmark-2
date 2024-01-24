@@ -20,6 +20,7 @@ def flash_and_readback(cube_programmer: Path,  workdir: Path, ser: serial.Serial
     # All arguments for methods in 'Process' are passed as 'copy by value',
     # therefore we need a list from manager
     manager = multiprocessing.Manager()
+
     reps = manager.list()
     readback_args = (ser, reps, log_file_path, False)
     flash_args = (cube_programmer, cube_template)
@@ -54,6 +55,7 @@ def flash_and_readback(cube_programmer: Path,  workdir: Path, ser: serial.Serial
     assert readback_process.exitcode == 0, "UART Readback of STM32 MCU encountered an error."
     assert flash_process.exitcode == 0, "Flashing STM32 MCU encountered an error."
 
+
     step_output["reps"] = reps
     step_output["reps_all_layers"] = reps_all_layers
 
@@ -77,7 +79,7 @@ def readback2(ser: serial.Serial, reps: List, log_file_path: Path, all_layer: bo
     STATES = {
         "UNKNOWN": 0,
         "START": 1,
-        "TIMING_BENCHMARK": 2,
+        "ONE_TIMING_REPETITION": 2,
         "TIMING_SUM": 3
     }
 
@@ -99,21 +101,31 @@ def readback2(ser: serial.Serial, reps: List, log_file_path: Path, all_layer: bo
                 # Detect the start of the per-layer timing benchmark
                 if not all_layer:
                     if '----------------------------' in line:
-                        current_state = STATES["TIMING_BENCHMARK"]
+                        current_state = STATES["ONE_TIMING_REPETITION"]
+                        lines = []
+                        continue
+                    elif 'Finished timing measurements!' in line:
+                        return 0
                 # Detect the start of the reference timing benchmark
                 else:
                     if 'duration' in line:
                         reps.append(line)
                         current_state = STATES["TIMING_SUM"]
 
-            elif current_state == STATES["TIMING_BENCHMARK"]:
+            elif current_state == STATES["ONE_TIMING_REPETITION"]:
                 if '----------------------------' in line:
                     current_state = STATES["TIMING_SUM"]
                 else:
-                    reps.append(line)
+                    lines.append(line)
+                    continue
             
             elif current_state == STATES["TIMING_SUM"]:
-                if 'Finished timing measurements!' in line:
+                if 'Finished repetition!' in line:
+                    reps.append(lines.copy())
+                    current_state = STATES["START"]
+                    continue
+                # Terminate reference timing benchmark
+                elif all_layer and 'Finished timing measurements!' in line:
                     return 0
                 else:
                     continue

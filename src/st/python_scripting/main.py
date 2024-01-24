@@ -145,7 +145,7 @@ def _main():
                          {'step': 0, 'name': 'model'},
                          {'step': 1, 'name': 'cube_template'},
                          {'step': 1, 'name': 'cube_template_validate'}]
-    pipeline.add_step(use_framework_compile, step_requirements)    
+    pipeline.add_step(use_framework_compile, step_requirements)
    
 
     # 5. keys added in flash_and_readback step:

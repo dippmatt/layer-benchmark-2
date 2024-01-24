@@ -36,20 +36,6 @@ def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitio
     mx_generate_script = workdir / Path("..", "misc", "gen_mx_prj.txt")
     
     # compile main project, all layer project and validation project
-    compile_project(workdir, 
-                    cube_mx, 
-                    cube_programmer,
-                    stm32ai,
-                    model,
-                    step_output, 
-                    repetitions, 
-                    cube_project_validate, 
-                    mx_generate_script, 
-                    generate_valitate_prj_dir, 
-                    compile_mode=CompileMode.VALIDATE, 
-                    postfix="_validate",
-                    validate_directory=validate_directory,
-                    network_output_directory=network_output_directory)
     
     compile_project(workdir, 
                     cube_mx,
@@ -63,7 +49,7 @@ def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitio
                     generate_reference_prj_dir, 
                     compile_mode=CompileMode.REFERENCE, 
                     postfix="_all_layers")
-    
+
     compile_project(workdir, 
                     cube_mx,
                     cube_programmer,
@@ -76,6 +62,22 @@ def use_framework_compile(workdir: Path, cube_mx: Path, stm32ai: Path, repetitio
                     generate_main_prj_dir, 
                     compile_mode=CompileMode.BENCHMARK, 
                     postfix="")
+
+    compile_project(workdir, 
+                    cube_mx, 
+                    cube_programmer,
+                    stm32ai,
+                    model,
+                    step_output, 
+                    repetitions, 
+                    cube_project_validate, 
+                    mx_generate_script, 
+                    generate_valitate_prj_dir, 
+                    compile_mode=CompileMode.VALIDATE, 
+                    postfix="_validate",
+                    validate_directory=validate_directory,
+                    network_output_directory=network_output_directory)    
+    
     
     return step_output
 
@@ -143,11 +145,13 @@ def compile_project(workdir: Path,
         # Maybe there is a way to configure that in the MX IDE, that setting wasn't found.
         aiSystemPerformance_c = generate_prj_dir / Path(project_name, "X-CUBE-AI", "App", "aiSystemPerformance.c")
         main_c = generate_prj_dir / Path(project_name, "Core", "Src", "main.c")
+
         if compile_mode == CompileMode.BENCHMARK:
-            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions, observer=True)
+            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions=1, observer=True)
+            set_end_of_benchmark(main_c , repetitions)
         else:
-            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions, observer=False)
-        set_end_of_benchmark(main_c)
+            set_repetitions_and_observer_end(aiSystemPerformance_c, repetitions=1, observer=False)
+            set_end_of_benchmark(main_c , None)
 
     subprocess.run(compile_cmd, shell=True)
 
@@ -190,8 +194,6 @@ def compile_project(workdir: Path,
         subprocess.run(validate_command, shell=True)
 
         network_analyze_report = network_output_directory / Path("network_analyze_report.txt")
-        network_validate_report = network_output_directory / Path("network_validate_report.txt")
-        extract_std_dev(network_validate_report, step_output)
         extract_ram_flash(workdir, generate_log, step_output)
         extract_layer_names(workdir, network_analyze_report, step_output)
         # Check if the validation was successful and we got the output tensors
@@ -322,7 +324,7 @@ def extract_ram_flash(workdir: Path, generate_log: Path, step_output: dict):
     step_output["ram_rt"] = int(ram_usage_rt)
     
     return
- 
+
 
 def set_repetitions_and_observer_end(aiSystemPerformance_c: Path, repetitions: int, observer: bool = True):
     """Sets the number of repetitions for a given performance test 
@@ -351,7 +353,7 @@ def set_repetitions_and_observer_end(aiSystemPerformance_c: Path, repetitions: i
     return
 
 
-def set_end_of_benchmark(main_c: Path):
+def set_end_of_benchmark(main_c: Path, repetitions: int):
     """Sets the termination condition for the benchmark in the main() functions's while loop.
     """
     found_line_flag = False
@@ -360,7 +362,16 @@ def set_end_of_benchmark(main_c: Path):
     for i, line in enumerate(lines):
         if "MX_X_CUBE_AI_Process();" in line:
             found_line_flag = True
-        elif found_line_flag:
+            continue
+        # set repetitions for "BENCHMARK" mode, repeat each measurement 'repetitions' times
+        if found_line_flag and repetitions is not None:
+            insertion_before = f'  int k;\n  uint8_t repetition_message[] = "Finished repetition!\\r\\n";\n  for (k = 0; k < {repetitions}; k++){{'
+            insertion_after = 'HAL_UART_Transmit (&hlpuart1, repetition_message, sizeof (repetition_message), HAL_MAX_DELAY);\n  }\n  uint8_t end_message[] = "Finished timing measurements!\\r\\n";  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);  return 0;'
+            lines[i-2] = insertion_before
+            lines[i] = insertion_after
+            break
+        # omit repetitions for "REFERENCE" mode for now, because data aquisition is not updated yet, delete this if implemented later
+        if found_line_flag and repetitions is None:
             insertion = '  uint8_t end_message[] = "Finished timing measurements!\\r\\n";\n  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);\n  return 0;\n'
             lines[i] = insertion
             break

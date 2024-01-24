@@ -1,9 +1,0 @@
-../Middlewares/tensorflow/tensorflow/lite/kernels/op_macros.h:24:13:void AbortImpl()	8	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/prelu.cc:30:7:void* tflite::PreluInit(TfLiteContext*, const char*, size_t)	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:65:11:int32_t tflite::RuntimeShape::Dims(int) const	8	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/runtime_shape.h:107:3:tflite::RuntimeShape::RuntimeShape(int, const tflite::RuntimeShape&, int)	24	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/common.h:931:12:int tflite::SubscriptToIndex(const tflite::NdArrayDesc<4>&, int, int, int, int)	16	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/prelu.cc:71:23:TfLiteRegistration_V1 tflite::Register_PRELU()	16	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/common.h:1013:22:void tflite::CopyDimsToDesc(const tflite::RuntimeShape&, tflite::NdArrayDesc<N>*) [with int N = 4]	24	static
-../Middlewares/tensorflow/tensorflow/lite/kernels/internal/reference/prelu.h:30:13:void tflite::reference_ops::BroadcastPrelu4DSlow(const tflite::PreluParams&, const tflite::RuntimeShape&, const T*, const tflite::RuntimeShape&, const T*, const tflite::RuntimeShape&, T*) [with T = signed char]	200	static
-../Middlewares/tensorflow/tensorflow/lite/micro/kernels/prelu.cc:35:14:TfLiteStatus tflite::PreluEval(TfLiteContext*, TfLiteNode*)	216	static

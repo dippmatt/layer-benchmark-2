@@ -5,180 +5,9 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import numpy as np
 
-def read_layer_names(layer_names_txt):
-    with open(layer_names_txt, 'r') as f:
-        lines = f.readlines()
-    layer_names = []
-    for line in lines:
-        layer_names.append(line.strip())
-    return layer_names
-
-
-def data_metrics(tensor_values, tensor_values_ref):
-    # print(tensor_values.shape)
-    # print(tensor_values_ref.shape)
-    # print(tensor_values.dtype)
-    # print(tensor_values_ref.dtype)
-    # import sys; sys.exit()
-    tensor_values = tensor_values.astype(np.float64)
-    tensor_values_ref = tensor_values_ref.astype(np.float64)
-
-    return_metrics = {}
-    return_metrics['rmse'] = rmse(tensor_values_ref, tensor_values)
-    return_metrics['mae'] = mae(tensor_values_ref, tensor_values)
-    return_metrics['l2r'] = l2r(tensor_values_ref, tensor_values)
-    # if return_metrics['l2r'] > 1.1:
-    #     print("large error")
-    return return_metrics
-
-
-
-def plot_sankey(layer_assignment: list, ref_names: list, reference_timings: np.array, target_names: list ,target_timings: np.array):
-    # Extract source and target nodes from the data structure
-    ref_len = len(ref_names)
-    labels = ref_names + target_names
+def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
+    data_source_dir = data_source_dir.resolve()
     
-    reference_nodes = []
-    target_nodes = []
-    values = []
-
-    for mapping in layer_assignment :
-        for source, targets in mapping.items():
-            # extract the timing value of the tflite reference layer
-            source_value = reference_timings[source]
-            # now handle the one to many relation to target layers
-            target_values = target_timings[np.array(targets)]
-            # if type(target_values) != np.ndarray:
-            #     target_values = [target_values]
-            print(type(targets))
-            if type(targets) != tuple:
-                targets = (targets,)
-            for target in targets:
-                target_value = target_timings[target]
-                values.append(target_value)
-                reference_nodes.append(source)
-                target_nodes.append(target + ref_len)
-                # reference_nodes.append(source_value)
-                # target_nodes.append(target)
-            continue
-        
-    # Create a Plotly Sankey diagram
-    fig = go.Figure(data=[go.Sankey(
-        node=dict(
-            pad=15,
-            thickness=20,
-            line=dict(color='black', width=0.5),
-            label=labels
-        ),
-        link=dict(
-            source=reference_nodes,
-            target=target_nodes,
-            value=values
-        )
-    )])
-    fig.update_layout(title_text="Basic Sankey Diagram", font_size=10)
-    fig.show()
-    return
-
-    # Update layout for better visibility
-    fig.update_layout(title_text="Sankey Diagram for Correspondence",
-                    font_size=10,
-                    width=800,
-                    height=600)
-
-    # Show the Sankey diagram
-    fig.show()
-
-
-def plot_sankey2(layer_assignment: list, ref_names: list, reference_timings: np.array, target_names: list ,target_timings: np.array):
-    # Extract source and target nodes from the data structure
-    ref_len = len(ref_names)
-    labels = ref_names + target_names
-    
-    reference_nodes = []
-    target_nodes = []
-    values = []
-
-    for mapping in layer_assignment :
-        for source, targets in mapping.items():
-            # extract the timing value of the tflite reference layer
-            source_value = reference_timings[source]
-            # now handle the one to many relation to target layers
-            target_values = target_timings[np.array(targets)]
-            # if type(target_values) != np.ndarray:
-            #     target_values = [target_values]
-            print(type(targets))
-            if type(targets) != tuple:
-                targets = (targets,)
-            for target in targets:
-                target_value = target_timings[target]
-                values.append(target_value)
-                reference_nodes.append(source)
-                target_nodes.append(target + ref_len)
-                # reference_nodes.append(source_value)
-                # target_nodes.append(target)
-            continue
-        
-    # Create a Plotly Sankey diagram
-    fig = go.Figure(data=[go.Sankey(
-        node=dict(
-            pad=15,
-            thickness=20,
-            line=dict(color='black', width=0.5),
-            label=labels
-        ),
-        link=dict(
-            source=reference_nodes,
-            target=target_nodes,
-            value=values
-        )
-    )])
-    fig.update_layout(title_text="Basic Sankey Diagram", font_size=10)
-    fig.show()
-    return
-
-    # Update layout for better visibility
-    fig.update_layout(title_text="Sankey Diagram for Correspondence",
-                    font_size=10,
-                    width=800,
-                    height=600)
-
-    # Show the Sankey diagram
-    fig.show()
-
-
-def rmse(ref, pred):
-  """Return Root Mean Squared Error (RMSE)."""
-  return np.sqrt(((ref - pred).astype(np.float64) ** 2).mean())
-
-
-def mae(ref, pred):
-  """Return Mean Absolute Error (MAE)."""
-  return (np.abs(ref - pred).astype(np.float64)).mean()
-
-
-def l2r(ref, pred):
-  """Compute L2 relative error"""
-  def magnitude(v):
-    return np.sqrt(np.sum(np.square(v).flatten()))
-  mag = magnitude(pred) + np.finfo(np.float32).eps
-  return magnitude(ref - pred) / mag
-
-
-def main():
-    """Add generated data into one pandas data frame.
-
-    The data is generated by the benchmarking script (main.py) and saved in the data_gen folder.
-    The data frame include the following columns:
-    - model (ad, kws, vww, ic)
-    - framework (tiny_engine, st, glow)
-    - dtype (int, float)
-    - flash (bytes)
-    - ram   (bytes)
-    - timings (mean value)
-    """
-    timings_dir = Path(__file__).parent / Path('..', '..', 'data_gen')
-
     df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments'])
     
     # Sanity check: verify the naming scheme of the benchmark folders
@@ -190,11 +19,11 @@ def main():
     ######     Loop over all benchmarks and fill pandas data frame     ######
     #########################################################################
     
-    for benchmark in timings_dir.iterdir():
+    for benchmark in data_source_dir.iterdir():
         # filter empty directories
         if not any(benchmark.iterdir()):
             continue
-
+        
         # empty row template for df
         new_row_data = {'config_name': benchmark.stem}
         
@@ -359,10 +188,196 @@ def main():
         new_row_data['rmse'] = metrics['rmse']
         new_row_data['mae'] = metrics['mae']
         new_row_data['l2r'] = metrics['l2r'] + 1
-        # print(metrics)
 
         # add the new row to the df
         df.loc[len(df)] = new_row_data
+        
+    return df
+
+
+def read_layer_names(layer_names_txt):
+    with open(layer_names_txt, 'r') as f:
+        lines = f.readlines()
+    layer_names = []
+    for line in lines:
+        layer_names.append(line.strip())
+    return layer_names
+
+
+def data_metrics(tensor_values, tensor_values_ref):
+    # print(tensor_values.shape)
+    # print(tensor_values_ref.shape)
+    # print(tensor_values.dtype)
+    # print(tensor_values_ref.dtype)
+    # import sys; sys.exit()
+    tensor_values = tensor_values.astype(np.float64)
+    tensor_values_ref = tensor_values_ref.astype(np.float64)
+
+    return_metrics = {}
+    return_metrics['rmse'] = rmse(tensor_values_ref, tensor_values)
+    return_metrics['mae'] = mae(tensor_values_ref, tensor_values)
+    return_metrics['l2r'] = l2r(tensor_values_ref, tensor_values)
+    # if return_metrics['l2r'] > 1.1:
+    #     print("large error")
+    return return_metrics
+
+
+def plot_sankey(title: str, ref_title: str, target_title: str, layer_assignment: list, ref_names: list, reference_timings: np.array, target_names: list ,target_timings: np.array):
+    # preprocessing: apply character limit to layer names
+    CHAR_LIMIT = 350
+    ref_names = [name[:CHAR_LIMIT] for name in ref_names]
+    target_names = [name[:CHAR_LIMIT] for name in target_names]
+    
+    # Extract source and target nodes from the data structure
+    ref_len = len(ref_names)
+    target_len = len(target_names)
+
+    labels = ["Total Reference Runtime"] + ref_names + target_names + ["Total Model Runtime"]
+
+    # get the total runtime for all layers
+    ref_total_runtime = reference_timings.sum()
+    target_total_runtime = target_timings.sum()
+
+    # source nodes are displayed to the left of a link in a sankey diagram
+    source_nodes = []
+    # target nodes are displayed to the right of a link in a sankey diagram
+    target_nodes = []
+
+    # here we create a sankey diagram with 4 layers of nodes and 3 layers of links in between
+    values = []
+
+    for mapping in layer_assignment :
+        for source, targets in mapping.items():
+            # extract the timing value of the tflite reference layer
+            source_value = reference_timings[source]
+
+            # add reference link weights
+            values.append(source_value)
+
+            # add source link in first step
+            source_nodes.append(-1)
+            target_nodes.append(source)
+
+            # now process the one to many relation to target layers
+            if type(targets) != tuple:
+                targets = (targets,)
+            for target in targets:
+                # add target link weights
+                target_value = target_timings[target]
+
+                # add middle link in second step
+                source_nodes.append(source)
+                target_nodes.append(target + ref_len)
+                values.append(target_value)
+                # add target link in third step
+                source_nodes.append(target + ref_len)
+                target_nodes.append(ref_len + target_len + 1)
+                values.append(target_value)
+            continue
+
+    #values = [ref_total_runtime] + values + [target_total_runtime]
+    source_nodes = [node + 1 for node in source_nodes]
+    target_nodes = [node + 1 for node in target_nodes]
+
+    x_vals = []
+    y_vals1 = []
+    y_vals2 = []
+
+    max_runtime = max(ref_total_runtime, target_total_runtime)
+
+    buffer_space_ref = max_runtime / (len(ref_names) - 1)
+    buffer_space_target = max_runtime / (len(target_names) - 1)
+
+    y_sum = 0.
+    for timing in reference_timings:
+        
+        y_vals1.append(y_sum + timing / 2.)
+        y_sum += timing + buffer_space_ref
+    x_vals = x_vals + [0.4] * len(reference_timings)
+    y_vals1 = np.array(y_vals1)
+
+    y_sum = 0.
+    for timing in target_timings:
+        y_vals2.append(y_sum + timing / 2.)
+        y_sum += timing + buffer_space_target
+    x_vals = x_vals + [0.6] * len(target_timings)
+    y_vals2 = np.array(y_vals2)
+
+    max_value = max(np.max(y_vals1), np.max(y_vals2))
+
+    y_vals1 = y_vals1 / max_value
+    y_vals2 = y_vals2 / max_value
+
+    y_vals = np.concatenate(([0.5], y_vals1, y_vals2, [0.5]))
+    y_sum = y_vals.sum()
+    y_vals = y_vals.tolist()
+
+    x_vals = [0.2] + x_vals + [0.8]
+
+    print("y1_max: ", np.max(y_vals1))
+    print("y2_max: ", np.max(y_vals2))
+    print("reference timing sum: ", reference_timings.sum())
+    print("target timing sum: ", target_timings.sum())
+    print()
+    print(np.max(y_vals))
+    # Create a Plotly Sankey diagram
+    fig = go.Figure(data=[go.Sankey(
+        node=dict(
+            pad=15,
+            thickness=20,
+            line=dict(color='black', width=0.5),
+            label=labels,
+            x=x_vals,
+            y=y_vals
+        ),
+        link=dict(
+            source=source_nodes,
+            target=target_nodes,
+            value=values
+        )
+    )])
+    fig.update_layout(title_text=title, font_size=10)
+    fig.show()
+    return
+
+
+def rmse(ref, pred):
+  """Return Root Mean Squared Error (RMSE)."""
+  return np.sqrt(((ref - pred).astype(np.float64) ** 2).mean())
+
+
+def mae(ref, pred):
+  """Return Mean Absolute Error (MAE)."""
+  return (np.abs(ref - pred).astype(np.float64)).mean()
+
+
+def l2r(ref, pred):
+  """Compute L2 relative error"""
+  def magnitude(v):
+    return np.sqrt(np.sum(np.square(v).flatten()))
+  mag = magnitude(pred) + np.finfo(np.float32).eps
+  return magnitude(ref - pred) / mag
+
+
+def main():
+    """Add generated data into one pandas data frame.
+
+    The data is generated by the benchmarking script (main.py) and saved in the data_gen folder.
+    The data frame include the following columns:
+    - model (ad, kws, vww, ic)
+    - framework (tiny_engine, st, glow)
+    - dtype (int, float)
+    - flash (bytes)
+    - ram   (bytes)
+    - timings (mean value)
+    """
+    #################################################################
+    ######     Parse generated data into Pandas data frams     ######
+    #################################################################
+
+    timings_dir = Path(__file__).parent / Path('..', '..', 'data_gen')
+
+    df = get_data_frame(timings_dir)
     
     ############################################################
     ######     Postprocess data & Perform experiments     ######
@@ -393,18 +408,43 @@ def main():
     layer_assignment_ic_15 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (13), 15: (14)}]
     layer_assignment_ic_16 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (14), 15: (15)}]
     layer_assignment_ic_17 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (5), 5: (6, 7), 6: (4), 7: (8), 8: (10), 9: (11, 12), 10: (9), 11: (13), 12: (14), 13: (15), 14: (15), 15: (16)}]
-    layer_assignment_ic_18 = [{0: (0), 1: (1), 2: (2), 3: (3,4), 4: (6), 5: (7), 6: (5), 7: (8,9), 8: (11), 9: (13), 10: (10), 11: (13,14), 12: (15), 13: (16), 14: (16), 15: (17)}]
+    layer_assignment_ic_18 = [{0: (0), 1: (1), 2: (2), 3: (3,4), 4: (6), 5: (7), 6: (5), 7: (8,9), 8: (11), 9: (12), 10: (10), 11: (13,14), 12: (15), 13: (16), 14: (16), 15: (17)}]
     layer_assignment_ic_21 = [{0: (0), 1: (1,2), 2: (3,4), 3: (5), 4: (6,7), 5: (8,9), 6: (10), 7: (11), 8: (12,13), 9: (14,15), 10: (16), 11: (17), 12: (18), 13: (19), 14: (19), 15: (20)}]
     layer_assignment_ic_22 = [{0: (0,1), 1: (2,3), 2: (4), 3: (5,6), 4: (8,9), 5: (10), 6: (7), 7: (11,12), 8: (14,15), 9: (16), 10: (13), 11: (17,18), 12: (19), 13: (20), 14: (20), 15: (21)}]
+    layer_assignemnt_ic_25 = [{0: (0,1,2), 1: (3,4), 2: (5), 3: (6,7), 4: (9,10), 5: (11), 6: (8), 7: (12,13), 8: (15,16), 9: (17), 10: (14), 11: (18,19), 12: (20,21), 13: (22), 14: (22), 15: (23,24)}]
 
     # Original VWW model has 31 layers
+    layer_assignment_vww_30 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (14), 15: (15), 16: (16), 17: (17), 18: (18), 19: (19), 20: (20), 21: (21), 22: (22), 23: (23), 24: (24), 25: (25), 26: (26), 27: (27), 28: (28), 29: (28), 30: (29)}]
     layer_assignment_vww_31 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (14), 15: (15), 16: (16), 17: (17), 18: (18), 19: (19), 20: (20), 21: (21), 22: (22), 23: (23), 24: (24), 25: (25), 26: (26), 27: (27), 28: (28), 29: (29), 30: (30)}]
     layer_assignment_vww_43 = [{0: (0), 1: (1,2), 2: (3), 3: (4,5), 4: (6), 5: (7,8), 6: (9), 7: (10,11), 8: (12), 9: (13,14), 10: (15), 11: (16,17), 12: (18), 13: (19,20), 14: (21), 15: (22,23), 16: (24), 17: (25,26), 18: (27), 19: (28,29), 20: (30), 21: (31,32), 22: (33), 23: (34,35), 24: (36), 25: (37,38), 26: (39), 27: (40), 28: (41), 29: (41), 30: (42)}]
     layer_assignment_vww_57 = [{0: (0,1), 1: (2,3), 2: (4,5), 3: (6,7), 4: (8,9), 5: (10,11), 6: (12,13), 7: (14,15), 8: (16,17), 9: (18,19), 10: (20,21), 11: (22,23), 12: (24,25), 13: (26,27), 14: (28,29), 15: (30,31), 16: (32,33), 17: (34,35), 18: (36,37), 19: (38,39), 20: (40,41), 21: (42,43), 22: (44,45), 23: (46,47), 24: (48,49), 25: (50,51), 26: (52,53), 27: (54), 28: (55), 29: (55), 30: (56)}]
 
+    
+    ##########################
+    # vww_layer = []
+    # ad_layer = []
+    # kws_layer = []
+    # ic_layer = []
+    ##########################
+
     for index, row in df.iterrows():
         config_name = row["config_name"]
         layer_number = row["per_layer_timings"].shape
+    
+        ###############################
+        # if not 'nosoftmax' in config_name:
+        #     if 'vww' in config_name:
+        #         vww_layer.append(str(layer_number[-1]) + "  " + config_name)
+        #     if 'ad' in config_name:
+        #         ad_layer.append(str(layer_number[-1]) + "  " + config_name)
+        #     if 'kws' in config_name:
+        #         kws_layer.append(str(layer_number[-1]) + "  " + config_name)
+        #     if 'ic' in config_name:
+        #         ic_layer.append(str(layer_number[-1]) + "  " + config_name)
+        
+        # continue
+        ###############################
+    
         if row['model'] == 'ad':
             if layer_number[-1] == 10:
                 df.at[index, 'layer_assignments'] = layer_assignment_ad_10
@@ -446,71 +486,88 @@ def main():
                     df.at[index, 'layer_assignments'] = layer_assignment_ic_21
                 elif layer_number[-1] == 22:
                     df.at[index, 'layer_assignments'] = layer_assignment_ic_22
+                elif layer_number[-1] == 25:
+                    df.at[index, 'layer_assignments'] = layer_assignemnt_ic_25
 
         if row['model'] == 'vww':
             if 'nosoftmax' in config_name:
                 # ignore all models without softmax
                 continue
             else:
-                if layer_number[-1] == 31:
+                if layer_number[-1] == 30:
+                    df.at[index, 'layer_assignments'] = layer_assignment_vww_30
+                elif layer_number[-1] == 31:
                     df.at[index, 'layer_assignments'] = layer_assignment_vww_31
                 elif layer_number[-1] == 43:
                     df.at[index, 'layer_assignments'] = layer_assignment_vww_43
                 elif layer_number[-1] == 57:
                     df.at[index, 'layer_assignments'] = layer_assignment_vww_57
-            #print(f"VWW model of {config_name} has {layer_number} layers.")
-            # for layer in row['layer_names']:
-            #     print(layer)
-            # print()
-            # print()
+    
 
-    # get tflite per layer timings for each use case as reference to calculate sankey diagrams
+    # get tflite per layer timings for each use case as REFERENCE to calculate sankey diagrams
     # also create mean over all repetitions ( axis per_layer_ref_timings_tflite.shape[0])
     for index, row in df.iterrows():
         if row['framework'] == 'tflite':
             if row['model'] == 'ad':
                 per_layer_ref_timings_tflite_ad = np.mean(row['per_layer_timings'], axis=0)
                 ref_names_tflite_ad = row['layer_names'][:per_layer_ref_timings_tflite_ad.shape[0]]
+                ref_avg_timing_ad = row['avg_timing']
+                ref_title_ad = row['config_name']
             if row['model'] == 'kws':
                 per_layer_ref_timings_tflite_kws = np.mean(row['per_layer_timings'], axis=0)
                 ref_names_tflite_kws = row['layer_names'][:per_layer_ref_timings_tflite_kws.shape[0]]
+                ref_avg_timing_kws = row['avg_timing']
+                ref_title_kws = row['config_name']
             if row['model'] == 'ic':
                 per_layer_ref_timings_tflite_ic = np.mean(row['per_layer_timings'], axis=0)
                 ref_names_tflite_ic = row['layer_names'][:per_layer_ref_timings_tflite_ic.shape[0]]
+                ref_avg_timing_ic = row['avg_timing']
+                ref_title_ic = row['config_name']
             if row['model'] == 'vww':
                 per_layer_ref_timings_tflite_vww = np.mean(row['per_layer_timings'], axis=0)
                 ref_names_tflite_vww = row['layer_names'][:per_layer_ref_timings_tflite_vww.shape[0]]
-    
-    print(per_layer_ref_timings_tflite_ad.shape)
-    print(per_layer_ref_timings_tflite_kws.shape)
-    print(per_layer_ref_timings_tflite_ic.shape)
-    print(per_layer_ref_timings_tflite_vww.shape)
+                ref_avg_timing_vww = row['avg_timing']
+                ref_title_vww = row['config_name']
 
+    
+
+    # iterate over all USE CASES and compare against reference
     for index, row in df.iterrows():
         if not pd.isna(row['layer_assignments']):
             # get the reference for the corresponding model
             if row['model'] == 'ad':
                 per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_ad
                 ref_names_tflite = ref_names_tflite_ad
+                ref_avg_timing = ref_avg_timing_ad
+
             if row['model'] == 'kws':
                 per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_kws
                 ref_names_tflite = ref_names_tflite_kws
+                ref_avg_timing = ref_avg_timing_kws
             if row['model'] == 'ic':
                 per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_ic
                 ref_names_tflite = ref_names_tflite_ic
+                ref_avg_timing = ref_avg_timing_ic
             if row['model'] == 'vww':
                 per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_vww
                 ref_names_tflite = ref_names_tflite_vww
+                ref_avg_timing = ref_avg_timing_vww
             # get the mean over all repetitions
             per_layer_mean = np.mean(row['per_layer_timings'], axis=0)
             target_names = row['layer_names'][:per_layer_mean.shape[0]]
             
-            print(per_layer_mean)
-            plot_sankey2(row['layer_assignments'], ref_names_tflite, per_layer_ref_timings_tflite, target_names, per_layer_mean)
+            # average timing of tflite int model can be used as reference
+            # print(ref_avg_timing)
 
-        
+            #if row['config_name'] != 'glow_quant_ic_float_':
+            if row['config_name'] != 'st_time_ic_int_':
+                continue
+            else:
+                print("FOUND CORRECT")
+            plot_sankey("Per-Layer Runtime Flow", row['config_name'], row['layer_assignments'], ref_names_tflite, per_layer_ref_timings_tflite, target_names, per_layer_mean)
             import sys;sys.exit()
 
+        
     
     
     #################################################

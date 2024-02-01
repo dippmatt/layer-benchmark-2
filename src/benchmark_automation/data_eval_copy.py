@@ -4,11 +4,12 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import numpy as np
+from paretoset import paretoset
 
 def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     data_source_dir = data_source_dir.resolve()
     
-    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments'])
+    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments', 'ref_config_name', 'mcu_tensor_values'])
     
     # Sanity check: verify the naming scheme of the benchmark folders
     framework_counter = 0
@@ -192,7 +193,6 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         # add the new row to the df
         df.loc[len(df)] = new_row_data
 
-
     ############# Process per layer data:
     # Optimisation techniques split or fuse layers
     # in this step correspond the layers to the original (tflite) model layers
@@ -239,6 +239,7 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
                 df.at[index, 'layer_assignments'] = layer_assignment_ad_10
             elif layer_number[-1] == 19:
                 df.at[index, 'layer_assignments'] = layer_assignment_ad_19
+            df.at[index, 'ref_config_name'] = 'tflite_ad_normal_int_'
 
         if row['model'] == 'kws':
             if 'nosoftmax' in config_name:
@@ -257,6 +258,7 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
                     df.at[index, 'layer_assignments'] = layer_assignment_kws_21
                 elif layer_number[-1] == 24:
                     df.at[index, 'layer_assignments'] = layer_assignment_kws_24
+                df.at[index, 'ref_config_name'] = 'tflite_kws_int_'
 
         if row['model'] == 'ic':
             if 'nosoftmax' in config_name:
@@ -277,6 +279,8 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
                     df.at[index, 'layer_assignments'] = layer_assignment_ic_22
                 elif layer_number[-1] == 25:
                     df.at[index, 'layer_assignments'] = layer_assignemnt_ic_25
+                df.at[index, 'ref_config_name'] = 'tflite_ic_int_'
+                
 
         if row['model'] == 'vww':
             if 'nosoftmax' in config_name:
@@ -291,9 +295,8 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
                     df.at[index, 'layer_assignments'] = layer_assignment_vww_43
                 elif layer_number[-1] == 57:
                     df.at[index, 'layer_assignments'] = layer_assignment_vww_57
+                df.at[index, 'ref_config_name'] = 'tflite_vww_int_'
     
-
-        
     return df
 
 
@@ -319,7 +322,21 @@ def data_metrics(tensor_values, tensor_values_ref):
     return return_metrics
 
 
-def plot_sankey(title: str, ref_title: str, target_title: str, layer_assignment: list, ref_names: list, reference_timings: np.array, target_names: list ,target_timings: np.array):
+def plot_sankey(title: str, source_data: pd.Series, target_data: pd.Series):
+    assert type(target_data['layer_assignments']) == list, 'Layer assignment must exist.'
+    layer_assignment = target_data['layer_assignments']
+
+    ref_title = source_data['config_name']
+    target_title = target_data['config_name']
+
+    reference_timings = source_data['per_layer_timings']
+    reference_timings = np.mean(reference_timings, axis=0)
+    target_timings = target_data['per_layer_timings']
+    target_timings = np.mean(target_timings, axis=0)
+
+    ref_names = source_data['layer_names'][:len(reference_timings)]
+    target_names = target_data['layer_names']
+
     # preprocessing: apply character limit to layer names
     CHAR_LIMIT = 50
     if 'glow' in ref_title:
@@ -464,7 +481,22 @@ def process_glow_layer_names(layer_names):
     return new_names
 
 
-def plot_relative_acceleration(title: str, ref_title: str, target_title: str, layer_assignment: list, ref_names: list, reference_timings: np.array, target_names: list ,target_timings: np.array):
+#def plot_speedup(title: str, ref_title: str, target_title: str, layer_assignment: list, ref_names: list, reference_timings: np.array, target_names: list ,target_timings: np.array):
+def plot_speedup(title: str, source_data: pd.Series, target_data: pd.Series):                
+    assert type(target_data['layer_assignments']) == list, 'Layer assignment must exist.'
+    layer_assignment = target_data['layer_assignments']
+
+    ref_title = source_data['config_name']
+    target_title = target_data['config_name']
+
+    reference_timings = source_data['per_layer_timings']
+    reference_timings = np.mean(reference_timings, axis=0)
+    target_timings = target_data['per_layer_timings']
+    target_timings = np.mean(target_timings, axis=0)
+
+    ref_names = source_data['layer_names'][:len(reference_timings)]
+    target_names = target_data['layer_names']
+    
     # preprocessing: apply character limit to layer names
     CHAR_LIMIT = 50
     if 'glow' in ref_title:
@@ -476,12 +508,6 @@ def plot_relative_acceleration(title: str, ref_title: str, target_title: str, la
     else:
         target_names = [name[:CHAR_LIMIT] for name in target_names]
     
-    # Extract source and target nodes from the data structure
-    ref_len = len(ref_names)
-    target_len = len(target_names)
-
-    labels = [ref_title] + ref_names + target_names + [target_title, target_title]
-
     # source nodes are displayed to the left of a link in a sankey diagram
     relative_runtimes = []
     absolute_runtimes = []
@@ -516,22 +542,24 @@ def plot_relative_acceleration(title: str, ref_title: str, target_title: str, la
     colors = ['red' if val > 0 else 'green' for val in relative_runtimes]
     
     # Create a relative speedup bar chart
-    fig = go.Figure()
-
     new_ref_names = []
     for i, name in enumerate(ref_names):
         new_ref_names.append(f'{i+1}: ' + name)
     ref_names = new_ref_names
 
-    fig.add_trace(go.Bar(
-        x=ref_names,
-        y=relative_runtimes,
-        marker_color=colors
-    ))
-
-    # Update layout for better visualization
-    fig.update_layout(
+    # Create a bar chart
+    fig = px.bar(
+        x=ref_names, 
+        y=relative_runtimes, 
+        color=colors,
+        color_discrete_map={color: color for name, color in zip(ref_names, colors)},
+        text_auto='.1f', 
         title="Relative Speedup per Layer",
+        category_orders={"x": ref_names}
+        )
+    
+    fig.update_layout(
+        title=f"Relative Speedup of {target_title} per Layer compared to reference {ref_title}",
         xaxis_title="Reference Layer Name",
         yaxis_title="Relative Speedup Factor",
         bargap=0.1,
@@ -546,34 +574,75 @@ def plot_relative_acceleration(title: str, ref_title: str, target_title: str, la
         x=ref_names, 
         y=absolute_runtimes, 
         color=colors,
-        color_discrete_map={color: color for name, color in zip(ref_names, colors)}, 
-        text_auto='.2s', 
+        color_discrete_map={color: color for name, color in zip(ref_names, colors)},
+        text_auto='.2f', 
         title="Absolute Speedup per Layer",
         category_orders={"x": ref_names}
         )
+    
+    fig.update_layout(
+        title=f"Absolote Speedup of {target_title} per Layer compared to reference {ref_title}",
+        xaxis_title="Reference Layer Name",
+        yaxis_title="Runtime Speedup (green) or Slowdown (red) [ms]",
+        bargap=0.1,
+    )
     fig.show()
+    return
 
-    # fig = go.Figure()
+def plot_pareto3d(title: str, df: pd.DataFrame):
+    data = {
+        'ram': [],
+        'flash': [],
+        'timing': [],
+        'framework': [],
+        'shape': [],
+        'color': [],
+        'label': []
+    }
 
-    # new_ref_names = []
-    # for i, name in enumerate(ref_names):
-    #     new_ref_names.append(f'{i}: ' + name)
-    # ref_names = new_ref_names
+    for index, row in df.iterrows():
+        if row['framework'] == 'tiny_engine':
+            continue
+        # if 'nosoftmax' in row['config_name']:
+        #     continue
 
-    # fig.add_trace(go.Bar(
-    #     x=ref_names,
-    #     y=absolute_runtimes,
-    #     marker_color=colors
-    # ))
+        data['ram'].append(row['ram'])
+        data['flash'].append(row['flash'])
+        data['timing'].append(float(row['avg_timing']))
+        data['framework'].append(row['framework'])
+        data['label'].append(row['config_name'])
 
-    # # Update layout for better visualization
-    # fig.update_layout(
-    #     title="Absolute Speedup per Layer",
-    #     xaxis_title="Reference Layer Name",
-    #     yaxis_title="Absolute Speedup [ms]",
-    #     bargap=0.1
-    # )
-    # fig.show()
+    # assign a shape to each data point for the plotly 3d scatter plot
+    for i, framework in enumerate(data['framework']):
+        if framework == 'tiny_engine':
+            data['shape'].append('tiny_engine')
+        elif framework == 'st':
+            data['shape'].append('st')
+        elif framework == 'glow':
+            data['shape'].append('glow')
+        elif framework == 'tflite':
+            data['shape'].append('tflite')
+        data['color'].append('#FF0000')
+
+    pareto_dims = pd.DataFrame({'ram': data['ram'], 'flash': data['flash'], 'timing': data['timing']})
+    mask = paretoset(pareto_dims, sense=["min", "min", "min"])
+
+    data['color'] = np.array(data['color'])
+    data['color'][mask] = '#006400'
+    data['color'] = list(data['color'])
+
+    df2plot = pd.DataFrame(data)
+
+    fig = px.scatter_3d(df2plot, x='ram', y='flash', z='timing', symbol='shape', color='color', color_discrete_map='identity', opacity=0.6, text='label')#, size='size', )
+
+    # Set the axis range to start from 0
+    fig.update_layout(scene=dict(xaxis=dict(range=[0, df2plot['ram'].max()]),
+                                xaxis_title='RAM [Byte]',
+                                yaxis=dict(range=[0, df2plot['flash'].max()]),
+                                yaxis_title='Flash [Byte]',
+                                zaxis=dict(range=[0, df2plot['timing'].max()]),
+                                zaxis_title='Runtime [ms]'))
+    fig.show()
     return
 
 def rmse(ref, pred):
@@ -613,99 +682,40 @@ def main():
     timings_dir = Path(__file__).parent / Path('..', '..', 'data_gen')
 
     df = get_data_frame(timings_dir)
-    
+
     ############################################################
     ######     Postprocess data & Perform experiments     ######
     ############################################################
     
+    row = df[df['config_name'] == 'st_time_vww_int_'].iloc[0]
+    ref_row = (df[df['config_name'] == row['ref_config_name']]).iloc[0]
+    plot_sankey("Per-Layer Runtime Flow", ref_row, row)
+    plot_speedup("Per-Layer Speedup", ref_row, row)
 
-    # get tflite per layer timings for each use case as REFERENCE to calculate sankey diagrams
-    # also create mean over all repetitions ( axis per_layer_ref_timings_tflite.shape[0])
-    for index, row in df.iterrows():
-        if row['framework'] == 'tflite':
-            if row['model'] == 'ad':
-                per_layer_ref_timings_tflite_ad = np.mean(row['per_layer_timings'], axis=0)
-                ref_names_tflite_ad = row['layer_names'][:per_layer_ref_timings_tflite_ad.shape[0]]
-                ref_avg_timing_ad = row['avg_timing']
-                ref_title_ad = row['config_name']
-            if row['model'] == 'kws':
-                per_layer_ref_timings_tflite_kws = np.mean(row['per_layer_timings'], axis=0)
-                ref_names_tflite_kws = row['layer_names'][:per_layer_ref_timings_tflite_kws.shape[0]]
-                ref_avg_timing_kws = row['avg_timing']
-                ref_title_kws = row['config_name']
-            if row['model'] == 'ic':
-                per_layer_ref_timings_tflite_ic = np.mean(row['per_layer_timings'], axis=0)
-                ref_names_tflite_ic = row['layer_names'][:per_layer_ref_timings_tflite_ic.shape[0]]
-                ref_avg_timing_ic = row['avg_timing']
-                ref_title_ic = row['config_name']
-            if row['model'] == 'vww':
-                per_layer_ref_timings_tflite_vww = np.mean(row['per_layer_timings'], axis=0)
-                ref_names_tflite_vww = row['layer_names'][:per_layer_ref_timings_tflite_vww.shape[0]]
-                ref_avg_timing_vww = row['avg_timing']
-                ref_title_vww = row['config_name']
+    # plot pareto diagrams
+    int_df = df[df['dtype'] == 'int']
+    float_df = df[df['dtype'] == 'float']
 
+    filtered_df_int_ad = int_df[int_df['model'] == 'ad']
+    filtered_df_int_kws = int_df[int_df['model'] == 'kws']
+    filtered_df_int_ic = int_df[int_df['model'] == 'ic']
+    filtered_df_int_vww = int_df[int_df['model'] == 'vww']
+
+    filtered_df_float_ad = float_df[float_df['model'] == 'ad']
+    filtered_df_float_kws = float_df[float_df['model'] == 'kws']
+    filtered_df_float_ic = float_df[float_df['model'] == 'ic']
+    filtered_df_float_vww = float_df[float_df['model'] == 'vww']
     
-
-    # iterate over all USE CASES and compare against reference
-    for index, row in df.iterrows():
-        if not pd.isna(row['layer_assignments']):
-            # get the reference for the corresponding model
-            if row['model'] == 'ad':
-                per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_ad
-                ref_names_tflite = ref_names_tflite_ad
-                ref_avg_timing = ref_avg_timing_ad
-                ref_title = ref_title_ad
-            if row['model'] == 'kws':
-                per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_kws
-                ref_names_tflite = ref_names_tflite_kws
-                ref_avg_timing = ref_avg_timing_kws
-                ref_title = ref_title_kws
-            if row['model'] == 'ic':
-                per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_ic
-                ref_names_tflite = ref_names_tflite_ic
-                ref_avg_timing = ref_avg_timing_ic
-                ref_title = ref_title_ic
-            if row['model'] == 'vww':
-                per_layer_ref_timings_tflite = per_layer_ref_timings_tflite_vww
-                ref_names_tflite = ref_names_tflite_vww
-                ref_avg_timing = ref_avg_timing_vww
-                ref_title = ref_title_vww
-            # get the mean over all repetitions
-            per_layer_mean = np.mean(row['per_layer_timings'], axis=0)
-            target_names = row['layer_names'][:per_layer_mean.shape[0]]
-            
-            # average timing of tflite int model can be used as reference
-            #if row['config_name'] != 'st_time_vww_int_':
-            if row['config_name'] != 'glow_quant_ic_float_':
-            #if row['config_name'] != 'glow_noquant_ic_float_':
-            #if row['config_name'] != 'st_time_ic_int_':
-                continue
-            
-
-            plot_relative_acceleration("Per-Layer Runtime Flow", ref_title, row['config_name'], row['layer_assignments'], ref_names_tflite, per_layer_ref_timings_tflite, target_names, per_layer_mean)
-            import sys;sys.exit()
-            plot_sankey("Per-Layer Runtime Flow", ref_title, row['config_name'], row['layer_assignments'], ref_names_tflite, per_layer_ref_timings_tflite, target_names, per_layer_mean)
-            import sys;sys.exit()
-
-        
+    #plot_pareto3d("Pareto Diagram AD int", filtered_df_int_ad)
+    plot_pareto3d("Pareto Diagram IC float", filtered_df_float_ic)
+    plot_pareto3d("Pareto Diagram KWS", filtered_df_int_kws)
+    import sys; sys.exit(0)
+    plot_pareto3d("Pareto Diagram AD", filtered_df_int_ad)
+    plot_pareto3d("Pareto Diagram KWS", filtered_df_int_kws)
+    plot_pareto3d("Pareto Diagram IC", filtered_df_int_ic)
+    plot_pareto3d("Pareto Diagram VWW", filtered_df_int_vww)
+    import sys; sys.exit(0)
     
-    
-    #################################################
-    ####              Visualisation              ####
-    #################################################
-    # model_name = 'kws'
-    #framework_name = 'tiny_engine'
-    # filtered_df = df[df['framework'] != framework_name]
-    #data_type = 'int'
-    #filtered_df = df[df['dtype'] == data_type]
-    filtered_df = df
-
-    #filtered_df['ram_flash_product'] = filtered_df['ram'] * filtered_df['flash'] / 10E6
-    #filtered_df = filtered_df.sort_values(by='ram_flash_product')
-    fig = px.scatter(filtered_df, x='ram', y='sum_timing', color='framework',
-                 facet_col='model', title='Timing vs Memory', size='l2r', hover_data=['config_name', 'ram', 'flash', 'dtype', 'framework', 'avg_timing', 'l2r'])
-   
-    fig.show()
     return 0
 
 if __name__ == '__main__':

@@ -18,10 +18,23 @@ def create_run_commands(permutations: list):
                    "glow_quant_vww_float_", 
                    "tiny_engine_kws_int_nosoftmax_", 
                    "glow_quant_vww_float_nosoftmax_", 
-                   "glow_noquant_vww_int_",
+                   #"glow_noquant_vww_int_",
                    "glow_noquant_vww_int_nosoftmax_",
                    "glow_noquant_vww_float_",
-                   "glow_noquant_vww_float_nosoftmax_"]
+                   "glow_noquant_vww_float_nosoftmax_",
+                   # maybe run tflite_ad_anomaly_float_ for completeness
+                   "tflite_ad_anomaly_float_",
+                   # here the Error "Hybrid models are not supported on TFLite Micro." occurs,
+                   # which indicates that no mixing of flaot and int models is possible: https://github.com/tensorflow/tensorflow/issues/43386
+                   "tflite_kws_float_",
+                   # these are not required
+                   "tflite_ad_normal_float_nosoftmax_",
+                   "tflite_ad_anomaly_float_nosoftmax_",
+                   "tflite_ic_float_nosoftmax_",
+                   "tflite_kws_float_nosoftmax_",
+                   "tflite_vww_float_nosoftmax_",
+                   ]
+
     skip_counter = 0
     for permutation in permutations:
         venv_dir = (Path(permutation["-workdir"]) / Path("..", "venv", "bin")).resolve()
@@ -274,14 +287,16 @@ def create_permutations(config):
                     output_permutations.append(perm_copy)
 
             elif "tflite" in permutation["unique_key"]:
-                # for model_fp in config["use_case"][use_case]["model_fp"]:
-                #     perm_copy = permutation.copy()
-                #     if "no_softmax" in model_fp:
-                #         perm_copy["unique_key"] += "float_nosoftmax_"
-                #     else:
-                #         perm_copy["unique_key"] += "float_"
-                #     perm_copy["-model"] = model_fp
-                #     output_permutations.append(perm_copy)
+                ################### TESTING HERE IF TFLITE FLOAT WORKS ###################
+                for model_fp in config["use_case"][use_case]["model_fp"]:
+                    perm_copy = permutation.copy()
+                    if "no_softmax" in model_fp:
+                        perm_copy["unique_key"] += "float_nosoftmax_"
+                    else:
+                        perm_copy["unique_key"] += "float_"
+                    perm_copy["-model"] = model_fp
+                    output_permutations.append(perm_copy)
+                ##########################################################################
                 for model_int in config["use_case"][use_case]["model_int"]:
                     perm_copy = permutation.copy()
                     if "no_softmax" in model_int:

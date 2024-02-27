@@ -4,6 +4,7 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import numpy as np
+import copy
 from paretoset import paretoset
 
 def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
@@ -129,7 +130,6 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         else:
             std_dev = std_dev
 
-        #print(std_dev)
         new_row_data['std_dev'] = float(std_dev)
 
         ###################################################
@@ -137,22 +137,29 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         ###################################################
 
         std_dev_file_per_layer = Path(benchmark, 'per_layer_timings_std_dev.npz')
+        
+        # In this case, the layer timings are derived from random samples for reach repetition
+        # Create the standard deviation over the number repetitions (axis=0)
         if not std_dev_file_per_layer.exists():
-            # print(new_row_data['framework'])
-            # print(std_dev_timing.shape)
-            # print()
-            std_dev = np.array([0])
+            std_dev_per_layer = np.std(new_row_data['per_layer_timings'], axis=0)
+        # In this case, the layer timings are derived from tensors of the data set
+        # Each tensor was processed number of repetitions times
+        # The std_dev_file_per_layer contains the standard deviation over the data set tensors
+        # Now create the weighted average of the standard deviations,
+        # to combine the two sources (repetitions and data set tensors)
         else:
             input_data = np.load(std_dev_file_per_layer)
             std_dev_per_layer =input_data['arr_0']
-            #print(std_dev_per_layer)
-     
+            divisor = std_dev_per_layer.shape[0]
+            squared_sum = np.sum(np.square(std_dev_per_layer), axis=-0)
+            std_dev_per_layer = np.sqrt(squared_sum / divisor)
+
         if std_dev_per_layer.shape == (1,):
             std_dev_per_layer = std_dev_per_layer[0]
         else:
             std_dev_per_layer = std_dev_per_layer
 
-        #print(std_dev)
+        assert len(std_dev_per_layer.shape) == 1 and std_dev_per_layer.shape[-1] == new_row_data['per_layer_timings'].shape[-1], 'Invalid shape for std_dev_per_layer.'
         new_row_data['std_dev_per_layer'] = std_dev_per_layer
         
         ##################################################
@@ -188,7 +195,7 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         metrics = data_metrics(mcu_tensor_values, ref_tensor_values)
         new_row_data['rmse'] = metrics['rmse']
         new_row_data['mae'] = metrics['mae']
-        new_row_data['l2r'] = metrics['l2r'] + 1
+        new_row_data['l2r'] = metrics['l2r']
 
         # add the new row to the df
         df.loc[len(df)] = new_row_data
@@ -224,6 +231,7 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     layer_assignemnt_ic_25 = [{0: (0,1,2), 1: (3,4), 2: (5), 3: (6,7), 4: (9,10), 5: (11), 6: (8), 7: (12,13), 8: (15,16), 9: (17), 10: (14), 11: (18,19), 12: (20,21), 13: (22), 14: (22), 15: (23,24)}]
 
     # Original VWW model has 31 layers
+    layer_assignment_vww_29 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (14), 15: (15), 16: (16), 17: (17), 18: (18), 19: (19), 20: (20), 21: (21), 22: (22), 23: (23), 24: (24), 25: (25), 26: (26), 27: (27), 28: (28), 29: (28), 30: (28)}]
     layer_assignment_vww_30 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (14), 15: (15), 16: (16), 17: (17), 18: (18), 19: (19), 20: (20), 21: (21), 22: (22), 23: (23), 24: (24), 25: (25), 26: (26), 27: (27), 28: (28), 29: (28), 30: (29)}]
     layer_assignment_vww_31 = [{0: (0), 1: (1), 2: (2), 3: (3), 4: (4), 5: (5), 6: (6), 7: (7), 8: (8), 9: (9), 10: (10), 11: (11), 12: (12), 13: (13), 14: (14), 15: (15), 16: (16), 17: (17), 18: (18), 19: (19), 20: (20), 21: (21), 22: (22), 23: (23), 24: (24), 25: (25), 26: (26), 27: (27), 28: (28), 29: (29), 30: (30)}]
     layer_assignment_vww_43 = [{0: (0), 1: (1,2), 2: (3), 3: (4,5), 4: (6), 5: (7,8), 6: (9), 7: (10,11), 8: (12), 9: (13,14), 10: (15), 11: (16,17), 12: (18), 13: (19,20), 14: (21), 15: (22,23), 16: (24), 17: (25,26), 18: (27), 19: (28,29), 20: (30), 21: (31,32), 22: (33), 23: (34,35), 24: (36), 25: (37,38), 26: (39), 27: (40), 28: (41), 29: (41), 30: (42)}]
@@ -284,8 +292,13 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
 
         if row['model'] == 'vww':
             if 'nosoftmax' in config_name:
-                # ignore all models without softmax
-                continue
+                # ignore all models without softmax except vww tiny engine, 
+                # because we are interested in the speedup of the depthwise convolutions
+                if 'tiny_engine' in config_name and layer_number[-1] == 29:
+                    df.at[index, 'layer_assignments'] = layer_assignment_vww_29
+                    df.at[index, 'ref_config_name'] = 'tflite_vww_int_'
+                else:
+                    continue
             else:
                 if layer_number[-1] == 30:
                     df.at[index, 'layer_assignments'] = layer_assignment_vww_30
@@ -299,6 +312,148 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     
     return df
 
+
+def layer_perf_by_type(df):
+    """Analyses the performance of layer types per framwork.
+
+    The hypothesis is that some frameworks have perticular strengths in optimizing certain layer types.
+    By comparing the performance of layer types across different frameworks, over all use cases,
+    we can identify these well-optimized layers.
+
+    """
+    # get possible layer types in all models
+    layer_types = set()
+    for index, row in df.iterrows():
+        if "noquant" in row['config_name'] and "float" in row['config_name']:
+            continue
+        if "_quant" not in row['config_name'] and "float" in row['config_name']:
+            continue
+        # filter 'nan' values
+        if type(row['ref_config_name']) == float:
+            continue
+        ref_row = (df[df['config_name'] == row['ref_config_name']]).iloc[0]
+        ref_timings = np.mean(ref_row['per_layer_timings'], axis=0)
+        layer_names_ref = ref_row['layer_names']
+        for i in range(len(ref_timings)):
+            layer_types.add(layer_names_ref[i])
+
+    # create a dictionary for each framework, saving the relative performance of each layer type
+    layer_dict = {}
+    for layer in layer_types:
+        layer_dict[layer] = {'total': 0, 'count': 0, 'relative': 0.0}
+    glow_dict = copy.deepcopy(layer_dict)
+    st_dict = copy.deepcopy(layer_dict)
+    tiny_engine_dict = copy.deepcopy(layer_dict)
+    
+    for index, row in df.iterrows():
+        if "noquant" in row['config_name'] and "float" in row['config_name']:
+            continue
+        if "_quant" not in row['config_name'] and "float" in row['config_name']:
+            continue
+        if "tflite" in row['config_name']:
+            continue
+        # filter 'nan' values
+        if type(row['ref_config_name']) == float:
+            continue
+        else:
+            ref_row = (df[df['config_name'] == row['ref_config_name']]).iloc[0]
+            
+            layer_assignment = row['layer_assignments']
+
+            timings = np.mean(row['per_layer_timings'], axis=0)
+            ref_timings = np.mean(ref_row['per_layer_timings'], axis=0)
+
+            total_runtime = sum(timings)
+            total_runtime_ref = sum(ref_timings)
+
+            # extract the corresponding timings for each layer type
+            layer_names_ref = ref_row['layer_names']
+
+            layer_type_set = set(layer_names_ref)
+            type_timing_dict = {}
+            for layer_type in layer_type_set:
+                type_timing_dict[layer_type] = {'ref': 0.0, 'target': 0.0}
+
+            for i, name in enumerate(layer_names_ref):
+                if i >= len(ref_timings):
+                    break
+                ref_timing = ref_timings[i]
+                corresponding_layers = layer_assignment[0][i]
+                corresponding_sum = 0.0
+                if type(corresponding_layers) == int:
+                    corresponding_sum = timings[corresponding_layers]
+                else:
+                    for timing in corresponding_layers:
+                        corresponding_sum += timings[timing]
+                type_timing_dict[name]['ref'] += ref_timing
+                type_timing_dict[name]['target'] += corresponding_sum
+            
+            #print("type_timing_dict: ", type_timing_dict)
+
+            for layer_type in type_timing_dict:
+                if row['framework'] == 'glow':
+                    glow_dict[layer_type]['total'] += type_timing_dict[layer_type]['target'] / type_timing_dict[layer_type]['ref']
+                    glow_dict[layer_type]['count'] += 1
+                if row['framework'] == 'st':
+                    st_dict[layer_type]['total'] += type_timing_dict[layer_type]['target'] / type_timing_dict[layer_type]['ref']
+                    st_dict[layer_type]['count'] += 1
+                if row['framework'] == 'tiny_engine':
+                    tiny_engine_dict[layer_type]['total'] += type_timing_dict[layer_type]['target'] / type_timing_dict[layer_type]['ref']
+                    tiny_engine_dict[layer_type]['count'] += 1
+
+    dicts_to_plot = [glow_dict, st_dict, tiny_engine_dict]
+    titles = ['Glow', 'ST', 'Tiny Engine']
+    # save the relative performance of each layer type
+    for dict_ in dicts_to_plot:
+        for layer_type in dict_:
+            if dict_[layer_type]['count'] == 0:
+                continue
+            metric = dict_[layer_type]['total'] / dict_[layer_type]['count']
+            dict_[layer_type]['relative'] = metric
+
+    # now plot the relative performance of each layer type
+    i = 0
+    for dict_ in dicts_to_plot:
+        # Define colors based on values
+        colors = []
+        relative_runtimes = []
+        ref_names = []
+        for key in dict_.keys():
+            # check if count is 0
+            if dict_[key]['count'] == 0:
+                continue
+            ref_names.append(key)
+            relative_runtimes.append(dict_[key]['relative'])
+            if dict_[key]['relative'] > 1:
+                colors.append('red')
+            else:
+                colors.append('green')
+
+        # convert to percentage
+        relative_runtimes = [((1 - value) * 100) * -1 if value < 1 else (value - 1) * 100 for value in relative_runtimes]
+
+        # Create a bar chart
+        fig = px.bar(
+            x=ref_names, 
+            y=relative_runtimes, 
+            color=colors,
+            color_discrete_map={color: color for name, color in zip(ref_names, colors)},
+            text_auto='.1f', 
+            title="Relative Speedup per Layer",
+            category_orders={"x": ref_names}
+            )
+        
+        fig.update_layout(
+            title=f"Relative Speedup of {titles[i]} Layer Types compared to TFLite Layer Types",
+            xaxis_title="Reference Layer Name",
+            yaxis_title="Relative Speedup Factor",
+            bargap=0.1,
+        )
+        fig.show()
+        i+=1
+
+         
+            
 
 def read_layer_names(layer_names_txt):
     with open(layer_names_txt, 'r') as f:
@@ -601,8 +756,8 @@ def plot_pareto3d(title: str, df: pd.DataFrame):
     }
 
     for index, row in df.iterrows():
-        if row['framework'] == 'tiny_engine':
-            continue
+        # if row['framework'] == 'tiny_engine':
+        #     continue
         # if 'nosoftmax' in row['config_name']:
         #     continue
 
@@ -647,10 +802,73 @@ def plot_pareto3d(title: str, df: pd.DataFrame):
 
 
 def plot_deviation(df: pd.DataFrame):
-    max_dev = 0
+    dev_sums = []
     for index, row in df.iterrows():
-        print(row['std_dev'].shape)
-        import sys;sys.exit()
+        if row['framework'] != 'tiny_engine':
+            dev_summand = np.sum(row['std_dev_per_layer'])
+            dev_sums.append(dev_summand)
+        else:
+            dev_sums.append(0)
+    dev_sums = np.array(dev_sums)
+
+    #get the index of the maximum deviation
+    max_dev_idx = np.argmax(dev_sums)
+    # get the row in dataframe with the maximum deviation
+    max_dev_row = df.iloc[max_dev_idx]
+    per_layer_mean = np.mean(max_dev_row['per_layer_timings'], axis=0)
+    
+    # Create a data frame of the layer names, mean timings and standard deviation
+    layer_names = max_dev_row['layer_names']
+    config_name = max_dev_row['config_name']
+    CHAR_LIMIT = 50
+    if 'glow' in config_name:
+        layer_names = process_glow_layer_names(layer_names)
+    else:
+        layer_names = [name[:CHAR_LIMIT] for name in layer_names]
+    
+    new_names = []
+    for i, layer_name in enumerate(layer_names):
+        new_names.append(f'{i+1}: ' + f'{layer_name}')
+    layer_names = new_names
+
+    layer_df = pd.DataFrame({'layer_names': layer_names, 'mean': per_layer_mean, 'std_dev': max_dev_row['std_dev_per_layer']})
+    fig = px.bar(layer_df, 
+                 x="layer_names", 
+                 y="mean", 
+                 error_y="std_dev",
+                )
+    fig.update_layout(
+        title=f"Per layer runtime and Error for {config_name}",
+        xaxis_title="Layer Name",
+        yaxis_title="Absolute Runtime [ms]",
+        bargap=0.1,
+    )
+
+    fig.show()
+    return
+
+
+def runtime_over_error(df: pd.DataFrame, use_case: str):
+    # create a scatter diagram using px.scatter
+    # where the total runtime is on the y-axis and the precision is on the x-axis
+    df['size'] = .2
+    # remove any timing over 2000 ms from df (exclude tiny_engine from the plot)
+
+    # for index, row in df.iterrows():
+    #     print(row['config_name'])
+    import sys;sys.exit()
+    df_sub = df[df['avg_timing'] < 2000]
+
+    fig = px.scatter(df_sub, x='rmse', y='avg_timing', color='framework', hover_data=['config_name'])#, size='size')
+    fig.update_layout(
+        title="Runtime over Error for " + use_case,
+        xaxis_title="Root Mean Square Error",
+        # xaxis_title="Mean Absolute Error",
+        # xaxis_title="L2 Relative Error",
+        yaxis_title="Average Runtime [ms]",
+        bargap=0.1
+    )
+    fig.show()
     return
 
 
@@ -692,15 +910,26 @@ def main():
 
     df = get_data_frame(timings_dir)
 
+    # filtered_df = df[(df['framework'] == 'tiny_engine') & (df['model'] == 'vww')]
+    # print(filtered_df)
+
     ############################################################
     ######     Postprocess data & Perform experiments     ######
     ############################################################
     
-    st_time_vww_int_ = df[df['config_name'] == 'st_time_vww_int_'].iloc[0]
-    ref_row = (df[df['config_name'] == st_time_vww_int_['ref_config_name']]).iloc[0]
+    # config = df[df['config_name'] == 'st_time_vww_int_'].iloc[0]
+    # config = df[df['config_name'] == 'st_time_ic_int_'].iloc[0]
+    # config = df[df['config_name'] == 'glow_quant_ic_float_'].iloc[0]
+    # config = df[df['config_name'] == 'tiny_engine_ic_int_nosoftmax_'].iloc[0]
+    config = df[df['config_name'] == 'tiny_engine_vww_int_nosoftmax_'].iloc[0]
+    ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+
+    #plot_speedup("Per-Layer Speedup", ref_row, config)
+    layer_perf_by_type(df)
+    import sys;sys.exit(0)
     
-    # plot_sankey("Per-Layer Runtime Flow", ref_row, st_time_vww_int_)
-    # plot_speedup("Per-Layer Speedup", ref_row, st_time_vww_int_)
+    plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+    plot_speedup("Per-Layer Speedup", ref_row, config)
 
     # plot pareto diagrams
     int_df = df[df['dtype'] == 'int']
@@ -716,10 +945,16 @@ def main():
     filtered_df_float_ic = float_df[float_df['model'] == 'ic']
     filtered_df_float_vww = float_df[float_df['model'] == 'vww']
     
-    #plot_pareto3d("Pareto Diagram AD int", filtered_df_int_ad)
+    plot_pareto3d("Pareto Diagram AD int", filtered_df_int_ad)
+    plot_pareto3d("Pareto Diagram KWS", filtered_df_int_kws)
+    plot_pareto3d("Pareto Diagram IC", filtered_df_int_ic)
+    plot_pareto3d("Pareto Diagram VWW", filtered_df_int_vww)
+    import sys; sys.exit(0)
+    runtime_over_error(filtered_df_int_ic, "Image Classification")
 
     plot_deviation(df)
-    import sys;sys.exit()
+
+
     plot_pareto3d("Pareto Diagram IC float", filtered_df_float_ic)
     plot_pareto3d("Pareto Diagram KWS", filtered_df_int_kws)
 

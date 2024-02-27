@@ -1,95 +1,263 @@
 ID   : 0
-Kind : 155 (armcmconvolution)
-Name : model_activation_Relu_model_batch_normalization_FusedBatchNormV3_model_conv2d_BiasAdd_ReadVariableOp_model_conv2d_BiasAdd_model_conv2d_4_Conv2D_model_conv2d_Conv2D1__1
-Inp[0] Src:       float<1 x 49 x 10 x 1>
-Inp[1] Filter:    float<64 x 10 x 4 x 1>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
-Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<320>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_Relu_model_batch_normalization_FusedBatchNormV3_model_conv2d_BiasAdd_ReadVariableOp_model_conv2d_BiasAdd_model_depthwise_conv2d_depthwise_model_conv2d_Conv2D1__1
+Inp[0] Src:       i8[S:0.003921569 O:-128][0.000,1.000]<1 x 96 x 96 x 3>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<8 x 3 x 3 x 3>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<8>
+Out[0] Dest:      i8[S:0.023232805 O:-128][0.000,5.924]<1 x 48 x 48 x 8>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<108>
 
 ID   : 1
-Kind : 155 (armcmconvolution)
-Name : model_activation_1_Relu_model_batch_normalization_1_FusedBatchNormV3_model_depthwise_conv2d_depthwise_model_depthwise_conv2d_BiasAdd_ReadVariableOp_model_depthwise_conv2d_BiasAdd_model_conv2d_4_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 3 x 3 x 1>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
-Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_1_Relu_model_batch_normalization_1_FusedBatchNormV3_model_depthwise_conv2d_depthwise_model_depthwise_conv2d_BiasAdd_ReadVariableOp_model_depthwise_conv2d_BiasAdd1__1
+Inp[0] Src:       i8[S:0.023232805 O:-128][0.000,5.924]<1 x 48 x 48 x 8>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 8>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<8>
+Out[0] Dest:      i8[S:0.045962192 O:-128][0.000,11.720]<1 x 48 x 48 x 8>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<72>
 
 ID   : 2
-Kind : 155 (armcmconvolution)
-Name : model_activation_2_Relu_model_batch_normalization_2_FusedBatchNormV3_model_conv2d_1_BiasAdd_ReadVariableOp_model_conv2d_1_BiasAdd_model_conv2d_4_Conv2D_model_conv2d_1_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 1 x 1 x 64>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_2_Relu_model_batch_normalization_2_FusedBatchNormV3_model_conv2d_1_BiasAdd_ReadVariableOp_model_conv2d_1_BiasAdd_model_depthwise_conv2d_1_depthwise_model_conv2d_1_Conv2D1__1
+Inp[0] Src:       i8[S:0.045962192 O:-128][0.000,11.720]<1 x 48 x 48 x 8>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<16 x 1 x 1 x 8>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<16>
+Out[0] Dest:      i8[S:0.054496728 O:-128][0.000,13.897]<1 x 48 x 48 x 16>
 Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
 
 ID   : 3
-Kind : 155 (armcmconvolution)
-Name : model_activation_3_Relu_model_batch_normalization_3_FusedBatchNormV3_model_depthwise_conv2d_1_depthwise_model_depthwise_conv2d_1_BiasAdd_ReadVariableOp_model_depthwise_conv2d_1_BiasAdd_model_conv2d_4_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 3 x 3 x 1>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
-Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_3_Relu_model_batch_normalization_3_FusedBatchNormV3_model_depthwise_conv2d_1_depthwise_model_depthwise_conv2d_1_BiasAdd_ReadVariableOp_model_depthwise_conv2d_1_BiasAdd1__1
+Inp[0] Src:       i8[S:0.054496728 O:-128][0.000,13.897]<1 x 48 x 48 x 16>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 16>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<16>
+Out[0] Dest:      i8[S:0.049998511 O:-128][0.000,12.750]<1 x 24 x 24 x 16>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<144>
 
 ID   : 4
-Kind : 155 (armcmconvolution)
-Name : model_activation_4_Relu_model_batch_normalization_4_FusedBatchNormV3_model_conv2d_2_BiasAdd_ReadVariableOp_model_conv2d_2_BiasAdd_model_conv2d_4_Conv2D_model_conv2d_2_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 1 x 1 x 64>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_4_Relu_model_batch_normalization_4_FusedBatchNormV3_model_conv2d_2_BiasAdd_ReadVariableOp_model_conv2d_2_BiasAdd_model_depthwise_conv2d_3_depthwise_model_conv2d_2_Conv2D1__1
+Inp[0] Src:       i8[S:0.049998511 O:-128][0.000,12.750]<1 x 24 x 24 x 16>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<32 x 1 x 1 x 16>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<32>
+Out[0] Dest:      i8[S:0.047919210 O:-128][0.000,12.219]<1 x 24 x 24 x 32>
 Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
 
 ID   : 5
-Kind : 155 (armcmconvolution)
-Name : model_activation_5_Relu_model_batch_normalization_5_FusedBatchNormV3_model_depthwise_conv2d_2_depthwise_model_depthwise_conv2d_2_BiasAdd_ReadVariableOp_model_depthwise_conv2d_2_BiasAdd_model_conv2d_4_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 3 x 3 x 1>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
-Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_5_Relu_model_batch_normalization_5_FusedBatchNormV3_model_depthwise_conv2d_2_depthwise_model_depthwise_conv2d_2_BiasAdd_ReadVariableOp_model_depthwise_conv2d_2_BiasAdd_model_depthwise_conv2d_3_depthwise1__1
+Inp[0] Src:       i8[S:0.047919210 O:-128][0.000,12.219]<1 x 24 x 24 x 32>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 32>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<32>
+Out[0] Dest:      i8[S:0.052138530 O:-128][0.000,13.295]<1 x 24 x 24 x 32>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<288>
 
 ID   : 6
-Kind : 155 (armcmconvolution)
-Name : model_activation_6_Relu_model_batch_normalization_6_FusedBatchNormV3_model_conv2d_3_BiasAdd_ReadVariableOp_model_conv2d_3_BiasAdd_model_conv2d_4_Conv2D_model_conv2d_3_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 1 x 1 x 64>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_6_Relu_model_batch_normalization_6_FusedBatchNormV3_model_conv2d_3_BiasAdd_ReadVariableOp_model_conv2d_3_BiasAdd_model_depthwise_conv2d_3_depthwise_model_conv2d_3_Conv2D1__1
+Inp[0] Src:       i8[S:0.052138530 O:-128][0.000,13.295]<1 x 24 x 24 x 32>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<32 x 1 x 1 x 32>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<32>
+Out[0] Dest:      i8[S:0.048761986 O:-128][0.000,12.434]<1 x 24 x 24 x 32>
 Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
 
 ID   : 7
-Kind : 155 (armcmconvolution)
-Name : model_activation_7_Relu_model_batch_normalization_7_FusedBatchNormV3_model_depthwise_conv2d_3_depthwise_model_depthwise_conv2d_3_BiasAdd_ReadVariableOp_model_depthwise_conv2d_3_BiasAdd_model_conv2d_4_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 3 x 3 x 1>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
-Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_7_Relu_model_batch_normalization_7_FusedBatchNormV3_model_depthwise_conv2d_3_depthwise_model_depthwise_conv2d_3_BiasAdd_ReadVariableOp_model_depthwise_conv2d_3_BiasAdd1__1
+Inp[0] Src:       i8[S:0.048761986 O:-128][0.000,12.434]<1 x 24 x 24 x 32>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 32>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<32>
+Out[0] Dest:      i8[S:0.053277355 O:-128][0.000,13.586]<1 x 12 x 12 x 32>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<288>
 
 ID   : 8
-Kind : 155 (armcmconvolution)
-Name : model_activation_8_Relu_model_batch_normalization_8_FusedBatchNormV3_model_conv2d_4_BiasAdd_ReadVariableOp_model_conv2d_4_BiasAdd_model_conv2d_4_Conv2D1__1
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Inp[1] Filter:    float<64 x 1 x 1 x 64>
-Inp[2] Bias:      float<64>
-Out[0] Dest:      float<1 x 25 x 5 x 64>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_8_Relu_model_batch_normalization_8_FusedBatchNormV3_model_conv2d_4_BiasAdd_ReadVariableOp_model_conv2d_4_BiasAdd_model_depthwise_conv2d_5_depthwise_model_conv2d_4_Conv2D1__1
+Inp[0] Src:       i8[S:0.053277355 O:-128][0.000,13.586]<1 x 12 x 12 x 32>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<64 x 1 x 1 x 32>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<64>
+Out[0] Dest:      i8[S:0.056438033 O:-128][0.000,14.392]<1 x 12 x 12 x 64>
 Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
 
 ID   : 9
-Kind : 15 (avgpool)
-Name : model_average_pooling2d_AvgPool
-Inp[0] Src:       float<1 x 25 x 5 x 64>
-Out[0] Dest:      float<1 x 1 x 1 x 64>
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_9_Relu_model_batch_normalization_9_FusedBatchNormV3_model_depthwise_conv2d_4_depthwise_model_depthwise_conv2d_4_BiasAdd_ReadVariableOp_model_depthwise_conv2d_4_BiasAdd_model_depthwise_conv2d_5_depthwise1__1
+Inp[0] Src:       i8[S:0.056438033 O:-128][0.000,14.392]<1 x 12 x 12 x 64>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 64>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<64>
+Out[0] Dest:      i8[S:0.036942460 O:-128][0.000,9.420]<1 x 12 x 12 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<576>
 
 ID   : 10
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_10_Relu_model_batch_normalization_10_FusedBatchNormV3_model_conv2d_5_BiasAdd_ReadVariableOp_model_conv2d_5_BiasAdd_model_depthwise_conv2d_5_depthwise_model_conv2d_5_Conv2D1__1
+Inp[0] Src:       i8[S:0.036942460 O:-128][0.000,9.420]<1 x 12 x 12 x 64>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<64 x 1 x 1 x 64>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<64>
+Out[0] Dest:      i8[S:0.032110684 O:-128][0.000,8.188]<1 x 12 x 12 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 11
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_11_Relu_model_batch_normalization_11_FusedBatchNormV3_model_depthwise_conv2d_5_depthwise_model_depthwise_conv2d_5_BiasAdd_ReadVariableOp_model_depthwise_conv2d_5_BiasAdd1__1
+Inp[0] Src:       i8[S:0.032110684 O:-128][0.000,8.188]<1 x 12 x 12 x 64>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 64>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<64>
+Out[0] Dest:      i8[S:0.031887341 O:-128][0.000,8.131]<1 x 6 x 6 x 64>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<576>
+
+ID   : 12
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_12_Relu_model_batch_normalization_12_FusedBatchNormV3_model_conv2d_6_BiasAdd_ReadVariableOp_model_conv2d_6_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_6_Conv2D1__1
+Inp[0] Src:       i8[S:0.031887341 O:-128][0.000,8.131]<1 x 6 x 6 x 64>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<128 x 1 x 1 x 64>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.035080403 O:-128][0.000,8.946]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 13
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_13_Relu_model_batch_normalization_13_FusedBatchNormV3_model_depthwise_conv2d_6_depthwise_model_depthwise_conv2d_6_BiasAdd_ReadVariableOp_model_depthwise_conv2d_6_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       i8[S:0.035080403 O:-128][0.000,8.946]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.033309847 O:-128][0.000,8.494]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1152>
+
+ID   : 14
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_14_Relu_model_batch_normalization_14_FusedBatchNormV3_model_conv2d_7_BiasAdd_ReadVariableOp_model_conv2d_7_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_7_Conv2D1__1
+Inp[0] Src:       i8[S:0.033309847 O:-128][0.000,8.494]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<128 x 1 x 1 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.027542219 O:-128][0.000,7.023]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 15
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_15_Relu_model_batch_normalization_15_FusedBatchNormV3_model_depthwise_conv2d_7_depthwise_model_depthwise_conv2d_7_BiasAdd_ReadVariableOp_model_depthwise_conv2d_7_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       i8[S:0.027542219 O:-128][0.000,7.023]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.042863756 O:-128][0.000,10.930]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1152>
+
+ID   : 16
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_16_Relu_model_batch_normalization_16_FusedBatchNormV3_model_conv2d_8_BiasAdd_ReadVariableOp_model_conv2d_8_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_8_Conv2D1__1
+Inp[0] Src:       i8[S:0.042863756 O:-128][0.000,10.930]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<128 x 1 x 1 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.041809339 O:-128][0.000,10.661]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 17
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_17_Relu_model_batch_normalization_17_FusedBatchNormV3_model_depthwise_conv2d_8_depthwise_model_depthwise_conv2d_8_BiasAdd_ReadVariableOp_model_depthwise_conv2d_8_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       i8[S:0.041809339 O:-128][0.000,10.661]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.036856353 O:-128][0.000,9.398]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1152>
+
+ID   : 18
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_18_Relu_model_batch_normalization_18_FusedBatchNormV3_model_conv2d_9_BiasAdd_ReadVariableOp_model_conv2d_9_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_9_Conv2D1__1
+Inp[0] Src:       i8[S:0.036856353 O:-128][0.000,9.398]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<128 x 1 x 1 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.034623630 O:-128][0.000,8.829]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 19
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_19_Relu_model_batch_normalization_19_FusedBatchNormV3_model_depthwise_conv2d_9_depthwise_model_depthwise_conv2d_9_BiasAdd_ReadVariableOp_model_depthwise_conv2d_9_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       i8[S:0.034623630 O:-128][0.000,8.829]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.063547224 O:-128][0.000,16.205]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1152>
+
+ID   : 20
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_20_Relu_model_batch_normalization_20_FusedBatchNormV3_model_conv2d_10_BiasAdd_ReadVariableOp_model_conv2d_10_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_10_Conv2D1__1
+Inp[0] Src:       i8[S:0.063547224 O:-128][0.000,16.205]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<128 x 1 x 1 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.027170919 O:-128][0.000,6.929]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 21
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_21_Relu_model_batch_normalization_21_FusedBatchNormV3_model_depthwise_conv2d_10_depthwise_model_depthwise_conv2d_10_BiasAdd_ReadVariableOp_model_depthwise_conv2d_10_BiasAdd_model_depthwise_conv2d_11_depthwise1__1
+Inp[0] Src:       i8[S:0.027170919 O:-128][0.000,6.929]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.047598932 O:-128][0.000,12.138]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1152>
+
+ID   : 22
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_22_Relu_model_batch_normalization_22_FusedBatchNormV3_model_conv2d_11_BiasAdd_ReadVariableOp_model_conv2d_11_BiasAdd_model_depthwise_conv2d_11_depthwise_model_conv2d_11_Conv2D1__1
+Inp[0] Src:       i8[S:0.047598932 O:-128][0.000,12.138]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<128 x 1 x 1 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.032228310 O:-128][0.000,8.218]<1 x 6 x 6 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 23
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_23_Relu_model_batch_normalization_23_FusedBatchNormV3_model_depthwise_conv2d_11_depthwise_model_depthwise_conv2d_11_BiasAdd_ReadVariableOp_model_depthwise_conv2d_11_BiasAdd1__1
+Inp[0] Src:       i8[S:0.032228310 O:-128][0.000,8.218]<1 x 6 x 6 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<128>
+Out[0] Dest:      i8[S:0.038599040 O:-128][0.000,9.843]<1 x 3 x 3 x 128>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1152>
+
+ID   : 24
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_24_Relu_model_batch_normalization_24_FusedBatchNormV3_model_conv2d_12_BiasAdd_ReadVariableOp_model_conv2d_12_BiasAdd_model_conv2d_13_Conv2D_model_conv2d_12_Conv2D1__1
+Inp[0] Src:       i8[S:0.038599040 O:-128][0.000,9.843]<1 x 3 x 3 x 128>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<256 x 1 x 1 x 128>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<256>
+Out[0] Dest:      i8[S:0.023680056 O:-128][0.000,6.038]<1 x 3 x 3 x 256>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 25
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_25_Relu_model_batch_normalization_25_FusedBatchNormV3_model_depthwise_conv2d_12_depthwise_model_depthwise_conv2d_12_BiasAdd_ReadVariableOp_model_depthwise_conv2d_12_BiasAdd_model_conv2d_13_Conv2D1__1
+Inp[0] Src:       i8[S:0.023680056 O:-128][0.000,6.038]<1 x 3 x 3 x 256>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<1 x 3 x 3 x 256>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<256>
+Out[0] Dest:      i8[S:0.044922203 O:-128][0.000,11.455]<1 x 3 x 3 x 256>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<2304>
+
+ID   : 26
+Kind : 156 (armcmcwqconvolution)
+Name : model_activation_26_Relu_model_batch_normalization_26_FusedBatchNormV3_model_conv2d_13_BiasAdd_ReadVariableOp_model_conv2d_13_BiasAdd_model_conv2d_13_Conv2D1__1
+Inp[0] Src:       i8[S:0.044922203 O:-128][0.000,11.455]<1 x 3 x 3 x 256>
+Inp[1] Filter:    i8[S:1.000000000 O:0][-128.000,127.000]<256 x 1 x 1 x 256>
+Inp[2] Bias:      i32[S:1.000000000 O:0][-2147483648.000,2147483648.000]<256>
+Out[0] Dest:      i8[S:0.023580028 O:-128][0.000,6.013]<1 x 3 x 3 x 256>
+Out[1] Scratch:   i8[S:0.000000000 O:0][-0.000,0.000]<1>
+
+ID   : 27
+Kind : 15 (avgpool)
+Name : model_average_pooling2d_AvgPool
+Inp[0] Src:       i8[S:0.023580028 O:-128][0.000,6.013]<1 x 3 x 3 x 256>
+Out[0] Dest:      i8[S:0.023580028 O:-128][0.000,6.013]<1 x 1 x 1 x 256>
+
+ID   : 28
 Kind : 157 (armcmfullyconnected)
-Name : FULLY_CONNECTED__1
-Inp[0] Src:       float<1 x 64>
-Inp[1] Weights:   float<12 x 64>
-Inp[2] Bias:      float<12>
-Out[0] Dest:      float<1 x 12>
+Name : model_dense_MatMul_model_dense_BiasAdd__1
+Inp[0] Src:       i8[S:0.023580028 O:-128][0.000,6.013]<1 x 256>
+Inp[1] Weights:   i8[S:0.007504269 O:0][-0.961,0.953]<2 x 256>
+Inp[2] Bias:      i32[S:0.000176951 O:0][-379999.094,379999.094]<2>
+Out[0] Dest:      i8[S:0.024829771 O:3][-3.253,3.079]<1 x 2>
+
+ID   : 29
+Kind : 29 (softmax)
+Name : SOFTMAX
+Inp[0] Src:       i8[S:0.024829771 O:3][-3.253,3.079]<1 x 2>
+Out[0] Dest:      i8[S:0.003906250 O:-128][0.000,0.996]<1 x 2>
 

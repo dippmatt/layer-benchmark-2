@@ -85,6 +85,20 @@ void transmitFloat(float value, uint8_t decimalDigits) {
     HAL_UART_Transmit(&hlpuart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
     return;
 }
+
+GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
+const uint8_t constantWeight[MODEL_CONSTANT_MEM_SIZE] = {
+#include "model.weights.txt"
+};
+
+GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
+uint8_t mutableWeight[MODEL_MUTABLE_MEM_SIZE];
+
+GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
+uint8_t activations[MODEL_ACTIVATIONS_MEM_SIZE];
+
+const uint8_t end_message[] = "Finished measurements!\r\n";
+
 /* USER CODE END 0 */
 
 /**
@@ -131,16 +145,7 @@ int main(void)
 
 	  ////////////////////////// STATIC MEMORY ALLOCATION  //////////////////////////
 
-	  GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
-	  uint8_t constantWeight[MODEL_CONSTANT_MEM_SIZE] = {
-	  #include "model.weights.txt"
-	  };
 
-	  GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
-	  uint8_t mutableWeight[MODEL_MUTABLE_MEM_SIZE];
-
-	  GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
-	  uint8_t activations[MODEL_ACTIVATIONS_MEM_SIZE];
 
 	  // get absolute addresses of model input / output tensors
 	  uint8_t *inputAddr  = GLOW_GET_ADDR(mutableWeight, <input_name>);
@@ -161,18 +166,6 @@ int main(void)
 	    }
 	  }
 	  
-	  /*
-	  float number = array[0][0];
-	  // need to adapt template in cube to print floats:
-	  // https://electronics.stackexchange.com/questions/616667/send-float-with-serial-port
-  	  //transmitFloat(number, 5);
-	  uint8_t txbuf[64];
-	  int my_int = (int)number;
-          sprintf((char*)txbuf, "Returned: %d\r\n", my_int);
-          HAL_UART_Transmit(&hlpuart1, txbuf, strlen((char*)txbuf), HAL_MAX_DELAY);
-	  */
-	  
-	  uint8_t end_message[] = "Finished measurements!\r\n";
 	  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
 
 	  break;

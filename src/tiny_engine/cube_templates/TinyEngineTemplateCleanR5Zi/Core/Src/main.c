@@ -72,6 +72,14 @@ int <int_type>ToString(<o_type> value, char* buffer, int bufferSize) {
     return snprintf(buffer, bufferSize, "%<o_format_specifier> ", value);
 }
 
+// buffer to transmit output values
+uint8_t txbuf[64];
+
+const uint8_t start_message[] = "Start of benchmark.\r\n";
+const uint8_t end_message[] = "Finished timing measurements!\r\n";
+const uint8_t new_tensor_message2[] = "Tensor values:\r\n";
+const uint8_t final_message[] = "End of benchmark.\r\n";
+
 /* USER CODE END 0 */
 
 /**
@@ -125,7 +133,6 @@ int main(void)
   size_t dataSizeInBytes = COLS * sizeof(array[0][0]);
 
   // measure latency per layer NUM_REPS times for each input tensor
-  uint8_t start_message[] = "Start of benchmark.\r\n";
   HAL_UART_Transmit(&hlpuart1, start_message, sizeof(start_message), HAL_MAX_DELAY);
 
   while (1)
@@ -146,12 +153,11 @@ int main(void)
 		PROFILING_STOP(&hlpuart1);
 	  }
 	}
-    uint8_t end_message[] = "Finished timing measurements!\r\n";
+
     HAL_UART_Transmit(&hlpuart1, end_message, sizeof(end_message), HAL_MAX_DELAY);
 
 
     size_t out_dtype_size = sizeof(<o_type>);
-    uint8_t txbuf[64];
 
 
     // RUN INFERENCE TO RETRIVE OUTPUT DATA
@@ -166,7 +172,6 @@ int main(void)
 
       invoke_inf();
 
-      uint8_t new_tensor_message2[] = "Tensor values:\r\n";
       HAL_UART_Transmit(&hlpuart1, new_tensor_message2, strlen(new_tensor_message2), HAL_MAX_DELAY);
       for (k = 0; k < OUT_COLS; k++)
       {
@@ -179,7 +184,6 @@ int main(void)
       HAL_UART_Transmit(&hlpuart1, "\r\n", sizeof("\r\n"), HAL_MAX_DELAY);
     }
 
-    uint8_t final_message[] = "End of benchmark.\r\n";
     HAL_UART_Transmit(&hlpuart1, final_message, strlen(final_message), HAL_MAX_DELAY);
     break;
     /* USER CODE END WHILE */

@@ -86,6 +86,27 @@ int <int_type>ToString(<o_type> value, char* buffer, int bufferSize) {
     return snprintf(buffer, bufferSize, "%<o_format_specifier> ", value);
 }
 
+// model weights, I/O buffer and activations
+GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
+const uint8_t constantWeight[MODEL_CONSTANT_MEM_SIZE] = {
+#include "model.weights.txt"
+};
+
+GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
+uint8_t mutableWeight[MODEL_MUTABLE_MEM_SIZE];
+
+GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
+uint8_t activations[MODEL_ACTIVATIONS_MEM_SIZE];
+
+// buffer to transmit output values
+uint8_t txbuf[64];  
+
+const uint8_t start_message[] = "Start of benchmark.\r\n";
+const uint8_t end_message[] = "Finished timing measurements!\r\n";
+const uint8_t new_tensor_message[] = "Tensor values:\r\n";
+const uint8_t error_message[] = "Error running bundle.\r\n";
+const uint8_t final_message[] = "End of benchmark.\r\n";
+
 /* USER CODE END 0 */
 
 /**
@@ -132,16 +153,7 @@ int main(void)
 
 	  ////////////////////////// STATIC MEMORY ALLOCATION  //////////////////////////
 
-	  GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
-	  uint8_t constantWeight[MODEL_CONSTANT_MEM_SIZE] = {
-	  #include "model.weights.txt"
-	  };
 
-	  GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
-	  uint8_t mutableWeight[MODEL_MUTABLE_MEM_SIZE];
-
-	  GLOW_MEM_ALIGN(MODEL_MEM_ALIGN)
-	  uint8_t activations[MODEL_ACTIVATIONS_MEM_SIZE];
 
 	  // get absolute addresses of model input / output tensors
 	  uint8_t *inputAddr  = GLOW_GET_ADDR(mutableWeight, <input_name>);
@@ -156,10 +168,10 @@ int main(void)
 	  size_t dataSizeInBytes = COLS * sizeof(array[0][0]);
 
 	  // measure latency per layer NUM_REPS times for each input tensor
-	  uint8_t start_message[] = "Start of benchmark.\r\n";
+	  
 	  HAL_UART_Transmit (&hlpuart1, start_message, sizeof(start_message), HAL_MAX_DELAY);
-	  for (i=0; i< ROWS; i++){
-
+	  
+    for (i=0; i< ROWS; i++){
     // !!! memcpy causes MCU crash !!!
     // use for loop instead
 		//memcpy(inputAddr, array[i], dataSizeInBytes);
@@ -182,7 +194,6 @@ int main(void)
 	      PROFILING_STOP(&hlpuart1);
 	    }
 	  }
-	  uint8_t end_message[] = "Finished timing measurements!\r\n";
 	  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
 
 	  // now read model output for each input tensor
@@ -192,54 +203,17 @@ int main(void)
 
 	  for (i=0; i< ROWS; i++){
 		// iterate over elements of one flattened input tensor
-		//////////////////////////////////////////////////////////////////////////
-		// transmit first element of input buffer and first element of output buffer
-//	    uint8_t message[2000];
-//		int new_length = <o_type>ToString(inputs[0], message, sizeof(message));
-//		HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
-//		new_length = <o_type>ToString(outputs[0], message, sizeof(message));
-//		HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
-//		HAL_UART_Transmit (&hlpuart1, "END BEFORE MEMCPY\r\n", sizeof ("END BEFORE MEMCPY\r\n"), HAL_MAX_DELAY);
-		//////////////////////////////////////////////////////////////////////////
-
 		// copy input tensor to model input buffer address
-		//memcpy(inputAddr, array[i], dataSizeInBytes);
 		for (j=0; j<COLS; j++){
 			inputAddr[j] = array[i][j];
 		}
 		error_code = model(constantWeight, mutableWeight, activations);
 
-		//////////////////////////////////////////////////////////////////////////
-		// Transmit first 10 elements of model input after before inference
-//		for (j=0; j< 10; j++){
-//			new_length = <o_type>ToString(inputs[j], message, sizeof(message));
-//			HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
-//		}
-//		HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
-//		// Transmit first 10 elements of model output buffer after inference
-//		for (j=0; j< 10; j++){
-//			new_length = <o_type>ToString(outputs[j], message, sizeof(message));
-//			HAL_UART_Transmit (&hlpuart1, message, new_length, HAL_MAX_DELAY);
-//		}
-//		HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
-//		return 0;
-		//////////////////////////////////////////////////////////////////////////
-		/* Used to validate model output and compare against tflite runtime on x86
-		uint8_t txbuf[64];
-		int intValue = (int)outputs[639];
-        int length = sprintf((char*)txbuf, "Returned: %d\r\n", intValue);
-        HAL_UART_Transmit (&hlpuart1, txbuf, length, HAL_MAX_DELAY);
-		*/
-
 		if (error_code != GLOW_SUCCESS) {
-		  uint8_t end_message[] = "Error running bundle.\r\n";
-		  HAL_UART_Transmit (&hlpuart1, end_message, sizeof (end_message), HAL_MAX_DELAY);
+		  HAL_UART_Transmit (&hlpuart1, error_message, sizeof (error_message), HAL_MAX_DELAY);
 		  return -1;
 		}
-
-    uint8_t txbuf[64];
-    //int length = sprintf((char*)txbuf, "Returned: %<o_format_specifier>\r\n", (<o_type>)out_array[i][0]);
-    uint8_t new_tensor_message[] = "Tensor values:\r\n";
+  
     HAL_UART_Transmit (&hlpuart1, new_tensor_message, strlen(new_tensor_message), HAL_MAX_DELAY);
     for (k=0; k<OUT_COLS; k++){
       // check if output value is of type float
@@ -255,40 +229,8 @@ int main(void)
     }
     HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
 
-		// memcpy(out_array[i], outputs, OUT_COLS * out_dtype_size);
-	
-  	/*
-    for (j=0; j<OUT_COLS; j++){
-			out_array[i][j] = outputs[j];
-		}
-    */
-
       }
-      /*
-      for (i=0; i< ROWS; i++){
-          uint8_t txbuf[64];
-          //int length = sprintf((char*)txbuf, "Returned: %<o_format_specifier>\r\n", (<o_type>)out_array[i][0]);
-          uint8_t new_tensor_message[] = "Tensor values:\r\n";
-          HAL_UART_Transmit (&hlpuart1, new_tensor_message, strlen(new_tensor_message), HAL_MAX_DELAY);
-          for (k=0; k<OUT_COLS; k++){
-        	  // check if out_array is of type float
-        	  int length = 0;
-        	  if (sizeof(out_array[0][0]) == sizeof(float)){
-        	  	  length = floatToString(out_array[i][k], txbuf, sizeof(txbuf), 6);
-          	  }
-        	  else{
-        	  	  length = <int_type>ToString(out_array[i][k], txbuf, sizeof(txbuf));
-        	  }
-        	  //int intValue = (int)out_array[i][k];
-        	  //int length = sprintf((char*)txbuf, "Returned: %d\r\n", intValue);
-        	  //int length = sprintf((char*)txbuf, "Returned: %.6e\r\n", out_array[i][k]);
 
-        	  HAL_UART_Transmit (&hlpuart1, txbuf, length, HAL_MAX_DELAY);
-          }
-          HAL_UART_Transmit (&hlpuart1, "\r\n", sizeof ("\r\n"), HAL_MAX_DELAY);
-      }
-      */
-      uint8_t final_message[] = "End of benchmark.\r\n";
       HAL_UART_Transmit (&hlpuart1, final_message, strlen(final_message), HAL_MAX_DELAY);
 	  break;
     /* USER CODE END WHILE */

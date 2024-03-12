@@ -1,0 +1,4699 @@
+Deriving the memory schedule for 16 activation tensors.
+----------------------------------------------------  Schedule Details ----------------------------------------------------------------
+----------------------|                      SRAM                      ||                     Flash                      |             |
+----------------------|  activation  |  runtime  | trainable  |  sum   ||   weight   |   bias   |  scale   |     sum     |     MAC     |
+-------Schedule-------|49152         |76032      |0           |125184  ||77360       |1384      |1384      |80128        |12530304     |
+0:CONV_2D             |19456 (40%)   |972 (1%)   |            |20428   ||432 (1%)    |64 (5%)   |64 (5%)   |560 (1%)     |442368 (4%)  |
+1:CONV_2D             |32768 (67%)   |5184 (7%)  |            |37952   ||2304 (3%)   |64 (5%)   |64 (5%)   |2432 (3%)    |2359296 (19%)|
+2:CONV_2D             |32768 (67%)   |5184 (7%)  |            |37952   ||2304 (3%)   |64 (5%)   |64 (5%)   |2432 (3%)    |2359296 (19%)|
+3:ADD                 |49152 (100%)  |0 (0%)     |            |49152   ||0 (0%)      |0 (0%)    |0 (0%)    |16384 (0%)   |
+4:CONV_2D             |24576 (50%)   |9792 (13%) |            |34368   ||4608 (6%)   |128 (9%)  |128 (9%)  |4864 (6%)    |1179648 (9%) |
+5:CONV_2D             |16384 (33%)   |19584 (26%)|            |35968   ||9216 (12%)  |128 (9%)  |128 (9%)  |9472 (12%)   |2359296 (19%)|
+6:CONV_2D             |24576 (50%)   |64 (0%)    |            |24640   ||512 (1%)    |128 (9%)  |128 (9%)  |768 (1%)     |131072 (1%)  |
+7:ADD                 |24576 (50%)   |0 (0%)     |            |24576   ||0 (0%)      |0 (0%)    |0 (0%)    |8192 (0%)    |
+8:CONV_2D             |12288 (25%)   |38016 (50%)|            |50304   ||18432 (24%) |256 (18%) |256 (19%) |18944 (24%)  |1179648 (9%) |
+9:CONV_2D             |8192 (17%)    |76032 (100%)|           |84224   ||36864 (48%) |256 (18%) |256 (19%) |37376 (47%)  |2359296 (19%)|
+10:CONV_2D            |12288 (25%)   |128 (0%)   |            |12416   ||2048 (3%)   |256 (18%) |256 (19%) |2560 (3%)    |131072 (1%)  |
+11:ADD                |12288 (25%)   |0 (0%)     |            |12288   ||0 (0%)      |0 (0%)    |0 (0%)    |4096 (0%)    |
+12:AVERAGE_POOL_2D    |4160 (8%)     |0 (0%)     |            |4160    ||0 (0%)      |0 (0%)    |0 (0%)    |0 (0%)       |
+13:CONV_2D            |76 (0%)       |256 (0%)   |            |332     ||640 (1%)    |40 (3%)   |40 (3%)   |720 (1%)     |640 (0%)     |
+Peak memory: 49152 bytes
+NOW RUNNING STEP: load_model_and_data
+[93mNote: Found 10 samples in input_tensors, but limiting sample size to 4 for simplicity![0m
+STEP load_model_and_data FINISHED
+
+NOW RUNNING STEP: load_cube_project
+STEP load_cube_project FINISHED
+
+NOW RUNNING STEP: get_mcu_dev
+STEP get_mcu_dev FINISHED
+
+NOW RUNNING STEP: validate_data
+STEP validate_data FINISHED
+
+NOW RUNNING STEP: use_framework
+STEP use_framework FINISHED
+
+NOW RUNNING STEP: copy_build_compile
+STEP copy_build_compile FINISHED
+
+NOW RUNNING STEP: flash_and_readback
+0
+95 -22.544476 -20.429235 -19.786009 -21.060682 -21.856888 -20.141882 -19.746098 -19.151428 -22.349451 -23.680645 -23.223515 -24.150631 -24.314842 -24.269720 -24.162409 -21.330544 -21.272287 -20.759848 -20.250574 -17.903051 -20.178320 -20.476572 -20.588987 -20.367708 -22.802994 -23.893555 -22.195040 -22.686728 -22.188459 -21.821791 -23.131002 -23.002497 -23.732227 -23.980484 -22.784145 -23.677876 -25.259939 -25.760038 -22.942047 -21.714960 -21.781384 -22.555782 -24.916714 -24.207739 -24.255457 -20.892616 -23.931812 -25.214178 -21.548824 -19.841013 -18.103537 -18.353174 -19.364063 -18.191996 -19.925951 -28.458733 -41.970104 -33.869965 -16.140903 -6.657712 -2.833686 0.-419326 4.054403 1.162137 0.-431464 -3.535151 -5.431806 -7.784782 -6.600507 -5.504792 -4.914134 -7.220056 -9.125129 -11.765618 -10.341183 -9.124871 -7.228546 -8.143823 -9.142690 -14.130490 -12.327231 -10.995330 -14.036408 -20.059511 -19.739872 -16.671726 -13.397735 -14.248024 -14.465118 -16.031307 -15.451015 -16.700178 -16.837225 -15.344693 -12.884462 -14.204816 -14.494740 -14.887432 -14.116061 -15.536298 -12.624760 -12.626775 -14.214669 -13.088420 -15.314601 -15.741343 -14.877789 -15.341860 -15.045567 -12.943596 -12.795860 -15.539860 -15.495582 -14.552863 -15.487253 -16.016298 -14.109653 -14.612604 -16.125359 -17.178455 -17.055555 -18.633127 -20.116253 -20.151436 -20.192570 -20.690523 -20.559763 -21.356791 -21.263113 -18.964396 -17.905762 -19.113314 -20.558172 -19.326542 -18.268995 -17.180008 -20.340773 -22.1995 -15.518790 -16.090708 -17.146204 -17.356533 -18.950727 -18.934254 -17.718992 -16.569962 -18.427204 -18.128998 -16.761707 -17.285032 -18.127506 -17.885971 -18.378448 -19.349218 -17.731203 -17.883554 -19.035963 -20.602888 -19.615129 -19.755184 -20.283634 -20.600641 -20.632912 -21.200619 -21.815178 -21.623598 -20.208805 -18.324324 -16.948393 -18.736267 -21.086500 -19.317324 -17.332584 -15.983214 -18.918264 -21.961126 -21.096443 -21.556883 -23.899157 -23.778059 -23.705967 -20.527653 -19.328085 -18.953283 -18.053898 -18.986080 -20.980612 -19.391973 -19.567099 -19.442430 -21.883249 -23.535658 -20.753874 -21.305737 -21.615341 -21.130495 -21.070023 -21.669786 -22.147268 -21.837008 -22.007330 -22.694975 -24.284006 -25.573200 -22.737835 -20.487396 -20.531034 -21.957651 -24.432451 -23.799131 -24.306786 -21.776798 -24.494671 -25.319296 -21.589149 -19.634722 -18.880539 -19.498579 -18.121515 -18.657089 -20.217072 -28.941566 -42.408276 
+
+0
+Tensor values:
+
+0
+-34.730320 -19.021626 -10.322483 -5.725536 -2.971238 1.662043 0.-678080 -2.236563 -5.790785 -6.768460 -8.189785 -7.507138 -7.023218 -5.560350 -7.446474 -9.497470 -12.107932 -10.741386 -9.089621 -7.330173 -8.951016 -10.122761 -15.102525 -13.563526 -11.888329 -14.834973 -20.947456 -20.721554 -18.154257 -14.977424 -15.682194 -15.550491 -16.846878 -16.169027 -17.573368 -17.504940 -16.131815 -13.405693 -14.795023 -15.303046 -15.351289 -14.550826 -16.218102 -13.623831 -13.446051 -15.421030 -14.947816 -16.979437 -16.801805 -15.330065 -15.988764 -15.724343 -13.767287 -13.534601 -15.539161 -16.352768 -16.430521 -16.896603 -16.852745 -15.283569 -15.931659 -17.368876 -18.291906 -17.712683 -19.583138 -20.886637 -21.575939 -22.225727 -22.066584 -21.649044 -22.640295 -22.544476 -20.429235 -19.786009 -21.060682 -21.856888 -20.141882 -19.746098 -19.151428 -22.349451 -23.680645 -23.223515 -24.150631 -24.314842 -24.269720 -24.162409 -21.330544 -21.272287 -20.759848 -20.250574 -17.903051 -20.178320 -20.476572 -20.588987 -20.367708 -22.802994 -23.893555 -22.195040 -22.686728 -22.188459 -21.821791 -23.131002 -23.002497 -23.732227 -23.980484 -22.784145 -23.677876 -25.259939 -25.760038 -22.942047 -21.714960 -21.781384 -22.555782 -24.916714 -24.207739 -24.255457 -20.892616 -23.931812 -25.214178 -21.548824 -19.841013 -18.103537 -18.353174 -19.364063 -18.191996 -19.925951 -28.458733 -41.970104 -33.869965 -16.140903 -6.657712 -2.833686 0.-419326 4.054403 1.162137 0.-431464 -3.535151 -5.431806 -7.784782 -6.600507 -5.504792 -4.914134 -7.220056 -9.125129 -11.765618 -10.341183 -9.124871 -7.228546 -8.143823 -9.142690 -14.130490 -12.327231 -10.995330 -14.036408 -20.059511 -19.739872 -16.671726 -13.397735 -14.248024 -14.465118 -16.031307 -15.451015 -16.700178 -16.837225 -15.344693 -12.884462 -14.204816 -14.494740 -14.887432 -14.116061 -15.536298 -12.624760 -12.626775 -14.214669 -13.088420 -15.314601 -15.741343 -14.877789 -15.341860 -15.045567 -12.943596 -12.795860 -15.539860 -15.495582 -14.552863 -15.487253 -16.016298 -14.109653 -14.612604 -16.125359 -17.178455 -17.055555 -18.633127 -20.116253 -20.151436 -20.192570 -20.690523 -20.559763 -21.356791 -21.263113 -18.964396 -17.905762 -19.113314 -20.558172 -19.326542 -18.268995 -17.180008 -20.340773 -22.199532 -20.925922 -22.222672 -23.252584 -23.473694 -23.431702 -20.196133 -19.995541 -18.521955 -17.068024 -15.892493 -19.134323 -18.721067 -18.516233 -18.600046 -20.561066 -22.371572 -20.300829 -20.789080 -20.424465 -19.266592 -20.421608 -20.529882 -21.305040 -22.063473 -20.807430 -21.375553 -23.465899 -23.991419 -20.839632 -19.327761 -19.290936 -19.691223 -22.476204 -21.502882 -21.471287 -18.265429 -21.387066 -23.089045 -18.654491 -16.074728 -14.280442 -14.785456 -15.188294 -14.050052 -15.972376 -24.715525 -37.919418 -33.551674 -14.821664 -4.763021 -1.629843 0.-20498 4.318817 0.828636 0.679617 -1.336756 -4.285989 -6.991797 -5.462776 -4.854771 -4.654040 -7.232771 -8.838531 -11.387872 -9.934426 -9.720222 -8.147139 -8.493764 -9.335779 -13.899437 -11.632317 -10.713750 -13.936308 -20.450811 -19.468519 -15.665647 -12.899978 -14.228943 -14.285353 -15.406433 -14.731035 -15.552892 Start of benchmark.
+
+0
+Profiling "MAIN loop timing" sequence: 
+
+0
+--Event-----------------------|--timestamp--|----delta_t---
+
+0
+BEGIN                         :        0 µs | +        0 µs
+
+0
+END                           :   353580 µs | +   353580 µs
+
+1
+
+
+1
+Profiling "MAIN loop timing" sequence: 
+
+1
+--Event-----------------------|--timestamp--|----delta_t---
+
+1
+BEGIN                         :        0 µs | +        0 µs
+
+1
+END                           :   353572 µs | +   353572 µs
+
+2
+
+
+2
+Profiling "MAIN loop timing" sequence: 
+
+2
+--Event-----------------------|--timestamp--|----delta_t---
+
+2
+BEGIN                         :        0 µs | +        0 µs
+
+2
+END                           :   353569 µs | +   353569 µs
+
+3
+
+
+3
+Profiling "MAIN loop timing" sequence: 
+
+3
+--Event-----------------------|--timestamp--|----delta_t---
+
+3
+BEGIN                         :        0 µs | +        0 µs
+
+3
+END                           :   353569 µs | +   353569 µs
+
+4
+
+
+4
+Profiling "MAIN loop timing" sequence: 
+
+4
+--Event-----------------------|--timestamp--|----delta_t---
+
+4
+BEGIN                         :        0 µs | +        0 µs
+
+4
+END                           :   353568 µs | +   353568 µs
+
+5
+
+
+5
+Profiling "MAIN loop timing" sequence: 
+
+5
+--Event-----------------------|--timestamp--|----delta_t---
+
+5
+BEGIN                         :        0 µs | +        0 µs
+
+5
+END                           :   353570 µs | +   353570 µs
+
+6
+
+
+6
+Profiling "MAIN loop timing" sequence: 
+
+6
+--Event-----------------------|--timestamp--|----delta_t---
+
+6
+BEGIN                         :        0 µs | +        0 µs
+
+6
+END                           :   353567 µs | +   353567 µs
+
+7
+
+
+7
+Profiling "MAIN loop timing" sequence: 
+
+7
+--Event-----------------------|--timestamp--|----delta_t---
+
+7
+BEGIN                         :        0 µs | +        0 µs
+
+7
+END                           :   353568 µs | +   353568 µs
+
+8
+
+
+8
+Profiling "MAIN loop timing" sequence: 
+
+8
+--Event-----------------------|--timestamp--|----delta_t---
+
+8
+BEGIN                         :        0 µs | +        0 µs
+
+8
+END                           :   353568 µs | +   353568 µs
+
+9
+
+
+9
+Profiling "MAIN loop timing" sequence: 
+
+9
+--Event-----------------------|--timestamp--|----delta_t---
+
+9
+BEGIN                         :        0 µs | +        0 µs
+
+9
+END                           :   353569 µs | +   353569 µs
+
+10
+
+
+10
+Profiling "MAIN loop timing" sequence: 
+
+10
+--Event-----------------------|--timestamp--|----delta_t---
+
+10
+BEGIN                         :        0 µs | +        0 µs
+
+10
+END                           :   353570 µs | +   353570 µs
+
+11
+
+
+11
+Profiling "MAIN loop timing" sequence: 
+
+11
+--Event-----------------------|--timestamp--|----delta_t---
+
+11
+BEGIN                         :        0 µs | +        0 µs
+
+11
+END                           :   353570 µs | +   353570 µs
+
+12
+
+
+12
+Profiling "MAIN loop timing" sequence: 
+
+12
+--Event-----------------------|--timestamp--|----delta_t---
+
+12
+BEGIN                         :        0 µs | +        0 µs
+
+12
+END                           :   353568 µs | +   353568 µs
+
+13
+
+
+13
+Profiling "MAIN loop timing" sequence: 
+
+13
+--Event-----------------------|--timestamp--|----delta_t---
+
+13
+BEGIN                         :        0 µs | +        0 µs
+
+13
+END                           :   353569 µs | +   353569 µs
+
+14
+
+
+14
+Profiling "MAIN loop timing" sequence: 
+
+14
+--Event-----------------------|--timestamp--|----delta_t---
+
+14
+BEGIN                         :        0 µs | +        0 µs
+
+14
+END                           :   353568 µs | +   353568 µs
+
+15
+
+
+15
+Profiling "MAIN loop timing" sequence: 
+
+15
+--Event-----------------------|--timestamp--|----delta_t---
+
+15
+BEGIN                         :        0 µs | +        0 µs
+
+15
+END                           :   353569 µs | +   353569 µs
+
+16
+
+
+16
+Profiling "MAIN loop timing" sequence: 
+
+16
+--Event-----------------------|--timestamp--|----delta_t---
+
+16
+BEGIN                         :        0 µs | +        0 µs
+
+16
+END                           :   353567 µs | +   353567 µs
+
+17
+
+
+17
+Profiling "MAIN loop timing" sequence: 
+
+17
+--Event-----------------------|--timestamp--|----delta_t---
+
+17
+BEGIN                         :        0 µs | +        0 µs
+
+17
+END                           :   353568 µs | +   353568 µs
+
+18
+
+
+18
+Profiling "MAIN loop timing" sequence: 
+
+18
+--Event-----------------------|--timestamp--|----delta_t---
+
+18
+BEGIN                         :        0 µs | +        0 µs
+
+18
+END                           :   353570 µs | +   353570 µs
+
+19
+
+
+19
+Profiling "MAIN loop timing" sequence: 
+
+19
+--Event-----------------------|--timestamp--|----delta_t---
+
+19
+BEGIN                         :        0 µs | +        0 µs
+
+19
+END                           :   353568 µs | +   353568 µs
+
+20
+
+
+20
+Profiling "MAIN loop timing" sequence: 
+
+20
+--Event-----------------------|--timestamp--|----delta_t---
+
+20
+BEGIN                         :        0 µs | +        0 µs
+
+20
+END                           :   353569 µs | +   353569 µs
+
+21
+
+
+21
+Profiling "MAIN loop timing" sequence: 
+
+21
+--Event-----------------------|--timestamp--|----delta_t---
+
+21
+BEGIN                         :        0 µs | +        0 µs
+
+21
+END                           :   353568 µs | +   353568 µs
+
+22
+
+
+22
+Profiling "MAIN loop timing" sequence: 
+
+22
+--Event-----------------------|--timestamp--|----delta_t---
+
+22
+BEGIN                         :        0 µs | +        0 µs
+
+22
+END                           :   353569 µs | +   353569 µs
+
+23
+
+
+23
+Profiling "MAIN loop timing" sequence: 
+
+23
+--Event-----------------------|--timestamp--|----delta_t---
+
+23
+BEGIN                         :        0 µs | +        0 µs
+
+23
+END                           :   353568 µs | +   353568 µs
+
+24
+
+
+24
+Profiling "MAIN loop timing" sequence: 
+
+24
+--Event-----------------------|--timestamp--|----delta_t---
+
+24
+BEGIN                         :        0 µs | +        0 µs
+
+24
+END                           :   353568 µs | +   353568 µs
+
+25
+
+
+25
+Profiling "MAIN loop timing" sequence: 
+
+25
+--Event-----------------------|--timestamp--|----delta_t---
+
+25
+BEGIN                         :        0 µs | +        0 µs
+
+25
+END                           :   353570 µs | +   353570 µs
+
+26
+
+
+26
+Profiling "MAIN loop timing" sequence: 
+
+26
+--Event-----------------------|--timestamp--|----delta_t---
+
+26
+BEGIN                         :        0 µs | +        0 µs
+
+26
+END                           :   353569 µs | +   353569 µs
+
+27
+
+
+27
+Profiling "MAIN loop timing" sequence: 
+
+27
+--Event-----------------------|--timestamp--|----delta_t---
+
+27
+BEGIN                         :        0 µs | +        0 µs
+
+27
+END                           :   353569 µs | +   353569 µs
+
+28
+
+
+28
+Profiling "MAIN loop timing" sequence: 
+
+28
+--Event-----------------------|--timestamp--|----delta_t---
+
+28
+BEGIN                         :        0 µs | +        0 µs
+
+28
+END                           :   353569 µs | +   353569 µs
+
+29
+
+
+29
+Profiling "MAIN loop timing" sequence: 
+
+29
+--Event-----------------------|--timestamp--|----delta_t---
+
+29
+BEGIN                         :        0 µs | +        0 µs
+
+29
+END                           :   353568 µs | +   353568 µs
+
+30
+
+
+30
+Profiling "MAIN loop timing" sequence: 
+
+30
+--Event-----------------------|--timestamp--|----delta_t---
+
+30
+BEGIN                         :        0 µs | +        0 µs
+
+30
+END                           :   353568 µs | +   353568 µs
+
+31
+
+
+31
+Profiling "MAIN loop timing" sequence: 
+
+31
+--Event-----------------------|--timestamp--|----delta_t---
+
+31
+BEGIN                         :        0 µs | +        0 µs
+
+31
+END                           :   353568 µs | +   353568 µs
+
+32
+
+
+32
+Profiling "MAIN loop timing" sequence: 
+
+32
+--Event-----------------------|--timestamp--|----delta_t---
+
+32
+BEGIN                         :        0 µs | +        0 µs
+
+32
+END                           :   353568 µs | +   353568 µs
+
+33
+
+
+33
+Profiling "MAIN loop timing" sequence: 
+
+33
+--Event-----------------------|--timestamp--|----delta_t---
+
+33
+BEGIN                         :        0 µs | +        0 µs
+
+33
+END                           :   353568 µs | +   353568 µs
+
+34
+
+
+34
+Profiling "MAIN loop timing" sequence: 
+
+34
+--Event-----------------------|--timestamp--|----delta_t---
+
+34
+BEGIN                         :        0 µs | +        0 µs
+
+34
+END                           :   353569 µs | +   353569 µs
+
+35
+
+
+35
+Profiling "MAIN loop timing" sequence: 
+
+35
+--Event-----------------------|--timestamp--|----delta_t---
+
+35
+BEGIN                         :        0 µs | +        0 µs
+
+35
+END                           :   353568 µs | +   353568 µs
+
+36
+
+
+36
+Profiling "MAIN loop timing" sequence: 
+
+36
+--Event-----------------------|--timestamp--|----delta_t---
+
+36
+BEGIN                         :        0 µs | +        0 µs
+
+36
+END                           :   353569 µs | +   353569 µs
+
+37
+
+
+37
+Profiling "MAIN loop timing" sequence: 
+
+37
+--Event-----------------------|--timestamp--|----delta_t---
+
+37
+BEGIN                         :        0 µs | +        0 µs
+
+37
+END                           :   353568 µs | +   353568 µs
+
+38
+
+
+38
+Profiling "MAIN loop timing" sequence: 
+
+38
+--Event-----------------------|--timestamp--|----delta_t---
+
+38
+BEGIN                         :        0 µs | +        0 µs
+
+38
+END                           :   353568 µs | +   353568 µs
+
+39
+
+
+39
+Profiling "MAIN loop timing" sequence: 
+
+39
+--Event-----------------------|--timestamp--|----delta_t---
+
+39
+BEGIN                         :        0 µs | +        0 µs
+
+39
+END                           :   353569 µs | +   353569 µs
+
+40
+
+
+40
+Finished timing measurements!
+
+40
+Tensor values:
+
+0
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+
+0
+Start of benchmark.
+
+0
+Profiling "MAIN loop timing" sequence: 
+
+0
+--Event-----------------------|--timestamp--|----delta_t---
+
+0
+BEGIN                         :        0 µs | +        0 µs
+
+0
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+0
+STOP                          :        2 µs | +        1 µs
+
+0
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+0
+STOP                          :    80274 µs | +    80271 µs
+
+0
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+0
+STOP                          :   160545 µs | +    80271 µs
+
+0
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+0
+STOP                          :   177615 µs | +    17070 µs
+
+0
+START Timestamp before layer 4:CONV_2D 4:   177615 µs | +        0 µs
+
+0
+STOP                          :   185972 µs | +     8357 µs
+
+0
+START Timestamp before layer 5:CONV_2D 5:   185973 µs | +        1 µs
+
+0
+STOP                          :   256610 µs | +    70637 µs
+
+0
+START Timestamp before layer 6:CONV_2D 6:   256610 µs | +        0 µs
+
+0
+STOP                          :   264812 µs | +     8202 µs
+
+0
+START Timestamp before layer 7:ADD 7:   264812 µs | +        0 µs
+
+0
+STOP                          :   273347 µs | +     8535 µs
+
+0
+START Timestamp before layer 8:CONV_2D 8:   273347 µs | +        0 µs
+
+0
+STOP                          :   277312 µs | +     3965 µs
+
+0
+START Timestamp before layer 9:CONV_2D 9:   277313 µs | +        1 µs
+
+0
+STOP                          :   343727 µs | +    66414 µs
+
+0
+START Timestamp before layer 10:CONV_2D 10:   343728 µs | +        1 µs
+
+0
+STOP                          :   348930 µs | +     5202 µs
+
+0
+START Timestamp before layer 11:ADD 11:   348930 µs | +        0 µs
+
+0
+STOP                          :   353200 µs | +     4270 µs
+
+0
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353200 µs | +        0 µs
+
+0
+STOP                          :   353556 µs | +      356 µs
+
+0
+START Timestamp before layer 13:CONV_2D 13:   353556 µs | +        0 µs
+
+0
+STOP                          :   353591 µs | +       35 µs
+
+0
+END                           :   353591 µs | +        0 µs
+
+1
+1
+
+
+1
+Profiling "MAIN loop timing" sequence: 
+
+1
+--Event-----------------------|--timestamp--|----delta_t---
+
+1
+BEGIN                         :        0 µs | +        0 µs
+
+1
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+1
+STOP                          :        2 µs | +        1 µs
+
+1
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+1
+STOP                          :    80274 µs | +    80271 µs
+
+1
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+1
+STOP                          :   160545 µs | +    80271 µs
+
+1
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+1
+STOP                          :   177608 µs | +    17063 µs
+
+1
+START Timestamp before layer 4:CONV_2D 4:   177608 µs | +        0 µs
+
+1
+STOP                          :   185965 µs | +     8357 µs
+
+1
+START Timestamp before layer 5:CONV_2D 5:   185966 µs | +        1 µs
+
+1
+STOP                          :   256603 µs | +    70637 µs
+
+1
+START Timestamp before layer 6:CONV_2D 6:   256603 µs | +        0 µs
+
+1
+STOP                          :   264805 µs | +     8202 µs
+
+1
+START Timestamp before layer 7:ADD 7:   264805 µs | +        0 µs
+
+1
+STOP                          :   273340 µs | +     8535 µs
+
+1
+START Timestamp before layer 8:CONV_2D 8:   273340 µs | +        0 µs
+
+1
+STOP                          :   277305 µs | +     3965 µs
+
+1
+START Timestamp before layer 9:CONV_2D 9:   277305 µs | +        0 µs
+
+1
+STOP                          :   343720 µs | +    66415 µs
+
+1
+START Timestamp before layer 10:CONV_2D 10:   343720 µs | +        0 µs
+
+1
+STOP                          :   348923 µs | +     5203 µs
+
+1
+START Timestamp before layer 11:ADD 11:   348923 µs | +        0 µs
+
+1
+STOP                          :   353192 µs | +     4269 µs
+
+1
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353193 µs | +        1 µs
+
+1
+STOP                          :   353548 µs | +      355 µs
+
+1
+START Timestamp before layer 13:CONV_2D 13:   353548 µs | +        0 µs
+
+1
+STOP                          :   353583 µs | +       35 µs
+
+1
+END                           :   353583 µs | +        0 µs
+
+2
+2
+
+
+2
+Profiling "MAIN loop timing" sequence: 
+
+2
+--Event-----------------------|--timestamp--|----delta_t---
+
+2
+BEGIN                         :        0 µs | +        0 µs
+
+2
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+2
+STOP                          :        2 µs | +        1 µs
+
+2
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+2
+STOP                          :    80274 µs | +    80271 µs
+
+2
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+2
+STOP                          :   160545 µs | +    80271 µs
+
+2
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+2
+STOP                          :   177606 µs | +    17061 µs
+
+2
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        0 µs
+
+2
+STOP                          :   185964 µs | +     8358 µs
+
+2
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        0 µs
+
+2
+STOP                          :   256601 µs | +    70637 µs
+
+2
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        0 µs
+
+2
+STOP                          :   264803 µs | +     8202 µs
+
+2
+START Timestamp before layer 7:ADD 7:   264804 µs | +        1 µs
+
+2
+STOP                          :   273337 µs | +     8533 µs
+
+2
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+2
+STOP                          :   277302 µs | +     3965 µs
+
+2
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+2
+STOP                          :   343717 µs | +    66415 µs
+
+2
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+2
+STOP                          :   348920 µs | +     5203 µs
+
+2
+START Timestamp before layer 11:ADD 11:   348920 µs | +        0 µs
+
+2
+STOP                          :   353189 µs | +     4269 µs
+
+2
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        1 µs
+
+2
+STOP                          :   353545 µs | +      355 µs
+
+2
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        1 µs
+
+2
+STOP                          :   353580 µs | +       34 µs
+
+2
+END                           :   353581 µs | +        1 µs
+
+3
+3
+
+
+3
+Profiling "MAIN loop timing" sequence: 
+
+3
+--Event-----------------------|--timestamp--|----delta_t---
+
+3
+BEGIN                         :        0 µs | +        0 µs
+
+3
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+3
+STOP                          :        2 µs | +        1 µs
+
+3
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+3
+STOP                          :    80274 µs | +    80271 µs
+
+3
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+3
+STOP                          :   160545 µs | +    80271 µs
+
+3
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+3
+STOP                          :   177606 µs | +    17061 µs
+
+3
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        0 µs
+
+3
+STOP                          :   185963 µs | +     8357 µs
+
+3
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        1 µs
+
+3
+STOP                          :   256601 µs | +    70637 µs
+
+3
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        0 µs
+
+3
+STOP                          :   264803 µs | +     8202 µs
+
+3
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+3
+STOP                          :   273336 µs | +     8533 µs
+
+3
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        1 µs
+
+3
+STOP                          :   277302 µs | +     3965 µs
+
+3
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+3
+STOP                          :   343717 µs | +    66415 µs
+
+3
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+3
+STOP                          :   348919 µs | +     5202 µs
+
+3
+START Timestamp before layer 11:ADD 11:   348920 µs | +        1 µs
+
+3
+STOP                          :   353189 µs | +     4269 µs
+
+3
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+3
+STOP                          :   353545 µs | +      356 µs
+
+3
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+3
+STOP                          :   353580 µs | +       35 µs
+
+3
+END                           :   353580 µs | +        0 µs
+
+4
+4
+
+
+4
+Profiling "MAIN loop timing" sequence: 
+
+4
+--Event-----------------------|--timestamp--|----delta_t---
+
+4
+BEGIN                         :        0 µs | +        0 µs
+
+4
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+4
+STOP                          :        2 µs | +        1 µs
+
+4
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+4
+STOP                          :    80274 µs | +    80271 µs
+
+4
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+4
+STOP                          :   160545 µs | +    80271 µs
+
+4
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+4
+STOP                          :   177604 µs | +    17059 µs
+
+4
+START Timestamp before layer 4:CONV_2D 4:   177604 µs | +        0 µs
+
+4
+STOP                          :   185961 µs | +     8357 µs
+
+4
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        1 µs
+
+4
+STOP                          :   256599 µs | +    70637 µs
+
+4
+START Timestamp before layer 6:CONV_2D 6:   256599 µs | +        0 µs
+
+4
+STOP                          :   264801 µs | +     8202 µs
+
+4
+START Timestamp before layer 7:ADD 7:   264801 µs | +        0 µs
+
+4
+STOP                          :   273335 µs | +     8534 µs
+
+4
+START Timestamp before layer 8:CONV_2D 8:   273335 µs | +        0 µs
+
+4
+STOP                          :   277300 µs | +     3965 µs
+
+4
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        1 µs
+
+4
+STOP                          :   343715 µs | +    66414 µs
+
+4
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        1 µs
+
+4
+STOP                          :   348918 µs | +     5202 µs
+
+4
+START Timestamp before layer 11:ADD 11:   348918 µs | +        0 µs
+
+4
+STOP                          :   353188 µs | +     4270 µs
+
+4
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+4
+STOP                          :   353543 µs | +      355 µs
+
+4
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        1 µs
+
+4
+STOP                          :   353578 µs | +       34 µs
+
+4
+END                           :   353579 µs | +        1 µs
+
+5
+5
+
+
+5
+Profiling "MAIN loop timing" sequence: 
+
+5
+--Event-----------------------|--timestamp--|----delta_t---
+
+5
+BEGIN                         :        0 µs | +        0 µs
+
+5
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+5
+STOP                          :        2 µs | +        1 µs
+
+5
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+5
+STOP                          :    80274 µs | +    80271 µs
+
+5
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+5
+STOP                          :   160545 µs | +    80271 µs
+
+5
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+5
+STOP                          :   177606 µs | +    17061 µs
+
+5
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        0 µs
+
+5
+STOP                          :   185963 µs | +     8357 µs
+
+5
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        1 µs
+
+5
+STOP                          :   256600 µs | +    70636 µs
+
+5
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        1 µs
+
+5
+STOP                          :   264803 µs | +     8202 µs
+
+5
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+5
+STOP                          :   273337 µs | +     8534 µs
+
+5
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+5
+STOP                          :   277302 µs | +     3965 µs
+
+5
+START Timestamp before layer 9:CONV_2D 9:   277303 µs | +        1 µs
+
+5
+STOP                          :   343717 µs | +    66414 µs
+
+5
+START Timestamp before layer 10:CONV_2D 10:   343718 µs | +        1 µs
+
+5
+STOP                          :   348920 µs | +     5202 µs
+
+5
+START Timestamp before layer 11:ADD 11:   348920 µs | +        0 µs
+
+5
+STOP                          :   353190 µs | +     4270 µs
+
+5
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        0 µs
+
+5
+STOP                          :   353545 µs | +      355 µs
+
+5
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        1 µs
+
+5
+STOP                          :   353580 µs | +       34 µs
+
+5
+END                           :   353581 µs | +        1 µs
+
+6
+6
+
+
+6
+Profiling "MAIN loop timing" sequence: 
+
+6
+--Event-----------------------|--timestamp--|----delta_t---
+
+6
+BEGIN                         :        0 µs | +        0 µs
+
+6
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+6
+STOP                          :        2 µs | +        1 µs
+
+6
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+6
+STOP                          :    80274 µs | +    80271 µs
+
+6
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+6
+STOP                          :   160545 µs | +    80271 µs
+
+6
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+6
+STOP                          :   177603 µs | +    17058 µs
+
+6
+START Timestamp before layer 4:CONV_2D 4:   177603 µs | +        0 µs
+
+6
+STOP                          :   185960 µs | +     8357 µs
+
+6
+START Timestamp before layer 5:CONV_2D 5:   185961 µs | +        1 µs
+
+6
+STOP                          :   256598 µs | +    70637 µs
+
+6
+START Timestamp before layer 6:CONV_2D 6:   256598 µs | +        0 µs
+
+6
+STOP                          :   264800 µs | +     8202 µs
+
+6
+START Timestamp before layer 7:ADD 7:   264800 µs | +        0 µs
+
+6
+STOP                          :   273334 µs | +     8534 µs
+
+6
+START Timestamp before layer 8:CONV_2D 8:   273334 µs | +        0 µs
+
+6
+STOP                          :   277299 µs | +     3965 µs
+
+6
+START Timestamp before layer 9:CONV_2D 9:   277300 µs | +        1 µs
+
+6
+STOP                          :   343714 µs | +    66414 µs
+
+6
+START Timestamp before layer 10:CONV_2D 10:   343715 µs | +        1 µs
+
+6
+STOP                          :   348917 µs | +     5202 µs
+
+6
+START Timestamp before layer 11:ADD 11:   348917 µs | +        0 µs
+
+6
+STOP                          :   353187 µs | +     4270 µs
+
+6
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353187 µs | +        0 µs
+
+6
+STOP                          :   353542 µs | +      355 µs
+
+6
+START Timestamp before layer 13:CONV_2D 13:   353543 µs | +        1 µs
+
+6
+STOP                          :   353578 µs | +       35 µs
+
+6
+END                           :   353578 µs | +        0 µs
+
+7
+7
+
+
+7
+Profiling "MAIN loop timing" sequence: 
+
+7
+--Event-----------------------|--timestamp--|----delta_t---
+
+7
+BEGIN                         :        0 µs | +        0 µs
+
+7
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+7
+STOP                          :        2 µs | +        1 µs
+
+7
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+7
+STOP                          :    80274 µs | +    80271 µs
+
+7
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+7
+STOP                          :   160545 µs | +    80271 µs
+
+7
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+7
+STOP                          :   177604 µs | +    17059 µs
+
+7
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        1 µs
+
+7
+STOP                          :   185962 µs | +     8357 µs
+
+7
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        0 µs
+
+7
+STOP                          :   256599 µs | +    70637 µs
+
+7
+START Timestamp before layer 6:CONV_2D 6:   256599 µs | +        0 µs
+
+7
+STOP                          :   264801 µs | +     8202 µs
+
+7
+START Timestamp before layer 7:ADD 7:   264802 µs | +        1 µs
+
+7
+STOP                          :   273335 µs | +     8533 µs
+
+7
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        1 µs
+
+7
+STOP                          :   277301 µs | +     3965 µs
+
+7
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+7
+STOP                          :   343716 µs | +    66415 µs
+
+7
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+7
+STOP                          :   348918 µs | +     5202 µs
+
+7
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+7
+STOP                          :   353188 µs | +     4269 µs
+
+7
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+7
+STOP                          :   353544 µs | +      356 µs
+
+7
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+7
+STOP                          :   353579 µs | +       35 µs
+
+7
+END                           :   353579 µs | +        0 µs
+
+8
+8
+
+
+8
+Profiling "MAIN loop timing" sequence: 
+
+8
+--Event-----------------------|--timestamp--|----delta_t---
+
+8
+BEGIN                         :        0 µs | +        0 µs
+
+8
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+8
+STOP                          :        2 µs | +        1 µs
+
+8
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+8
+STOP                          :    80274 µs | +    80271 µs
+
+8
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+8
+STOP                          :   160545 µs | +    80271 µs
+
+8
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+8
+STOP                          :   177605 µs | +    17060 µs
+
+8
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+8
+STOP                          :   185962 µs | +     8357 µs
+
+8
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+8
+STOP                          :   256600 µs | +    70637 µs
+
+8
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+8
+STOP                          :   264802 µs | +     8202 µs
+
+8
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+8
+STOP                          :   273335 µs | +     8533 µs
+
+8
+START Timestamp before layer 8:CONV_2D 8:   273335 µs | +        0 µs
+
+8
+STOP                          :   277300 µs | +     3965 µs
+
+8
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        1 µs
+
+8
+STOP                          :   343715 µs | +    66414 µs
+
+8
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        1 µs
+
+8
+STOP                          :   348918 µs | +     5202 µs
+
+8
+START Timestamp before layer 11:ADD 11:   348918 µs | +        0 µs
+
+8
+STOP                          :   353188 µs | +     4270 µs
+
+8
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+8
+STOP                          :   353544 µs | +      356 µs
+
+8
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+8
+STOP                          :   353579 µs | +       35 µs
+
+8
+END                           :   353579 µs | +        0 µs
+
+9
+9
+
+
+9
+Profiling "MAIN loop timing" sequence: 
+
+9
+--Event-----------------------|--timestamp--|----delta_t---
+
+9
+BEGIN                         :        0 µs | +        0 µs
+
+9
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+9
+STOP                          :        2 µs | +        1 µs
+
+9
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+9
+STOP                          :    80274 µs | +    80271 µs
+
+9
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+9
+STOP                          :   160545 µs | +    80271 µs
+
+9
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+9
+STOP                          :   177604 µs | +    17059 µs
+
+9
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        1 µs
+
+9
+STOP                          :   185962 µs | +     8357 µs
+
+9
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        0 µs
+
+9
+STOP                          :   256599 µs | +    70637 µs
+
+9
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+9
+STOP                          :   264801 µs | +     8201 µs
+
+9
+START Timestamp before layer 7:ADD 7:   264802 µs | +        1 µs
+
+9
+STOP                          :   273336 µs | +     8534 µs
+
+9
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+9
+STOP                          :   277301 µs | +     3965 µs
+
+9
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        1 µs
+
+9
+STOP                          :   343716 µs | +    66414 µs
+
+9
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+9
+STOP                          :   348919 µs | +     5202 µs
+
+9
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+9
+STOP                          :   353189 µs | +     4270 µs
+
+9
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+9
+STOP                          :   353544 µs | +      355 µs
+
+9
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+9
+STOP                          :   353579 µs | +       34 µs
+
+9
+END                           :   353580 µs | +        1 µs
+
+10
+10
+
+
+10
+Profiling "MAIN loop timing" sequence: 
+
+10
+--Event-----------------------|--timestamp--|----delta_t---
+
+10
+BEGIN                         :        0 µs | +        0 µs
+
+10
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+10
+STOP                          :        2 µs | +        1 µs
+
+10
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+10
+STOP                          :    80274 µs | +    80271 µs
+
+10
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+10
+STOP                          :   160545 µs | +    80271 µs
+
+10
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+10
+STOP                          :   177606 µs | +    17061 µs
+
+10
+START Timestamp before layer 4:CONV_2D 4:   177607 µs | +        1 µs
+
+10
+STOP                          :   185964 µs | +     8357 µs
+
+10
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        0 µs
+
+10
+STOP                          :   256601 µs | +    70637 µs
+
+10
+START Timestamp before layer 6:CONV_2D 6:   256602 µs | +        1 µs
+
+10
+STOP                          :   264803 µs | +     8201 µs
+
+10
+START Timestamp before layer 7:ADD 7:   264804 µs | +        1 µs
+
+10
+STOP                          :   273337 µs | +     8533 µs
+
+10
+START Timestamp before layer 8:CONV_2D 8:   273338 µs | +        1 µs
+
+10
+STOP                          :   277303 µs | +     3965 µs
+
+10
+START Timestamp before layer 9:CONV_2D 9:   277303 µs | +        0 µs
+
+10
+STOP                          :   343718 µs | +    66415 µs
+
+10
+START Timestamp before layer 10:CONV_2D 10:   343718 µs | +        0 µs
+
+10
+STOP                          :   348920 µs | +     5202 µs
+
+10
+START Timestamp before layer 11:ADD 11:   348921 µs | +        1 µs
+
+10
+STOP                          :   353190 µs | +     4269 µs
+
+10
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        0 µs
+
+10
+STOP                          :   353546 µs | +      356 µs
+
+10
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        0 µs
+
+10
+STOP                          :   353581 µs | +       35 µs
+
+10
+END                           :   353581 µs | +        0 µs
+
+11
+11
+
+
+11
+Profiling "MAIN loop timing" sequence: 
+
+11
+--Event-----------------------|--timestamp--|----delta_t---
+
+11
+BEGIN                         :        0 µs | +        0 µs
+
+11
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+11
+STOP                          :        2 µs | +        1 µs
+
+11
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+11
+STOP                          :    80274 µs | +    80271 µs
+
+11
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+11
+STOP                          :   160545 µs | +    80271 µs
+
+11
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+11
+STOP                          :   177605 µs | +    17060 µs
+
+11
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        1 µs
+
+11
+STOP                          :   185963 µs | +     8357 µs
+
+11
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        0 µs
+
+11
+STOP                          :   256600 µs | +    70637 µs
+
+11
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        1 µs
+
+11
+STOP                          :   264803 µs | +     8202 µs
+
+11
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+11
+STOP                          :   273337 µs | +     8534 µs
+
+11
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+11
+STOP                          :   277302 µs | +     3965 µs
+
+11
+START Timestamp before layer 9:CONV_2D 9:   277303 µs | +        1 µs
+
+11
+STOP                          :   343717 µs | +    66414 µs
+
+11
+START Timestamp before layer 10:CONV_2D 10:   343718 µs | +        1 µs
+
+11
+STOP                          :   348920 µs | +     5202 µs
+
+11
+START Timestamp before layer 11:ADD 11:   348920 µs | +        0 µs
+
+11
+STOP                          :   353190 µs | +     4270 µs
+
+11
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        0 µs
+
+11
+STOP                          :   353545 µs | +      355 µs
+
+11
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        1 µs
+
+11
+STOP                          :   353580 µs | +       34 µs
+
+11
+END                           :   353581 µs | +        1 µs
+
+12
+12
+
+
+12
+Profiling "MAIN loop timing" sequence: 
+
+12
+--Event-----------------------|--timestamp--|----delta_t---
+
+12
+BEGIN                         :        0 µs | +        0 µs
+
+12
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+12
+STOP                          :        2 µs | +        1 µs
+
+12
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+12
+STOP                          :    80274 µs | +    80271 µs
+
+12
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+12
+STOP                          :   160545 µs | +    80271 µs
+
+12
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+12
+STOP                          :   177605 µs | +    17060 µs
+
+12
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+12
+STOP                          :   185963 µs | +     8358 µs
+
+12
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        0 µs
+
+12
+STOP                          :   256600 µs | +    70637 µs
+
+12
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+12
+STOP                          :   264802 µs | +     8202 µs
+
+12
+START Timestamp before layer 7:ADD 7:   264803 µs | +        1 µs
+
+12
+STOP                          :   273335 µs | +     8532 µs
+
+12
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        1 µs
+
+12
+STOP                          :   277301 µs | +     3965 µs
+
+12
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+12
+STOP                          :   343716 µs | +    66415 µs
+
+12
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+12
+STOP                          :   348918 µs | +     5202 µs
+
+12
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+12
+STOP                          :   353188 µs | +     4269 µs
+
+12
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+12
+STOP                          :   353544 µs | +      356 µs
+
+12
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+12
+STOP                          :   353579 µs | +       35 µs
+
+12
+END                           :   353579 µs | +        0 µs
+
+13
+13
+
+
+13
+Profiling "MAIN loop timing" sequence: 
+
+13
+--Event-----------------------|--timestamp--|----delta_t---
+
+13
+BEGIN                         :        0 µs | +        0 µs
+
+13
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+13
+STOP                          :        2 µs | +        1 µs
+
+13
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+13
+STOP                          :    80274 µs | +    80271 µs
+
+13
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+13
+STOP                          :   160545 µs | +    80271 µs
+
+13
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+13
+STOP                          :   177606 µs | +    17061 µs
+
+13
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        0 µs
+
+13
+STOP                          :   185963 µs | +     8357 µs
+
+13
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        1 µs
+
+13
+STOP                          :   256600 µs | +    70636 µs
+
+13
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        1 µs
+
+13
+STOP                          :   264803 µs | +     8202 µs
+
+13
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+13
+STOP                          :   273337 µs | +     8534 µs
+
+13
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+13
+STOP                          :   277302 µs | +     3965 µs
+
+13
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+13
+STOP                          :   343717 µs | +    66415 µs
+
+13
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+13
+STOP                          :   348920 µs | +     5203 µs
+
+13
+START Timestamp before layer 11:ADD 11:   348920 µs | +        0 µs
+
+13
+STOP                          :   353189 µs | +     4269 µs
+
+13
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        1 µs
+
+13
+STOP                          :   353545 µs | +      355 µs
+
+13
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+13
+STOP                          :   353580 µs | +       35 µs
+
+13
+END                           :   353581 µs | +        1 µs
+
+14
+14
+
+
+14
+Profiling "MAIN loop timing" sequence: 
+
+14
+--Event-----------------------|--timestamp--|----delta_t---
+
+14
+BEGIN                         :        0 µs | +        0 µs
+
+14
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+14
+STOP                          :        2 µs | +        1 µs
+
+14
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+14
+STOP                          :    80274 µs | +    80271 µs
+
+14
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+14
+STOP                          :   160545 µs | +    80271 µs
+
+14
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+14
+STOP                          :   177605 µs | +    17060 µs
+
+14
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+14
+STOP                          :   185962 µs | +     8357 µs
+
+14
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+14
+STOP                          :   256599 µs | +    70636 µs
+
+14
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+14
+STOP                          :   264802 µs | +     8202 µs
+
+14
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+14
+STOP                          :   273335 µs | +     8533 µs
+
+14
+START Timestamp before layer 8:CONV_2D 8:   273335 µs | +        0 µs
+
+14
+STOP                          :   277300 µs | +     3965 µs
+
+14
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        1 µs
+
+14
+STOP                          :   343715 µs | +    66414 µs
+
+14
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        1 µs
+
+14
+STOP                          :   348918 µs | +     5202 µs
+
+14
+START Timestamp before layer 11:ADD 11:   348918 µs | +        0 µs
+
+14
+STOP                          :   353188 µs | +     4270 µs
+
+14
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+14
+STOP                          :   353543 µs | +      355 µs
+
+14
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        1 µs
+
+14
+STOP                          :   353578 µs | +       34 µs
+
+14
+END                           :   353579 µs | +        1 µs
+
+15
+15
+
+
+15
+Profiling "MAIN loop timing" sequence: 
+
+15
+--Event-----------------------|--timestamp--|----delta_t---
+
+15
+BEGIN                         :        0 µs | +        0 µs
+
+15
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+15
+STOP                          :        2 µs | +        1 µs
+
+15
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+15
+STOP                          :    80274 µs | +    80271 µs
+
+15
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+15
+STOP                          :   160545 µs | +    80271 µs
+
+15
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+15
+STOP                          :   177605 µs | +    17060 µs
+
+15
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        1 µs
+
+15
+STOP                          :   185963 µs | +     8357 µs
+
+15
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        1 µs
+
+15
+STOP                          :   256600 µs | +    70636 µs
+
+15
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        1 µs
+
+15
+STOP                          :   264803 µs | +     8202 µs
+
+15
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+15
+STOP                          :   273337 µs | +     8534 µs
+
+15
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+15
+STOP                          :   277302 µs | +     3965 µs
+
+15
+START Timestamp before layer 9:CONV_2D 9:   277303 µs | +        1 µs
+
+15
+STOP                          :   343717 µs | +    66414 µs
+
+15
+START Timestamp before layer 10:CONV_2D 10:   343718 µs | +        1 µs
+
+15
+STOP                          :   348920 µs | +     5202 µs
+
+15
+START Timestamp before layer 11:ADD 11:   348920 µs | +        0 µs
+
+15
+STOP                          :   353189 µs | +     4269 µs
+
+15
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        1 µs
+
+15
+STOP                          :   353545 µs | +      355 µs
+
+15
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        1 µs
+
+15
+STOP                          :   353580 µs | +       34 µs
+
+15
+END                           :   353581 µs | +        1 µs
+
+16
+16
+
+
+16
+Profiling "MAIN loop timing" sequence: 
+
+16
+--Event-----------------------|--timestamp--|----delta_t---
+
+16
+BEGIN                         :        0 µs | +        0 µs
+
+16
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+16
+STOP                          :        2 µs | +        1 µs
+
+16
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+16
+STOP                          :    80274 µs | +    80271 µs
+
+16
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+16
+STOP                          :   160545 µs | +    80271 µs
+
+16
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+16
+STOP                          :   177604 µs | +    17059 µs
+
+16
+START Timestamp before layer 4:CONV_2D 4:   177604 µs | +        0 µs
+
+16
+STOP                          :   185961 µs | +     8357 µs
+
+16
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        1 µs
+
+16
+STOP                          :   256599 µs | +    70637 µs
+
+16
+START Timestamp before layer 6:CONV_2D 6:   256599 µs | +        0 µs
+
+16
+STOP                          :   264801 µs | +     8202 µs
+
+16
+START Timestamp before layer 7:ADD 7:   264801 µs | +        0 µs
+
+16
+STOP                          :   273335 µs | +     8534 µs
+
+16
+START Timestamp before layer 8:CONV_2D 8:   273335 µs | +        0 µs
+
+16
+STOP                          :   277300 µs | +     3965 µs
+
+16
+START Timestamp before layer 9:CONV_2D 9:   277300 µs | +        0 µs
+
+16
+STOP                          :   343715 µs | +    66415 µs
+
+16
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        1 µs
+
+16
+STOP                          :   348918 µs | +     5202 µs
+
+16
+START Timestamp before layer 11:ADD 11:   348918 µs | +        0 µs
+
+16
+STOP                          :   353187 µs | +     4269 µs
+
+16
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        1 µs
+
+16
+STOP                          :   353543 µs | +      355 µs
+
+16
+START Timestamp before layer 13:CONV_2D 13:   353543 µs | +        0 µs
+
+16
+STOP                          :   353578 µs | +       35 µs
+
+16
+END                           :   353578 µs | +        0 µs
+
+17
+17
+
+
+17
+Profiling "MAIN loop timing" sequence: 
+
+17
+--Event-----------------------|--timestamp--|----delta_t---
+
+17
+BEGIN                         :        0 µs | +        0 µs
+
+17
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+17
+STOP                          :        2 µs | +        1 µs
+
+17
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+17
+STOP                          :    80274 µs | +    80271 µs
+
+17
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+17
+STOP                          :   160545 µs | +    80271 µs
+
+17
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+17
+STOP                          :   177605 µs | +    17060 µs
+
+17
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+17
+STOP                          :   185962 µs | +     8357 µs
+
+17
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+17
+STOP                          :   256600 µs | +    70637 µs
+
+17
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+17
+STOP                          :   264802 µs | +     8202 µs
+
+17
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+17
+STOP                          :   273336 µs | +     8534 µs
+
+17
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+17
+STOP                          :   277301 µs | +     3965 µs
+
+17
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        1 µs
+
+17
+STOP                          :   343716 µs | +    66414 µs
+
+17
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+17
+STOP                          :   348919 µs | +     5202 µs
+
+17
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+17
+STOP                          :   353189 µs | +     4270 µs
+
+17
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+17
+STOP                          :   353544 µs | +      355 µs
+
+17
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+17
+STOP                          :   353579 µs | +       34 µs
+
+17
+END                           :   353580 µs | +        1 µs
+
+18
+18
+
+
+18
+Profiling "MAIN loop timing" sequence: 
+
+18
+--Event-----------------------|--timestamp--|----delta_t---
+
+18
+BEGIN                         :        0 µs | +        0 µs
+
+18
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+18
+STOP                          :        2 µs | +        1 µs
+
+18
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+18
+STOP                          :    80274 µs | +    80271 µs
+
+18
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+18
+STOP                          :   160545 µs | +    80271 µs
+
+18
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+18
+STOP                          :   177606 µs | +    17061 µs
+
+18
+START Timestamp before layer 4:CONV_2D 4:   177607 µs | +        1 µs
+
+18
+STOP                          :   185964 µs | +     8357 µs
+
+18
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        0 µs
+
+18
+STOP                          :   256601 µs | +    70637 µs
+
+18
+START Timestamp before layer 6:CONV_2D 6:   256602 µs | +        1 µs
+
+18
+STOP                          :   264804 µs | +     8202 µs
+
+18
+START Timestamp before layer 7:ADD 7:   264804 µs | +        0 µs
+
+18
+STOP                          :   273337 µs | +     8533 µs
+
+18
+START Timestamp before layer 8:CONV_2D 8:   273338 µs | +        1 µs
+
+18
+STOP                          :   277303 µs | +     3965 µs
+
+18
+START Timestamp before layer 9:CONV_2D 9:   277303 µs | +        0 µs
+
+18
+STOP                          :   343718 µs | +    66415 µs
+
+18
+START Timestamp before layer 10:CONV_2D 10:   343718 µs | +        0 µs
+
+18
+STOP                          :   348920 µs | +     5202 µs
+
+18
+START Timestamp before layer 11:ADD 11:   348921 µs | +        1 µs
+
+18
+STOP                          :   353190 µs | +     4269 µs
+
+18
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        0 µs
+
+18
+STOP                          :   353546 µs | +      356 µs
+
+18
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        0 µs
+
+18
+STOP                          :   353581 µs | +       35 µs
+
+18
+END                           :   353581 µs | +        0 µs
+
+19
+19
+
+
+19
+Profiling "MAIN loop timing" sequence: 
+
+19
+--Event-----------------------|--timestamp--|----delta_t---
+
+19
+BEGIN                         :        0 µs | +        0 µs
+
+19
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+19
+STOP                          :        2 µs | +        1 µs
+
+19
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+19
+STOP                          :    80274 µs | +    80271 µs
+
+19
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+19
+STOP                          :   160545 µs | +    80271 µs
+
+19
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+19
+STOP                          :   177605 µs | +    17060 µs
+
+19
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+19
+STOP                          :   185962 µs | +     8357 µs
+
+19
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+19
+STOP                          :   256599 µs | +    70636 µs
+
+19
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+19
+STOP                          :   264802 µs | +     8202 µs
+
+19
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+19
+STOP                          :   273336 µs | +     8534 µs
+
+19
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+19
+STOP                          :   277301 µs | +     3965 µs
+
+19
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+19
+STOP                          :   343716 µs | +    66415 µs
+
+19
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+19
+STOP                          :   348919 µs | +     5202 µs
+
+19
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+19
+STOP                          :   353188 µs | +     4269 µs
+
+19
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        1 µs
+
+19
+STOP                          :   353544 µs | +      355 µs
+
+19
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+19
+STOP                          :   353579 µs | +       35 µs
+
+19
+END                           :   353579 µs | +        0 µs
+
+20
+20
+
+
+20
+Profiling "MAIN loop timing" sequence: 
+
+20
+--Event-----------------------|--timestamp--|----delta_t---
+
+20
+BEGIN                         :        0 µs | +        0 µs
+
+20
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+20
+STOP                          :        2 µs | +        1 µs
+
+20
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+20
+STOP                          :    80274 µs | +    80271 µs
+
+20
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+20
+STOP                          :   160545 µs | +    80271 µs
+
+20
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+20
+STOP                          :   177605 µs | +    17060 µs
+
+20
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        1 µs
+
+20
+STOP                          :   185963 µs | +     8357 µs
+
+20
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        0 µs
+
+20
+STOP                          :   256600 µs | +    70637 µs
+
+20
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        1 µs
+
+20
+STOP                          :   264803 µs | +     8202 µs
+
+20
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+20
+STOP                          :   273337 µs | +     8534 µs
+
+20
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+20
+STOP                          :   277302 µs | +     3965 µs
+
+20
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+20
+STOP                          :   343717 µs | +    66415 µs
+
+20
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+20
+STOP                          :   348919 µs | +     5202 µs
+
+20
+START Timestamp before layer 11:ADD 11:   348920 µs | +        1 µs
+
+20
+STOP                          :   353189 µs | +     4269 µs
+
+20
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        1 µs
+
+20
+STOP                          :   353545 µs | +      355 µs
+
+20
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+20
+STOP                          :   353580 µs | +       35 µs
+
+20
+END                           :   353580 µs | +        0 µs
+
+21
+21
+
+
+21
+Profiling "MAIN loop timing" sequence: 
+
+21
+--Event-----------------------|--timestamp--|----delta_t---
+
+21
+BEGIN                         :        0 µs | +        0 µs
+
+21
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+21
+STOP                          :        2 µs | +        1 µs
+
+21
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+21
+STOP                          :    80274 µs | +    80271 µs
+
+21
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+21
+STOP                          :   160545 µs | +    80271 µs
+
+21
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+21
+STOP                          :   177605 µs | +    17060 µs
+
+21
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+21
+STOP                          :   185962 µs | +     8357 µs
+
+21
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+21
+STOP                          :   256600 µs | +    70637 µs
+
+21
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+21
+STOP                          :   264802 µs | +     8202 µs
+
+21
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+21
+STOP                          :   273336 µs | +     8534 µs
+
+21
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+21
+STOP                          :   277301 µs | +     3965 µs
+
+21
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        1 µs
+
+21
+STOP                          :   343716 µs | +    66414 µs
+
+21
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+21
+STOP                          :   348919 µs | +     5202 µs
+
+21
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+21
+STOP                          :   353188 µs | +     4269 µs
+
+21
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        1 µs
+
+21
+STOP                          :   353544 µs | +      355 µs
+
+21
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+21
+STOP                          :   353579 µs | +       34 µs
+
+21
+END                           :   353580 µs | +        1 µs
+
+22
+22
+
+
+22
+Profiling "MAIN loop timing" sequence: 
+
+22
+--Event-----------------------|--timestamp--|----delta_t---
+
+22
+BEGIN                         :        0 µs | +        0 µs
+
+22
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+22
+STOP                          :        2 µs | +        1 µs
+
+22
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+22
+STOP                          :    80274 µs | +    80271 µs
+
+22
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+22
+STOP                          :   160545 µs | +    80271 µs
+
+22
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+22
+STOP                          :   177605 µs | +    17060 µs
+
+22
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        1 µs
+
+22
+STOP                          :   185963 µs | +     8357 µs
+
+22
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        0 µs
+
+22
+STOP                          :   256600 µs | +    70637 µs
+
+22
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        1 µs
+
+22
+STOP                          :   264802 µs | +     8201 µs
+
+22
+START Timestamp before layer 7:ADD 7:   264803 µs | +        1 µs
+
+22
+STOP                          :   273337 µs | +     8534 µs
+
+22
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+22
+STOP                          :   277302 µs | +     3965 µs
+
+22
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+22
+STOP                          :   343717 µs | +    66415 µs
+
+22
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+22
+STOP                          :   348919 µs | +     5202 µs
+
+22
+START Timestamp before layer 11:ADD 11:   348920 µs | +        1 µs
+
+22
+STOP                          :   353189 µs | +     4269 µs
+
+22
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        1 µs
+
+22
+STOP                          :   353545 µs | +      355 µs
+
+22
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+22
+STOP                          :   353580 µs | +       35 µs
+
+22
+END                           :   353580 µs | +        0 µs
+
+23
+23
+
+
+23
+Profiling "MAIN loop timing" sequence: 
+
+23
+--Event-----------------------|--timestamp--|----delta_t---
+
+23
+BEGIN                         :        0 µs | +        0 µs
+
+23
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+23
+STOP                          :        2 µs | +        1 µs
+
+23
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+23
+STOP                          :    80274 µs | +    80271 µs
+
+23
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+23
+STOP                          :   160545 µs | +    80271 µs
+
+23
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+23
+STOP                          :   177604 µs | +    17059 µs
+
+23
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        1 µs
+
+23
+STOP                          :   185962 µs | +     8357 µs
+
+23
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+23
+STOP                          :   256599 µs | +    70636 µs
+
+23
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+23
+STOP                          :   264802 µs | +     8202 µs
+
+23
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+23
+STOP                          :   273336 µs | +     8534 µs
+
+23
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+23
+STOP                          :   277301 µs | +     3965 µs
+
+23
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+23
+STOP                          :   343716 µs | +    66415 µs
+
+23
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+23
+STOP                          :   348918 µs | +     5202 µs
+
+23
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+23
+STOP                          :   353188 µs | +     4269 µs
+
+23
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+23
+STOP                          :   353544 µs | +      356 µs
+
+23
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+23
+STOP                          :   353579 µs | +       35 µs
+
+23
+END                           :   353579 µs | +        0 µs
+
+24
+24
+
+
+24
+Profiling "MAIN loop timing" sequence: 
+
+24
+--Event-----------------------|--timestamp--|----delta_t---
+
+24
+BEGIN                         :        0 µs | +        0 µs
+
+24
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+24
+STOP                          :        2 µs | +        1 µs
+
+24
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+24
+STOP                          :    80274 µs | +    80271 µs
+
+24
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+24
+STOP                          :   160545 µs | +    80271 µs
+
+24
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+24
+STOP                          :   177605 µs | +    17060 µs
+
+24
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+24
+STOP                          :   185962 µs | +     8357 µs
+
+24
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+24
+STOP                          :   256599 µs | +    70636 µs
+
+24
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+24
+STOP                          :   264802 µs | +     8202 µs
+
+24
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+24
+STOP                          :   273335 µs | +     8533 µs
+
+24
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        1 µs
+
+24
+STOP                          :   277301 µs | +     3965 µs
+
+24
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+24
+STOP                          :   343716 µs | +    66415 µs
+
+24
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+24
+STOP                          :   348918 µs | +     5202 µs
+
+24
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+24
+STOP                          :   353188 µs | +     4269 µs
+
+24
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+24
+STOP                          :   353544 µs | +      356 µs
+
+24
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+24
+STOP                          :   353579 µs | +       35 µs
+
+24
+END                           :   353579 µs | +        0 µs
+
+25
+25
+
+
+25
+Profiling "MAIN loop timing" sequence: 
+
+25
+--Event-----------------------|--timestamp--|----delta_t---
+
+25
+BEGIN                         :        0 µs | +        0 µs
+
+25
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+25
+STOP                          :        2 µs | +        1 µs
+
+25
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+25
+STOP                          :    80274 µs | +    80271 µs
+
+25
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+25
+STOP                          :   160545 µs | +    80271 µs
+
+25
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+25
+STOP                          :   177606 µs | +    17061 µs
+
+25
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        0 µs
+
+25
+STOP                          :   185963 µs | +     8357 µs
+
+25
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        1 µs
+
+25
+STOP                          :   256601 µs | +    70637 µs
+
+25
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        0 µs
+
+25
+STOP                          :   264803 µs | +     8202 µs
+
+25
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+25
+STOP                          :   273338 µs | +     8535 µs
+
+25
+START Timestamp before layer 8:CONV_2D 8:   273338 µs | +        0 µs
+
+25
+STOP                          :   277303 µs | +     3965 µs
+
+25
+START Timestamp before layer 9:CONV_2D 9:   277304 µs | +        1 µs
+
+25
+STOP                          :   343718 µs | +    66414 µs
+
+25
+START Timestamp before layer 10:CONV_2D 10:   343719 µs | +        1 µs
+
+25
+STOP                          :   348921 µs | +     5202 µs
+
+25
+START Timestamp before layer 11:ADD 11:   348921 µs | +        0 µs
+
+25
+STOP                          :   353190 µs | +     4269 µs
+
+25
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353191 µs | +        1 µs
+
+25
+STOP                          :   353546 µs | +      355 µs
+
+25
+START Timestamp before layer 13:CONV_2D 13:   353546 µs | +        0 µs
+
+25
+STOP                          :   353581 µs | +       35 µs
+
+25
+END                           :   353582 µs | +        1 µs
+
+26
+26
+
+
+26
+Profiling "MAIN loop timing" sequence: 
+
+26
+--Event-----------------------|--timestamp--|----delta_t---
+
+26
+BEGIN                         :        0 µs | +        0 µs
+
+26
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+26
+STOP                          :        2 µs | +        1 µs
+
+26
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+26
+STOP                          :    80274 µs | +    80271 µs
+
+26
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+26
+STOP                          :   160545 µs | +    80271 µs
+
+26
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+26
+STOP                          :   177605 µs | +    17060 µs
+
+26
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+26
+STOP                          :   185962 µs | +     8357 µs
+
+26
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+26
+STOP                          :   256600 µs | +    70637 µs
+
+26
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+26
+STOP                          :   264802 µs | +     8202 µs
+
+26
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+26
+STOP                          :   273336 µs | +     8534 µs
+
+26
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+26
+STOP                          :   277301 µs | +     3965 µs
+
+26
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        1 µs
+
+26
+STOP                          :   343716 µs | +    66414 µs
+
+26
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+26
+STOP                          :   348919 µs | +     5202 µs
+
+26
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+26
+STOP                          :   353189 µs | +     4270 µs
+
+26
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+26
+STOP                          :   353544 µs | +      355 µs
+
+26
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+26
+STOP                          :   353579 µs | +       34 µs
+
+26
+END                           :   353580 µs | +        1 µs
+
+27
+27
+
+
+27
+Profiling "MAIN loop timing" sequence: 
+
+27
+--Event-----------------------|--timestamp--|----delta_t---
+
+27
+BEGIN                         :        0 µs | +        0 µs
+
+27
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+27
+STOP                          :        2 µs | +        1 µs
+
+27
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+27
+STOP                          :    80274 µs | +    80271 µs
+
+27
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+27
+STOP                          :   160545 µs | +    80271 µs
+
+27
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+27
+STOP                          :   177605 µs | +    17060 µs
+
+27
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+27
+STOP                          :   185962 µs | +     8357 µs
+
+27
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+27
+STOP                          :   256600 µs | +    70637 µs
+
+27
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+27
+STOP                          :   264802 µs | +     8202 µs
+
+27
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+27
+STOP                          :   273336 µs | +     8534 µs
+
+27
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+27
+STOP                          :   277301 µs | +     3965 µs
+
+27
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        1 µs
+
+27
+STOP                          :   343716 µs | +    66414 µs
+
+27
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+27
+STOP                          :   348919 µs | +     5202 µs
+
+27
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+27
+STOP                          :   353189 µs | +     4270 µs
+
+27
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+27
+STOP                          :   353544 µs | +      355 µs
+
+27
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+27
+STOP                          :   353579 µs | +       34 µs
+
+27
+END                           :   353580 µs | +        1 µs
+
+28
+28
+
+
+28
+Profiling "MAIN loop timing" sequence: 
+
+28
+--Event-----------------------|--timestamp--|----delta_t---
+
+28
+BEGIN                         :        0 µs | +        0 µs
+
+28
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+28
+STOP                          :        2 µs | +        1 µs
+
+28
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+28
+STOP                          :    80274 µs | +    80271 µs
+
+28
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+28
+STOP                          :   160545 µs | +    80271 µs
+
+28
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+28
+STOP                          :   177605 µs | +    17060 µs
+
+28
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+28
+STOP                          :   185963 µs | +     8358 µs
+
+28
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        0 µs
+
+28
+STOP                          :   256600 µs | +    70637 µs
+
+28
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+28
+STOP                          :   264802 µs | +     8202 µs
+
+28
+START Timestamp before layer 7:ADD 7:   264803 µs | +        1 µs
+
+28
+STOP                          :   273336 µs | +     8533 µs
+
+28
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        1 µs
+
+28
+STOP                          :   277302 µs | +     3965 µs
+
+28
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+28
+STOP                          :   343717 µs | +    66415 µs
+
+28
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+28
+STOP                          :   348919 µs | +     5202 µs
+
+28
+START Timestamp before layer 11:ADD 11:   348920 µs | +        1 µs
+
+28
+STOP                          :   353189 µs | +     4269 µs
+
+28
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+28
+STOP                          :   353545 µs | +      356 µs
+
+28
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+28
+STOP                          :   353580 µs | +       35 µs
+
+28
+END                           :   353580 µs | +        0 µs
+
+29
+29
+
+
+29
+Profiling "MAIN loop timing" sequence: 
+
+29
+--Event-----------------------|--timestamp--|----delta_t---
+
+29
+BEGIN                         :        0 µs | +        0 µs
+
+29
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+29
+STOP                          :        2 µs | +        1 µs
+
+29
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+29
+STOP                          :    80274 µs | +    80271 µs
+
+29
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+29
+STOP                          :   160545 µs | +    80271 µs
+
+29
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+29
+STOP                          :   177605 µs | +    17060 µs
+
+29
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+29
+STOP                          :   185962 µs | +     8357 µs
+
+29
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+29
+STOP                          :   256600 µs | +    70637 µs
+
+29
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+29
+STOP                          :   264802 µs | +     8202 µs
+
+29
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+29
+STOP                          :   273335 µs | +     8533 µs
+
+29
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        1 µs
+
+29
+STOP                          :   277301 µs | +     3965 µs
+
+29
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+29
+STOP                          :   343716 µs | +    66415 µs
+
+29
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+29
+STOP                          :   348918 µs | +     5202 µs
+
+29
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+29
+STOP                          :   353188 µs | +     4269 µs
+
+29
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+29
+STOP                          :   353544 µs | +      356 µs
+
+29
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+29
+STOP                          :   353579 µs | +       35 µs
+
+29
+END                           :   353579 µs | +        0 µs
+
+30
+30
+
+
+30
+Profiling "MAIN loop timing" sequence: 
+
+30
+--Event-----------------------|--timestamp--|----delta_t---
+
+30
+BEGIN                         :        0 µs | +        0 µs
+
+30
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+30
+STOP                          :        2 µs | +        1 µs
+
+30
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+30
+STOP                          :    80274 µs | +    80271 µs
+
+30
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+30
+STOP                          :   160545 µs | +    80271 µs
+
+30
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+30
+STOP                          :   177605 µs | +    17060 µs
+
+30
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+30
+STOP                          :   185962 µs | +     8357 µs
+
+30
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+30
+STOP                          :   256599 µs | +    70636 µs
+
+30
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+30
+STOP                          :   264802 µs | +     8202 µs
+
+30
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+30
+STOP                          :   273336 µs | +     8534 µs
+
+30
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+30
+STOP                          :   277301 µs | +     3965 µs
+
+30
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+30
+STOP                          :   343716 µs | +    66415 µs
+
+30
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+30
+STOP                          :   348918 µs | +     5202 µs
+
+30
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+30
+STOP                          :   353188 µs | +     4269 µs
+
+30
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        1 µs
+
+30
+STOP                          :   353544 µs | +      355 µs
+
+30
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+30
+STOP                          :   353579 µs | +       35 µs
+
+30
+END                           :   353580 µs | +        1 µs
+
+31
+31
+
+
+31
+Profiling "MAIN loop timing" sequence: 
+
+31
+--Event-----------------------|--timestamp--|----delta_t---
+
+31
+BEGIN                         :        0 µs | +        0 µs
+
+31
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+31
+STOP                          :        2 µs | +        1 µs
+
+31
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+31
+STOP                          :    80274 µs | +    80271 µs
+
+31
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+31
+STOP                          :   160545 µs | +    80271 µs
+
+31
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+31
+STOP                          :   177604 µs | +    17059 µs
+
+31
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        1 µs
+
+31
+STOP                          :   185962 µs | +     8357 µs
+
+31
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        0 µs
+
+31
+STOP                          :   256599 µs | +    70637 µs
+
+31
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+31
+STOP                          :   264801 µs | +     8201 µs
+
+31
+START Timestamp before layer 7:ADD 7:   264802 µs | +        1 µs
+
+31
+STOP                          :   273335 µs | +     8533 µs
+
+31
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        1 µs
+
+31
+STOP                          :   277300 µs | +     3964 µs
+
+31
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        1 µs
+
+31
+STOP                          :   343715 µs | +    66414 µs
+
+31
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        1 µs
+
+31
+STOP                          :   348918 µs | +     5202 µs
+
+31
+START Timestamp before layer 11:ADD 11:   348918 µs | +        0 µs
+
+31
+STOP                          :   353188 µs | +     4270 µs
+
+31
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+31
+STOP                          :   353543 µs | +      355 µs
+
+31
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        1 µs
+
+31
+STOP                          :   353579 µs | +       35 µs
+
+31
+END                           :   353579 µs | +        0 µs
+
+32
+32
+
+
+32
+Profiling "MAIN loop timing" sequence: 
+
+32
+--Event-----------------------|--timestamp--|----delta_t---
+
+32
+BEGIN                         :        0 µs | +        0 µs
+
+32
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+32
+STOP                          :        2 µs | +        1 µs
+
+32
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+32
+STOP                          :    80274 µs | +    80271 µs
+
+32
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+32
+STOP                          :   160545 µs | +    80271 µs
+
+32
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+32
+STOP                          :   177605 µs | +    17060 µs
+
+32
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+32
+STOP                          :   185962 µs | +     8357 µs
+
+32
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+32
+STOP                          :   256600 µs | +    70637 µs
+
+32
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+32
+STOP                          :   264802 µs | +     8202 µs
+
+32
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+32
+STOP                          :   273336 µs | +     8534 µs
+
+32
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+32
+STOP                          :   277301 µs | +     3965 µs
+
+32
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+32
+STOP                          :   343716 µs | +    66415 µs
+
+32
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+32
+STOP                          :   348919 µs | +     5203 µs
+
+32
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+32
+STOP                          :   353188 µs | +     4269 µs
+
+32
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        1 µs
+
+32
+STOP                          :   353544 µs | +      355 µs
+
+32
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+32
+STOP                          :   353579 µs | +       35 µs
+
+32
+END                           :   353580 µs | +        1 µs
+
+33
+33
+
+
+33
+Profiling "MAIN loop timing" sequence: 
+
+33
+--Event-----------------------|--timestamp--|----delta_t---
+
+33
+BEGIN                         :        0 µs | +        0 µs
+
+33
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+33
+STOP                          :        2 µs | +        1 µs
+
+33
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+33
+STOP                          :    80274 µs | +    80271 µs
+
+33
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+33
+STOP                          :   160545 µs | +    80271 µs
+
+33
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+33
+STOP                          :   177604 µs | +    17059 µs
+
+33
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        1 µs
+
+33
+STOP                          :   185962 µs | +     8357 µs
+
+33
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        0 µs
+
+33
+STOP                          :   256599 µs | +    70637 µs
+
+33
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+33
+STOP                          :   264801 µs | +     8201 µs
+
+33
+START Timestamp before layer 7:ADD 7:   264802 µs | +        1 µs
+
+33
+STOP                          :   273336 µs | +     8534 µs
+
+33
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+33
+STOP                          :   277301 µs | +     3965 µs
+
+33
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+33
+STOP                          :   343716 µs | +    66415 µs
+
+33
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+33
+STOP                          :   348919 µs | +     5203 µs
+
+33
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+33
+STOP                          :   353188 µs | +     4269 µs
+
+33
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        1 µs
+
+33
+STOP                          :   353544 µs | +      355 µs
+
+33
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+33
+STOP                          :   353579 µs | +       35 µs
+
+33
+END                           :   353579 µs | +        0 µs
+
+34
+34
+
+
+34
+Profiling "MAIN loop timing" sequence: 
+
+34
+--Event-----------------------|--timestamp--|----delta_t---
+
+34
+BEGIN                         :        0 µs | +        0 µs
+
+34
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+34
+STOP                          :        2 µs | +        1 µs
+
+34
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+34
+STOP                          :    80274 µs | +    80271 µs
+
+34
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+34
+STOP                          :   160545 µs | +    80271 µs
+
+34
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+34
+STOP                          :   177605 µs | +    17060 µs
+
+34
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+34
+STOP                          :   185962 µs | +     8357 µs
+
+34
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+34
+STOP                          :   256600 µs | +    70637 µs
+
+34
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+34
+STOP                          :   264802 µs | +     8202 µs
+
+34
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+34
+STOP                          :   273336 µs | +     8534 µs
+
+34
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+34
+STOP                          :   277301 µs | +     3965 µs
+
+34
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        1 µs
+
+34
+STOP                          :   343716 µs | +    66414 µs
+
+34
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+34
+STOP                          :   348919 µs | +     5202 µs
+
+34
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+34
+STOP                          :   353189 µs | +     4270 µs
+
+34
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+34
+STOP                          :   353544 µs | +      355 µs
+
+34
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+34
+STOP                          :   353579 µs | +       34 µs
+
+34
+END                           :   353580 µs | +        1 µs
+
+35
+35
+
+
+35
+Profiling "MAIN loop timing" sequence: 
+
+35
+--Event-----------------------|--timestamp--|----delta_t---
+
+35
+BEGIN                         :        0 µs | +        0 µs
+
+35
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+35
+STOP                          :        2 µs | +        1 µs
+
+35
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+35
+STOP                          :    80274 µs | +    80271 µs
+
+35
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+35
+STOP                          :   160545 µs | +    80271 µs
+
+35
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+35
+STOP                          :   177605 µs | +    17060 µs
+
+35
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+35
+STOP                          :   185962 µs | +     8357 µs
+
+35
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+35
+STOP                          :   256600 µs | +    70637 µs
+
+35
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+35
+STOP                          :   264802 µs | +     8202 µs
+
+35
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+35
+STOP                          :   273336 µs | +     8534 µs
+
+35
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+35
+STOP                          :   277301 µs | +     3965 µs
+
+35
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+35
+STOP                          :   343716 µs | +    66415 µs
+
+35
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        1 µs
+
+35
+STOP                          :   348919 µs | +     5202 µs
+
+35
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+35
+STOP                          :   353189 µs | +     4270 µs
+
+35
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+35
+STOP                          :   353544 µs | +      355 µs
+
+35
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        1 µs
+
+35
+STOP                          :   353579 µs | +       34 µs
+
+35
+END                           :   353580 µs | +        1 µs
+
+36
+36
+
+
+36
+Profiling "MAIN loop timing" sequence: 
+
+36
+--Event-----------------------|--timestamp--|----delta_t---
+
+36
+BEGIN                         :        0 µs | +        0 µs
+
+36
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+36
+STOP                          :        2 µs | +        1 µs
+
+36
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+36
+STOP                          :    80274 µs | +    80271 µs
+
+36
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+36
+STOP                          :   160545 µs | +    80271 µs
+
+36
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+36
+STOP                          :   177606 µs | +    17061 µs
+
+36
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        0 µs
+
+36
+STOP                          :   185963 µs | +     8357 µs
+
+36
+START Timestamp before layer 5:CONV_2D 5:   185964 µs | +        1 µs
+
+36
+STOP                          :   256601 µs | +    70637 µs
+
+36
+START Timestamp before layer 6:CONV_2D 6:   256601 µs | +        0 µs
+
+36
+STOP                          :   264803 µs | +     8202 µs
+
+36
+START Timestamp before layer 7:ADD 7:   264803 µs | +        0 µs
+
+36
+STOP                          :   273337 µs | +     8534 µs
+
+36
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        0 µs
+
+36
+STOP                          :   277302 µs | +     3965 µs
+
+36
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+36
+STOP                          :   343717 µs | +    66415 µs
+
+36
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+36
+STOP                          :   348919 µs | +     5202 µs
+
+36
+START Timestamp before layer 11:ADD 11:   348920 µs | +        1 µs
+
+36
+STOP                          :   353189 µs | +     4269 µs
+
+36
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353190 µs | +        1 µs
+
+36
+STOP                          :   353545 µs | +      355 µs
+
+36
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+36
+STOP                          :   353580 µs | +       35 µs
+
+36
+END                           :   353580 µs | +        0 µs
+
+37
+37
+
+
+37
+Profiling "MAIN loop timing" sequence: 
+
+37
+--Event-----------------------|--timestamp--|----delta_t---
+
+37
+BEGIN                         :        0 µs | +        0 µs
+
+37
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+37
+STOP                          :        2 µs | +        1 µs
+
+37
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+37
+STOP                          :    80274 µs | +    80271 µs
+
+37
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+37
+STOP                          :   160545 µs | +    80271 µs
+
+37
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+37
+STOP                          :   177604 µs | +    17059 µs
+
+37
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        1 µs
+
+37
+STOP                          :   185962 µs | +     8357 µs
+
+37
+START Timestamp before layer 5:CONV_2D 5:   185962 µs | +        0 µs
+
+37
+STOP                          :   256599 µs | +    70637 µs
+
+37
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        1 µs
+
+37
+STOP                          :   264801 µs | +     8201 µs
+
+37
+START Timestamp before layer 7:ADD 7:   264802 µs | +        1 µs
+
+37
+STOP                          :   273336 µs | +     8534 µs
+
+37
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        0 µs
+
+37
+STOP                          :   277301 µs | +     3965 µs
+
+37
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+37
+STOP                          :   343716 µs | +    66415 µs
+
+37
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+37
+STOP                          :   348919 µs | +     5203 µs
+
+37
+START Timestamp before layer 11:ADD 11:   348919 µs | +        0 µs
+
+37
+STOP                          :   353188 µs | +     4269 µs
+
+37
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        1 µs
+
+37
+STOP                          :   353544 µs | +      355 µs
+
+37
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+37
+STOP                          :   353579 µs | +       35 µs
+
+37
+END                           :   353579 µs | +        0 µs
+
+38
+38
+
+
+38
+Profiling "MAIN loop timing" sequence: 
+
+38
+--Event-----------------------|--timestamp--|----delta_t---
+
+38
+BEGIN                         :        0 µs | +        0 µs
+
+38
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+38
+STOP                          :        2 µs | +        1 µs
+
+38
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+38
+STOP                          :    80274 µs | +    80271 µs
+
+38
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+38
+STOP                          :   160545 µs | +    80271 µs
+
+38
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+38
+STOP                          :   177605 µs | +    17060 µs
+
+38
+START Timestamp before layer 4:CONV_2D 4:   177605 µs | +        0 µs
+
+38
+STOP                          :   185962 µs | +     8357 µs
+
+38
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        1 µs
+
+38
+STOP                          :   256600 µs | +    70637 µs
+
+38
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+38
+STOP                          :   264802 µs | +     8202 µs
+
+38
+START Timestamp before layer 7:ADD 7:   264802 µs | +        0 µs
+
+38
+STOP                          :   273335 µs | +     8533 µs
+
+38
+START Timestamp before layer 8:CONV_2D 8:   273336 µs | +        1 µs
+
+38
+STOP                          :   277301 µs | +     3965 µs
+
+38
+START Timestamp before layer 9:CONV_2D 9:   277301 µs | +        0 µs
+
+38
+STOP                          :   343716 µs | +    66415 µs
+
+38
+START Timestamp before layer 10:CONV_2D 10:   343716 µs | +        0 µs
+
+38
+STOP                          :   348918 µs | +     5202 µs
+
+38
+START Timestamp before layer 11:ADD 11:   348919 µs | +        1 µs
+
+38
+STOP                          :   353188 µs | +     4269 µs
+
+38
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353188 µs | +        0 µs
+
+38
+STOP                          :   353544 µs | +      356 µs
+
+38
+START Timestamp before layer 13:CONV_2D 13:   353544 µs | +        0 µs
+
+38
+STOP                          :   353579 µs | +       35 µs
+
+38
+END                           :   353579 µs | +        0 µs
+
+39
+39
+
+
+39
+Profiling "MAIN loop timing" sequence: 
+
+39
+--Event-----------------------|--timestamp--|----delta_t---
+
+39
+BEGIN                         :        0 µs | +        0 µs
+
+39
+START Timestamp before layer 0:CONV_2D 0:        1 µs | +        1 µs
+
+39
+STOP                          :        2 µs | +        1 µs
+
+39
+START Timestamp before layer 1:CONV_2D 1:        3 µs | +        1 µs
+
+39
+STOP                          :    80274 µs | +    80271 µs
+
+39
+START Timestamp before layer 2:CONV_2D 2:    80274 µs | +        0 µs
+
+39
+STOP                          :   160545 µs | +    80271 µs
+
+39
+START Timestamp before layer 3:ADD 3:   160545 µs | +        0 µs
+
+39
+STOP                          :   177605 µs | +    17060 µs
+
+39
+START Timestamp before layer 4:CONV_2D 4:   177606 µs | +        1 µs
+
+39
+STOP                          :   185963 µs | +     8357 µs
+
+39
+START Timestamp before layer 5:CONV_2D 5:   185963 µs | +        0 µs
+
+39
+STOP                          :   256600 µs | +    70637 µs
+
+39
+START Timestamp before layer 6:CONV_2D 6:   256600 µs | +        0 µs
+
+39
+STOP                          :   264802 µs | +     8202 µs
+
+39
+START Timestamp before layer 7:ADD 7:   264803 µs | +        1 µs
+
+39
+STOP                          :   273336 µs | +     8533 µs
+
+39
+START Timestamp before layer 8:CONV_2D 8:   273337 µs | +        1 µs
+
+39
+STOP                          :   277302 µs | +     3965 µs
+
+39
+START Timestamp before layer 9:CONV_2D 9:   277302 µs | +        0 µs
+
+39
+STOP                          :   343717 µs | +    66415 µs
+
+39
+START Timestamp before layer 10:CONV_2D 10:   343717 µs | +        0 µs
+
+39
+STOP                          :   348919 µs | +     5202 µs
+
+39
+START Timestamp before layer 11:ADD 11:   348920 µs | +        1 µs
+
+39
+STOP                          :   353189 µs | +     4269 µs
+
+39
+START Timestamp before layer 12:AVERAGE_POOL_2D 12:   353189 µs | +        0 µs
+
+39
+STOP                          :   353545 µs | +      356 µs
+
+39
+START Timestamp before layer 13:CONV_2D 13:   353545 µs | +        0 µs
+
+39
+STOP                          :   353580 µs | +       35 µs
+
+39
+END                           :   353580 µs | +        0 µs
+
+40
+40
+
+
+40
+Finished timing measurements!
+
+40
+Tensor values:
+
+40
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+
+40
+Tensor values:
+
+40
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+
+40
+Tensor values:
+
+40
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+
+40
+Tensor values:
+
+40
+-128 -128 -128 -128 -128 -128 -128 -128 -128 -128 
+
+40
+End of benchmark.
+
+STEP flash_and_readback FINISHED
+
+NOW RUNNING STEP: process_data
+STEP process_data FINISHED
+
+NOW RUNNING STEP: save_results
+STEP save_results FINISHED
+

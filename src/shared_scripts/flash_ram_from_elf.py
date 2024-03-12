@@ -23,6 +23,12 @@ def calc_flash_ram(elf_file: Path):
 
     eabi_size = subprocess.check_output(f'arm-none-eabi-size -A {elf_file}', shell=True, text=True)
     
+    # rodata, read only
+    # text is code
+    # 
+    # data is read write data?- > Ram
+    # bss is uninitialized data / zero initialized data? -> Ram
+
     text_sizes = re.findall(pattern_text, eabi_size)
     data_sizes = re.findall(pattern_data, eabi_size)
     rodata_sizes = re.findall(pattern_rodata, eabi_size)

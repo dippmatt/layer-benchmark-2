@@ -2,6 +2,7 @@ third_party/
 __pycache__/
 venv/
 workdir/
+TMP_DATA/
 .vscode/
 test_data/
 data_gen*

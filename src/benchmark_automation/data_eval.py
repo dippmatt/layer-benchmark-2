@@ -4,13 +4,15 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import numpy as np
+import re
 import copy
+import subprocess
 from paretoset import paretoset
 
 def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     data_source_dir = data_source_dir.resolve()
     
-    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments', 'ref_config_name', 'mcu_tensor_values'])
+    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'nrmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments', 'ref_config_name', 'mcu_tensor_values', 'ref_tensor_values'])
     
     # Sanity check: verify the naming scheme of the benchmark folders
     framework_counter = 0
@@ -177,6 +179,42 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         new_row_data['ram'] = int(ram)
         new_row_data['flash'] = int(flash)
 
+        ##################################################
+        #### Ram & Flash specifics .data .rodata .bss ####
+        ##################################################
+
+        # We dont have the individual sizes for the tflite models, 
+        # ram and flash are extracted from simple network analyze report
+        if 'tflite' in benchmark.stem:
+            new_row_data['elf_size'] = None
+        # ST offers a more detailed generate_report.txt log file
+        elif 'st' in benchmark.stem:
+            generate_report_file = Path(benchmark, 'workdir', 'generate_report.txt')
+            assert generate_report_file.exists(), 'No generate_report.txt found.'
+            elf_size_dict = get_bss_data_rodata_text_st(generate_report_file)
+            new_row_data['elf_size'] = elf_size_dict
+        # for glow and tiny_engine we can use the elf file to extract the sizes manually
+        elif 'glow' in benchmark.stem or 'tiny_engine' in benchmark.stem:
+            if 'glow' in benchmark.stem:
+                elf_ref_file = Path(benchmark, 'workdir', 'Glow_Template_ref', 'Debug', 'Glow_Template_ref.elf')
+                elf_empty_file = Path(benchmark, 'workdir', 'Glow_Template_empty', 'Debug', 'Glow_Template_empty.elf')
+                assert elf_ref_file.exists(), 'No ref elf file found.'
+                assert elf_empty_file.exists(), 'No empty elf file found.'
+            elif 'tiny_engine' in benchmark.stem:
+                elf_ref_file = Path(benchmark, 'workdir', 'TinyEngineTemplateCleanR5Zi_ref', 'Debug', 'TinyEngineTemplateCleanR5Zi.elf')
+                elf_empty_file = Path(benchmark, 'workdir', 'TinyEngineTemplateCleanR5Zi_ref_empty', 'Debug', 'TinyEngineTemplateCleanR5Zi.elf')
+                assert elf_ref_file.exists(), 'No ref elf file found.'
+                assert elf_empty_file.exists(), 'No empty elf file found.'
+            
+            # execute 'arm-none-eabi-size -A <elf>' using subprocess
+            eabi_size_ref = subprocess.run(['arm-none-eabi-size', '-A', elf_ref_file], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            eabi_size_empty = subprocess.run(['arm-none-eabi-size', '-A', elf_empty_file], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            elf_size_dict = get_bss_data_rodata_text(eabi_size_ref, eabi_size_empty)
+            new_row_data['elf_size'] = elf_size_dict
+        if not 'tflite' in benchmark.stem:
+            print(new_row_data['elf_size'])
+
+        
         #################################################
         ####            Calulate Errors              ####
         #################################################
@@ -193,12 +231,16 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         mcu_tensor_values = mcu_data['arr_0']
         # calculate metrics
         metrics = data_metrics(mcu_tensor_values, ref_tensor_values)
+        new_row_data['mcu_tensor_values'] = mcu_tensor_values
+        new_row_data['ref_tensor_values'] = ref_tensor_values
         new_row_data['rmse'] = metrics['rmse']
         new_row_data['mae'] = metrics['mae']
         new_row_data['l2r'] = metrics['l2r']
+        new_row_data['nrmse'] = metrics['nrmse']
 
         # add the new row to the df
         df.loc[len(df)] = new_row_data
+    
 
     ############# Process per layer data:
     # Optimisation techniques split or fuse layers
@@ -312,6 +354,108 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     
     return df
 
+def get_bss_data_rodata_text_st(generate_report_file: Path) -> dict:
+    with open(generate_report_file, 'r') as f:
+        lines = f.readlines()
+    
+    elf_size_dict = {}
+    line_minus_2 = ''
+    line_minus_1 = ''
+    for line in lines:
+        if 'TOTAL' in line and '*io*' in line_minus_2:
+            line_split = line.split()
+            elf_size_dict['text'] = line_split[-4]
+            elf_size_dict['rodata'] = line_split[-3]
+            elf_size_dict['data'] = line_split[-2]
+            elf_size_dict['bss'] = line_split[-1]
+            return elf_size_dict
+        line_minus_2 = line_minus_1
+        line_minus_1 = line
+
+    # Failure to find flash and ram if we rech this point
+    return None
+
+
+def get_bss_data_rodata_text(elf_size_ref: str, elf_size_empty: str) -> dict:
+    """Extracts the .bss, .data and .rodata size from the output of 'arm-none-eabi-size -A' command.
+
+    Args:
+        elf_size_ref (str): The output of 'arm-none-eabi-size' command for the reference elf file (project compiled including ML model).
+        elf_size_empty (str): The output of 'arm-none-eabi-size' command for the empty elf file (project compiled without ML model).
+
+    Returns:
+        dict: A dictionary containing the .bss, .data and .rodata size.
+    """
+    # Define the regular expression patterns for the sections and sizes
+    pattern_text = r"\.text\s+(\d+)"
+    pattern_data = r"\.data\s+(\d+)"
+    pattern_rodata = r"\.rodata\s+(\d+)"
+    pattern_bss = r"\.bss\s+(\d+)"
+
+    # rodata, read only data
+    # text is code
+    # data is read write data
+    # bss is uninitialized data / zero initialized data
+
+    text_size_ref = re.findall(pattern_text, elf_size_ref)
+    text_size_empty = re.findall(pattern_text, elf_size_empty)
+    text_size = int(text_size_ref[0]) - int(text_size_empty[0])
+
+    rodata_size_ref = re.findall(pattern_rodata, elf_size_ref)
+    rodata_size_empty = re.findall(pattern_rodata, elf_size_empty)
+    rodata_size = int(rodata_size_ref[0]) - int(rodata_size_empty[0])
+
+    data_size_ref = re.findall(pattern_data, elf_size_ref)
+    data_size_empty = re.findall(pattern_data, elf_size_empty)
+    data_size = int(data_size_ref[0]) - int(data_size_empty[0])
+
+    bss_size_ref = re.findall(pattern_bss, elf_size_ref)
+    bss_size_empty = re.findall(pattern_bss, elf_size_empty)
+    bss_size = int(bss_size_ref[0]) - int(bss_size_empty[0])
+
+    return {'text': text_size, 'rodata': rodata_size, 'data': data_size, 'bss': bss_size}
+
+
+def export_latex_table(df, usecase='ad', dtype='int'):
+    """Exports a pandas dataframe to a latex table.
+
+    Args:
+        df (pd.DataFrame): The dataframe to be exported.
+        usecase (str, optional): The usecase to be exported. 
+            Valid values: 'ad', 'kws', 'vww', 'ic'. Defaults to 'ad'.
+        dtype (str, optional): The data type to be exported. 
+            Valid values: 'int' or 'float'. Defaults to 'int'.
+    """
+    assert dtype in ['int', 'float'], f'Invalid dtype {dtype}.'
+    assert usecase in ['ad', 'kws', 'vww', 'ic'], f'Invalid usecase {usecase}.'
+    df = df[df['model'] == usecase]
+    df = df[df['dtype'] == dtype]
+
+    # only keep the relevant columns: model, config_name, framework, avg_timing
+    df = df[['model', 'framework', 'avg_timing', 'config_name']]
+    # round the avg_timing to 2 decimal places
+    for index, row in df.iterrows():
+        df.at[index, 'avg_timing'] = round(float(row['avg_timing']), 3)
+    # if dtype is float and config_name contains 'nosoftmax', delete the row
+    if dtype == 'float':
+        df = df[~df['config_name'].str.contains('nosoftmax')]
+    # if config_name contains 'anomaly', delete the row
+    df = df[~df['config_name'].str.contains('anomaly')]
+    # if config_name contains 'normal', remove the 'normal' part
+    df['config_name'] = df['config_name'].str.replace('_normal_', '_')
+    # replace all underscores with a - and remove last underscore from config_name
+    df['config_name'] = df['config_name'].str.replace('_', '-').str[:-1]
+    df['framework'] = df['framework'].str.replace('_', '-')
+    # sort by avg_timing
+    df = df.sort_values(by='avg_timing', ascending=True)
+    # replace _ in header names
+    df.columns = ['Model', 'Framework', 'Avg. Timing [ms]', 'Config Name']
+
+    print(df.to_latex(index=False, float_format='%.3f'))
+    print()
+    return
+    
+
 
 def layer_perf_by_type(df):
     """Analyses the performance of layer types per framwork.
@@ -321,7 +465,12 @@ def layer_perf_by_type(df):
     we can identify these well-optimized layers.
 
     """
+
+
     # get possible layer types in all models
+    # filter only int dtype, we cannot compare float to a int reference
+    df = df[df['dtype'] == 'int']
+
     layer_types = set()
     for index, row in df.iterrows():
         if "noquant" in row['config_name'] and "float" in row['config_name']:
@@ -345,7 +494,9 @@ def layer_perf_by_type(df):
     st_dict = copy.deepcopy(layer_dict)
     tiny_engine_dict = copy.deepcopy(layer_dict)
     
+    continue_flag = False
     for index, row in df.iterrows():
+        continue_flag = False
         if "noquant" in row['config_name'] and "float" in row['config_name']:
             continue
         if "_quant" not in row['config_name'] and "float" in row['config_name']:
@@ -378,6 +529,10 @@ def layer_perf_by_type(df):
                 if i >= len(ref_timings):
                     break
                 ref_timing = ref_timings[i]
+                if (type(layer_assignment) == float):
+                    print(row["config_name"], "SKIPPING DUE TO MISSING LAYER ASSIGNMENT {}".format(row['config_name']))
+                    continue_flag = True
+                    break
                 corresponding_layers = layer_assignment[0][i]
                 corresponding_sum = 0.0
                 if type(corresponding_layers) == int:
@@ -387,6 +542,8 @@ def layer_perf_by_type(df):
                         corresponding_sum += timings[timing]
                 type_timing_dict[name]['ref'] += ref_timing
                 type_timing_dict[name]['target'] += corresponding_sum
+            if continue_flag:
+                continue
             
             #print("type_timing_dict: ", type_timing_dict)
 
@@ -472,8 +629,8 @@ def data_metrics(tensor_values, tensor_values_ref):
     return_metrics['rmse'] = rmse(tensor_values_ref, tensor_values)
     return_metrics['mae'] = mae(tensor_values_ref, tensor_values)
     return_metrics['l2r'] = l2r(tensor_values_ref, tensor_values)
-    # if return_metrics['l2r'] > 1.1:
-    #     print("large error")
+    return_metrics['nrmse'] = nrmse(tensor_values_ref, tensor_values)
+
     return return_metrics
 
 
@@ -492,6 +649,9 @@ def plot_sankey(title: str, source_data: pd.Series, target_data: pd.Series):
     ref_names = source_data['layer_names'][:len(reference_timings)]
     target_names = target_data['layer_names']
 
+    ref_avg_runtime = np.mean(source_data['avg_timing']).round(3)
+    target_avg_runtime = np.mean(target_data['avg_timing']).round(3)
+
     # preprocessing: apply character limit to layer names
     CHAR_LIMIT = 50
     if 'glow' in ref_title:
@@ -507,7 +667,12 @@ def plot_sankey(title: str, source_data: pd.Series, target_data: pd.Series):
     ref_len = len(ref_names)
     target_len = len(target_names)
 
-    labels = [ref_title] + ref_names + target_names + [target_title, target_title]
+            #[ref_title + '  ' + str(ref_avg_runtime) + ' ms'] + \
+    labels = [str(ref_avg_runtime) + ' ms'] + \
+        ref_names + \
+        target_names + \
+        [target_title, str(target_avg_runtime) + ' ms']
+       #[target_title, target_title + '  ' + str(target_avg_runtime) + ' ms']
 
     # get the total runtime for all layers
     ref_total_runtime = reference_timings.sum()
@@ -696,13 +861,14 @@ def plot_speedup(title: str, source_data: pd.Series, target_data: pd.Series):
     # Define colors based on values
     colors = ['red' if val > 0 else 'green' for val in relative_runtimes]
     
-    # Create a relative speedup bar chart
+    
     new_ref_names = []
     for i, name in enumerate(ref_names):
         new_ref_names.append(f'{i+1}: ' + name)
     ref_names = new_ref_names
 
-    # Create a bar chart
+    # Create a relative speedup bar chart
+    # RELATIVE SPEEDUP IS NOT REPRESENTATIVE
     fig = px.bar(
         x=ref_names, 
         y=relative_runtimes, 
@@ -710,7 +876,7 @@ def plot_speedup(title: str, source_data: pd.Series, target_data: pd.Series):
         color_discrete_map={color: color for name, color in zip(ref_names, colors)},
         text_auto='.1f', 
         title="Relative Speedup per Layer",
-        category_orders={"x": ref_names}
+        category_orders={"x": ref_names},
         )
     
     fig.update_layout(
@@ -724,7 +890,7 @@ def plot_speedup(title: str, source_data: pd.Series, target_data: pd.Series):
     # Define colors based on values
     colors = ['red' if val > 0 else 'green' for val in absolute_runtimes]
 
-    # Create a bar chart
+    # Create a absolute speedup bar chart
     fig = px.bar(
         x=ref_names, 
         y=absolute_runtimes, 
@@ -743,6 +909,7 @@ def plot_speedup(title: str, source_data: pd.Series, target_data: pd.Series):
     )
     fig.show()
     return
+
 
 def plot_pareto3d(title: str, df: pd.DataFrame):
     data = {
@@ -801,6 +968,82 @@ def plot_pareto3d(title: str, df: pd.DataFrame):
     return
 
 
+def plot_ram_flash(title: str, df: pd.DataFrame):
+    data = {
+        'ram': [],
+        'flash': [],
+        'framework': [],
+        'shape': [],
+        'color': [],
+        'label': [],
+        'dtype': []
+    }
+    for index, row in df.iterrows():
+        if 'nosoftmax' in row['config_name'] and not 'tiny_engine' in row['config_name']:
+            continue
+        data['ram'].append(row['ram'])
+        data['flash'].append(row['flash'])
+        data['framework'].append(row['framework'])
+        data['label'].append(row['config_name'])
+        data['dtype'].append(row['dtype'])
+
+
+    # assign a shape to each data point for the plotly 3d scatter plot
+    for i, framework in enumerate(data['framework']):
+        if framework == 'tiny_engine':
+            data['shape'].append('tiny_engine')
+        elif framework == 'st':
+            data['shape'].append('st')
+        elif framework == 'glow':
+            data['shape'].append('glow')
+        elif framework == 'tflite':
+            data['shape'].append('tflite')
+        data['color'].append('#FF0000')
+
+    color_map = {'tiny_engine': 'red', 'st': 'blue', 'glow': 'green', 'tflite': 'black'}
+
+    df2plot = pd.DataFrame(data)
+    fig = px.scatter(df2plot, x='ram', y='flash', symbol='shape', color='framework', color_discrete_map=color_map, hover_data=["label", "dtype"])#, text='label')#, size='size', )
+    fig.update_layout(
+        title=title,
+        xaxis=dict(range=[0, df2plot['ram'].max() * 1.1]),
+        xaxis_title="RAM [Byte]",
+        yaxis=dict(range=[0, df2plot['flash'].max() * 1.1]),
+        yaxis_title="Flash [Byte]",
+        bargap=0.1,
+    )
+    fig.show()
+
+def plot_measurement_impact(df: pd.DataFrame):
+    """
+    Plots the relative impact of per layer runtime measurements.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the runtime measurements.
+
+    Returns:
+        None
+    """
+    errors = []
+    for index, row in df.iterrows():
+        layer_sum_timing = row['sum_timing']
+        total_ref_timing = row['avg_timing']
+        relative_error = (layer_sum_timing / total_ref_timing) - 1
+        if abs(relative_error) > 0.005:
+            print(row['config_name'], " ", relative_error) 
+        errors.append(relative_error)
+
+    # Create a histogram diagram using px
+    fig = px.histogram(df, x=errors, title="Relative Impact of per Layer Runtime Measurements")
+    fig.update_layout(
+        xaxis_title="Relative Impact of per Layer Runtime Measurements",
+        yaxis_title="Count",
+        bargap=0.1,
+    )
+
+    fig.show()
+
+
 def plot_deviation(df: pd.DataFrame):
     dev_sums = []
     for index, row in df.iterrows():
@@ -851,15 +1094,35 @@ def plot_deviation(df: pd.DataFrame):
 def runtime_over_error(df: pd.DataFrame, use_case: str):
     # create a scatter diagram using px.scatter
     # where the total runtime is on the y-axis and the precision is on the x-axis
-    df['size'] = .2
+    #df['size'] = .2
     # remove any timing over 2000 ms from df (exclude tiny_engine from the plot)
 
-    # for index, row in df.iterrows():
-    #     print(row['config_name'])
-    import sys;sys.exit()
-    df_sub = df[df['avg_timing'] < 2000]
+    error_metric = 'nrmse'
+    
+    out_file = Path.home() / Path('Desktop', 'runtime_over_error_' + use_case + '.txt')
+    with open(out_file, 'w') as f:
+        for index, row in df.iterrows():
+            f.write(row['config_name'] + ' ' + str(row[error_metric]) + ' ' + str(row['sum_timing']) + '\n')
+            f.write(str(row['mcu_tensor_values']) + '\n')
+            f.write(str(row['ref_tensor_values']) + '\n\n')
 
-    fig = px.scatter(df_sub, x='rmse', y='avg_timing', color='framework', hover_data=['config_name'])#, size='size')
+    # filter int data type
+    #df = df[df['dtype'] == 'int']
+    
+    # filter all data points where error is > 2
+    # bad_df = df[df[error_metric] > 2]
+    # print(f"Bad data points for {use_case}: ")
+    # for index, row in bad_df.iterrows():
+    #     print(row['config_name'], f" {error_metric} error: ", row[error_metric])
+    # print()
+    # df = df[df[error_metric] < 2]
+    
+
+    # create color map for the frameworks
+    color_map = {'tiny_engine': 'red', 'st': 'blue', 'glow': 'green', 'tflite': 'black'}
+    color_discrete_sequence=["red", "blue", "green", "black"]
+
+    fig = px.scatter(df, x=error_metric, y='sum_timing',color='framework', color_discrete_map=color_map, hover_data=['config_name', 'dtype'])#, size='size')
     fig.update_layout(
         title="Runtime over Error for " + use_case,
         xaxis_title="Root Mean Square Error",
@@ -871,10 +1134,76 @@ def runtime_over_error(df: pd.DataFrame, use_case: str):
     fig.show()
     return
 
+def model_timing_float_st(dp0=2, dp1=3):
+
+    # Define data points
+    sources = ['ad', 'kws', 'ic', 'vww']
+    timings = [21.2, 307.2, 1006.996, 827.15]
+    operations = [
+        # smul | op
+        [265864, 1032],  # Data point 1: 2 operations of type A, 3 of type B
+        [2657356, 79860],  # Data point 2: 1 operation of type A, 4 of type B
+        [12501978, 106646],  # Data point 3 (not used for calculating X and Y)
+        [7492402, 233886],  # Data point 4 (not used for calculating X and Y)
+    ]
+
+    # Select two data points for calculation
+    t1 = timings[dp0]
+    t2 = timings[dp1]
+    opA1, opB1 = operations[dp0]
+    opA2, opB2 = operations[dp1]
+
+    tB = (opA1 * t2 - opA2 * t1) / (opA1 * opB2 - opA2 * opB1)
+    tA = (t1 - opB1 * tB) / opA1
+
+    print("model ", sources[dp0], sources[dp1])
+    print("tA: ", tA)
+    print("tB: ", tB)
+    print()
+    return tA, tB
+
+
+def model_timing_float_tflite(dp0=0, dp1=1):
+    
+    # Define data points
+    sources = ['ad', 'vww', 'ic']
+    timings = [28.2, 18226, 12030]
+    operations = [
+        # smul | op
+        [265864, 1032],  
+        [12501978, 106646],
+        [7492402, 233886]
+       
+    ]
+
+    # Select two data points for calculation
+    t1 = timings[dp0]
+    t2 = timings[dp1]
+    opA1, opB1 = operations[dp0]
+    opA2, opB2 = operations[dp1]
+
+    tB = (opA1 * t2 - opA2 * t1) / (opA1 * opB2 - opA2 * opB1)
+    tA = (t1 - opB1 * tB) / opA1
+
+    print("model ", sources[dp0], sources[dp1])
+    print("tA: ", tA)
+    print("tB: ", tB)
+    print()
+    return tA, tB
+
+    
+
 
 def rmse(ref, pred):
   """Return Root Mean Squared Error (RMSE)."""
   return np.sqrt(((ref - pred).astype(np.float64) ** 2).mean())
+
+
+def nrmse(ref, pred):
+  """Return Root Mean Squared Error (RMSE)."""
+  range = np.max(ref) - np.min(ref)
+  rmse = np.sqrt(((ref - pred).astype(np.float64) ** 2).mean())
+  return rmse / range
 
 
 def mae(ref, pred):
@@ -886,7 +1215,7 @@ def l2r(ref, pred):
   """Compute L2 relative error"""
   def magnitude(v):
     return np.sqrt(np.sum(np.square(v).flatten()))
-  mag = magnitude(pred) + np.finfo(np.float32).eps
+  mag = magnitude(ref) + np.finfo(np.float32).eps
   return magnitude(ref - pred) / mag
 
 
@@ -917,19 +1246,145 @@ def main():
     ######     Postprocess data & Perform experiments     ######
     ############################################################
     
+    # config = df[df['config_name'] == 'glow_noquant_ic_int_'].iloc[0]
+    # config = df[df['config_name'] == 'tiny_engine_vww_int_nosoftmax_'].iloc[0]
+    # config = df[df['config_name'] == 'st_ram_ad_anomaly_int_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # print(config['config_name'])
+    # print(config['ram'])
+    # print(config['flash'])
+    # print()
+    # print(ref_row['config_name'])
+    # print(ref_row['ram'])
+    # print(ref_row['flash'])
+    # import sys; sys.exit(0)
+    #plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+    # plot_speedup("Per-Layer Speedup", ref_row, config)
+    # export_latex_table(df, 'ic', 'int')
+
+    # indices = []
+    # # generate all pairs of combinations for indices [0, 3]
+    # for i in range(4):
+    #     for j in range(4):
+    #         if i < j:
+    #             indices.append((i, j))
+
+    # resultsA = []
+    # resultsB = []
+    # for pair in indices:
+    #     A, B = model_timing_float_st(pair[0], pair[1])
+    #     resultsA.append(A)
+    #     resultsB.append(B)
+    # # plot the result in a 1D scatter plot for A, B respectively
+    # fig = px.scatter(x=resultsA, y=resultsB)
+    # fig.show()
+
+
+
+    # indices = []
+    # # generate all pairs of combinations for indices [0, 3]
+    # for i in range(3):
+    #     for j in range(3):
+    #         if i < j:
+    #             indices.append((i, j))
+
+    # resultsA = []
+    # resultsB = []
+    # for pair in indices:
+    #     A, B = model_timing_float_tflite(pair[0], pair[1])
+    #     resultsA.append(A)
+    #     resultsB.append(B)
+    # # plot the result in a 1D scatter plot for A, B respectively
+    # fig = px.scatter(x=resultsA, y=resultsB)
+    # fig.show()
+
+    # import sys; sys.exit(0)
+    
+
+    # config = df[df['config_name'] == 'st_time_ic_float_'].iloc[0]
+    # config = df[df['config_name'] == 'tflite_ic_float_'].iloc[0]
+
+    # reference_timings = config['per_layer_timings']
+    # reference_timings = np.mean(reference_timings, axis=0)
+
+    # for i, layer in enumerate(config['layer_names']):
+    #     print(reference_timings[i].round(3), "\t", layer )
+    # print()
+    
+    # import sys; sys.exit(0)
+
+
+    # plot_measurement_impact(df)
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+
+    # config = df[df['config_name'] == 'glow_noquant_kws_int_'].iloc[0]
+    # print(config['mcu_tensor_values'])
+    # print(config['ref_tensor_values'])
+
+    # import sys;sys.exit(0)
+    
+    # runtime_over_error(df[df['model'] == 'ad'], "Anomaly Detection")
+    # runtime_over_error(df[df['model'] == 'ic'], "Image Classification")
+    # runtime_over_error(df[df['model'] == 'kws'], "Keyword Spotting")
+    # runtime_over_error(df[df['model'] == 'vww'], "Wake Word Detection")
+
+    # import sys;sys.exit(0)
+
     # config = df[df['config_name'] == 'st_time_vww_int_'].iloc[0]
     # config = df[df['config_name'] == 'st_time_ic_int_'].iloc[0]
     # config = df[df['config_name'] == 'glow_quant_ic_float_'].iloc[0]
-    # config = df[df['config_name'] == 'tiny_engine_ic_int_nosoftmax_'].iloc[0]
-    config = df[df['config_name'] == 'tiny_engine_vww_int_nosoftmax_'].iloc[0]
-    ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # config = df[df['config_name'] == 'tiny_engine_vww_int_nosoftmax_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_speedup("Per-Layer Speedup", ref_row, config)
+    # #import sys; sys.exit(0)
 
-    #plot_speedup("Per-Layer Speedup", ref_row, config)
-    layer_perf_by_type(df)
-    import sys;sys.exit(0)
+    # config = df[df['config_name'] == 'st_balanced_ic_int_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+
+    # config = df[df['config_name'] == 'st_time_ic_int_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+
+    # config = df[df['config_name'] == 'st_ram_ic_int_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+
+
     
-    plot_sankey("Per-Layer Runtime Flow", ref_row, config)
-    plot_speedup("Per-Layer Speedup", ref_row, config)
+
+    # import sys;sys.exit(0)
+    
+    # config = df[df['config_name'] == 'glow_noquant_kws_int_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+    # plot_speedup("Per-Layer Speedup", ref_row, config)
+    
+    # config = df[df['config_name'] == 'glow_quant_kws_float_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+    # plot_speedup("Per-Layer Speedup", ref_row, config)
+    
+    # config = df[df['config_name'] == 'st_time_kws_int_'].iloc[0]
+    # ref_row = (df[df['config_name'] == config['ref_config_name']]).iloc[0]
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+    # plot_speedup("Per-Layer Speedup", ref_row, config)
+
+    # export_latex_table(df, 'ad', 'int')
+    # export_latex_table(df, 'kws', 'int')
+    # export_latex_table(df, 'ic', 'int')
+    # export_latex_table(df, 'vww', 'int')
+
+    # export_latex_table(df, 'ad', 'float')
+    # export_latex_table(df, 'kws', 'float')
+    # export_latex_table(df, 'ic', 'float')
+    # export_latex_table(df, 'vww', 'float')
+    
+    # layer_perf_by_type(df)
+    
+    
+    # plot_sankey("Per-Layer Runtime Flow", ref_row, config)
+    # plot_speedup("Per-Layer Speedup", ref_row, config)
 
     # plot pareto diagrams
     int_df = df[df['dtype'] == 'int']
@@ -945,11 +1400,20 @@ def main():
     filtered_df_float_ic = float_df[float_df['model'] == 'ic']
     filtered_df_float_vww = float_df[float_df['model'] == 'vww']
     
+    
+    plot_ram_flash("RAM vs Flash AD int", filtered_df_int_ad)
+    plot_ram_flash("RAM vs Flash KWS int", filtered_df_int_kws)
+    plot_ram_flash("RAM vs Flash IC int", filtered_df_int_ic)
+    plot_ram_flash("RAM vs Flash VWW int", filtered_df_int_vww)
+    import sys; sys.exit(0)
+
     plot_pareto3d("Pareto Diagram AD int", filtered_df_int_ad)
     plot_pareto3d("Pareto Diagram KWS", filtered_df_int_kws)
     plot_pareto3d("Pareto Diagram IC", filtered_df_int_ic)
     plot_pareto3d("Pareto Diagram VWW", filtered_df_int_vww)
-    import sys; sys.exit(0)
+
+
+    #import sys; sys.exit(0)
     runtime_over_error(filtered_df_int_ic, "Image Classification")
 
     plot_deviation(df)

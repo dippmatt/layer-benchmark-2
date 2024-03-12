@@ -201,7 +201,7 @@ def gen_test_tensors(input_tensors, input_dtype):
     lines_o.append("#endif /* ML_DATA_H */\n")
     lines_o.append("\n")
 
-    lines_o.append(f"{input_dtype} array[ROWS][COLS] = {{\n")
+    lines_o.append(f"const {input_dtype} array[ROWS][COLS] = {{\n")
     for i, tensor in enumerate(input_tensors):
         values = ""
         elem = tensor.flatten()

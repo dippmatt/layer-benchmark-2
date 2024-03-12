@@ -43,6 +43,8 @@ def copy_build_compile(workdir: Path, repetitions: int, input_tensors, input_dty
     data_header = cube_template / Path("Core", "Inc", "ml_data.h")
     with open(data_header, 'w') as f:
         f.writelines(test_tensor_header)
+    assert data_header.exists(), f"{data_header} does not exist or is not a file"
+
     data_header_no_ir = cube_template_no_ir / Path("Core", "Inc", "ml_data.h")
     with open(data_header_no_ir, 'w') as f:
         f.writelines(test_tensor_header)
@@ -144,7 +146,7 @@ def gen_test_tensors(input_tensors, input_dtype):
     lines_o.append("#endif /* ML_DATA_H */\n")
     lines_o.append("\n")
 
-    lines_o.append(f"{input_dtype} array[ROWS][COLS] = {{\n")
+    lines_o.append(f"const {input_dtype} array[ROWS][COLS] = {{\n")
     for i, tensor in enumerate(input_tensors):
         values = ""
         elem = tensor.flatten()

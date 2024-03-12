@@ -11,22 +11,35 @@ def get_json(json_path: Path):
 def create_run_commands(permutations: list):
     commands = []
     final_permutations = []
-    broken_keys = ["glow_noquant_ad_normal_float_", 
-                   "glow_noquant_ad_anomaly_float_", 
-                   "glow_quant_ad_normal_float_", 
-                   "glow_quant_ad_anomaly_float_", 
-                   "glow_quant_vww_float_", 
+    broken_keys = [
+                   # REASON: Hangs while executing the model on MCU, freeze when starting the model
+                   #"glow_noquant_ad_normal_float_", 
+                   #"glow_noquant_ad_anomaly_float_",                    
+                   #"glow_quant_ad_normal_float_", 
+                   #"glow_quant_ad_anomaly_float_",
+                   
+                   #"glow_noquant_ad_normal_int_", 
+                   
+                   #"glow_quant_vww_float_", 
+                   
+
+                   # REASON: tiny engine soes not support a layer type in kws model, Error:
+                   # tinyengine/code_generator/operators/conv2d.py", line 258, in generate_inference_str 
+                   # raise NotImplementedError
                    "tiny_engine_kws_int_nosoftmax_", 
-                   "glow_quant_vww_float_nosoftmax_", 
+
+                   #"glow_quant_vww_float_nosoftmax_", 
                    #"glow_noquant_vww_int_",
-                   "glow_noquant_vww_int_nosoftmax_",
-                   "glow_noquant_vww_float_",
-                   "glow_noquant_vww_float_nosoftmax_",
-                   # maybe run tflite_ad_anomaly_float_ for completeness
+                   #"glow_noquant_vww_int_nosoftmax_",
+                   #"glow_noquant_vww_float_",
+                   #"glow_noquant_vww_float_nosoftmax_",
+                   # maybe run tflite_ad_anomaly_float_ for completeness, we already ran normal
                    "tflite_ad_anomaly_float_",
+                   
                    # here the Error "Hybrid models are not supported on TFLite Micro." occurs,
                    # which indicates that no mixing of flaot and int models is possible: https://github.com/tensorflow/tensorflow/issues/43386
                    "tflite_kws_float_",
+                   
                    # these are not required
                    "tflite_ad_normal_float_nosoftmax_",
                    "tflite_ad_anomaly_float_nosoftmax_",
@@ -108,38 +121,38 @@ def run_commands(commands: list, permutations: list, command_run_dir: Path, log_
         print("Running configuration: ", unique_key)
         
         ############################################################
-        process = subprocess.Popen(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
-            # Read from process output
-            while True:
-                stdout_output = process.stdout.readline()
-                stderr_output = process.stderr.readline()
-                print(stdout_output)
-                print(stderr_output)
-                if stdout_output == '' and process.poll() is not None:
-                    break
-                if stdout_output:
-                    file.write(stdout_output)
-                    file.flush()
+        # process = subprocess.Popen(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
+        #     # Read from process output
+        #     while True:
+        #         stdout_output = process.stdout.readline()
+        #         stderr_output = process.stderr.readline()
+        #         print(stdout_output)
+        #         print(stderr_output)
+        #         if stdout_output == '' and process.poll() is not None:
+        #             break
+        #         if stdout_output:
+        #             file.write(stdout_output)
+        #             file.flush()
 
-        return_code = process.wait()
-        stderr_output = process.stderr.read()
+        # return_code = process.wait()
+        # stderr_output = process.stderr.read()
         ############################################################
 
-        # result = subprocess.run(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #     # Check the return code
-        #if result.returncode == 0:
-        if return_code == 0:
+        result = subprocess.run(command, shell=True, cwd=command_run_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # Check the return code
+        if result.returncode == 0:
+        #if return_code == 0:
             print_in_color(Color.GREEN, f"SUCCESS {unique_key}")
         else:
             print_in_color(Color.RED, f"FAILED {unique_key}")
         print()
 
-        # stdout_output = result.stdout.decode('utf-8')
-        # stderr_output = result.stderr.decode('utf-8')
+        stdout_output = result.stdout.decode('utf-8')
+        stderr_output = result.stderr.decode('utf-8')
 
-        # with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
-        #     file.write(stdout_output)
+        with open(Path(log_dir, unique_key + ".stdout"), "w") as file:
+            file.write(stdout_output)
         with open(Path(log_dir, unique_key + ".stderr"), "w") as file:
             file.write(stderr_output)
     return

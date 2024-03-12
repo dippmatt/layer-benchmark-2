@@ -8,11 +8,12 @@ import re
 import copy
 import subprocess
 from paretoset import paretoset
+from shared_scripts.color_print import Color, print_in_color
 
 def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     data_source_dir = data_source_dir.resolve()
     
-    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'nrmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments', 'ref_config_name', 'mcu_tensor_values', 'ref_tensor_values'])
+    df = pd.DataFrame(columns=['model', 'framework', 'dtype', 'flash', 'ram', 'elf_size', 'model_activation_size', 'model_weight_size', 'avg_timing', 'config_name', 'layer_names', 'rmse', 'nrmse', 'mae', 'l2r', 'std_dev', 'std_dev_per_layer', 'per_layer_timings', 'sum_timing', 'layer_assignments', 'ref_config_name', 'mcu_tensor_values', 'ref_tensor_values'])
     
     # Sanity check: verify the naming scheme of the benchmark folders
     framework_counter = 0
@@ -179,6 +180,7 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
         new_row_data['ram'] = int(ram)
         new_row_data['flash'] = int(flash)
 
+
         ##################################################
         #### Ram & Flash specifics .data .rodata .bss ####
         ##################################################
@@ -193,6 +195,14 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
             assert generate_report_file.exists(), 'No generate_report.txt found.'
             elf_size_dict = get_bss_data_rodata_text_st(generate_report_file)
             new_row_data['elf_size'] = elf_size_dict
+
+            # now get model weight and activation size (independend from framework used) as well
+            # st provides a nice summary in the network_analyze_report.txt that we can use
+            analyze_report_file = Path(benchmark, 'workdir', 'network_output', 'network_analyze_report.txt')
+            assert analyze_report_file.exists(), 'No network_analyze_report.txt found.'
+            weights, activations = get_model_weight_activation_size(analyze_report_file)
+            new_row_data['model_activation_size'] = activations
+            new_row_data['model_weight_size'] = weights
         # for glow and tiny_engine we can use the elf file to extract the sizes manually
         elif 'glow' in benchmark.stem or 'tiny_engine' in benchmark.stem:
             if 'glow' in benchmark.stem:
@@ -211,8 +221,6 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
             eabi_size_empty = subprocess.run(['arm-none-eabi-size', '-A', elf_empty_file], stdout=subprocess.PIPE).stdout.decode('utf-8')
             elf_size_dict = get_bss_data_rodata_text(eabi_size_ref, eabi_size_empty)
             new_row_data['elf_size'] = elf_size_dict
-        if not 'tflite' in benchmark.stem:
-            print(new_row_data['elf_size'])
 
         
         #################################################
@@ -240,7 +248,6 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
 
         # add the new row to the df
         df.loc[len(df)] = new_row_data
-    
 
     ############# Process per layer data:
     # Optimisation techniques split or fuse layers
@@ -354,6 +361,24 @@ def get_data_frame(data_source_dir: Path) -> pd.DataFrame:
     
     return df
 
+def get_model_weight_activation_size(analyze_report_file: Path) -> tuple:
+    with open(analyze_report_file, 'r') as f:
+        lines = f.readlines()
+    
+    weights = None
+    activations = None
+    for line in lines:
+        if 'weights (ro)' in line:
+            line_split = line.split()
+            weights = int(line_split[3].replace(',', ''))
+        if 'activations (rw)' in line:
+            line_split = line.split()
+            activations = int(line_split[3].replace(',', ''))
+        if weights and activations:
+            return weights, activations
+        
+    raise ValueError(f'Failed to find model weight and activation size in {analyze_report_file}.')
+
 def get_bss_data_rodata_text_st(generate_report_file: Path) -> dict:
     with open(generate_report_file, 'r') as f:
         lines = f.readlines()
@@ -364,16 +389,16 @@ def get_bss_data_rodata_text_st(generate_report_file: Path) -> dict:
     for line in lines:
         if 'TOTAL' in line and '*io*' in line_minus_2:
             line_split = line.split()
-            elf_size_dict['text'] = line_split[-4]
-            elf_size_dict['rodata'] = line_split[-3]
-            elf_size_dict['data'] = line_split[-2]
-            elf_size_dict['bss'] = line_split[-1]
+            elf_size_dict['text'] = line_split[-4].replace(',', '')
+            elf_size_dict['rodata'] = line_split[-3].replace(',', '')
+            elf_size_dict['data'] = line_split[-2].replace(',', '')
+            elf_size_dict['bss'] = line_split[-1].replace(',', '')
             return elf_size_dict
         line_minus_2 = line_minus_1
         line_minus_1 = line
 
     # Failure to find flash and ram if we rech this point
-    return None
+    raise ValueError(f'Failed to find flash and ram in {generate_report_file}.')
 
 
 def get_bss_data_rodata_text(elf_size_ref: str, elf_size_empty: str) -> dict:
@@ -969,38 +994,68 @@ def plot_pareto3d(title: str, df: pd.DataFrame):
 
 
 def plot_ram_flash(title: str, df: pd.DataFrame):
+    found_model_dict = {'ad': False, 'kws': False, 'vww': False, 'ic': False}
     data = {
         'ram': [],
         'flash': [],
         'framework': [],
         'shape': [],
-        'color': [],
         'label': [],
-        'dtype': []
+        'dtype': [],
+        'model': [],
+        'elf_size': []
     }
+
+    # insert dummy data point in data, that represents the
+    # minimum ram requirements for activations of the model
+    # and the minimum flash requirements for weights of the model
+    for index, row in df.iterrows():
+        if 'st' in row['framework']:
+            model = row['model']
+            if not found_model_dict[model]:
+                found_model_dict[model] = True
+                data['model'].append(model)
+                data['ram'].append(row['model_activation_size'])
+                data['flash'].append(row['model_weight_size'])
+                data['framework'].append('model_only')
+                data['label'].append('')
+                data['dtype'].append(row['dtype'])
+                data['elf_size'].append(None)
+                data['shape'].append('model_ref')
+
     for index, row in df.iterrows():
         if 'nosoftmax' in row['config_name'] and not 'tiny_engine' in row['config_name']:
             continue
+        data['model'].append(row['model'])
         data['ram'].append(row['ram'])
         data['flash'].append(row['flash'])
         data['framework'].append(row['framework'])
-        data['label'].append(row['config_name'])
+        if 'st' in row['framework'] or 'glow' in row['framework']:
+            data['label'].append(row['config_name'].split('_')[1])
+        else:
+            data['label'].append('')
         data['dtype'].append(row['dtype'])
-
+        data['elf_size'].append(row['elf_size'])
 
     # assign a shape to each data point for the plotly 3d scatter plot
     for i, framework in enumerate(data['framework']):
         if framework == 'tiny_engine':
             data['shape'].append('tiny_engine')
+            print_in_color(Color.RED, data['label'][i])
+            print_in_color(Color.RED, data['elf_size'][i])
         elif framework == 'st':
             data['shape'].append('st')
+            print_in_color(Color.BLUE, data['label'][i])
+            print_in_color(Color.BLUE, data['elf_size'][i])
         elif framework == 'glow':
             data['shape'].append('glow')
+            print_in_color(Color.GREEN, data['label'][i])
+            print_in_color(Color.GREEN, data['elf_size'][i])
         elif framework == 'tflite':
             data['shape'].append('tflite')
-        data['color'].append('#FF0000')
-
-    color_map = {'tiny_engine': 'red', 'st': 'blue', 'glow': 'green', 'tflite': 'black'}
+        print_in_color(Color.RESET, '')
+        
+    color_map = {'tiny_engine': 'red', 'st': 'blue', 'glow': 'green', 'tflite': 'black', 'model_ref': 'grey'}
 
     df2plot = pd.DataFrame(data)
     fig = px.scatter(df2plot, x='ram', y='flash', symbol='shape', color='framework', color_discrete_map=color_map, hover_data=["label", "dtype"])#, text='label')#, size='size', )
@@ -1012,6 +1067,39 @@ def plot_ram_flash(title: str, df: pd.DataFrame):
         yaxis_title="Flash [Byte]",
         bargap=0.1,
     )
+    # unfortunately, we need to move the labels manually to avoid overlap
+    # Automation of label placement is not supported by plotly
+    for i, row in df2plot.iterrows():
+        x, y, label = row['ram'], row['flash'], row['label']
+        offset_y = x * 0.1
+        if 'vww' in data['model'][i]:
+            offset_y = 1.8*offset_y
+        if 'ad' in data['model'][i]:
+            offset_y = 25*offset_y
+            if 'noquant' in label:
+                offset_y = -offset_y * 2
+        if 'balanced' in label:
+            y = y - offset_y
+            print(y)
+        elif 'ram' in label:
+            y = y - 2*offset_y
+            if 'ic' in data['model'][i]:
+                y = y + 1.5 * offset_y
+        elif 'noquant' in label:
+            y = y - offset_y
+
+        fig.add_annotation(
+            x=x,
+            y=y,
+            text=label,
+            showarrow=False,  # Optional: remove arrow if not needed
+            
+            xanchor='center',
+            yanchor='top',
+            # Adjust font size and color for better visibility
+            font=dict(size=12, color='black')
+        )
+
     fig.show()
 
 def plot_measurement_impact(df: pd.DataFrame):
@@ -1402,8 +1490,11 @@ def main():
     
     
     plot_ram_flash("RAM vs Flash AD int", filtered_df_int_ad)
+    print()
     plot_ram_flash("RAM vs Flash KWS int", filtered_df_int_kws)
+    print()
     plot_ram_flash("RAM vs Flash IC int", filtered_df_int_ic)
+    print()
     plot_ram_flash("RAM vs Flash VWW int", filtered_df_int_vww)
     import sys; sys.exit(0)
 

@@ -6,7 +6,7 @@ from shared_scripts.color_print import print_in_color, Color
 
 # Final values to use
 VWW_LIMIT = 5
-INPUT_SAMPLES = 1
+INPUT_SAMPLES = 10
 PROFILE_SAMPLES = 1000
 
 # For testing

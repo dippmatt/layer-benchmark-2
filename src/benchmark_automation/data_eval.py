@@ -993,6 +993,46 @@ def plot_pareto3d(title: str, df: pd.DataFrame):
     return
 
 
+def plot_memory_detailed(elf_size_list: list, title_list: list, use_case: str):
+    """Plots the elf size as a bar chart.
+
+    Args:
+        elf_size_list (list): A list of elf sizes.
+            Each elf size is a dictionary containing the elf size of a framework.
+            valid keys are: 'text', 'rodata', 'data', 'bss'
+        title_list (list): A list of titles for the bar chart.
+        use_case (str): The use case for which the elf sizes are plotted.
+    """
+    bss_list = []
+    data_list = []
+    rodata_list = []
+    text_list = []
+
+
+    for elf_size in elf_size_list:
+        bss_list.append(elf_size['bss'])
+        data_list.append(elf_size['data'])
+        rodata_list.append(elf_size['rodata'])
+        text_list.append(elf_size['text'])
+    # each quadruple of elf sizes is a group of bars
+    data = {
+        'bss': bss_list,
+        'data': data_list,
+        'rodata': rodata_list,
+        'text': text_list,
+        'title': title_list
+    }
+    df = pd.DataFrame(data)
+    # Melt the DataFrame to have 'variable' and 'value' columns for plotting
+    df_melted = pd.melt(df, id_vars='title', var_name='Metric', value_name='Value')
+
+    # Create the grouped bar chart
+    fig = px.bar(df_melted, x='title', y='Value', color='Metric', barmode='group',
+                title='Memory usage by section',
+                labels={'Value': 'Value', 'title': 'title', 'Metric': 'Metric'})
+
+    fig.show()
+
 def plot_ram_flash(title: str, df: pd.DataFrame):
     found_model_dict = {'ad': False, 'kws': False, 'vww': False, 'ic': False}
     data = {
@@ -1001,6 +1041,7 @@ def plot_ram_flash(title: str, df: pd.DataFrame):
         'framework': [],
         'shape': [],
         'label': [],
+        'config_name': [],
         'dtype': [],
         'model': [],
         'elf_size': []
@@ -1009,22 +1050,27 @@ def plot_ram_flash(title: str, df: pd.DataFrame):
     # insert dummy data point in data, that represents the
     # minimum ram requirements for activations of the model
     # and the minimum flash requirements for weights of the model
-    for index, row in df.iterrows():
-        if 'st' in row['framework']:
-            model = row['model']
-            if not found_model_dict[model]:
-                found_model_dict[model] = True
-                data['model'].append(model)
-                data['ram'].append(row['model_activation_size'])
-                data['flash'].append(row['model_weight_size'])
-                data['framework'].append('model_only')
-                data['label'].append('')
-                data['dtype'].append(row['dtype'])
-                data['elf_size'].append(None)
-                data['shape'].append('model_ref')
+    # for index, row in df.iterrows():
+    #     if 'normal' in row['config_name']:
+    #         continue
+    #     if 'st' in row['framework']:
+    #         model = row['model']
+    #         if not found_model_dict[model]:
+    #             found_model_dict[model] = True
+    #             data['model'].append(model)
+    #             data['ram'].append(row['model_activation_size'])
+    #             data['flash'].append(row['model_weight_size'])
+    #             data['framework'].append('model_only')
+    #             data['label'].append('')
+    #             data['config_name'].append('model_ref')
+    #             data['dtype'].append(row['dtype'])
+    #             data['elf_size'].append(None)
+    #             data['shape'].append('model_ref')
 
     for index, row in df.iterrows():
         if 'nosoftmax' in row['config_name'] and not 'tiny_engine' in row['config_name']:
+            continue
+        if 'normal' in row['config_name']:
             continue
         data['model'].append(row['model'])
         data['ram'].append(row['ram'])
@@ -1034,28 +1080,46 @@ def plot_ram_flash(title: str, df: pd.DataFrame):
             data['label'].append(row['config_name'].split('_')[1])
         else:
             data['label'].append('')
+        data['config_name'].append(row['config_name'])
         data['dtype'].append(row['dtype'])
         data['elf_size'].append(row['elf_size'])
 
+    elf_size_list = []
+    title_list = []
     # assign a shape to each data point for the plotly 3d scatter plot
     for i, framework in enumerate(data['framework']):
+        if 'normal' in data['config_name'][i]:
+            continue
         if framework == 'tiny_engine':
             data['shape'].append('tiny_engine')
-            print_in_color(Color.RED, data['label'][i])
+            print_in_color(Color.RED, data['config_name'][i])
             print_in_color(Color.RED, data['elf_size'][i])
+            elf_size_list.append(data['elf_size'][i])
+            title_list.append(data['config_name'][i])
         elif framework == 'st':
             data['shape'].append('st')
-            print_in_color(Color.BLUE, data['label'][i])
+            print_in_color(Color.BLUE, data['config_name'][i])
             print_in_color(Color.BLUE, data['elf_size'][i])
+            elf_size_list.append(data['elf_size'][i])
+            title_list.append(data['config_name'][i])
         elif framework == 'glow':
             data['shape'].append('glow')
-            print_in_color(Color.GREEN, data['label'][i])
+            print_in_color(Color.GREEN, data['config_name'][i])
             print_in_color(Color.GREEN, data['elf_size'][i])
+            elf_size_list.append(data['elf_size'][i])
+            title_list.append(data['config_name'][i])
         elif framework == 'tflite':
+            print_in_color(Color.BLACK, data['config_name'][i])
             data['shape'].append('tflite')
         print_in_color(Color.RESET, '')
+
+    plot_memory_detailed(elf_size_list, title_list, title)
         
     color_map = {'tiny_engine': 'red', 'st': 'blue', 'glow': 'green', 'tflite': 'black', 'model_ref': 'grey'}
+
+    for key, value in data.items():
+        print(key)
+        print(len(value))
 
     df2plot = pd.DataFrame(data)
     fig = px.scatter(df2plot, x='ram', y='flash', symbol='shape', color='framework', color_discrete_map=color_map, hover_data=["label", "dtype"])#, text='label')#, size='size', )
@@ -1288,7 +1352,7 @@ def rmse(ref, pred):
 
 
 def nrmse(ref, pred):
-  """Return Root Mean Squared Error (RMSE)."""
+  """Return Normalized Root Mean Squared Error (RMSE)."""
   range = np.max(ref) - np.min(ref)
   rmse = np.sqrt(((ref - pred).astype(np.float64) ** 2).mean())
   return rmse / range
@@ -1326,6 +1390,9 @@ def main():
     timings_dir = Path(__file__).parent / Path('..', '..', 'data_gen')
 
     df = get_data_frame(timings_dir)
+
+    # plot_deviation(df)
+    # import sys; sys.exit(0)
 
     # filtered_df = df[(df['framework'] == 'tiny_engine') & (df['model'] == 'vww')]
     # print(filtered_df)
@@ -1488,16 +1555,23 @@ def main():
     filtered_df_float_ic = float_df[float_df['model'] == 'ic']
     filtered_df_float_vww = float_df[float_df['model'] == 'vww']
     
-    
-    plot_ram_flash("RAM vs Flash AD int", filtered_df_int_ad)
-    print()
     plot_ram_flash("RAM vs Flash KWS int", filtered_df_int_kws)
     print()
+    # import sys; sys.exit(0)
+    plot_ram_flash("RAM vs Flash AD int", filtered_df_int_ad)
+    print()
+    # import sys; sys.exit(0)
     plot_ram_flash("RAM vs Flash IC int", filtered_df_int_ic)
     print()
+    # import sys; sys.exit(0)
     plot_ram_flash("RAM vs Flash VWW int", filtered_df_int_vww)
+    print()
+    #runtime_over_error(filtered_df_int_ad, "Anomaly Det")
+    #runtime_over_error(filtered_df_int_kws, "KWS")
+    #runtime_over_error(filtered_df_int_ic, "Image Classification")
+    #runtime_over_error(filtered_df_int_vww, "VWW")
     import sys; sys.exit(0)
-
+    
     plot_pareto3d("Pareto Diagram AD int", filtered_df_int_ad)
     plot_pareto3d("Pareto Diagram KWS", filtered_df_int_kws)
     plot_pareto3d("Pareto Diagram IC", filtered_df_int_ic)

@@ -60,8 +60,8 @@ all: main-build
 main-build: Glow_Template_empty.elf secondary-outputs
 
 # Tool invocations
-Glow_Template_empty.elf Glow_Template_empty.map: $(OBJS) $(USER_OBJS) /home/matthias/Documents/BA/results/glow2/project/cube_templates/Glow_Template_empty/STM32L4R5ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Glow_Template_empty.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/matthias/Documents/BA/results/glow2/project/cube_templates/Glow_Template_empty/STM32L4R5ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Glow_Template_empty.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Glow_Template_empty.elf Glow_Template_empty.map: $(OBJS) $(USER_OBJS) /home/matthias/Documents/BA/layer-benchmark-2/src/glow/cube_templates/Glow_Template_empty/STM32L4R5ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Glow_Template_empty.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/matthias/Documents/BA/layer-benchmark-2/src/glow/cube_templates/Glow_Template_empty/STM32L4R5ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Glow_Template_empty.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

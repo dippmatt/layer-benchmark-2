@@ -7,6 +7,7 @@ class Color(Enum):
     PINK = '\033[95m'
     BLUE = '\033[94m'
     RESET = '\033[0m'
+    BLACK = '\033[30m'
 
 def print_in_color(color, text):
     """Prints text in color to the terminal.

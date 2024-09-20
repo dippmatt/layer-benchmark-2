@@ -209,7 +209,7 @@ def gen_test_tensors(input_tensors, input_dtype):
             if input_dtype == 'int8_t':
                 values += f'{number}, '
             else:
-                values += f'{number: .16e}, '
+                values += f'{number: .16e}f, '
         values = values.rstrip(', ')
         lines_o.append(f"    {{ {values} }},\n")
     lines_o[-1] = lines_o[-1].rstrip(',\n') + '\n'
